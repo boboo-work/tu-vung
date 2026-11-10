@@ -1,0 +1,16 @@
+{
+  "name": "Từ Vựng — Học từ vựng tiếng Anh",
+  "short_name": "Từ Vựng",
+  "description": "Ứng dụng học từ vựng tiếng Anh cá nhân với Spaced Repetition",
+  "lang": "vi",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F5F4EF",
+  "theme_color": "#F5F4EF",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

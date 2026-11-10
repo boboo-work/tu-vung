@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#1F6F54"/>
+  <rect x="150" y="118" width="250" height="300" rx="34" fill="#ffffff" opacity=".28" transform="rotate(8 275 268)"/>
+  <rect x="118" y="106" width="250" height="300" rx="34" fill="#FBFAF6"/>
+  <text x="243" y="300" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="150" fill="#1F6F54">Aa</text>
+  <rect x="178" y="338" width="130" height="14" rx="7" fill="#1F6F54" opacity=".25"/>
+</svg>

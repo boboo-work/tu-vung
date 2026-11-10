@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Từ Vựng</title>
+  <meta name="description" content="Ứng dụng học từ vựng tiếng Anh cá nhân với Spaced Repetition">
+  <meta name="theme-color" content="#F5F4EF">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Từ Vựng">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/app.css">
+  <script>
+    // Áp dụng giao diện sáng/tối sớm để tránh nháy màu khi mở app.
+    try {
+      var t = localStorage.getItem('theme') || 'auto';
+      if (t === 'auto') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div id="app">
+    <main id="view" aria-live="polite"><div class="boot">Đang tải…</div></main>
+    <nav id="tabbar" aria-label="Điều hướng chính"></nav>
+  </div>
+  <div id="backdrop" data-act="sheet-close"></div>
+  <div id="sheet" role="dialog" aria-modal="true"></div>
+  <div id="toast" class="toast" role="status"></div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
