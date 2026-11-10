@@ -4,6 +4,7 @@ import { icon, actions, on, go, back, setRenderer, TABS, closeSheet } from './ui
 import { homeView, learnView, reviewView, vocabView, wordView, formView, decksView } from './views.js';
 import { statsView, settingsView, aiView, applyTheme } from './views2.js';
 import { sessionView } from './study.js';
+import { countUp } from './fx.js';
 
 const routes = {
   home: homeView, learn: learnView, review: reviewView, vocab: vocabView, stats: statsView,
@@ -32,6 +33,7 @@ function render(resetScroll = false) {
   view.classList.toggle('enter', changed);
   view.innerHTML = html;
   view.scrollTop = changed || resetScroll ? 0 : scroll;
+  if (changed) countUp(view);
   lastHash = location.hash;
   renderTabs(route);
   if (out?.focus) {

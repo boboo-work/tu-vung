@@ -1,5 +1,6 @@
 // Phiên học: flashcard (Anh→Việt, Việt→Anh) và 5 dạng bài tập.
-import { S, recordAnswer, saveWord, allWords, dueWords, newWords, dayOf } from './store.js';
+import { S, recordAnswer, saveWord, allWords, dueWords, newWords, dayOf, streak } from './store.js';
+import { confetti, countUp, motionOK, wait } from './fx.js';
 import { esc, shuffle, norm, speak, toast, fmtInterval } from './util.js';
 import { preview, isNew, isDue } from './srs.js';
 import { icon, on, go, replace, rerender, richText } from './ui.js';
@@ -90,8 +91,15 @@ function prepareStep() {
 async function advance({ requeue = false } = {}) {
   const id = ses.queue.shift();
   if (requeue) ses.queue.push(id); else ses.done++;
-  if (!ses.queue.length) ses.finished = true; else prepareStep();
+  if (!ses.queue.length) {
+    ses.finished = true;
+    ses.streakUp = ses.streak0 !== undefined && streak() > ses.streak0;
+  } else prepareStep();
   rerender(true);
+  if (ses.finished) {
+    countUp(document.getElementById('view'));
+    confetti({ count: ses.goals?.size || ses.streakUp ? 150 : 70 });
+  }
 }
 
 async function grade(rating) {
@@ -101,19 +109,102 @@ async function grade(rating) {
     if (rating === 'again') ses.stats.wrong++; else ses.stats.correct++;
   }
   if (isFlash(ses.mode)) ses.stats[rating]++;
+  if (ses.streak0 === undefined) ses.streak0 = streak();
+  const before = dayOf();
+  const b = [before.newIds.length, before.reviewIds.length];
   await recordAnswer(w.id, rating, ses.source);
+  const after = dayOf();
+  ses.goals ??= new Set();
+  if (b[0] < S.settings.newPerDay && after.newIds.length >= S.settings.newPerDay) ses.goals.add('new');
+  if (b[1] < S.settings.reviewPerDay && after.reviewIds.length >= S.settings.reviewPerDay) ses.goals.add('review');
 }
 
+// Chấm điểm thẻ: thẻ bay ra theo hướng tương ứng rồi mới sang thẻ kế.
+let busy = false;
+async function rate(rating) {
+  if (busy || !ses || ses.finished) return;
+  busy = true;
+  try {
+    const el = document.querySelector('.flash');
+    if (el && motionOK()) {
+      const x = rating === 'again' ? -1 : rating === 'easy' ? 1 : 0;
+      el.classList.add('still');
+      el.style.transition = 'transform .2s ease-in, opacity .2s ease-in';
+      el.style.transform = x ? `translateX(${x * 120}%) rotate(${x * 14}deg)` : 'translateY(-36px) scale(.96)';
+      el.style.opacity = '0';
+      await wait(190);
+    }
+    await grade(rating);
+    // "Quên" → gặp lại ngay trong phiên này cho đến khi nhớ.
+    await advance({ requeue: rating === 'again' });
+  } finally { busy = false; }
+}
+
+// Vuốt thẻ ở mặt đáp án: trái = Quên, phải = Dễ.
+let drag = null;
+let suppressClick = false;
+document.addEventListener('pointerdown', (e) => {
+  const el = e.target.closest?.('.flash.back');
+  if (!el || busy || e.target.closest('button') || (e.pointerType === 'mouse' && e.button !== 0)) return;
+  drag = { el, x: e.clientX, y: e.clientY, id: e.pointerId, on: false, dx: 0 };
+});
+document.addEventListener('pointermove', (e) => {
+  if (!drag || e.pointerId !== drag.id) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if (!drag.on) {
+    if (Math.abs(dx) < 12 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+    drag.on = true;
+    if (ses?.step) ses.step.still = true;
+    drag.el.classList.add('still', 'dragging');
+    try { drag.el.setPointerCapture(e.pointerId); } catch {}
+  }
+  drag.dx = dx;
+  const el = drag.el;
+  el.style.transition = 'none';
+  el.style.transform = `translateX(${dx}px) rotate(${dx / 18}deg)`;
+  el.style.setProperty('--l', Math.max(0, Math.min(1, -dx / 90)));
+  el.style.setProperty('--r', Math.max(0, Math.min(1, dx / 90)));
+});
+function endDrag(e) {
+  if (!drag || e.pointerId !== drag.id) return;
+  const d = drag;
+  drag = null;
+  if (!d.on) return;
+  suppressClick = true;
+  setTimeout(() => { suppressClick = false; }, 350);
+  d.el.classList.remove('dragging');
+  if (e.type === 'pointerup' && Math.abs(d.dx) > 90 && d.el.isConnected) return rate(d.dx < 0 ? 'again' : 'easy');
+  d.el.style.transition = 'transform .22s cubic-bezier(.2,.8,.2,1)';
+  d.el.style.transform = '';
+  d.el.style.setProperty('--l', 0);
+  d.el.style.setProperty('--r', 0);
+}
+document.addEventListener('pointerup', endDrag);
+document.addEventListener('pointercancel', endDrag);
+document.addEventListener('click', (e) => {
+  if (!suppressClick) return;
+  suppressClick = false;
+  e.stopPropagation(); e.preventDefault();
+}, true);
+
 // ---- Hành động ----
-on('ses-flip', () => { const st = ses.step; st.flipped = !st.flipped; st.seen = true; st.more = false; rerender(); });
+on('ses-flip', async () => {
+  if (busy) return;
+  const st = ses.step;
+  const el = document.querySelector('.flash');
+  if (el && motionOK()) {
+    busy = true;
+    el.classList.add(st.flipped ? 'out-b' : 'out-f');
+    await wait(150);
+    busy = false;
+    if (!ses || ses.step !== st) return;
+  }
+  st.flipped = !st.flipped; st.seen = true; st.more = false; st.still = false;
+  rerender();
+});
 on('ses-more', () => { ses.step.more = true; rerender(); });
 on('ses-speak', (el) => speak(el.dataset.text || cur().word, voice()));
-on('ses-rate', async (el) => {
-  const rating = el.dataset.rating;
-  await grade(rating);
-  // "Quên" → gặp lại ngay trong phiên này cho đến khi nhớ.
-  advance({ requeue: rating === 'again' });
-});
+on('ses-rate', (el) => rate(el.dataset.rating));
 on('ses-choose', async (el) => {
   if (ses.step.answered) return;
   const w = cur();
@@ -219,7 +310,9 @@ function flashView(w) {
   const affects = ses.source === 'learn' ? true : isDue(w);
   const hint = (r) => (affects ? fmtInterval(preview(w.srs, r)) : r === 'again' && !isNew(w) ? 'hôm nay' : 'giữ lịch');
   return {
-    body: `<div class="flash back ${st.more ? 'still' : ''}" data-act="ses-flip" role="button" aria-label="Lật lại mặt trước">${backFace(w, st.more)}<p class="hint">Chạm vào thẻ để lật lại</p></div>`,
+    body: `<div class="flash back ${st.more || st.still ? 'still' : ''}" data-act="ses-flip" role="button" aria-label="Lật lại mặt trước">
+      <span class="stamp l" aria-hidden="true">Quên</span><span class="stamp r" aria-hidden="true">Dễ</span>
+      ${backFace(w, st.more)}<p class="hint">Chạm để lật lại · vuốt trái: Quên · vuốt phải: Dễ</p></div>`,
     actions: `<div class="rate">
       <button class="again" data-act="ses-rate" data-rating="again">Quên<small>${affects ? 'ôn lại ngay' : hint('again')}</small></button>
       <button class="hard" data-act="ses-rate" data-rating="hard">Khó<small>${hint('hard')}</small></button>
@@ -306,11 +399,16 @@ function finishView() {
   const mins = Math.max(1, Math.round((Date.now() - ses.startedAt) / 60000));
   const more = nextBatch(ses.source).length;
   const day = dayOf();
+  const cheers = [];
+  if (ses.streakUp) cheers.push(`${icon('flame', 'sm')} Chuỗi ${streak()} ngày liên tiếp`);
+  if (ses.goals?.has('new')) cheers.push(`${icon('check', 'sm')} Đạt mục tiêu từ mới hôm nay`);
+  if (ses.goals?.has('review')) cheers.push(`${icon('check', 'sm')} Đạt mục tiêu ôn tập hôm nay`);
   return `<div class="page session"><div class="ses-body" style="justify-content:center">
-    <div class="empty"><div class="art">${icon('check')}</div>
+    <div class="empty"><div class="art pop">${icon('check')}</div>
       <h3>Hoàn thành phiên học</h3>
       <p>${ses.done} từ · khoảng ${mins} phút</p>
-      ${answered ? `<div class="result-big">${pct}%</div><p class="muted" style="margin-top:6px">nhớ ngay từ lần đầu (${s.correct}/${answered})</p>` : ''}
+      ${cheers.map((c) => `<div class="cheer">${c}</div>`).join('')}
+      ${answered ? `<div class="result-big" data-count="${pct}" data-suffix="%">${pct}%</div><p class="muted" style="margin-top:6px">nhớ ngay từ lần đầu (${s.correct}/${answered})</p>` : ''}
     </div>
     <div class="tiles two">
       <div class="tile"><b>${day.newIds.length}/${S.settings.newPerDay}</b><span>Từ mới hôm nay</span></div>
@@ -328,10 +426,13 @@ export function sessionView() {
   const w = cur();
   const v = isFlash(ses.mode) ? flashView(w) : ses.mode === 'sentence' ? sentenceView(w) : ses.mode === 'mc' || ses.mode === 'listen' ? choiceView(w) : typeView(w);
   const label = { learn: 'Từ mới', review: 'Ôn tập', practice: 'Luyện tập' }[ses.source] + ' · ' + modeOf(ses.mode).name;
+  const pct = Math.round((ses.done / ses.total) * 100);
+  const from = ses.shownPct ?? 0;
+  ses.shownPct = pct;
   return {
     html: `<div class="page session">
       <div class="ses-top"><button class="iconbtn" data-act="ses-quit" aria-label="Thoát">${icon('x')}</button>
-        <div class="progress"><i style="width:${Math.round((ses.done / ses.total) * 100)}%"></i></div>
+        <div class="progress"><i style="width:${pct}%;--from:${from}%"></i></div>
         <span class="count">${Math.min(ses.done + 1, ses.total)}/${ses.total}</span></div>
       <p class="mode-label">${esc(label)}</p>
       <div class="ses-body">${v.body}</div>

@@ -54,7 +54,7 @@ export function homeView() {
 
   return `<div class="page">${head}
     <div class="hero">
-      <div class="row-between"><div><div class="big">${sum.streak}</div><div class="lbl">ngày học liên tiếp</div></div>${icon('flame')}</div>
+      <div class="row-between"><div><div class="big" data-count="${sum.streak}">${sum.streak}</div><div class="lbl">ngày học liên tiếp</div></div>${icon('flame')}</div>
       <div class="week">${week}</div>
     </div>
     <div class="goals">

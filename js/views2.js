@@ -6,7 +6,7 @@ import { icon, on, go, rerender, navBar, confirmSheet, promptSheet, richText } f
 import { importFile, exportCSV, exportBackup, restoreBackup, downloadTemplate, loadSeed } from './io.js';
 import { AI_ACTIONS, AI_MODELS, aiReady, askAI } from './ai.js';
 
-const ui = { statsKind: 'day', statsSel: null, ai: { wordId: null, action: 'context', input: '', q: '', loading: false, result: null, error: null } };
+const ui = { statsKind: 'day', statsSel: null, anim: false, ai: { wordId: null, action: 'context', input: '', q: '', loading: false, result: null, error: null } };
 
 // ================= STATISTICS =================
 function mainChart() {
@@ -17,13 +17,15 @@ function mainChart() {
   const d = data[sel];
   const bars = data.map((x, i) => {
     const hn = (x.n / max) * H, hr = (x.r / max) * H;
-    return `<div class="bar ${i === sel ? 'sel' : ''}" data-act="stats-sel" data-i="${i}" role="button" aria-label="${esc(x.label)}: ${x.n} từ mới, ${x.r} từ ôn">
+    return `<div class="bar ${i === sel ? 'sel' : ''}" style="--i:${i}" data-act="stats-sel" data-i="${i}" role="button" aria-label="${esc(x.label)}: ${x.n} từ mới, ${x.r} từ ôn">
       ${x.r ? `<i class="r" style="height:${Math.max(3, hr)}px"></i>` : ''}${x.n ? `<i class="n" style="height:${Math.max(3, hn)}px"></i>` : ''}</div>`;
   }).join('');
   const total = data.reduce((a, x) => a + x.n + x.r, 0);
+  const anim = ui.anim;
+  ui.anim = false;
   return `<div class="legend"><span><i style="background:var(--series-1)"></i>Từ mới</span><span><i style="background:var(--series-2)"></i>Từ ôn tập</span></div>
     <p class="readout"><b>${esc(d.label)}</b> · ${d.n} từ mới · ${d.r} từ ôn</p>
-    <div class="bars"><span class="maxline">${max}</span>${bars}</div>
+    <div class="bars ${anim ? 'anim' : ''}"><span class="maxline">${max}</span>${bars}</div>
     <div class="xlabels">${data.map((x, i) => `<span>${data.length > 10 && i % 2 ? '' : esc(x.short)}</span>`).join('')}</div>
     ${total ? '' : '<p class="small faint center" style="margin-top:10px">Chưa có hoạt động trong khoảng thời gian này.</p>'}
     <details><summary>Xem dạng bảng</summary><table class="data"><tr><th>Thời gian</th><th>Từ mới</th><th>Từ ôn</th></tr>
@@ -42,14 +44,14 @@ export function statsView() {
   const seg = (k, label) => `<button class="${ui.statsKind === k ? 'on' : ''}" data-act="stats-kind" data-kind="${k}">${label}</button>`;
   return `<div class="page">${head}
     <div class="tiles">
-      <div class="tile"><b>${sum.streak}</b><span>Ngày liên tiếp</span></div>
-      <div class="tile"><b>${sum.learned}</b><span>Từ đã học</span></div>
-      <div class="tile"><b>${sum.pctMastered}%</b><span>Đã ghi nhớ</span></div>
+      <div class="tile"><b data-count="${sum.streak}">${sum.streak}</b><span>Ngày liên tiếp</span></div>
+      <div class="tile"><b data-count="${sum.learned}">${sum.learned}</b><span>Từ đã học</span></div>
+      <div class="tile"><b data-count="${sum.pctMastered}" data-suffix="%">${sum.pctMastered}%</b><span>Đã ghi nhớ</span></div>
     </div>
     <div class="tiles" style="margin-top:10px">
-      <div class="tile"><b>${sum.total}</b><span>Tổng số từ</span></div>
+      <div class="tile"><b data-count="${sum.total}">${sum.total}</b><span>Tổng số từ</span></div>
       <div class="tile"><b>${sum.accuracy === null ? '—' : sum.accuracy + '%'}</b><span>Tỉ lệ nhớ</span></div>
-      <div class="tile"><b>${sum.activeDays}</b><span>Ngày đã học</span></div>
+      <div class="tile"><b data-count="${sum.activeDays}">${sum.activeDays}</b><span>Ngày đã học</span></div>
     </div>
     <h2>Hoạt động học</h2>
     <div class="card"><div class="seg">${seg('day', 'Ngày')}${seg('week', 'Tuần')}${seg('month', 'Tháng')}</div><div class="chart">${mainChart()}</div></div>
@@ -67,7 +69,7 @@ export function statsView() {
       <div class="mini-bar"><i style="width:${(d.learned / d.total) * 100}%"></i></div></div>`).join('')}</div>
   </div>`;
 }
-on('stats-kind', (el) => { ui.statsKind = el.dataset.kind; ui.statsSel = null; rerender(); });
+on('stats-kind', (el) => { ui.statsKind = el.dataset.kind; ui.statsSel = null; ui.anim = true; rerender(); });
 on('stats-sel', (el) => { ui.statsSel = Number(el.dataset.i); rerender(); });
 
 // ================= SETTINGS =================
