@@ -75,7 +75,7 @@ function distractors(w, n) {
 
 function prepareStep() {
   const w = cur();
-  const st = { flipped: false, more: false, answered: false, correct: null, choice: null, input: '', ai: null };
+  const st = { flipped: false, seen: false, more: false, answered: false, correct: null, choice: null, input: '', ai: null };
   if (ses.mode === 'mc' || ses.mode === 'listen') st.options = shuffle([w, ...distractors(w, 3)]).map((x) => x.id);
   if (ses.mode === 'fill') {
     for (const ex of shuffle(w.examples || [])) {
@@ -105,7 +105,7 @@ async function grade(rating) {
 }
 
 // ---- Hành động ----
-on('ses-flip', () => { if (!ses.step.flipped) { ses.step.flipped = true; rerender(); } });
+on('ses-flip', () => { const st = ses.step; st.flipped = !st.flipped; st.seen = true; st.more = false; rerender(); });
 on('ses-more', () => { ses.step.more = true; rerender(); });
 on('ses-speak', (el) => speak(el.dataset.text || cur().word, voice()));
 on('ses-rate', async (el) => {
@@ -210,16 +210,16 @@ function flashView(w) {
       ? `<div class="headword">${esc(w.word)}</div>${w.pos ? `<span class="tag">${esc(w.pos)}</span>` : ''}`
       : `<div class="vi">${esc(w.meaning || '(chưa có nghĩa)')}</div>${w.pos ? `<span class="tag">${esc(w.pos)}</span>` : ''}`;
     return {
-      body: `<div class="flash" data-act="ses-flip" role="button" aria-label="Lật thẻ">
+      body: `<div class="flash ${st.seen ? 'turn' : ''}" data-act="ses-flip" role="button" aria-label="Lật thẻ">
         ${ses.mode === 'en-vi' ? `<div class="speak">${speakBtn(w.word)}</div>` : ''}
         <div class="front">${front}</div><p class="hint">Chạm vào thẻ để xem đáp án</p></div>`,
-      actions: `<button class="btn ghost" data-act="ses-flip">Xem đáp án</button>`,
+      actions: `<button class="btn ghost" data-act="ses-flip">${st.seen ? 'Xem lại đáp án' : 'Xem đáp án'}</button>`,
     };
   }
   const affects = ses.source === 'learn' ? true : isDue(w);
   const hint = (r) => (affects ? fmtInterval(preview(w.srs, r)) : r === 'again' && !isNew(w) ? 'hôm nay' : 'giữ lịch');
   return {
-    body: `<div class="flash back ${st.more ? 'still' : ''}">${backFace(w, st.more)}</div>`,
+    body: `<div class="flash back ${st.more ? 'still' : ''}" data-act="ses-flip" role="button" aria-label="Lật lại mặt trước">${backFace(w, st.more)}<p class="hint">Chạm vào thẻ để lật lại</p></div>`,
     actions: `<div class="rate">
       <button class="again" data-act="ses-rate" data-rating="again">Quên<small>${affects ? 'ôn lại ngay' : hint('again')}</small></button>
       <button class="hard" data-act="ses-rate" data-rating="hard">Khó<small>${hint('hard')}</small></button>
