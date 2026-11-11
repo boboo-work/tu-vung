@@ -11,7 +11,7 @@ const LIVES = 3;
 const KEY = 'tu-vung-game';
 
 // ---- Nhân vật & chướng ngại vật (tự vẽ) ----
-const HEROES = {
+export const HEROES = {
   mochi: {
     name: 'Mochi',
     svg: `<svg viewBox="0 0 64 64" aria-hidden="true">
@@ -45,10 +45,10 @@ const OBSTACLES = [
 ];
 
 // ---- Lưu kỷ lục & nhân vật đã chọn (theo máy) ----
-function loadPrefs() {
+export function loadPrefs() {
   try { return { best: 0, hero: 'mochi', ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch { return { best: 0, hero: 'mochi' }; }
 }
-function savePrefs(patch) {
+export function savePrefs(patch) {
   const p = { ...loadPrefs(), ...patch };
   try { localStorage.setItem(KEY, JSON.stringify(p)); } catch {}
   return p;
