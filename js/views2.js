@@ -1,6 +1,6 @@
 // Các màn hình: Statistics, Cài đặt (mục tiêu, giao diện, dữ liệu, AI), Trợ lý AI.
 import { S, allWords, summary, series, saveSettings, deckName, wipeAll } from './store.js';
-import { esc, toast, pickFile, fmtDate, speak, canSpeak, fold } from './util.js';
+import { esc, toast, pickFile, fmtDate, speak, canSpeak, fold, englishVoices, onVoices } from './util.js';
 import { isNew, isMastered } from './srs.js';
 import { icon, on, go, rerender, navBar, confirmSheet, promptSheet, richText } from './ui.js';
 import { importFile, exportCSV, exportBackup, restoreBackup, downloadTemplate, loadSeed } from './io.js';
@@ -87,6 +87,7 @@ export function settingsView() {
   const stepper = (key, val) => `<div class="stepper"><button data-act="step" data-key="${key}" data-d="-5" aria-label="Giảm">−</button><b>${val}</b><button data-act="step" data-key="${key}" data-d="5" aria-label="Tăng">+</button></div>`;
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
   const ready = aiReady(s.ai);
+  const voiceList = englishVoices(s.voice);
   return `<div class="page">${navBar('Cài đặt')}
     <h2 style="margin-top:6px">Mục tiêu mỗi ngày</h2>
     <div class="card">
@@ -97,8 +98,11 @@ export function settingsView() {
     <div class="card">
       <div class="setrow"><b>Chế độ</b>${seg('theme', s.theme, [['auto', 'Tự động'], ['light', 'Sáng'], ['dark', 'Tối']])}</div>
       <div class="setrow"><b>Giọng đọc</b>${seg('voice', s.voice, [['en-US', 'Anh-Mỹ'], ['en-GB', 'Anh-Anh']])}</div>
+      <div class="setrow"><div style="min-width:0"><b>Giọng</b><small>${voiceList.length ? `${voiceList.length} giọng trên máy này` : 'Chưa tải được danh sách giọng'}</small></div>
+        <select class="input" style="max-width:190px" data-change="voice-name" aria-label="Giọng đọc"><option value="">Tự động (tốt nhất)</option>${voiceList.map((v) => `<option value="${esc(v.name)}" ${v.name === s.voiceName ? 'selected' : ''}>${esc(v.name)}</option>`).join('')}</select></div>
       <div class="setrow"><b>Tốc độ đọc</b>${seg('rate', s.rate, [[0.75, 'Chậm'], [0.95, 'Vừa'], [1.1, 'Nhanh']])}</div>
       <div class="setrow"><div><b>Nghe thử</b>${canSpeak() ? '' : '<small>Thiết bị này không hỗ trợ phát âm</small>'}</div><button class="speakbtn" data-act="test-voice" aria-label="Nghe thử">${icon('speaker')}</button></div>
+      <p class="small faint" style="margin-top:10px">Muốn giọng tự nhiên hơn: mở Cài đặt của iPhone → Trợ năng → Nội dung được đọc → Giọng nói → Tiếng Anh, tải một giọng “Nâng cao” hoặc “Cao cấp” (ví dụ Ava, Zoe, Daniel), rồi quay lại đây chọn giọng đó.</p>
     </div>
     <h2>Dữ liệu</h2>
     <div class="card stack">
@@ -140,11 +144,14 @@ on('step', async (el) => {
 on('set', async (el) => {
   const key = el.dataset.key;
   const v = key === 'rate' ? Number(el.dataset.value) : el.dataset.value;
-  await saveSettings({ [key]: v });
+  await saveSettings(key === 'voice' ? { voice: v, voiceName: '' } : { [key]: v });
   if (key === 'theme') applyTheme();
   rerender();
 });
-on('test-voice', () => speak('Practice makes perfect.', { lang: S.settings.voice, rate: S.settings.rate }));
+on('test-voice', () => speak('Practice makes perfect. This is how your words will sound.', { lang: S.settings.voice, rate: S.settings.rate, name: S.settings.voiceName }));
+on('voice-name', async (el) => { await saveSettings({ voiceName: el.value }); speak('Practice makes perfect.', { lang: S.settings.voice, rate: S.settings.rate, name: el.value }); });
+// Danh sách giọng thường về trễ sau khi mở app → vẽ lại trang Cài đặt khi có.
+onVoices(() => { if (location.hash === '#/settings' && !document.activeElement?.matches('input, select, textarea')) rerender(); });
 on('backup', async () => { if (await exportBackup()) { toast('Đã tạo file sao lưu'); rerender(); } });
 on('restore', async () => {
   const file = await pickFile('.json,application/json');

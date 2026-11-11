@@ -78,24 +78,57 @@ export function toast(msg, kind = '') {
 // ---- Phát âm (Web Speech API, chạy offline trên iOS) ----
 export const canSpeak = () => 'speechSynthesis' in window;
 let voices = [];
+const voiceListeners = [];
+export const onVoices = (fn) => voiceListeners.push(fn);
 if (canSpeak()) {
-  const load = () => (voices = speechSynthesis.getVoices());
-  load();
+  const load = () => { voices = speechSynthesis.getVoices(); voiceListeners.forEach((fn) => fn()); };
+  voices = speechSynthesis.getVoices();
   speechSynthesis.addEventListener?.('voiceschanged', load);
 }
-export function speak(text, { lang = 'en-US', rate = 0.95 } = {}) {
+// Giọng tự nhiên của Apple/Google. iOS còn liệt kê nhiều giọng "robot" (Eloquence, giọng vui) dưới cùng mã en-US —
+// chọn nhầm các giọng đó là nguyên nhân tiếng đọc bị khựng, máy móc.
+const GOOD = ['samantha', 'ava', 'allison', 'evan', 'nathan', 'susan', 'zoe', 'tom', 'joelle', 'noelle', 'nicky', 'aaron', 'alex',
+  'daniel', 'kate', 'serena', 'oliver', 'stephanie', 'jamie', 'arthur', 'martha', 'google us english', 'google uk english'];
+const ROBOT = ['eddy', 'flo', 'grandma', 'grandpa', 'reed', 'rocko', 'sandy', 'shelley', 'albert', 'bad news', 'bahh', 'bells', 'boing', 'bubbles',
+  'cellos', 'good news', 'jester', 'organ', 'superstar', 'trinoids', 'whisper', 'wobble', 'zarvox', 'junior', 'ralph', 'fred', 'kathy', 'deranged', 'hysterical', 'pipe organ'];
+function voiceScore(v) {
+  const n = (v.name || '').toLowerCase(), uri = (v.voiceURI || '').toLowerCase();
+  let s = 0;
+  if (ROBOT.some((r) => n.startsWith(r))) s -= 20;
+  if (GOOD.some((g) => n.startsWith(g))) s += 5;
+  if (n.includes('premium') || uri.includes('premium')) s += 4;
+  else if (n.includes('enhanced') || uri.includes('enhanced')) s += 3;
+  if (n.includes('siri')) s += 3;
+  if (uri.includes('compact')) s -= 1;
+  if (v.localService) s += 1; // chạy được khi offline
+  return s;
+}
+const sameLang = (v, lang) => (v.lang || '').replace('_', '-').toLowerCase() === lang.toLowerCase();
+/** Các giọng tiếng Anh đúng chất giọng đã chọn, tốt nhất đứng đầu. */
+export function englishVoices(lang = 'en-US') {
+  let list = voices.filter((v) => sameLang(v, lang));
+  if (!list.length) list = voices.filter((v) => (v.lang || '').toLowerCase().startsWith('en'));
+  const natural = list.filter((v) => voiceScore(v) > -10); // ẩn các giọng robot nếu máy có giọng tự nhiên
+  return (natural.length ? natural : list).slice().sort((a, b) => voiceScore(b) - voiceScore(a));
+}
+export function speak(text, { lang = 'en-US', rate = 0.95, name = '' } = {}) {
   if (!canSpeak()) {
     toast('Thiết bị này không hỗ trợ phát âm');
     return false;
   }
   if (!text) return false;
-  speechSynthesis.cancel();
+  if (!voices.length) voices = speechSynthesis.getVoices();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = lang;
   u.rate = rate;
-  const v = voices.find((x) => x.lang === lang) || voices.find((x) => x.lang?.replace('_', '-').startsWith(lang.slice(0, 2)));
-  if (v) u.voice = v;
-  speechSynthesis.speak(u);
+  const list = englishVoices(lang);
+  const v = (name && list.find((x) => x.name === name)) || list[0];
+  if (v) { u.voice = v; u.lang = v.lang.replace('_', '-'); }
+  // Trên iOS, gọi cancel() rồi speak() ngay lập tức làm tiếng bị cắt/giật → chỉ cancel khi đang đọc, và chờ một nhịp.
+  if (speechSynthesis.speaking || speechSynthesis.pending) {
+    speechSynthesis.cancel();
+    setTimeout(() => speechSynthesis.speak(u), 80);
+  } else speechSynthesis.speak(u);
   return true;
 }
 

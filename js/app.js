@@ -27,12 +27,18 @@ function render(resetScroll = false) {
   const route = routes[name] ? name : 'home';
   const changed = location.hash !== lastHash;
   const scroll = view.scrollTop;
+  const cardScroll = view.querySelector('.ses-body')?.scrollTop ?? 0;
   const out = routes[route](arg ? decodeURIComponent(arg) : undefined);
   const html = typeof out === 'string' ? out : out.html;
   document.body.classList.toggle('no-tabs', !TABS.includes(route));
   view.classList.toggle('enter', changed);
   view.innerHTML = html;
   view.scrollTop = changed || resetScroll ? 0 : scroll;
+  const body = view.querySelector('.ses-body');
+  if (body) {
+    if (!changed && !resetScroll) body.scrollTop = cardScroll;
+    body.querySelector('.flash.back')?.classList.toggle('fit', body.scrollHeight <= body.clientHeight + 2);
+  }
   if (changed) countUp(view);
   lastHash = location.hash;
   renderTabs(route);

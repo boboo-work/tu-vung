@@ -17,7 +17,7 @@ export const MODES = [
 ];
 const modeOf = (id) => MODES.find((m) => m.id === id);
 const isFlash = (m) => m === 'en-vi' || m === 'vi-en';
-const voice = () => ({ lang: S.settings.voice, rate: S.settings.rate });
+const voice = () => ({ lang: S.settings.voice, rate: S.settings.rate, name: S.settings.voiceName });
 
 let ses = null;
 export const hasSession = () => !!ses;
@@ -144,7 +144,7 @@ async function rate(rating) {
       const x = rating === 'again' ? -1 : rating === 'easy' ? 1 : 0;
       el.classList.add('still');
       el.style.transition = 'transform .2s ease-in, opacity .2s ease-in';
-      el.style.transform = x ? `translateX(${x * 120}%) rotate(${x * 14}deg)` : 'translateY(-36px) scale(.96)';
+      el.style.transform = x ? `translateX(${x * 120}%) rotate(${x * 14}deg)` : 'translateY(-70%) scale(.94)';
       el.style.opacity = '0';
       await wait(190);
     }
@@ -154,27 +154,36 @@ async function rate(rating) {
   } finally { busy = false; }
 }
 
-// Vuốt thẻ ở mặt đáp án: trái = Quên, phải = Dễ.
+// Vuốt thẻ ở mặt đáp án: trái = Quên, phải = Dễ, lên = Khó (vuốt lên chỉ bật khi thẻ không cần cuộn).
 let drag = null;
 let suppressClick = false;
 document.addEventListener('pointerdown', (e) => {
   const el = e.target.closest?.('.flash.back');
   if (!el || busy || e.target.closest('button') || (e.pointerType === 'mouse' && e.button !== 0)) return;
-  drag = { el, x: e.clientX, y: e.clientY, id: e.pointerId, on: false, dx: 0 };
+  drag = { el, x: e.clientX, y: e.clientY, id: e.pointerId, on: false, dx: 0, dy: 0, axis: 'x' };
 });
 document.addEventListener('pointermove', (e) => {
   if (!drag || e.pointerId !== drag.id) return;
   const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
   if (!drag.on) {
-    if (Math.abs(dx) < 12 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+    const horiz = Math.abs(dx) >= 12 && Math.abs(dx) >= Math.abs(dy) * 1.2;
+    const up = !horiz && dy <= -12 && Math.abs(dy) >= Math.abs(dx) * 1.2 && drag.el.classList.contains('fit');
+    if (!horiz && !up) return;
     drag.on = true;
+    drag.axis = up ? 'y' : 'x';
     if (ses?.step) ses.step.still = true;
     drag.el.classList.add('still', 'dragging');
     try { drag.el.setPointerCapture(e.pointerId); } catch {}
   }
-  drag.dx = dx;
   const el = drag.el;
   el.style.transition = 'none';
+  if (drag.axis === 'y') {
+    drag.dy = Math.min(0, dy);
+    el.style.transform = `translateY(${drag.dy}px) scale(${1 - Math.min(0.06, -drag.dy / 2500)})`;
+    el.style.setProperty('--u', Math.max(0, Math.min(1, -drag.dy / 80)));
+    return;
+  }
+  drag.dx = dx;
   el.style.transform = `translateX(${dx}px) rotate(${dx / 18}deg)`;
   el.style.setProperty('--l', Math.max(0, Math.min(1, -dx / 90)));
   el.style.setProperty('--r', Math.max(0, Math.min(1, dx / 90)));
@@ -187,11 +196,15 @@ function endDrag(e) {
   suppressClick = true;
   setTimeout(() => { suppressClick = false; }, 350);
   d.el.classList.remove('dragging');
-  if (e.type === 'pointerup' && Math.abs(d.dx) > 90 && d.el.isConnected) return rate(d.dx < 0 ? 'again' : 'easy');
+  if (e.type === 'pointerup' && d.el.isConnected) {
+    if (d.axis === 'y' && d.dy < -80) return rate('hard');
+    if (d.axis === 'x' && Math.abs(d.dx) > 90) return rate(d.dx < 0 ? 'again' : 'easy');
+  }
   d.el.style.transition = 'transform .22s cubic-bezier(.2,.8,.2,1)';
   d.el.style.transform = '';
   d.el.style.setProperty('--l', 0);
   d.el.style.setProperty('--r', 0);
+  d.el.style.setProperty('--u', 0);
 }
 document.addEventListener('pointerup', endDrag);
 document.addEventListener('pointercancel', endDrag);
@@ -325,8 +338,8 @@ function flashView(w) {
   const hint = (r) => (affects ? fmtInterval(preview(w.srs, r)) : r === 'again' && !isNew(w) ? 'hôm nay' : 'giữ lịch');
   return {
     body: `<div class="flash back ${st.more || st.still ? 'still' : ''}" data-act="ses-flip" role="button" aria-label="Lật lại mặt trước">
-      <span class="stamp l" aria-hidden="true">Quên</span><span class="stamp r" aria-hidden="true">Dễ</span>
-      ${backFace(w, st.more)}<p class="hint">Chạm để lật lại · vuốt trái: Quên · vuốt phải: Dễ</p></div>`,
+      <span class="stamp l" aria-hidden="true">Quên</span><span class="stamp r" aria-hidden="true">Dễ</span><span class="stamp u" aria-hidden="true">Khó</span>
+      ${backFace(w, st.more)}<p class="hint">Chạm để lật lại · vuốt ← Quên · ↑ Khó · → Dễ</p></div>`,
     actions: `<div class="rate">
       <button class="again" data-act="ses-rate" data-rating="again">Quên<small>${affects ? 'ôn lại ngay' : hint('again')}</small></button>
       <button class="hard" data-act="ses-rate" data-rating="hard">Khó<small>${hint('hard')}</small></button>

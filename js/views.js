@@ -7,7 +7,7 @@ import { MODES, startSession, practicePool } from './study.js';
 import { loadSeed } from './io.js';
 
 const ui = { learnDeck: '', vocab: { q: '', filter: 'all', limit: 60 }, form: null };
-const voice = () => ({ lang: S.settings.voice, rate: S.settings.rate });
+const voice = () => ({ lang: S.settings.voice, rate: S.settings.rate, name: S.settings.voiceName });
 // Bộ lọc có thể trỏ tới chủ đề đã bị xoá (xoá chủ đề, khôi phục, xoá hết dữ liệu) → đưa về "tất cả".
 function checkFilters() {
   const has = (id) => S.decks.some((d) => d.id === id);

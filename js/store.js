@@ -65,6 +65,7 @@ const DEFAULT_SETTINGS = {
   theme: 'auto', // auto | light | dark
   voice: 'en-US', // en-US | en-GB
   rate: 0.95,
+  voiceName: '', // '' = tự chọn giọng tốt nhất trên máy
   ai: { provider: 'anthropic', apiKey: '', model: 'claude-opus-5-5', endpoint: '' },
   lastBackup: null,
 };
@@ -383,6 +384,7 @@ function cleanBackup(data) {
     theme: ['auto', 'light', 'dark'].includes(st.theme) ? st.theme : 'auto',
     voice: ['en-US', 'en-GB'].includes(st.voice) ? st.voice : 'en-US',
     rate: [0.75, 0.95, 1.1].includes(Number(st.rate)) ? Number(st.rate) : 0.95,
+    voiceName: str(st.voiceName).slice(0, 80),
     lastBackup: DATE_RE.test(str(st.lastBackup)) ? st.lastBackup : null,
   };
   return { decks, words, days, settings };
