@@ -283,11 +283,9 @@ select.input, .form select { background-image: url("data:image/svg+xml,%3Csvg xm
 .ses-actions { flex: none; padding: 10px 0 calc(var(--safe-b) + 14px); }
 .mode-label { font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-3); text-align: center; margin-bottom: 0; }
 
-.flash { flex: 1 0 auto; background: var(--surface); border-radius: 26px; box-shadow: var(--shadow); padding: 26px 22px; display: flex; flex-direction: column; min-height: 340px; cursor: pointer; position: relative; animation: cardin .28s ease both; -webkit-user-select: none; user-select: none; }
+.flash { flex: 1 0 auto; background: var(--surface); border-radius: 26px; box-shadow: var(--shadow); padding: 26px 22px; display: flex; flex-direction: column; min-height: 340px; cursor: pointer; position: relative; touch-action: pan-y; animation: cardin .28s ease both; -webkit-user-select: none; user-select: none; }
 @keyframes cardin { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: none; } }
-.flash.back { animation: flipin-f .2s ease-out both; touch-action: pan-y; }
-/* Thẻ nằm gọn trong màn hình (không cần cuộn) → cho phép vuốt lên để chấm Khó. */
-.flash.back.fit { touch-action: none; }
+.flash.back { animation: flipin-f .2s ease-out both; }
 .flash.turn { animation: flipin-b .2s ease-out both; }
 .flash.out-f { animation: flipout-f .15s ease-in both; }
 .flash.out-b { animation: flipout-b .15s ease-in both; }
@@ -304,7 +302,7 @@ select.input, .form select { background-image: url("data:image/svg+xml,%3Csvg xm
 .cheer { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--accent-soft); color: var(--accent); border-radius: 14px; padding: 10px 14px; margin-top: 12px; font-weight: 650; animation: pop .45s .15s both; }
 .empty .art.pop { animation: pop .5s both; }
 .flash.back .hint { margin-top: auto; padding-top: 18px; }
-.flash.back.still { animation: none; }
+.flash.still, .flash.back.still { animation: none; }
 .flash .front { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; }
 .flash .front .headword { font-size: 38px; }
 .flash .front .vi { font-size: 26px; font-weight: 650; line-height: 1.25; }
