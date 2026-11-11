@@ -1,12 +1,12 @@
 // Mini game "Bắn Từ": khung chữ của từ rơi từ trên trời xuống, nghĩa tiếng Việt đứng yên phía trên.
-// Gõ đúng → Mochi bắn trúng, hiện "Correct!". Gõ sai một phím hoặc để rơi chạm đất → Bolt đập búa vỡ,
+// Gõ đúng → Mochi bắn trúng, hiện "Correct!". Gõ nhầm được xoá và sửa; để rơi chạm đất → Bolt đập búa vỡ,
 // hiện đáp án và từ đó quay lại sau vài lượt. Không có mạng; mỗi ván tối đa 15 từ, xong khi bắn trúng hết.
 import { S, recordAnswer } from './store.js';
 import { esc, norm, shuffle, speak } from './util.js';
 import { isDue } from './srs.js';
 import { icon, on, back, rerender, navBar } from './ui.js';
 import { confetti } from './fx.js';
-import { HEROES, GAME_MIN, gamePool, loadPrefs, savePrefs } from './game.js';
+import { HEROES, GAME_MIN, gamePool, loadPrefs, savePrefs, slots } from './game.js';
 
 const ROUND = 15;
 const HAMMER = `<svg viewBox="0 0 40 56" aria-hidden="true"><rect x="17" y="14" width="6" height="40" rx="3" fill="#B7793A"/><rect x="3" y="2" width="34" height="18" rx="5" fill="#6C7280"/><rect x="3" y="2" width="9" height="18" rx="4" fill="#8E95A3"/></svg>`;
@@ -18,16 +18,6 @@ const cur = () => S.words.get(D.queue[0]);
 // Thời gian rơi: khoảng 10–15 giây, từ dài được lâu hơn.
 const timeFor = (w) => (8 + 0.6 * w.word.length) * 1000;
 const fmtTime = (ms) => { const s = Math.round(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
-
-function slots(word, typed, reveal) {
-  return [...word].map((ch, i) => (ch === ' ' ? '<i class="sp"></i>' : `<i>${i < typed || reveal ? esc(ch) : ''}</i>`)).join('');
-}
-const prefixLen = (word, value) => {
-  const a = word.toLowerCase(), b = value.toLowerCase();
-  let n = 0;
-  while (n < a.length && n < b.length && a[n] === b[n]) n++;
-  return n;
-};
 
 // ---- Vòng lặp ----
 function fallRange() {
@@ -52,7 +42,7 @@ function frame(ts) {
       placeTile(D.t / D.T);
       const bar = $('.d-time i');
       if (bar) bar.style.transform = `scaleX(${Math.max(0, 1 - D.t / D.T)})`;
-      if (D.t >= D.T) wrong('time');
+      if (D.t >= D.T) wrong();
     }
   }
   D.raf = requestAnimationFrame(frame);
@@ -68,14 +58,14 @@ function showWord() {
   const tile = $('.d-tile');
   tile.className = 'd-tile';
   tile.style.transition = 'none';
-  tile.innerHTML = `<div class="g-slots">${slots(w.word, 0, false)}</div>`;
+  tile.innerHTML = `<div class="g-slots">${slots(w.word)}</div>`;
   $('.d-badge').className = 'd-badge';
   $('.d-answer').hidden = true;
   $('.d-count').textContent = `${D.total - D.queue.length}/${D.total}`;
   $('.d-bolt').classList.remove('swing');
   placeTile(0);
   const input = $('.d-input');
-  if (input) input.value = '';
+  if (input) { input.value = ''; input.classList.remove('bad'); }
 }
 
 function after(ms, fn) {
@@ -88,7 +78,8 @@ function correct() {
   D.mode = 'hit';
   recordAnswer(w.id, 'good', 'practice').catch(console.error);
   const tile = $('.d-tile'), stage = $('.d-stage'), gun = $('.d-mochi');
-  tile.querySelector('.g-slots').innerHTML = slots(w.word, w.word.length, true);
+  tile.querySelector('.g-slots').innerHTML = slots(w.word, w.word);
+  speak(w.word, voice());
   // Viên đạn bay từ Mochi tới khung chữ.
   const s = stage.getBoundingClientRect(), a = gun.getBoundingClientRect(), b = tile.getBoundingClientRect();
   const shot = document.createElement('i');
@@ -113,32 +104,29 @@ function correct() {
   after(950, showWord);
 }
 
-function wrong(reason) {
+function wrong() {
   const w = cur();
   D.mode = 'smash';
   if (!D.missed.includes(w.id)) D.missed.push(w.id);
   recordAnswer(w.id, 'again', 'practice').catch(console.error);
   const tile = $('.d-tile');
-  // Gõ sai giữa chừng: khung chữ rơi thẳng xuống đất rồi mới bị đập.
-  const drop = reason === 'time' ? 0 : 220;
-  if (drop) { tile.style.transition = `transform ${drop}ms ease-in`; placeTile(1); }
   const input = $('.d-input');
-  if (input) input.value = '';
-  after(drop, () => {
+  if (input) { input.value = ''; input.classList.remove('bad'); }
+  {
     $('.d-bolt').classList.add('swing');
     after(170, () => {
       tile.classList.add('smash');
       tile.insertAdjacentHTML('beforeend', Array.from({ length: 7 }, (_, i) => `<b class="shard" style="--x:${(i - 3) * 22}px;--y:${-18 - (i % 3) * 16}px;--r:${(i - 3) * 50}deg"></b>`).join(''));
       const ans = $('.d-answer');
-      ans.innerHTML = `<small>${reason === 'time' ? 'Hết giờ' : 'Gõ sai'} · đáp án</small><b class="en">${esc(w.word)}</b>${w.ipa ? `<span class="ipa">${esc(w.ipa)}</span>` : ''}`;
+      ans.innerHTML = `<small>Hết giờ · đáp án</small><b class="en">${esc(w.word)}</b>${w.ipa ? `<span class="ipa">${esc(w.ipa)}</span>` : ''}`;
       ans.hidden = false;
       speak(w.word, voice());
     });
-  });
+  }
   // Từ sai quay lại sau vài lượt.
   const id = D.queue.shift();
   D.queue.splice(Math.min(D.queue.length, 3), 0, id);
-  after(drop + 2600, showWord);
+  after(2600, showWord);
 }
 
 function finish() {
@@ -153,14 +141,14 @@ function finish() {
   confetti({ count: D.newBest || !D.missed.length ? 150 : 70 });
 }
 
-on('drop-type', (el, e) => {
+on('drop-type', (el) => {
   if (!D || D.phase !== 'play') return;
   if (D.mode !== 'fall') { el.value = ''; return; }
-  if (e?.isComposing) return;
   const w = cur();
   const target = norm(w.word), v = norm(el.value);
-  if (v && !target.startsWith(v)) return wrong('typo'); // sai một phím là sai luôn
-  $('.d-tile .g-slots').innerHTML = slots(w.word, prefixLen(w.word, el.value), false);
+  // Gõ nhầm được xoá và sửa; chỉ hết giờ mới tính là sai.
+  el.classList.toggle('bad', !!v && !target.startsWith(v));
+  $('.d-tile .g-slots').innerHTML = slots(w.word, el.value);
   if (v === target) { el.value = ''; correct(); }
 });
 
@@ -192,7 +180,6 @@ export function dropView() {
         <div class="g-ground"></div>
       </div>
       <input class="answer-input g-input d-input" data-in="drop-type" type="text" inputmode="text" lang="en" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-label="Gõ từ tiếng Anh">
-      <p class="g-note" style="text-align:center">Gõ sai một phím là từ bị đập vỡ</p>
     </div>`;
   }
   if (D && D.phase === 'over') {
@@ -217,11 +204,11 @@ export function dropView() {
       <ul class="g-rules">
         <li>Nghĩa tiếng Việt hiện ở trên; khung chữ của từ rơi dần xuống trong khoảng 10–15 giây.</li>
         <li>Gõ đúng từ tiếng Anh: Mochi bắn trúng, hiện “Correct!”.</li>
-        <li>Gõ sai một phím (không được sửa) hoặc để rơi chạm đất: Bolt đập vỡ, hiện đáp án, từ đó quay lại sau vài lượt.</li>
+        <li>Chữ bạn gõ hiện ngay trên khung đang rơi (đúng màu xanh, sai màu đỏ). Gõ nhầm cứ xoá và sửa.</li>
+        <li>Để khung rơi chạm đất: Bolt đập vỡ, hiện đáp án, từ đó quay lại sau vài lượt.</li>
         <li>Không có mạng. Mỗi ván ${ROUND} từ đã học, xong khi bắn trúng hết.</li>
       </ul>
       <p class="muted small" style="margin-top:10px">${best ? `Kỷ lục: <b>${best.first}/${ROUND}</b> đúng ngay lần đầu · ${fmtTime(best.ms)}` : 'Chưa có kỷ lục'} · ${n} từ đã học</p>
-      <p class="muted small" style="margin-top:6px">Mẹo: chuyển sang bàn phím tiếng Anh, vì bộ gõ tiếng Việt có thể tự đổi chữ và bị tính là sai.</p>
     </div>
     ${n >= GAME_MIN ? `<button class="btn" style="margin-top:18px" data-act="drop-start">Bắt đầu</button>`
       : `<p class="small center" style="margin-top:18px;color:var(--amber);font-weight:600">Cần học ít nhất ${GAME_MIN} từ để chơi (hiện có ${n}).</p>

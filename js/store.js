@@ -66,6 +66,7 @@ const DEFAULT_SETTINGS = {
   voice: 'en-US', // en-US | en-GB
   rate: 0.95,
   voiceName: '', // '' = tự chọn giọng tốt nhất trên máy
+  autoSpeak: true, // tự phát âm khi lật thẻ sang mặt đáp án
   ai: { provider: 'anthropic', apiKey: '', model: 'claude-opus-5-5', endpoint: '' },
   lastBackup: null,
 };
@@ -385,6 +386,7 @@ function cleanBackup(data) {
     voice: ['en-US', 'en-GB'].includes(st.voice) ? st.voice : 'en-US',
     rate: [0.75, 0.95, 1.1].includes(Number(st.rate)) ? Number(st.rate) : 0.95,
     voiceName: str(st.voiceName).slice(0, 80),
+    autoSpeak: st.autoSpeak !== false,
     lastBackup: DATE_RE.test(str(st.lastBackup)) ? st.lastBackup : null,
   };
   return { decks, words, days, settings };
