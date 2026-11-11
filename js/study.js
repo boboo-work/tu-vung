@@ -144,7 +144,7 @@ async function rate(rating) {
       const x = rating === 'again' ? -1 : rating === 'easy' ? 1 : 0;
       el.classList.add('still');
       el.style.transition = 'transform .2s ease-in, opacity .2s ease-in';
-      el.style.transform = x ? `translateX(${x * 120}%) rotate(${x * 14}deg)` : 'translateY(-70%) scale(.94)';
+      el.style.transform = x ? `translateX(${x * 120}%) rotate(${x * 14}deg)` : 'translateY(70%) scale(.94)';
       el.style.opacity = '0';
       await wait(190);
     }
@@ -154,23 +154,33 @@ async function rate(rating) {
   } finally { busy = false; }
 }
 
-// Vuốt thẻ ở mặt đáp án: trái = Quên, phải = Dễ, lên = Khó (vuốt lên chỉ bật khi thẻ không cần cuộn).
+// Vuốt thẻ (cả mặt trước lẫn mặt đáp án): trái = Quên, phải = Dễ, xuống = Khó.
+// Vuốt xuống chỉ nhận khi nội dung đang ở đầu trang, nên thẻ dài vẫn cuộn đọc được bình thường.
 let drag = null;
 let suppressClick = false;
+const SLOP = 10;
+// Hướng của cử chỉ: 'x' (chấm Quên/Dễ), 'down' (chấm Khó), 'scroll' (để trình duyệt cuộn), null = chưa rõ.
+function gestureOf(dx, dy, atTop) {
+  const ax = Math.abs(dx), ay = Math.abs(dy);
+  if (Math.max(ax, ay) < SLOP) return null;
+  if (ax >= ay) return 'x';
+  return dy > 0 && atTop ? 'down' : 'scroll';
+}
 document.addEventListener('pointerdown', (e) => {
-  const el = e.target.closest?.('.flash.back');
+  const el = e.target.closest?.('.flash');
   if (!el || busy || e.target.closest('button') || (e.pointerType === 'mouse' && e.button !== 0)) return;
-  drag = { el, x: e.clientX, y: e.clientY, id: e.pointerId, on: false, dx: 0, dy: 0, axis: 'x' };
+  const sc = el.closest('.ses-body');
+  drag = { el, x: e.clientX, y: e.clientY, id: e.pointerId, on: false, dx: 0, dy: 0, axis: null, atTop: !sc || sc.scrollTop <= 0 };
 });
 document.addEventListener('pointermove', (e) => {
   if (!drag || e.pointerId !== drag.id) return;
   const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
   if (!drag.on) {
-    const horiz = Math.abs(dx) >= 12 && Math.abs(dx) >= Math.abs(dy) * 1.2;
-    const up = !horiz && dy <= -12 && Math.abs(dy) >= Math.abs(dx) * 1.2 && drag.el.classList.contains('fit');
-    if (!horiz && !up) return;
+    const g = gestureOf(dx, dy, drag.atTop);
+    if (!g) return;
+    if (g === 'scroll') { drag = null; return; }
     drag.on = true;
-    drag.axis = up ? 'y' : 'x';
+    drag.axis = g === 'down' ? 'y' : 'x';
     if (ses?.step) ses.step.still = true;
     drag.el.classList.add('still', 'dragging');
     try { drag.el.setPointerCapture(e.pointerId); } catch {}
@@ -178,9 +188,9 @@ document.addEventListener('pointermove', (e) => {
   const el = drag.el;
   el.style.transition = 'none';
   if (drag.axis === 'y') {
-    drag.dy = Math.min(0, dy);
-    el.style.transform = `translateY(${drag.dy}px) scale(${1 - Math.min(0.06, -drag.dy / 2500)})`;
-    el.style.setProperty('--u', Math.max(0, Math.min(1, -drag.dy / 80)));
+    drag.dy = Math.max(0, dy);
+    el.style.transform = `translateY(${drag.dy}px) scale(${1 - Math.min(0.06, drag.dy / 2500)})`;
+    el.style.setProperty('--u', Math.max(0, Math.min(1, drag.dy / 80)));
     return;
   }
   drag.dx = dx;
@@ -188,6 +198,17 @@ document.addEventListener('pointermove', (e) => {
   el.style.setProperty('--l', Math.max(0, Math.min(1, -dx / 90)));
   el.style.setProperty('--r', Math.max(0, Math.min(1, dx / 90)));
 });
+// Chặn trình duyệt cuộn / nảy trang (rubber-band trên iOS) trong lúc đang vuốt thẻ — đây là nguyên nhân màn hình bị rung.
+document.addEventListener('touchmove', (e) => {
+  if (!drag || !e.cancelable || e.touches.length !== 1) return;
+  if (drag.on) return e.preventDefault();
+  const t = e.touches[0];
+  const dx = t.clientX - drag.x, dy = t.clientY - drag.y;
+  const ax = Math.abs(dx), ay = Math.abs(dy);
+  // Chưa đủ xa để biết hướng: tạm giữ trang đứng yên, trừ khi rõ ràng là đang cuộn lên/xuống trong thẻ dài.
+  const scrolling = ay > ax && !(dy > 0 && drag.atTop);
+  if (!scrolling) e.preventDefault();
+}, { passive: false });
 function endDrag(e) {
   if (!drag || e.pointerId !== drag.id) return;
   const d = drag;
@@ -197,7 +218,7 @@ function endDrag(e) {
   setTimeout(() => { suppressClick = false; }, 350);
   d.el.classList.remove('dragging');
   if (e.type === 'pointerup' && d.el.isConnected) {
-    if (d.axis === 'y' && d.dy < -80) return rate('hard');
+    if (d.axis === 'y' && d.dy > 80) return rate('hard');
     if (d.axis === 'x' && Math.abs(d.dx) > 90) return rate(d.dx < 0 ? 'again' : 'easy');
   }
   d.el.style.transition = 'transform .22s cubic-bezier(.2,.8,.2,1)';
@@ -328,9 +349,10 @@ function flashView(w) {
       ? `<div class="headword">${esc(w.word)}</div>${w.pos ? `<span class="tag">${esc(w.pos)}</span>` : ''}`
       : `<div class="vi">${esc(w.meaning || '(chưa có nghĩa)')}</div>${w.pos ? `<span class="tag">${esc(w.pos)}</span>` : ''}`;
     return {
-      body: `<div class="flash ${st.seen ? 'turn' : ''}" data-act="ses-flip" role="button" aria-label="Lật thẻ">
+      body: `<div class="flash ${st.still ? 'still' : st.seen ? 'turn' : ''}" data-act="ses-flip" role="button" aria-label="Lật thẻ">
+        <span class="stamp l" aria-hidden="true">Quên</span><span class="stamp r" aria-hidden="true">Dễ</span><span class="stamp u" aria-hidden="true">Khó</span>
         ${ses.mode === 'en-vi' ? `<div class="speak">${speakBtn(w.word)}</div>` : ''}
-        <div class="front">${front}</div><p class="hint">Chạm vào thẻ để xem đáp án</p></div>`,
+        <div class="front">${front}</div><p class="hint">Chạm để xem đáp án<br>Đã thuộc? Vuốt ← Quên · ↓ Khó · → Dễ</p></div>`,
       actions: `<button class="btn ghost" data-act="ses-flip">${st.seen ? 'Xem lại đáp án' : 'Xem đáp án'}</button>`,
     };
   }
@@ -339,7 +361,7 @@ function flashView(w) {
   return {
     body: `<div class="flash back ${st.more || st.still ? 'still' : ''}" data-act="ses-flip" role="button" aria-label="Lật lại mặt trước">
       <span class="stamp l" aria-hidden="true">Quên</span><span class="stamp r" aria-hidden="true">Dễ</span><span class="stamp u" aria-hidden="true">Khó</span>
-      ${backFace(w, st.more)}<p class="hint">Chạm để lật lại · vuốt ← Quên · ↑ Khó · → Dễ</p></div>`,
+      ${backFace(w, st.more)}<p class="hint">Chạm để lật lại · vuốt ← Quên · ↓ Khó · → Dễ</p></div>`,
     actions: `<div class="rate">
       <button class="again" data-act="ses-rate" data-rating="again">Quên<small>${affects ? 'ôn lại ngay' : hint('again')}</small></button>
       <button class="hard" data-act="ses-rate" data-rating="hard">Khó<small>${hint('hard')}</small></button>
