@@ -3,10 +3,12 @@
 // interval (số ngày đến lần ôn kế), reps (số lần nhớ liên tiếp), lapses (số lần quên), due (YYYY-MM-DD).
 //
 // Đánh giá:  again = Quên (q=1) · hard = Khó (q=3) · good = Đúng trong bài tập (q=4) · easy = Dễ (q=5)
+//            known = Đã nhớ (q=5, giãn cách dài hơn Dễ: ít nhất 7 ngày)
 import { addDays, today as todayStr } from './util.js';
 
 export const MASTERED_DAYS = 21; // khoảng cách ôn >= 21 ngày được coi là "đã ghi nhớ"
-const Q = { again: 1, hard: 3, good: 4, easy: 5 };
+const Q = { again: 1, hard: 3, good: 4, easy: 5, known: 5 };
+export const KNOWN_MIN_DAYS = 7;
 
 export const newSrs = () => ({ state: 'new', ease: 2.5, interval: 0, reps: 0, lapses: 0, due: null, last: null });
 
@@ -32,6 +34,8 @@ export function schedule(prev, rating, today = todayStr()) {
     else if (s.reps === 2) iv = q === 3 ? 3 : 6;
     else if (q === 3) iv = Math.max(s.interval + 1, Math.round(s.interval * 1.2));
     else iv = Math.max(s.interval + 1, Math.round(s.interval * s.ease * (q === 5 ? 1.15 : 1)));
+    // Đã nhớ: luôn xa hơn Dễ — tối thiểu 7 ngày, với từ đã ôn lâu thì gấp 1,3 lần khoảng cách của Dễ.
+    if (rating === 'known') iv = Math.max(KNOWN_MIN_DAYS, iv + 1, Math.round(iv * 1.3));
     s.interval = Math.min(iv, 3650);
     s.due = addDays(today, s.interval);
     s.state = 'review';
