@@ -463,6 +463,10 @@ body.sheet-open #sheet { transform: none; }
 .g-slots i { font-style: normal; width: 19px; height: 28px; border-bottom: 2.5px solid var(--neutral-mark); font-family: var(--serif); font-size: 20px; line-height: 26px; text-align: center; color: var(--text-3); }
 .g-slots i.sp { border: 0; width: 10px; }
 .g-slots i.ok { color: var(--green); border-color: var(--green); font-weight: 700; }
+.g-slots i.bad, .d-tile .g-slots i.bad { color: var(--red); border-color: var(--red); font-weight: 700; }
+.g-slots i.sp.bad { width: 14px; border-bottom: 2.5px solid var(--red); }
+.d-tile .g-slots i.ok { color: var(--green); border-color: var(--green); }
+.d-input.bad { border-color: var(--red); }
 .g-note { margin-top: 10px; font-size: 14px; color: var(--text-3); min-height: 21px; }
 .g-note.bad { color: var(--red); font-weight: 650; }
 .g-input.bad { border-color: var(--red); }

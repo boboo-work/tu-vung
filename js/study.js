@@ -239,6 +239,8 @@ document.addEventListener('click', (e) => {
 on('ses-flip', async () => {
   if (busy) return;
   const st = ses.step;
+  // Tự phát âm khi lật sang mặt đáp án (gọi ngay trong lượt chạm để iOS cho phép phát tiếng).
+  if (!st.flipped && S.settings.autoSpeak !== false) speak(cur().word, voice());
   const el = document.querySelector('.flash');
   if (el && motionOK()) {
     busy = true;

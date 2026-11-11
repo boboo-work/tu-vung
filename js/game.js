@@ -78,15 +78,19 @@ function cur() {
 const timeFor = (w) => (3.5 + 0.6 * w.word.length) * Math.max(0.55, 1 - 0.025 * G.score) * 1000;
 
 const $ = (sel) => document.querySelector(sel);
-const prefixLen = (word, value) => {
-  const a = word.toLowerCase(), b = value.toLowerCase();
-  let n = 0;
-  while (n < a.length && n < b.length && a[n] === b[n]) n++;
-  return n;
-};
-function slots(word, typed, reveal) {
-  return [...word].map((ch, i) => (ch === ' ' ? '<i class="sp"></i>'
-    : `<i class="${i < typed ? 'ok' : reveal ? 'show' : ''}">${i < typed || reveal ? esc(ch) : ''}</i>`)).join('');
+// Ô chữ của từ: hiện đúng những gì đang gõ (đúng = xanh, sai = đỏ) để biết đã gõ tới đâu.
+export function slots(word, value = '', reveal = false) {
+  const chars = [...word], typed = [...value];
+  const out = chars.map((ch, i) => {
+    const t = typed[i];
+    if (t === undefined) return ch === ' ' ? '<i class="sp"></i>' : `<i class="${reveal ? 'show' : ''}">${reveal ? esc(ch) : ''}</i>`;
+    const ok = t.toLowerCase() === ch.toLowerCase();
+    if (ch === ' ') return ok ? '<i class="sp"></i>' : `<i class="sp bad">${esc(t)}</i>`;
+    return `<i class="${ok ? 'ok' : 'bad'}">${ok ? esc(ch) : t === ' ' ? '·' : esc(t)}</i>`;
+  });
+  // Gõ dư ký tự so với độ dài của từ.
+  for (const t of typed.slice(chars.length, chars.length + 6)) out.push(`<i class="bad">${t === ' ' ? '·' : esc(t)}</i>`);
+  return out.join('');
 }
 function hearts() {
   return Array.from({ length: LIVES }, (_, i) => `<span class="${i < G.lives ? 'on' : ''}">♥</span>`).join('');
@@ -129,7 +133,7 @@ function showWord() {
   $('.g-meaning').textContent = w.meaning;
   $('.g-pos').textContent = w.pos || '';
   $('.g-pos').hidden = !w.pos;
-  $('.g-slots').innerHTML = slots(w.word, 0, false);
+  $('.g-slots').innerHTML = slots(w.word);
   $('.g-note').innerHTML = 'Gõ từ tiếng Anh để nhảy qua';
   $('.g-note').className = 'g-note';
   const input = $('.g-input');
@@ -146,7 +150,8 @@ function correct() {
   G.score++;
   recordAnswer(w.id, 'good', 'practice').catch(console.error);
   refreshHud();
-  $('.g-slots').innerHTML = slots(w.word, w.word.length, false);
+  $('.g-slots').innerHTML = slots(w.word, w.word);
+  speak(w.word, voice());
   $('.g-hero')?.classList.add('jump');
   const obs = $('.g-obs');
   if (obs) { obs.style.transition = 'transform .5s linear'; obs.style.transform = 'translateX(-90px)'; }
@@ -167,7 +172,7 @@ function miss() {
   if (G.lives <= 0) {
     // Hết mạng: giữ nguyên vị trí để "Chơi tiếp" bắt đầu lại từ chính từ này.
     G.mode = 'dead';
-    $('.g-slots').innerHTML = slots(w.word, 0, true);
+    $('.g-slots').innerHTML = slots(w.word, '', true);
     setTimeout(() => {
       if (!G || G.mode !== 'dead') return;
       const prefs = loadPrefs();
@@ -181,7 +186,7 @@ function miss() {
   }
   const input = $('.g-input');
   if (input) { input.value = ''; input.classList.remove('bad'); }
-  $('.g-slots').innerHTML = slots(w.word, 0, true);
+  $('.g-slots').innerHTML = slots(w.word, '', true);
   $('.g-note').innerHTML = `Trượt! ${w.ipa ? `<span class="ipa">${esc(w.ipa)}</span> · ` : ''}gõ lại để chạy tiếp`;
   $('.g-note').className = 'g-note bad';
 }
@@ -200,7 +205,7 @@ on('game-type', (el) => {
   const w = cur();
   const target = norm(w.word), v = norm(el.value);
   el.classList.toggle('bad', !!v && !target.startsWith(v));
-  $('.g-slots').innerHTML = slots(w.word, prefixLen(w.word, el.value), G.mode === 'retype');
+  $('.g-slots').innerHTML = slots(w.word, el.value, G.mode === 'retype');
   if (v !== target) return;
   el.value = '';
   if (G.mode === 'run') correct(); else resumeAfterMiss();
