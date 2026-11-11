@@ -1,9 +1,12 @@
 // AI Vocabulary Assistant — lớp kết nối.
 // Ứng dụng KHÔNG giả lập AI: nếu chưa cấu hình, askAI() báo lỗi rõ ràng và giao diện hiển thị trạng thái "chưa kết nối".
 //
-// Hai cách kết nối:
+// Các cách kết nối:
 //  1. 'anthropic' — gọi thẳng Claude Messages API từ trình duyệt bằng API key của người dùng (lưu cục bộ trên máy).
-//  2. 'proxy'     — gọi tới backend riêng (khuyến nghị khi mở rộng): POST {system, prompt, model} → {text}.
+//  2. 'gemini'    — Google Gemini qua cổng tương thích OpenAI của Google, dùng API key lấy ở Google AI Studio.
+//  3. 'openai'    — bất kỳ nhà cung cấp nào nhận định dạng "chat completions" (OpenAI, DeepSeek, Groq, OpenRouter…):
+//                   người dùng tự nhập địa chỉ API, key và tên mô hình.
+//  4. 'proxy'     — gọi tới backend riêng (khuyến nghị khi mở rộng): POST {system, prompt, model} → {text}.
 //                   Khi đó API key nằm ở server, không nằm trên điện thoại.
 
 export const AI_MODELS = [
@@ -12,7 +15,22 @@ export const AI_MODELS = [
   ['claude-haiku-5-5', 'Claude Haiku 5.5 (nhanh nhất)'],
 ];
 
-export const aiReady = (ai) => (ai?.provider === 'proxy' ? !!ai.endpoint?.trim() : !!ai?.apiKey?.trim());
+export const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/openai';
+export const GEMINI_MODELS = ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite'];
+
+// Cấu hình gọi kiểu "chat completions" cho hai cách kết nối gemini / openai.
+function chatConfig(ai) {
+  if (ai?.provider === 'gemini') return { name: 'Gemini', base: GEMINI_BASE, key: ai.geminiKey, model: ai.geminiModel };
+  if (ai?.provider === 'openai') return { name: 'API', base: ai.oaBase, key: ai.oaKey, model: ai.oaModel };
+  return null;
+}
+
+export const aiReady = (ai) => {
+  if (ai?.provider === 'proxy') return !!ai.endpoint?.trim();
+  const c = chatConfig(ai);
+  if (c) return !!(c.base?.trim() && c.key?.trim() && c.model?.trim());
+  return !!ai?.apiKey?.trim();
+};
 
 const SYSTEM = `Bạn là trợ lý học từ vựng tiếng Anh cho một người Việt đang luyện IELTS.
 Giải thích bằng tiếng Việt, rõ ràng và ngắn gọn; ví dụ và cụm từ viết bằng tiếng Anh tự nhiên như người bản xứ, kèm nghĩa tiếng Việt khi hữu ích.
@@ -60,6 +78,9 @@ export async function askAI(ai, prompt) {
     return data.text;
   }
 
+  const chat = chatConfig(ai);
+  if (chat) return askChat(chat, prompt);
+
   // Claude Messages API (gọi trực tiếp từ trình duyệt).
   let res;
   try {
@@ -95,4 +116,34 @@ export async function askAI(ai, prompt) {
   const text = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim();
   if (!text) throw new AIError('AI không trả về nội dung.');
   return data.stop_reason === 'max_tokens' ? text + '\n\n(Câu trả lời bị cắt do quá dài.)' : text;
+}
+
+// Định dạng "chat completions" (OpenAI, Gemini qua cổng tương thích, và nhiều nhà cung cấp khác).
+async function askChat({ name, base, key, model }, prompt) {
+  const url = base.trim().replace(/\/+$/, '').replace(/\/chat\/completions$/, '') + '/chat/completions';
+  let res;
+  try {
+    res = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${key.trim()}` },
+      body: JSON.stringify({ model: model.trim(), messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content: prompt }] }),
+    });
+  } catch {
+    throw new AIError(`Không kết nối được tới ${name}. Kiểm tra mạng và địa chỉ API; cũng có thể nhà cung cấp này không cho gọi thẳng từ trình duyệt.`);
+  }
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const err = Array.isArray(data) ? data[0]?.error : data?.error;
+    const detail = (typeof err === 'string' ? err : err?.message) || '';
+    if (res.status === 401 || res.status === 403) throw new AIError('API key không hợp lệ hoặc chưa được cấp quyền. Kiểm tra lại trong Cài đặt.');
+    if (res.status === 404) throw new AIError(`Không tìm thấy mô hình “${model.trim()}” hoặc địa chỉ API sai. Kiểm tra lại tên mô hình.`);
+    if (res.status === 429) throw new AIError('Đã vượt giới hạn tần suất hoặc hết hạn mức của API. Hãy thử lại sau.');
+    if (res.status >= 500) throw new AIError(`${name} đang gặp sự cố tạm thời. Hãy thử lại sau.`);
+    throw new AIError(`${name} báo lỗi ${res.status}${detail ? ': ' + detail : ''}`);
+  }
+  const choice = data?.choices?.[0];
+  const content = choice?.message?.content;
+  const text = (Array.isArray(content) ? content.map((p) => p?.text || '').join('') : content || '').trim();
+  if (!text) throw new AIError('AI không trả về nội dung.');
+  return choice.finish_reason === 'length' ? text + '\n\n(Câu trả lời bị cắt do quá dài.)' : text;
 }
