@@ -1,7 +1,7 @@
 // Service worker: lưu sẵn toàn bộ app để chạy offline.
 // Chiến lược: ưu tiên mạng (luôn nhận bản mới khi online), rớt mạng hoặc quá 3 giây thì dùng bản đã lưu.
 // Khi phát hành bản mới, tăng VERSION để dọn cache cũ.
-const VERSION = 'v6';
+const VERSION = 'v7';
 const CACHE = `tu-vung-${VERSION}`;
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './css/app.css',
@@ -11,7 +11,7 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS.map((u) => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (e) => {
@@ -28,7 +28,8 @@ self.addEventListener('fetch', (e) => {
       const cache = await caches.open(CACHE);
       const cached = await cache.match(req, { ignoreSearch: true });
       // File đã lưu sẵn chỉ được thay khi phát hành VERSION mới, để bản offline luôn đồng bộ với nhau.
-      const network = fetch(req).then((res) => {
+      // 'no-cache': luôn hỏi lại máy chủ, không dùng bản HTTP cache cũ (GitHub Pages cho phép giữ tới 10 phút).
+      const network = fetch(req.url, { cache: 'no-cache' }).then((res) => {
         if (res.ok && !cached) cache.put(req, res.clone());
         return res;
       });

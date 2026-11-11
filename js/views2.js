@@ -81,6 +81,13 @@ export function applyTheme() {
   document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'dark' ? '#0F1110' : '#F5F4EF');
 }
 
+// Số bản đang chạy = tên cache của service worker (VERSION trong sw.js).
+let appVer = '';
+globalThis.caches?.keys().then((keys) => {
+  appVer = keys.filter((k) => k.startsWith('tu-vung-')).map((k) => k.slice(8)).sort((a, b) => parseInt(b.slice(1)) - parseInt(a.slice(1)))[0] || '';
+  if (appVer && location.hash === '#/settings') rerender();
+}).catch(() => {});
+
 export function settingsView() {
   const s = S.settings;
   const seg = (name, cur, opts) => `<div class="seg" style="min-width:190px">${opts.map(([v, l]) => `<button class="${String(cur) === String(v) ? 'on' : ''}" data-act="set" data-key="${name}" data-value="${v}">${l}</button>`).join('')}</div>`;
@@ -131,7 +138,7 @@ export function settingsView() {
     <div class="card small muted">${standalone ? 'Ứng dụng đang chạy ở chế độ cài đặt trên màn hình chính.' : 'Mở trang này bằng Safari → nút Chia sẻ → “Thêm vào MH chính”. Sau đó app chạy toàn màn hình và dùng được khi offline.'}</div>
     <h2>Vùng nguy hiểm</h2>
     <button class="btn danger" data-act="wipe">${icon('trash', 'sm')} Xoá toàn bộ dữ liệu</button>
-    <p class="small faint center" style="margin-top:18px">Từ Vựng · phiên bản 1.0</p>
+    <p class="small faint center" style="margin-top:18px">Từ Vựng · bản ${appVer || '…'}</p>
   </div>`;
 }
 

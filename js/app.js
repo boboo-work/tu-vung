@@ -103,7 +103,26 @@ async function boot() {
   if (!location.hash || location.hash === '#/session') history.replaceState(null, '', '#/home');
   render();
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-    navigator.serviceWorker.register('sw.js').catch((e) => console.warn('Service worker chưa đăng ký được:', e));
+    const sw = navigator.serviceWorker;
+    // Có bản mới → tự tải lại để dùng ngay (không tải lại giữa phiên học, chờ tới khi rời phiên).
+    let hadController = !!sw.controller;
+    let reloading = false;
+    const reloadWhenIdle = () => {
+      if (reloading) return;
+      if (location.hash === '#/session') { addEventListener('hashchange', reloadWhenIdle, { once: true }); return; }
+      reloading = true;
+      location.reload();
+    };
+    sw.addEventListener('controllerchange', () => {
+      if (hadController) reloadWhenIdle();
+      hadController = true;
+    });
+    sw.register('sw.js', { updateViaCache: 'none' }).then((reg) => {
+      // App mở từ màn hình chính trên iOS thường chỉ "thức dậy" chứ không tải lại → kiểm tra bản mới mỗi lần quay lại app.
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') reg.update().catch(() => {});
+      });
+    }).catch((e) => console.warn('Service worker chưa đăng ký được:', e));
   }
 }
 boot();
