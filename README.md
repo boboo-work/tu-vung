@@ -29,6 +29,7 @@ Dữ liệu gắn với địa chỉ (origin) của trang. Khi đổi địa ch�
 | `js/store.js` | IndexedDB + trạng thái trong bộ nhớ, nhật ký theo ngày, thống kê, sao lưu |
 | `js/srs.js` | Thuật toán lặp lại ngắt quãng (biến thể SM-2) |
 | `js/study.js` | Phiên học: flashcard và 5 dạng bài tập |
+| `js/game.js` | Mini game “Chạy & Gõ”: gõ đúng từ để nhảy qua chướng ngại vật |
 | `js/views.js`, `js/views2.js` | Các màn hình |
 | `js/io.js` | Import CSV/XLSX, export CSV, sao lưu JSON, bộ từ mẫu |
 | `js/ai.js` | Lớp kết nối Trợ lý AI (Claude API trực tiếp hoặc proxy riêng) |

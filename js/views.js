@@ -1,4 +1,5 @@
 // Các màn hình chính: Home, Learn, Review, Vocabulary (danh sách, chi tiết, form, chủ đề).
+import { gamePool, GAME_MIN } from './game.js';
 import { S, allWords, dueWords, newWords, dayOf, summary, forecast, deckName, blankWord, saveWord, deleteWord, findByText, addDeck, renameDeck, deleteDeck, resetProgress, FALLBACK_DECK } from './store.js';
 import { esc, today, addDays, parseDate, fmtDate, relDay, fmtInterval, speak, toast, splitList, dayDiff, fold } from './util.js';
 import { statusOf, isNew, isDue } from './srs.js';
@@ -131,6 +132,8 @@ export function learnView() {
     <h2>Luyện tập</h2>
     <p class="muted small" style="margin:-4px 2px 10px">10 từ mỗi lượt${ui.learnDeck ? ` trong “${esc(deckName(ui.learnDeck))}”` : ''}, ưu tiên từ đến hạn và từ đã học.</p>
     ${modeRows('practice', (m) => (!scopeCount ? 'Chưa có từ trong phạm vi này' : S.words.size < m.min ? `Cần ít nhất ${m.min} từ trong kho` : ''))}
+    <h2>Mini game</h2>
+    <button class="listlink" data-act="go" data-to="#/game"><span class="lead">${icon('game')}</span><span class="body"><b>Chạy & Gõ</b><small>${gamePool().length >= GAME_MIN ? 'Gõ đúng từ để nhảy qua chướng ngại vật · 3 mạng' : `Cần học ít nhất ${GAME_MIN} từ để chơi`}</small></span>${icon('chev')}</button>
   </div>`;
 }
 on('learn-deck', (el) => { ui.learnDeck = el.value; rerender(); });

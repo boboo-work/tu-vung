@@ -426,3 +426,54 @@ body.sheet-open #sheet { transform: none; }
   .rate { gap: 12px; }
   .rate button { min-height: 80px; }
 }
+
+/* ===== Mini game "Chạy & Gõ" ===== */
+.game { display: flex; flex-direction: column; }
+.g-top { display: flex; align-items: center; gap: 10px; margin: 0 -8px 10px; }
+.g-hearts { flex: 1; font-size: 26px; letter-spacing: 4px; line-height: 1; color: var(--neutral-mark); }
+.g-hearts .on { color: var(--red); }
+.g-score { text-align: right; padding-right: 8px; line-height: 1.1; }
+.g-score b { display: block; font-size: 26px; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.g-score small { font-size: 12px; color: var(--text-2); font-weight: 600; }
+.g-stage { position: relative; height: 150px; border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; flex: none; }
+.g-ground { position: absolute; left: 0; right: 0; bottom: 0; height: 30px; background: var(--surface-2); border-top: 2px solid var(--neutral-mark); }
+.g-ground::after { content: ""; position: absolute; left: 0; right: -60px; top: 11px; height: 3px; background: repeating-linear-gradient(90deg, var(--neutral-mark) 0 18px, transparent 18px 60px); animation: g-scroll .6s linear infinite; }
+@keyframes g-scroll { to { transform: translateX(-60px); } }
+.g-cloud { position: absolute; width: 54px; height: 16px; border-radius: 10px; background: var(--surface-2); animation: g-drift 14s linear infinite; }
+.g-cloud.c1 { top: 22px; left: 62%; }
+.g-cloud.c2 { top: 48px; left: 22%; width: 38px; height: 12px; animation-duration: 20s; }
+@keyframes g-drift { from { transform: translateX(120px); } to { transform: translateX(-340px); } }
+.g-hero { position: absolute; left: 11%; bottom: 26px; width: 58px; height: 58px; z-index: 2; }
+.g-hero svg, .g-obs svg { display: block; width: 100%; height: 100%; }
+.g-hero svg { animation: g-bob .32s ease-in-out infinite alternate; }
+@keyframes g-bob { to { transform: translateY(-3px); } }
+.g-hero .leg { animation: g-leg .32s ease-in-out infinite alternate; }
+.g-hero .leg.b { animation-direction: alternate-reverse; }
+@keyframes g-leg { from { transform: translateY(0); } to { transform: translateY(-5px); } }
+.g-hero.jump { animation: g-jump .56s cubic-bezier(.3, .7, .4, 1); }
+@keyframes g-jump { 0%, 100% { transform: translateY(0); } 45%, 55% { transform: translateY(-74px) rotate(-6deg); } }
+.g-hero.hurt { animation: g-hurt .5s ease both; }
+@keyframes g-hurt { 0%, 100% { transform: none; } 20% { transform: translateX(-8px) rotate(-10deg); } 40% { transform: translateX(5px) rotate(6deg); } 60% { transform: translateX(-4px) rotate(-4deg); opacity: .5; } }
+.g-stage.stop .g-ground::after, .g-stage.stop .g-cloud, .g-stage.stop .g-hero svg, .g-stage.stop .g-hero .leg { animation-play-state: paused; }
+.g-obs { position: absolute; left: 0; bottom: 27px; width: 44px; height: 37px; will-change: transform; transform: translateX(120vw); }
+.g-prompt { text-align: center; padding: 16px 4px 12px; }
+.g-meaning { font-size: 22px; font-weight: 700; line-height: 1.25; letter-spacing: -.01em; display: inline; }
+.g-pos { margin-left: 6px; vertical-align: 3px; }
+.g-slots { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-top: 12px; min-height: 30px; }
+.g-slots i { font-style: normal; width: 19px; height: 28px; border-bottom: 2.5px solid var(--neutral-mark); font-family: var(--serif); font-size: 20px; line-height: 26px; text-align: center; color: var(--text-3); }
+.g-slots i.sp { border: 0; width: 10px; }
+.g-slots i.ok { color: var(--green); border-color: var(--green); font-weight: 700; }
+.g-note { margin-top: 10px; font-size: 14px; color: var(--text-3); min-height: 21px; }
+.g-note.bad { color: var(--red); font-weight: 650; }
+.g-input.bad { border-color: var(--red); }
+.g-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.g-pick button { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px 14px; border-radius: 18px; border: 2px solid var(--line); font-weight: 650; font-size: 16px; color: var(--text); min-height: 44px; }
+.g-pick button.on { border-color: var(--accent); background: var(--accent-soft); }
+.g-hero.big { position: static; width: 76px; height: 76px; display: block; }
+.g-pick button:not(.on) .g-hero svg, .g-pick button:not(.on) .g-hero .leg, .g-hero.hurt-still svg, .g-hero.hurt-still .leg { animation: none; }
+.g-rules { margin: 8px 0 0; padding-left: 20px; color: var(--text-2); font-size: 15px; line-height: 1.5; }
+.g-rules li + li { margin-top: 4px; }
+.g-over { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; padding-top: 22px; }
+.g-over .g-hero { margin-bottom: 8px; transform: rotate(-8deg); }
+.g-final { font-size: 56px; line-height: 1.05; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.g-missed p + p { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
