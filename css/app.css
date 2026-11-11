@@ -302,8 +302,8 @@ select.input, .form select { background-image: url("data:image/svg+xml,%3Csvg xm
 .flash.fit { touch-action: none; }
 /* Bản sao bay ra khi chấm điểm. */
 .flash.ghost { position: fixed; margin: 0; min-height: 0; z-index: 30; pointer-events: none; animation: none; will-change: transform, opacity; }
-/* Nhãn mức chấm hiện giữa thẻ khi kéo (giữa thẻ để không bị che khi thẻ trượt ra mép). */
-.stamp { position: absolute; top: 50%; left: 50%; translate: -50% -50%; padding: 8px 22px; border-radius: 999px; font-weight: 800; font-size: 20px; white-space: nowrap; pointer-events: none; z-index: 2; box-shadow: 0 6px 18px rgba(0, 0, 0, .18); }
+/* Nhãn mức chấm: nằm giữa mép trên của thẻ để không che chữ. Khi kéo thẻ lên, --sy đẩy nhãn xuống tương ứng để nó không trượt ra khỏi vùng nhìn thấy. */
+.stamp { position: absolute; top: -16px; left: 50%; translate: -50% var(--sy, 0px); padding: 6px 20px; border-radius: 999px; font-weight: 800; font-size: 17px; white-space: nowrap; pointer-events: none; z-index: 2; box-shadow: 0 4px 12px rgba(0, 0, 0, .16); }
 .stamp.l { background: var(--red); color: #fff; opacity: var(--l, 0); }
 .stamp.r { background: var(--green); color: #fff; opacity: var(--r, 0); }
 .stamp.d { background: var(--amber); color: #fff; opacity: var(--d, 0); }
