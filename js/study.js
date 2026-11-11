@@ -205,16 +205,20 @@ function paintDrag() {
   el.style.setProperty('--r', horiz ? clamp01(dx / 80) : 0);
   el.style.setProperty('--d', horiz ? 0 : clamp01(dy / 80));
   el.style.setProperty('--u', horiz ? 0 : clamp01(-dy / 80));
+  el.style.setProperty('--sy', `${Math.max(0, -dy)}px`);
 }
 document.addEventListener('pointerdown', (e) => {
   const el = e.target.closest?.('.ses-body .flash');
-  if (!el || busy || e.target.closest('button') || (e.pointerType === 'mouse' && e.button !== 0)) return;
+  // Cho phép bắt đầu vuốt cả khi ngón tay đặt trên một nút trong thẻ (nút loa, "Xem thêm"): nếu đã kéo thì cú chạm đó không tính là bấm nút.
+  if (!el || busy || (e.pointerType === 'mouse' && e.button !== 0)) return;
   const sc = el.closest('.ses-body');
+  // Thẻ chỉ dài hơn khung nhìn một chút thì coi như nằm gọn: vuốt lên/xuống là chấm điểm chứ không phải cuộn.
+  const snug = sc.scrollHeight - sc.clientHeight <= 24;
   drag = {
     el, x: e.clientX, y: e.clientY, id: e.pointerId, on: false, dx: 0, dy: 0, ox: 0, oy: 0, raf: 0, track: [{ t: e.timeStamp, x: 0, y: 0 }],
-    atTop: sc.scrollTop <= 0, atBottom: sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 1,
+    atTop: snug || sc.scrollTop <= 0, atBottom: snug || sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 1,
   };
-  if (performance.now() - lastScroll < 600) drag.atTop = drag.atBottom = false;
+  if (!snug && performance.now() - lastScroll < 600) drag.atTop = drag.atBottom = false;
 });
 document.addEventListener('pointermove', (e) => {
   if (!drag || e.pointerId !== drag.id) return;
@@ -270,6 +274,7 @@ function endDrag(e) {
   d.el.style.transition = 'transform .3s cubic-bezier(.2,.9,.3,1.15)';
   d.el.style.transform = '';
   for (const k of ['--l', '--r', '--d', '--u']) d.el.style.setProperty(k, 0);
+  d.el.style.setProperty('--sy', '0px');
 }
 document.addEventListener('pointerup', endDrag);
 document.addEventListener('pointercancel', endDrag);
