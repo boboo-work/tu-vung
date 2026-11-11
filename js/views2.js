@@ -4,7 +4,7 @@ import { esc, toast, pickFile, fmtDate, speak, canSpeak, fold, englishVoices, on
 import { isNew, isMastered } from './srs.js';
 import { icon, on, go, rerender, navBar, confirmSheet, promptSheet, richText } from './ui.js';
 import { importFile, exportCSV, exportBackup, restoreBackup, downloadTemplate, loadSeed } from './io.js';
-import { AI_ACTIONS, AI_MODELS, aiReady, askAI } from './ai.js';
+import { AI_ACTIONS, AI_MODELS, GEMINI_MODELS, aiReady, askAI } from './ai.js';
 
 const ui = { statsKind: 'day', statsSel: null, anim: false, ai: { wordId: null, action: 'context', input: '', q: '', loading: false, result: null, error: null } };
 
@@ -88,6 +88,26 @@ globalThis.caches?.keys().then((keys) => {
   if (appVer && location.hash === '#/settings') rerender();
 }).catch(() => {});
 
+// Các ô nhập của từng cách kết nối AI.
+const keyInput = (id, value, placeholder) => `<input type="password" id="${id}" value="${esc(value)}" placeholder="${placeholder}" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">`;
+const modelInput = (id, value, placeholder, list = []) => `<input type="text" id="${id}" value="${esc(value)}" placeholder="${placeholder}" ${list.length ? `list="${id}-list"` : ''} autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">${list.length ? `<datalist id="${id}-list">${list.map((m) => `<option value="${m}">`).join('')}</datalist>` : ''}`;
+function aiFields(ai) {
+  if (ai.provider === 'proxy') return `<label for="ai-endpoint">Địa chỉ máy chủ</label><input type="url" id="ai-endpoint" value="${esc(ai.endpoint)}" placeholder="https://…/api/ask" autocomplete="off" autocapitalize="none">
+      <p class="small faint" style="margin-top:6px">Máy chủ nhận POST {system, prompt, model} và trả về {text}. API key nằm ở máy chủ.</p>`;
+  if (ai.provider === 'gemini') return `<label for="ai-gemini-key">API key của Gemini</label>${keyInput('ai-gemini-key', ai.geminiKey, 'AIza…')}
+      <p class="small faint" style="margin-top:6px">Lấy key miễn phí tại aistudio.google.com → “Get API key”. Key chỉ lưu trên thiết bị này, không nằm trong file sao lưu, và chỉ được gửi tới máy chủ của Google.</p>
+      <label for="ai-gemini-model">Mô hình</label>${modelInput('ai-gemini-model', ai.geminiModel, 'gemini-2.5-flash', GEMINI_MODELS)}
+      <p class="small faint" style="margin-top:6px">Gõ đúng tên mô hình như trong Google AI Studio. Nếu Google đã ra mô hình mới hơn, bạn cứ gõ tên đó vào đây.</p>`;
+  if (ai.provider === 'openai') return `<label for="ai-oa-base">Địa chỉ API</label><input type="url" id="ai-oa-base" value="${esc(ai.oaBase)}" placeholder="https://api.openai.com/v1" autocomplete="off" autocapitalize="none">
+      <label for="ai-oa-key">API key</label>${keyInput('ai-oa-key', ai.oaKey, 'sk-…')}
+      <label for="ai-oa-model">Mô hình</label>${modelInput('ai-oa-model', ai.oaModel, 'ví dụ: gpt-4o-mini')}
+      <p class="small faint" style="margin-top:6px">Dùng cho nhà cung cấp nhận định dạng “chat completions” (OpenAI, DeepSeek, Groq, OpenRouter…). Key chỉ lưu trên thiết bị này và chỉ được gửi tới địa chỉ bạn nhập. Một số nhà cung cấp không cho gọi thẳng từ trình duyệt — bấm “Kiểm tra kết nối” để biết.</p>`;
+  return `<label for="ai-key">API key</label>${keyInput('ai-key', ai.apiKey, 'sk-ant-…')}
+      <p class="small faint" style="margin-top:6px">Key chỉ lưu trên thiết bị này, không nằm trong file sao lưu, và chỉ được gửi tới api.anthropic.com. Hãy đặt hạn mức chi tiêu cho key.</p>
+      <label for="ai-model">Mô hình</label>
+      <select id="ai-model">${AI_MODELS.map(([id, l]) => `<option value="${id}" ${id === ai.model ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
+}
+
 export function settingsView() {
   const s = S.settings;
   const seg = (name, cur, opts) => `<div class="seg" style="min-width:190px">${opts.map(([v, l]) => `<button class="${String(cur) === String(v) ? 'on' : ''}" data-act="set" data-key="${name}" data-value="${v}">${l}</button>`).join('')}</div>`;
@@ -125,15 +145,9 @@ export function settingsView() {
     <div class="card form">
       <div class="banner ${ready ? 'info' : ''}" style="margin-bottom:4px">${icon(ready ? 'check' : 'info')}<span>${ready ? 'Đã cấu hình. Bấm “Kiểm tra kết nối” để xác nhận.' : 'Chưa kết nối. Các tính năng AI sẽ không hoạt động cho đến khi bạn cấu hình bên dưới.'}</span></div>
       <label for="ai-provider">Cách kết nối</label>
-      <select id="ai-provider" data-change="ai-provider"><option value="anthropic" ${s.ai.provider === 'anthropic' ? 'selected' : ''}>Claude API (dùng API key của bạn)</option><option value="proxy" ${s.ai.provider === 'proxy' ? 'selected' : ''}>Máy chủ riêng (proxy)</option></select>
-      ${s.ai.provider === 'proxy'
-        ? `<label for="ai-endpoint">Địa chỉ máy chủ</label><input type="url" id="ai-endpoint" value="${esc(s.ai.endpoint)}" placeholder="https://…/api/ask" autocomplete="off" autocapitalize="none">
-           <p class="small faint" style="margin-top:6px">Máy chủ nhận POST {system, prompt, model} và trả về {text}. API key nằm ở máy chủ.</p>`
-        : `<label for="ai-key">API key</label><input type="password" id="ai-key" value="${esc(s.ai.apiKey)}" placeholder="sk-ant-…" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">
-           <p class="small faint" style="margin-top:6px">Key chỉ lưu trên thiết bị này, không nằm trong file sao lưu, và chỉ được gửi tới api.anthropic.com. Hãy đặt hạn mức chi tiêu cho key.</p>`}
-      <label for="ai-model">Mô hình</label>
-      <select id="ai-model">${AI_MODELS.map(([id, l]) => `<option value="${id}" ${id === s.ai.model ? 'selected' : ''}>${l}</option>`).join('')}</select>
-      <div class="btn-row" style="margin-top:16px"><button class="btn" data-act="ai-save">Lưu</button><button class="btn ghost" data-act="ai-test" ${ready ? '' : 'disabled'}>Kiểm tra kết nối</button></div>
+      <select id="ai-provider" data-change="ai-provider">${[['anthropic', 'Claude API'], ['gemini', 'Google Gemini'], ['openai', 'API khác (tương thích OpenAI)'], ['proxy', 'Máy chủ riêng (proxy)']].map(([v, l]) => `<option value="${v}" ${s.ai.provider === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
+      ${aiFields(s.ai)}
+      <div class="btn-row" style="margin-top:16px"><button class="btn" data-act="ai-save">Lưu</button><button class="btn ghost" data-act="ai-test">Kiểm tra kết nối</button></div>
     </div>
     <h2>Cài lên iPhone</h2>
     <div class="card small muted">${standalone ? 'Ứng dụng đang chạy ở chế độ cài đặt trên màn hình chính.' : 'Mở trang này bằng Safari → nút Chia sẻ → “Thêm vào MH chính”. Sau đó app chạy toàn màn hình và dùng được khi offline.'}</div>
@@ -193,17 +207,28 @@ on('wipe', async () => {
   go('#/home');
 });
 
-const readAiForm = () => ({
-  ...S.settings.ai,
-  provider: document.getElementById('ai-provider').value,
-  model: document.getElementById('ai-model').value,
-  ...(document.getElementById('ai-key') ? { apiKey: document.getElementById('ai-key').value.trim() } : {}),
-  ...(document.getElementById('ai-endpoint') ? { endpoint: document.getElementById('ai-endpoint').value.trim() } : {}),
-});
+// Đọc form AI: ô nào đang hiển thị thì lấy giá trị mới, ô của cách kết nối khác giữ nguyên giá trị đã lưu.
+const readAiForm = () => {
+  const val = (id, old) => { const el = document.getElementById(id); return el ? el.value.trim() : old; };
+  const cur = S.settings.ai;
+  return {
+    ...cur,
+    provider: val('ai-provider', cur.provider),
+    apiKey: val('ai-key', cur.apiKey),
+    model: val('ai-model', cur.model),
+    endpoint: val('ai-endpoint', cur.endpoint),
+    geminiKey: val('ai-gemini-key', cur.geminiKey),
+    geminiModel: val('ai-gemini-model', cur.geminiModel),
+    oaBase: val('ai-oa-base', cur.oaBase),
+    oaKey: val('ai-oa-key', cur.oaKey),
+    oaModel: val('ai-oa-model', cur.oaModel),
+  };
+};
 on('ai-provider', async () => { await saveSettings({ ai: readAiForm() }); rerender(); });
 on('ai-save', async () => {
   const ai = readAiForm();
   if (ai.provider === 'proxy' && ai.endpoint && !/^https?:\/\//i.test(ai.endpoint)) return toast('Địa chỉ máy chủ phải bắt đầu bằng http(s)://', 'bad');
+  if (ai.provider === 'openai' && ai.oaBase && !/^https:\/\//i.test(ai.oaBase)) return toast('Địa chỉ API phải bắt đầu bằng https://', 'bad');
   await saveSettings({ ai });
   toast(aiReady(ai) ? 'Đã lưu cấu hình AI' : 'Đã lưu — AI vẫn chưa được kết nối');
   rerender();

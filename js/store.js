@@ -67,7 +67,8 @@ const DEFAULT_SETTINGS = {
   rate: 0.95,
   voiceName: '', // '' = tự chọn giọng tốt nhất trên máy
   autoSpeak: true, // tự phát âm khi lật thẻ sang mặt đáp án
-  ai: { provider: 'anthropic', apiKey: '', model: 'claude-opus-5-5', endpoint: '' },
+  // Mỗi cách kết nối giữ key/mô hình riêng để đổi qua lại không bị lẫn.
+  ai: { provider: 'anthropic', apiKey: '', model: 'claude-opus-5-5', endpoint: '', geminiKey: '', geminiModel: 'gemini-2.5-flash', oaBase: '', oaKey: '', oaModel: '' },
   lastBackup: null,
 };
 
