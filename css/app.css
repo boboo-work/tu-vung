@@ -477,3 +477,44 @@ body.sheet-open #sheet { transform: none; }
 .g-over .g-hero { margin-bottom: 8px; transform: rotate(-8deg); }
 .g-final { font-size: 56px; line-height: 1.05; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
 .g-missed p + p { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+
+/* ===== Mini game "Bắn Từ" ===== */
+.d-time { flex: 1; height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.d-time i { display: block; height: 100%; background: var(--accent); transform-origin: left; }
+.d-stage { position: relative; height: 262px; border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; flex: none; margin-bottom: 12px; }
+.d-meaning { position: relative; z-index: 3; text-align: center; font-size: 19px; font-weight: 700; line-height: 1.25; padding: 12px 14px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.d-meaning .tag { vertical-align: 2px; }
+.d-tile { position: absolute; left: 50%; top: 0; z-index: 2; width: max-content; max-width: 92%; padding: 5px 10px 8px; border-radius: 12px; background: var(--surface-2); border: 2px solid var(--neutral-mark); will-change: transform; transform: translate(-50%, 60px); }
+.d-tile .g-slots { margin: 0; min-height: 0; gap: 3px; }
+.d-tile .g-slots i { width: 14px; height: 24px; font-size: 17px; line-height: 23px; color: var(--text); font-weight: 650; border-bottom-color: var(--text-3); }
+.d-tile .g-slots i.sp { width: 7px; }
+.d-tile.hit { background: var(--green-soft); border-color: var(--green); animation: d-hit .9s ease both; }
+.d-tile.hit .g-slots i { color: var(--green); border-color: transparent; }
+@keyframes d-hit { 0% { scale: 1; } 18% { scale: 1.18; } 35%, 75% { scale: 1; opacity: 1; } 100% { scale: .9; opacity: 0; } }
+.d-tile.smash { background: transparent; border-color: transparent; }
+.d-tile.smash .g-slots { animation: d-crush .25s ease-in both; }
+@keyframes d-crush { to { transform: scale(1.15, .1) translateY(60px); opacity: 0; } }
+.d-tile .shard { position: absolute; left: 50%; top: 50%; width: 11px; height: 9px; border-radius: 2px; background: var(--neutral-mark); animation: d-shard .55s ease-out both; }
+@keyframes d-shard { to { transform: translate(var(--x), var(--y)) rotate(var(--r)); opacity: 0; } }
+.d-badge { position: absolute; left: 50%; top: 40%; z-index: 4; translate: -50% 0; padding: 6px 18px; border-radius: 999px; background: var(--green); color: #fff; font-weight: 800; font-size: 18px; opacity: 0; pointer-events: none; }
+:root[data-theme="dark"] .d-badge { color: #111; }
+.d-badge.show { animation: d-badge .8s ease both; }
+@keyframes d-badge { 0% { opacity: 0; transform: scale(.6); } 20% { opacity: 1; transform: scale(1.1); } 30%, 80% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-10px); } }
+.d-answer { position: absolute; left: 50%; top: 36%; z-index: 4; translate: -50% 0; max-width: 92%; text-align: center; padding: 8px 16px 10px; border-radius: 16px; background: var(--red-soft); color: var(--red); animation: pop .3s both; }
+.d-answer small { display: block; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.d-answer b { display: block; font-size: 24px; line-height: 1.2; color: var(--text); }
+.d-answer .ipa { font-size: 14px; }
+.d-stage .g-hero svg, .d-stage .g-hero .leg { animation: none; }
+.d-mochi { left: 7%; }
+.d-mochi.fire { animation: d-fire .25s ease; }
+@keyframes d-fire { 40% { transform: translate(-5px, 3px) rotate(-8deg); } }
+.d-bolt { left: auto; right: 7%; }
+.d-hammer { position: absolute; left: -22px; top: -22px; width: 30px; height: 44px; transform-origin: 50% 95%; transform: rotate(20deg); }
+.d-hammer svg { width: 100%; height: 100%; display: block; }
+.d-bolt.swing { animation: d-lunge .5s ease both; }
+.d-bolt.swing .d-hammer { animation: d-swing .5s ease both; }
+@keyframes d-lunge { 30%, 60% { transform: translateX(-46px); } }
+@keyframes d-swing { 0% { transform: rotate(20deg); } 22% { transform: rotate(45deg); } 40%, 60% { transform: rotate(-95deg); } 100% { transform: rotate(20deg); } }
+.d-shot { position: absolute; left: -6px; top: -6px; width: 12px; height: 12px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 4px var(--amber-soft); z-index: 3; }
+.d-duo { display: flex; justify-content: center; gap: 18px; margin-bottom: 14px; }
+.d-duo .g-hero svg, .d-duo .g-hero .leg { animation: none; }

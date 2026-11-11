@@ -134,6 +134,7 @@ export function learnView() {
     ${modeRows('practice', (m) => (!scopeCount ? 'Chưa có từ trong phạm vi này' : S.words.size < m.min ? `Cần ít nhất ${m.min} từ trong kho` : ''))}
     <h2>Mini game</h2>
     <button class="listlink" data-act="go" data-to="#/game"><span class="lead">${icon('game')}</span><span class="body"><b>Chạy & Gõ</b><small>${gamePool().length >= GAME_MIN ? 'Gõ đúng từ để nhảy qua chướng ngại vật · 3 mạng' : `Cần học ít nhất ${GAME_MIN} từ để chơi`}</small></span>${icon('chev')}</button>
+    <button class="listlink" data-act="go" data-to="#/drop"><span class="lead">${icon('target')}</span><span class="body"><b>Bắn Từ</b><small>${gamePool().length >= GAME_MIN ? 'Từ rơi xuống, gõ đúng để bắn trúng · không có mạng' : `Cần học ít nhất ${GAME_MIN} từ để chơi`}</small></span>${icon('chev')}</button>
   </div>`;
 }
 on('learn-deck', (el) => { ui.learnDeck = el.value; rerender(); });
