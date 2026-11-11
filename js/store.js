@@ -29,8 +29,10 @@ function tx(stores, mode, fn) {
     let result;
     t.oncomplete = () => resolve(result);
     t.onerror = () => reject(t.error);
-    t.onabort = () => reject(t.error || new Error('Giao dịch bị huỷ'));
-    result = fn(t);
+    t.onabort = () => reject(failure || t.error || new Error('Giao dịch bị huỷ'));
+    let failure = null;
+    // Lỗi giữa chừng → huỷ cả giao dịch, không để dữ liệu ghi dở.
+    try { result = fn(t); } catch (e) { failure = e; try { t.abort(); } catch {} }
   });
 }
 const getAll = (store) =>
@@ -86,6 +88,12 @@ export async function init() {
   if (!S.decks.length) {
     S.decks = DEFAULT_DECKS.map(([id, name], i) => ({ id, name, builtin: true, order: i }));
     await tx(['decks'], 'readwrite', (t) => S.decks.forEach((d) => t.objectStore('decks').put(d)));
+  }
+  // Chủ đề dự phòng phải luôn tồn tại (nơi nhận từ khi xoá chủ đề / import không ghi chủ đề).
+  if (!S.decks.some((d) => d.id === FALLBACK_DECK)) {
+    const deck = { id: FALLBACK_DECK, name: 'My Custom Vocabulary', builtin: true, order: Math.max(-1, ...S.decks.map((d) => d.order)) + 1 };
+    S.decks.push(deck);
+    await put('decks', deck);
   }
   // Xin trình duyệt giữ dữ liệu bền vững (không tự xoá khi thiếu dung lượng).
   try {
@@ -310,26 +318,89 @@ export function exportData() {
   };
 }
 
+const ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const str = (v) => (typeof v === 'string' ? v : v == null ? '' : String(v));
+const strList = (v) => (Array.isArray(v) ? v.map(str).map((x) => x.trim()).filter(Boolean) : str(v).trim() ? [str(v).trim()] : []);
+const int = (v, min, max, dflt) => (Number.isFinite(Number(v)) ? Math.min(max, Math.max(min, Math.round(Number(v)))) : dflt);
+
 export function validateBackup(data) {
   if (!data || data.app !== 'vocab-app' || !Array.isArray(data.words) || !Array.isArray(data.decks)) {
     throw new Error('File không phải bản sao lưu hợp lệ của ứng dụng này');
   }
-  for (const w of data.words) if (!w.id || typeof w.word !== 'string') throw new Error('Bản sao lưu chứa từ vựng bị lỗi');
+  for (const w of data.words) {
+    if (!w || typeof w !== 'object' || !ID_RE.test(str(w.id)) || typeof w.word !== 'string' || !w.word.trim()) throw new Error('Bản sao lưu chứa từ vựng bị lỗi');
+  }
+  for (const d of data.decks) {
+    if (!d || typeof d !== 'object' || !ID_RE.test(str(d.id)) || typeof d.name !== 'string' || !d.name.trim()) throw new Error('Bản sao lưu chứa chủ đề bị lỗi');
+  }
   return true;
+}
+
+/** Đưa dữ liệu từ file sao lưu về đúng kiểu, để một file sai định dạng không làm hỏng app. */
+function cleanBackup(data) {
+  const decks = [];
+  const deckIds = new Set();
+  data.decks.forEach((d, i) => {
+    if (deckIds.has(d.id)) return;
+    deckIds.add(d.id);
+    decks.push({ id: d.id, name: d.name.trim().slice(0, 60), builtin: !!d.builtin || d.id === FALLBACK_DECK, order: int(d.order, 0, 100000, i) });
+  });
+  const wordIds = new Set();
+  const words = [];
+  for (const w of data.words) {
+    if (wordIds.has(w.id)) continue;
+    wordIds.add(w.id);
+    const s = w.srs && typeof w.srs === 'object' ? w.srs : {};
+    const state = ['new', 'learning', 'review'].includes(s.state) ? s.state : 'new';
+    const due = DATE_RE.test(str(s.due)) ? s.due : null;
+    words.push({
+      ...blankWord(),
+      id: w.id, word: w.word.trim(), ipa: str(w.ipa), pos: str(w.pos), meaning: str(w.meaning), definition: str(w.definition),
+      examples: strList(w.examples), collocations: strList(w.collocations), synonyms: strList(w.synonyms), antonyms: strList(w.antonyms), family: strList(w.family),
+      mistakes: str(w.mistakes), notes: str(w.notes), deckId: deckIds.has(w.deckId) ? w.deckId : FALLBACK_DECK,
+      difficulty: int(w.difficulty, 1, 3, 2), favorite: !!w.favorite,
+      sentences: Array.isArray(w.sentences) ? w.sentences.filter((x) => x && typeof x.text === 'string').map((x) => ({ text: x.text, at: Number(x.at) || 0 })) : [],
+      createdAt: Number(w.createdAt) || Date.now(), updatedAt: Number(w.updatedAt) || Date.now(),
+      // Từ đã học mà thiếu ngày ôn thì coi như chưa học, tránh "mất tích" khỏi mọi danh sách.
+      srs: state === 'new' || !due ? newSrs() : {
+        state, due, last: DATE_RE.test(str(s.last)) ? s.last : null,
+        ease: Math.min(5, Math.max(1.3, Number(s.ease) || 2.5)), interval: int(s.interval, 0, 3650, 0), reps: int(s.reps, 0, 100000, 0), lapses: int(s.lapses, 0, 100000, 0),
+      },
+    });
+  }
+  const days = (Array.isArray(data.days) ? data.days : []).filter((d) => d && DATE_RE.test(str(d.date))).map((d) => ({
+    date: d.date,
+    newIds: Array.isArray(d.newIds) ? d.newIds.filter((x) => typeof x === 'string') : [],
+    reviewIds: Array.isArray(d.reviewIds) ? d.reviewIds.filter((x) => typeof x === 'string') : [],
+    correct: int(d.correct, 0, 1e6, 0), wrong: int(d.wrong, 0, 1e6, 0),
+  }));
+  const st = data.settings && typeof data.settings === 'object' ? data.settings : {};
+  const settings = {
+    ...DEFAULT_SETTINGS,
+    newPerDay: int(st.newPerDay, 5, 200, DEFAULT_SETTINGS.newPerDay),
+    reviewPerDay: int(st.reviewPerDay, 5, 200, DEFAULT_SETTINGS.reviewPerDay),
+    theme: ['auto', 'light', 'dark'].includes(st.theme) ? st.theme : 'auto',
+    voice: ['en-US', 'en-GB'].includes(st.voice) ? st.voice : 'en-US',
+    rate: [0.75, 0.95, 1.1].includes(Number(st.rate)) ? Number(st.rate) : 0.95,
+    lastBackup: DATE_RE.test(str(st.lastBackup)) ? st.lastBackup : null,
+  };
+  return { decks, words, days, settings };
 }
 
 export async function restoreData(data) {
   validateBackup(data);
+  const clean = cleanBackup(data);
   const ai = S.settings.ai;
-  const days = Array.isArray(data.days) ? data.days.filter((d) => d && d.date) : [];
   await tx(['words', 'decks', 'days', 'kv'], 'readwrite', (t) => {
     for (const s of ['words', 'decks', 'days']) t.objectStore(s).clear();
-    data.words.forEach((w) => t.objectStore('words').put({ ...blankWord(), ...w, srs: { ...newSrs(), ...(w.srs || {}) } }));
-    data.decks.forEach((d) => t.objectStore('decks').put(d));
-    days.forEach((d) => t.objectStore('days').put({ ...blankDay(d.date), ...d }));
-    t.objectStore('kv').put({ key: 'settings', value: { ...DEFAULT_SETTINGS, ...(data.settings || {}), ai } });
+    clean.words.forEach((w) => t.objectStore('words').put(w));
+    clean.decks.forEach((d) => t.objectStore('decks').put(d));
+    clean.days.forEach((d) => t.objectStore('days').put(d));
+    t.objectStore('kv').put({ key: 'settings', value: { ...clean.settings, ai } });
   });
   await init();
+  return clean.words.length;
 }
 
 export async function wipeAll() {

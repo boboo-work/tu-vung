@@ -1,7 +1,7 @@
 // Service worker: lưu sẵn toàn bộ app để chạy offline.
 // Chiến lược: ưu tiên mạng (luôn nhận bản mới khi online), rớt mạng hoặc quá 3 giây thì dùng bản đã lưu.
 // Khi phát hành bản mới, tăng VERSION để dọn cache cũ.
-const VERSION = 'v3';
+const VERSION = 'v4';
 const CACHE = `tu-vung-${VERSION}`;
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './css/app.css',
@@ -27,8 +27,9 @@ self.addEventListener('fetch', (e) => {
     (async () => {
       const cache = await caches.open(CACHE);
       const cached = await cache.match(req, { ignoreSearch: true });
+      // File đã lưu sẵn chỉ được thay khi phát hành VERSION mới, để bản offline luôn đồng bộ với nhau.
       const network = fetch(req).then((res) => {
-        if (res.ok) cache.put(req, res.clone());
+        if (res.ok && !cached) cache.put(req, res.clone());
         return res;
       });
       if (!cached) return network;

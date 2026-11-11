@@ -100,8 +100,22 @@ export function speak(text, { lang = 'en-US', rate = 0.95 } = {}) {
 }
 
 // ---- Tải file ----
-export function download(filename, content, mime = 'text/plain') {
+// Bỏ dấu tiếng Việt để tìm kiếm ("kien cuong" khớp "kiên cường").
+export const fold = (s) => String(s ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
+
+const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+
+/** Lưu file. Trả về false nếu người dùng huỷ. Trên iPhone dùng bảng Chia sẻ ("Lưu vào Tệp") vì app cài ở màn hình chính không tải file trực tiếp được. */
+export async function download(filename, content, mime = 'text/plain') {
   const blob = content instanceof Blob ? content : new Blob([content], { type: mime });
+  if (isIOS() && navigator.canShare) {
+    try {
+      const file = new File([blob], filename, { type: mime.split(';')[0] });
+      if (navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); return true; }
+    } catch (e) {
+      if (e?.name === 'AbortError') return false;
+    }
+  }
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -110,6 +124,7 @@ export function download(filename, content, mime = 'text/plain') {
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 4000);
+  return true;
 }
 
 export function pickFile(accept) {
@@ -117,7 +132,12 @@ export function pickFile(accept) {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = accept;
-    input.onchange = () => resolve(input.files[0] || null);
+    // iOS Safari chỉ báo sự kiện "change" ổn định khi thẻ input nằm trong trang.
+    input.style.cssText = 'position:fixed;left:-9999px;opacity:0';
+    document.body.appendChild(input);
+    const done = (f) => { input.remove(); resolve(f); };
+    input.onchange = () => done(input.files[0] || null);
+    input.oncancel = () => done(null);
     input.click();
   });
 }

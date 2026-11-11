@@ -23,13 +23,25 @@ let ses = null;
 export const hasSession = () => !!ses;
 
 /** Bắt đầu phiên. source: 'learn' (từ mới) | 'review' (từ đến hạn) | 'practice' (luyện tự do). */
-export function startSession({ mode, ids, source, backTo }) {
+// Từ có đủ dữ liệu cho dạng bài này không (vd. từ import thiếu nghĩa thì không ra được câu trắc nghiệm).
+function usable(mode, w) {
+  const meaning = !!(w.meaning || '').trim();
+  if (mode === 'mc' || mode === 'vi-en') return meaning;
+  if (mode === 'fill') return meaning || !!(w.definition || '').trim() || (w.examples || []).some((ex) => findInSentence(w.word, ex));
+  return true;
+}
+
+export function startSession({ mode, ids, source, backTo, deckId = '' }) {
   const m = modeOf(mode);
   ids = ids.filter((id) => S.words.has(id));
   if (!ids.length) return toast('Chưa có từ nào để học trong phần này');
+  const all = ids.length;
+  ids = ids.filter((id) => usable(mode, S.words.get(id)));
+  if (!ids.length) return toast(`Các từ này chưa có nghĩa tiếng Việt nên chưa dùng được chế độ "${m.name}"`);
+  if (ids.length < all) toast(`Bỏ qua ${all - ids.length} từ chưa có nghĩa tiếng Việt`);
   if (S.words.size < m.min) return toast(`Chế độ "${m.name}" cần ít nhất ${m.min} từ trong kho`);
   ses = {
-    mode, source, backTo, queue: ids.slice(), total: ids.length, done: 0,
+    mode, source, backTo, deckId, queue: ids.slice(), total: ids.length, done: 0,
     stats: { again: 0, hard: 0, easy: 0, correct: 0, wrong: 0, skipped: 0 },
     counted: new Set(), step: null, finished: false, startedAt: Date.now(),
   };
@@ -68,7 +80,9 @@ export function findInSentence(word, sentence) {
 }
 
 function distractors(w, n) {
-  const others = allWords().filter((x) => x.id !== w.id && norm(x.meaning) !== norm(w.meaning) && norm(x.word) !== norm(w.word));
+  const listen = ses.mode === 'listen';
+  const others = allWords().filter((x) => x.id !== w.id && norm(x.word) !== norm(w.word)
+    && (listen || ((x.meaning || '').trim() && norm(x.meaning) !== norm(w.meaning))));
   const same = shuffle(others.filter((x) => x.pos && x.pos === w.pos));
   const rest = shuffle(others.filter((x) => !(x.pos && x.pos === w.pos)));
   return [...same, ...rest].slice(0, n);
@@ -257,16 +271,16 @@ on('ses-skip', () => { ses.stats.skipped++; advance(); });
 on('ses-next', () => advance());
 on('ses-quit', () => { const to = ses?.backTo || '#/learn'; ses = null; go(to); });
 on('ses-continue', () => {
-  const { source, mode, backTo } = ses;
-  const ids = nextBatch(source);
+  const { source, mode, backTo, deckId } = ses;
+  const ids = nextBatch(source, deckId);
   ses = null;
   if (!ids.length) return go(backTo);
-  startSession({ mode, ids, source, backTo });
+  startSession({ mode, ids, source, backTo, deckId });
 });
 
-function nextBatch(source) {
+function nextBatch(source, deckId = ses?.deckId || '') {
   if (source === 'review') return dueWords().slice(0, S.settings.reviewPerDay).map((w) => w.id);
-  if (source === 'learn') return newWords().slice(0, 5).map((w) => w.id);
+  if (source === 'learn') return newWords(deckId).slice(0, 5).map((w) => w.id);
   return [];
 }
 

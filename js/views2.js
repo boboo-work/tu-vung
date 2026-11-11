@@ -1,6 +1,6 @@
 // Các màn hình: Statistics, Cài đặt (mục tiêu, giao diện, dữ liệu, AI), Trợ lý AI.
 import { S, allWords, summary, series, saveSettings, deckName, wipeAll } from './store.js';
-import { esc, toast, pickFile, fmtDate, speak, canSpeak } from './util.js';
+import { esc, toast, pickFile, fmtDate, speak, canSpeak, fold } from './util.js';
 import { isNew, isMastered } from './srs.js';
 import { icon, on, go, rerender, navBar, confirmSheet, promptSheet, richText } from './ui.js';
 import { importFile, exportCSV, exportBackup, restoreBackup, downloadTemplate, loadSeed } from './io.js';
@@ -145,7 +145,7 @@ on('set', async (el) => {
   rerender();
 });
 on('test-voice', () => speak('Practice makes perfect.', { lang: S.settings.voice, rate: S.settings.rate }));
-on('backup', async () => { await exportBackup(); toast('Đã tạo file sao lưu'); rerender(); });
+on('backup', async () => { if (await exportBackup()) { toast('Đã tạo file sao lưu'); rerender(); } });
 on('restore', async () => {
   const file = await pickFile('.json,application/json');
   if (!file) return;
@@ -165,7 +165,7 @@ on('import', async () => {
     rerender();
   } catch (e) { toast(e.message, 'bad'); }
 });
-on('export-csv', () => { if (!S.words.size) return toast('Chưa có từ nào để export'); exportCSV(); toast('Đã export CSV'); });
+on('export-csv', async () => { if (!S.words.size) return toast('Chưa có từ nào để export'); if (await exportCSV()) toast('Đã export CSV'); });
 on('template', () => downloadTemplate());
 on('seed2', async () => { const n = await loadSeed(); toast(n ? `Đã nạp ${n} từ mẫu` : 'Bộ từ mẫu đã có sẵn trong kho'); rerender(); });
 on('wipe', async () => {
@@ -212,8 +212,8 @@ export function aiView(id) {
 
   let picker;
   if (!w) {
-    const k = a.q.trim().toLowerCase();
-    const list = allWords().filter((x) => !k || x.word.toLowerCase().includes(k)).sort((x, y) => y.updatedAt - x.updatedAt).slice(0, 8);
+    const k = fold(a.q.trim());
+    const list = allWords().filter((x) => !k || fold(x.word).includes(k) || fold(x.meaning).includes(k)).sort((x, y) => y.updatedAt - x.updatedAt).slice(0, 8);
     picker = `<div class="search">${icon('search')}<input type="search" placeholder="Chọn một từ trong kho…" value="${esc(a.q)}" data-in="ai-search" autocomplete="off" autocapitalize="none"></div>
       <div id="ai-list">${aiList(list)}</div>`;
   } else {
@@ -235,8 +235,8 @@ const aiList = (list) => (list.length
   : `<div class="empty"><p>${S.words.size ? 'Không tìm thấy từ phù hợp.' : 'Kho từ đang trống — hãy thêm từ trước.'}</p></div>`);
 on('ai-search', (el) => {
   ui.ai.q = el.value;
-  const k = el.value.trim().toLowerCase();
-  document.getElementById('ai-list').innerHTML = aiList(allWords().filter((x) => !k || x.word.toLowerCase().includes(k)).sort((x, y) => y.updatedAt - x.updatedAt).slice(0, 8));
+  const k = fold(el.value.trim());
+  document.getElementById('ai-list').innerHTML = aiList(allWords().filter((x) => !k || fold(x.word).includes(k) || fold(x.meaning).includes(k)).sort((x, y) => y.updatedAt - x.updatedAt).slice(0, 8));
 });
 on('ai-pick', (el) => { Object.assign(ui.ai, { wordId: el.dataset.id, result: null, error: null, input: '' }); rerender(true); });
 on('ai-change', () => { Object.assign(ui.ai, { wordId: null, result: null, error: null }); history.replaceState(null, '', '#/ai'); rerender(true); });

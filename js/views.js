@@ -1,13 +1,19 @@
 // Các màn hình chính: Home, Learn, Review, Vocabulary (danh sách, chi tiết, form, chủ đề).
 import { S, allWords, dueWords, newWords, dayOf, summary, forecast, deckName, blankWord, saveWord, deleteWord, findByText, addDeck, renameDeck, deleteDeck, resetProgress, FALLBACK_DECK } from './store.js';
-import { esc, today, addDays, parseDate, fmtDate, relDay, fmtInterval, speak, toast, splitList, dayDiff } from './util.js';
-import { statusOf, isNew } from './srs.js';
+import { esc, today, addDays, parseDate, fmtDate, relDay, fmtInterval, speak, toast, splitList, dayDiff, fold } from './util.js';
+import { statusOf, isNew, isDue } from './srs.js';
 import { icon, on, go, back, rerender, navBar, confirmSheet, promptSheet, chooseSheet } from './ui.js';
 import { MODES, startSession, practicePool } from './study.js';
 import { loadSeed } from './io.js';
 
 const ui = { learnDeck: '', vocab: { q: '', filter: 'all', limit: 60 }, form: null };
 const voice = () => ({ lang: S.settings.voice, rate: S.settings.rate });
+// Bộ lọc có thể trỏ tới chủ đề đã bị xoá (xoá chủ đề, khôi phục, xoá hết dữ liệu) → đưa về "tất cả".
+function checkFilters() {
+  const has = (id) => S.decks.some((d) => d.id === id);
+  if (ui.learnDeck && !has(ui.learnDeck)) ui.learnDeck = '';
+  if (!['all', 'fav', 'due'].includes(ui.vocab.filter) && !has(ui.vocab.filter)) ui.vocab.filter = 'all';
+}
 const WEEKDAYS = ['Chủ nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
 
 const ring = (value, goal) => {
@@ -63,7 +69,7 @@ export function homeView() {
     </div>
     <div class="cta-stack">
       ${due ? `<button class="btn" data-act="start-review">${icon('review', 'sm')} Ôn tập ${due} từ đến hạn</button>` : ''}
-      ${canLearn ? `<button class="btn ${due ? 'ghost' : ''}" data-act="start-learn">${icon('learn', 'sm')} Học ${canLearn} từ mới</button>` : ''}
+      ${canLearn ? `<button class="btn ${due ? 'ghost' : ''}" data-act="start-learn" data-all="1">${icon('learn', 'sm')} Học ${canLearn} từ mới</button>` : ''}
       ${!due && !canLearn ? `<div class="banner info">${icon('check')}<span>${fresh ? 'Bạn đã hoàn thành mục tiêu hôm nay. Muốn học thêm, mở tab <b>Học</b>.' : 'Không còn từ nào cần học hôm nay. Hãy thêm từ mới hoặc luyện tập tự do ở tab <b>Học</b>.'}</span></div>` : ''}
     </div>
     <h2>Tổng quan</h2>
@@ -92,8 +98,9 @@ on('start-learn', (el) => {
   const extra = Number(el.dataset.extra || 0);
   const left = Math.max(0, S.settings.newPerDay - dayOf().newIds.length);
   const n = extra || left;
-  const ids = newWords(ui.learnDeck).slice(0, n).map((w) => w.id);
-  startSession({ mode: 'en-vi', ids, source: 'learn', backTo: '#/learn' });
+  const deckId = el.dataset.all ? '' : ui.learnDeck; // nút ở Trang chủ luôn học trên toàn kho
+  const ids = newWords(deckId).slice(0, n).map((w) => w.id);
+  startSession({ mode: 'en-vi', ids, source: 'learn', backTo: el.dataset.all ? '#/home' : '#/learn', deckId });
 });
 
 // ================= LEARN =================
@@ -103,6 +110,7 @@ const modeRows = (act, disabledCheck, skip = []) => MODES.filter((m) => !skip.in
 }).join('');
 
 export function learnView() {
+  checkFilters();
   const day = dayOf();
   const fresh = newWords(ui.learnDeck).length;
   const left = Math.max(0, S.settings.newPerDay - day.newIds.length);
@@ -176,10 +184,10 @@ function wordRow(w) {
 
 function filteredWords() {
   const { q, filter } = ui.vocab;
-  const k = q.trim().toLowerCase();
+  const k = fold(q.trim());
   return allWords()
-    .filter((w) => (filter === 'all' ? true : filter === 'fav' ? w.favorite : filter === 'due' ? statusOf(w).label === 'Đến hạn ôn' : w.deckId === filter))
-    .filter((w) => !k || w.word.toLowerCase().includes(k) || (w.meaning || '').toLowerCase().includes(k) || (w.definition || '').toLowerCase().includes(k))
+    .filter((w) => (filter === 'all' ? true : filter === 'fav' ? w.favorite : filter === 'due' ? isDue(w) : w.deckId === filter))
+    .filter((w) => !k || fold(w.word).includes(k) || fold(w.meaning).includes(k) || fold(w.definition).includes(k))
     .sort((a, b) => a.word.localeCompare(b.word, 'en', { sensitivity: 'base' }));
 }
 
@@ -193,6 +201,7 @@ function vocabList() {
 }
 
 export function vocabView() {
+  checkFilters();
   const f = ui.vocab.filter;
   const counts = {};
   for (const w of S.words.values()) counts[w.deckId] = (counts[w.deckId] || 0) + 1;
@@ -323,7 +332,9 @@ on('form-diff', (el) => {
   seg.dataset.value = el.dataset.value;
   seg.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b === el));
 });
+let saving = false;
 on('save-word', async (form) => {
+  if (saving) return; // chặn bấm Lưu hai lần liên tiếp
   const fd = new FormData(form);
   const v = (k) => String(fd.get(k) || '').trim();
   const setErr = (k, msg) => {
@@ -349,7 +360,8 @@ on('save-word', async (form) => {
     difficulty: Number(document.getElementById('f-diff').dataset.value) || 2, notes: v('notes'),
   });
   const isEdit = !!ui.form.id;
-  await saveWord(w);
+  saving = true;
+  try { await saveWord(w); } finally { saving = false; }
   toast(isEdit ? 'Đã lưu thay đổi' : `Đã thêm “${w.word}”`);
   back('#/vocab');
 });

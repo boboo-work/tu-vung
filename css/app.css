@@ -5,7 +5,7 @@
   --surface-2: #ECEAE2;
   --text: #17181A;
   --text-2: #5A5C61;
-  --text-3: #8B8D93;
+  --text-3: #696B71;
   --line: rgba(20, 20, 20, .09);
   --accent: #1F6F54;
   --accent-ink: #FFFFFF;
@@ -36,7 +36,7 @@
   --surface-2: #242826;
   --text: #F0EFEC;
   --text-2: #B3B5B0;
-  --text-3: #7F827D;
+  --text-3: #8E918C;
   --line: rgba(255, 255, 255, .1);
   --accent: #6FCFA5;
   --accent-ink: #0A1F16;
@@ -259,7 +259,7 @@ h2 { font-size: 13px; font-weight: 700; color: var(--text-3); letter-spacing: .0
 .input:focus, .form input:focus, .form textarea:focus, .form select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 select.input, .form select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238B8D93' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 38px; }
 .err { color: var(--red); font-size: 13.5px; margin: 6px 2px 0; }
-.input.bad { border-color: var(--red); }
+.input.bad, .form input.bad, .form textarea.bad { border-color: var(--red); }
 .savebar { position: sticky; bottom: calc(-1 * var(--safe-b) - 28px); margin: 24px -18px calc(-1 * var(--safe-b) - 28px); padding: 12px 18px calc(var(--safe-b) + 14px); background: linear-gradient(to top, var(--bg) 70%, transparent); }
 .stepper { display: flex; align-items: center; gap: 4px; }
 .stepper button { width: 44px; height: 44px; border-radius: 12px; background: var(--surface-2); font-size: 22px; font-weight: 500; }
