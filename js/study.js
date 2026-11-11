@@ -42,7 +42,7 @@ export function startSession({ mode, ids, source, backTo, deckId = '' }) {
   if (S.words.size < m.min) return toast(`Chế độ "${m.name}" cần ít nhất ${m.min} từ trong kho`);
   ses = {
     mode, source, backTo, deckId, queue: ids.slice(), total: ids.length, done: 0,
-    stats: { again: 0, hard: 0, easy: 0, correct: 0, wrong: 0, skipped: 0 },
+    stats: { again: 0, hard: 0, easy: 0, known: 0, correct: 0, wrong: 0, skipped: 0 },
     counted: new Set(), step: null, finished: false, startedAt: Date.now(),
   };
   prepareStep();
@@ -117,115 +117,159 @@ async function advance({ requeue = false } = {}) {
 }
 
 async function grade(rating) {
+  const s = ses; // giữ lại phiên hiện tại: việc ghi dữ liệu chạy song song với hiệu ứng chuyển thẻ
   const w = cur();
-  if (!ses.counted.has(w.id)) {
-    ses.counted.add(w.id);
-    if (rating === 'again') ses.stats.wrong++; else ses.stats.correct++;
+  if (!s.counted.has(w.id)) {
+    s.counted.add(w.id);
+    if (rating === 'again') s.stats.wrong++; else s.stats.correct++;
   }
-  if (isFlash(ses.mode)) ses.stats[rating]++;
-  if (ses.streak0 === undefined) ses.streak0 = streak();
+  if (isFlash(s.mode)) s.stats[rating]++;
+  if (s.streak0 === undefined) s.streak0 = streak();
   const before = dayOf();
   const b = [before.newIds.length, before.reviewIds.length];
-  await recordAnswer(w.id, rating, ses.source);
+  await recordAnswer(w.id, rating, s.source);
   const after = dayOf();
-  ses.goals ??= new Set();
-  if (b[0] < S.settings.newPerDay && after.newIds.length >= S.settings.newPerDay) ses.goals.add('new');
-  if (b[1] < S.settings.reviewPerDay && after.reviewIds.length >= S.settings.reviewPerDay) ses.goals.add('review');
+  s.goals ??= new Set();
+  if (b[0] < S.settings.newPerDay && after.newIds.length >= S.settings.newPerDay) s.goals.add('new');
+  if (b[1] < S.settings.reviewPerDay && after.reviewIds.length >= S.settings.reviewPerDay) s.goals.add('review');
 }
 
-// Chấm điểm thẻ: thẻ bay ra theo hướng tương ứng rồi mới sang thẻ kế.
+// Chấm điểm thẻ: một bản sao của thẻ bay ra theo hướng vuốt, còn thẻ kế tiếp hiện ra ngay bên dưới
+// (không chờ hiệu ứng hay ghi dữ liệu xong) để vuốt liên tục không bị khựng.
+const DIRS = { again: [-1, 0], easy: [1, 0], hard: [0, 1], known: [0, -1] };
 let busy = false;
-async function rate(rating) {
+function flyOut(el, rating, swipe) {
+  const [ux, uy] = DIRS[rating];
+  const cur = el.style.transform;
+  el.classList.add('still');
+  el.style.transition = 'none';
+  el.style.transform = 'none';
+  const r = el.getBoundingClientRect();
+  const g = el.cloneNode(true);
+  g.classList.add('ghost');
+  g.removeAttribute('data-act');
+  Object.assign(g.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px`, transform: cur || 'none' });
+  g.style.setProperty(`--${rating === 'again' ? 'l' : rating === 'easy' ? 'r' : rating === 'hard' ? 'd' : 'u'}`, 1);
+  document.body.appendChild(g);
+  el.style.visibility = 'hidden';
+  const dx = swipe?.dx || 0, dy = swipe?.dy || 0;
+  const tx = ux ? ux * (innerWidth + r.width * 0.3) : dx * 1.4;
+  const ty = uy ? uy * innerHeight * 0.95 : dy * 1.6;
+  const dist = Math.hypot(tx - dx, ty - dy);
+  // Vuốt nhanh thì thẻ bay nhanh, tiếp nối đà của ngón tay; bấm nút thì tăng tốc dần.
+  const speed = swipe ? Math.max(1.6, Math.hypot(swipe.vx, swipe.vy)) : 0;
+  const duration = swipe ? Math.max(150, Math.min(320, dist / speed)) : 300;
+  const anim = g.animate(
+    [{ transform: cur || 'translate3d(0,0,0) rotate(0deg)', opacity: 1 },
+      { transform: `translate3d(${tx}px, ${ty}px, 0) rotate(${ux ? ux * 22 : dx / 14}deg)`, opacity: 0.35 }],
+    { duration, easing: swipe ? 'cubic-bezier(.25,.6,.5,1)' : 'cubic-bezier(.4,0,.9,.6)', fill: 'forwards' });
+  const done = () => g.remove();
+  anim.finished.then(done, done);
+  return duration;
+}
+async function rate(rating, swipe) {
   if (busy || !ses || ses.finished) return;
   busy = true;
   try {
-    const el = document.querySelector('.flash');
-    if (el && motionOK()) {
-      const x = rating === 'again' ? -1 : rating === 'easy' ? 1 : 0;
-      el.classList.add('still');
-      el.style.transition = 'transform .2s ease-in, opacity .2s ease-in';
-      el.style.transform = x ? `translateX(${x * 120}%) rotate(${x * 14}deg)` : 'translateY(70%) scale(.94)';
-      el.style.opacity = '0';
-      await wait(190);
-    }
-    await grade(rating);
+    const el = document.querySelector('.ses-body .flash');
+    const last = ses.queue.length === 1 && rating !== 'again';
+    const ms = el && motionOK() ? flyOut(el, rating, swipe) : 0;
+    const saved = grade(rating);
+    // Thẻ cuối: chờ ghi xong (màn tổng kết cần số liệu) và chờ thẻ bay ra. Các thẻ khác: sang thẻ kế ngay.
+    if (last) { await saved; if (ms) await wait(Math.min(ms, 200)); }
+    else saved.catch((err) => { console.error(err); toast('Chưa lưu được kết quả: ' + (err?.message || err), 'bad'); });
     // "Quên" → gặp lại ngay trong phiên này cho đến khi nhớ.
     await advance({ requeue: rating === 'again' });
   } finally { busy = false; }
 }
 
-// Vuốt thẻ (cả mặt trước lẫn mặt đáp án): trái = Quên, phải = Dễ, xuống = Khó.
-// Vuốt xuống chỉ nhận khi nội dung đang ở đầu trang, nên thẻ dài vẫn cuộn đọc được bình thường.
+// Vuốt thẻ (cả mặt trước lẫn mặt đáp án): trái = Quên, xuống = Khó, phải = Dễ, lên = Đã nhớ.
+// Thẻ đi theo ngón tay theo cả hai chiều; thả tay thì chấm theo hướng lệch nhiều hơn.
+// Thẻ dài vẫn cuộn đọc được: vuốt xuống chỉ nhận khi đang ở đầu thẻ, vuốt lên chỉ nhận khi đã ở cuối thẻ.
 let drag = null;
 let suppressClick = false;
-const SLOP = 10;
-// Hướng của cử chỉ: 'x' (chấm Quên/Dễ), 'down' (chấm Khó), 'scroll' (để trình duyệt cuộn), null = chưa rõ.
-function gestureOf(dx, dy, atTop) {
-  const ax = Math.abs(dx), ay = Math.abs(dy);
-  if (Math.max(ax, ay) < SLOP) return null;
-  if (ax >= ay) return 'x';
-  return dy > 0 && atTop ? 'down' : 'scroll';
+const SLOP = 8;
+// Vừa cuộn nội dung thẻ xong mà vuốt tiếp cùng chiều thì coi là vẫn đang cuộn, không chấm điểm nhầm.
+let lastScroll = 0;
+document.addEventListener('scroll', (e) => { if (e.target.classList?.contains('ses-body')) lastScroll = performance.now(); }, true);
+const clamp01 = (n) => Math.max(0, Math.min(1, n));
+const canGrab = (d, dx, dy) => Math.abs(dx) >= Math.abs(dy) || (dy > 0 ? d.atTop : d.atBottom);
+function paintDrag() {
+  const d = drag;
+  if (!d) return;
+  d.raf = 0;
+  const { el, dx, dy } = d;
+  el.style.transform = `translate3d(${dx}px, ${dy}px, 0) rotate(${dx / 20}deg)`;
+  const horiz = Math.abs(dx) >= Math.abs(dy);
+  el.style.setProperty('--l', horiz ? clamp01(-dx / 80) : 0);
+  el.style.setProperty('--r', horiz ? clamp01(dx / 80) : 0);
+  el.style.setProperty('--d', horiz ? 0 : clamp01(dy / 80));
+  el.style.setProperty('--u', horiz ? 0 : clamp01(-dy / 80));
 }
 document.addEventListener('pointerdown', (e) => {
-  const el = e.target.closest?.('.flash');
+  const el = e.target.closest?.('.ses-body .flash');
   if (!el || busy || e.target.closest('button') || (e.pointerType === 'mouse' && e.button !== 0)) return;
   const sc = el.closest('.ses-body');
-  drag = { el, x: e.clientX, y: e.clientY, id: e.pointerId, on: false, dx: 0, dy: 0, axis: null, atTop: !sc || sc.scrollTop <= 0 };
+  drag = {
+    el, x: e.clientX, y: e.clientY, id: e.pointerId, on: false, dx: 0, dy: 0, ox: 0, oy: 0, raf: 0, track: [{ t: e.timeStamp, x: 0, y: 0 }],
+    atTop: sc.scrollTop <= 0, atBottom: sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 1,
+  };
+  if (performance.now() - lastScroll < 600) drag.atTop = drag.atBottom = false;
 });
 document.addEventListener('pointermove', (e) => {
   if (!drag || e.pointerId !== drag.id) return;
   const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
   if (!drag.on) {
-    const g = gestureOf(dx, dy, drag.atTop);
-    if (!g) return;
-    if (g === 'scroll') { drag = null; return; }
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < SLOP) return;
+    if (!canGrab(drag, dx, dy)) { drag = null; return; } // để trình duyệt cuộn nội dung thẻ
     drag.on = true;
-    drag.axis = g === 'down' ? 'y' : 'x';
+    // Bắt đầu kéo từ đúng vị trí hiện tại của ngón tay để thẻ không bị giật một nhịp.
+    drag.ox = dx; drag.oy = dy;
     if (ses?.step) ses.step.still = true;
     drag.el.classList.add('still', 'dragging');
+    drag.el.style.transition = 'none';
     try { drag.el.setPointerCapture(e.pointerId); } catch {}
   }
-  const el = drag.el;
-  el.style.transition = 'none';
-  if (drag.axis === 'y') {
-    drag.dy = Math.max(0, dy);
-    el.style.transform = `translateY(${drag.dy}px) scale(${1 - Math.min(0.06, drag.dy / 2500)})`;
-    el.style.setProperty('--u', Math.max(0, Math.min(1, drag.dy / 80)));
-    return;
-  }
-  drag.dx = dx;
-  el.style.transform = `translateX(${dx}px) rotate(${dx / 18}deg)`;
-  el.style.setProperty('--l', Math.max(0, Math.min(1, -dx / 90)));
-  el.style.setProperty('--r', Math.max(0, Math.min(1, dx / 90)));
+  drag.dx = dx - drag.ox;
+  drag.dy = dy - drag.oy;
+  drag.track.push({ t: e.timeStamp, x: dx, y: dy });
+  if (drag.track.length > 6) drag.track.shift();
+  if (!drag.raf) drag.raf = requestAnimationFrame(paintDrag);
 });
-// Chặn trình duyệt cuộn / nảy trang (rubber-band trên iOS) trong lúc đang vuốt thẻ — đây là nguyên nhân màn hình bị rung.
+// Chặn trình duyệt cuộn / nảy trang (rubber-band trên iOS) trong lúc đang vuốt thẻ.
 document.addEventListener('touchmove', (e) => {
   if (!drag || !e.cancelable || e.touches.length !== 1) return;
   if (drag.on) return e.preventDefault();
   const t = e.touches[0];
-  const dx = t.clientX - drag.x, dy = t.clientY - drag.y;
-  const ax = Math.abs(dx), ay = Math.abs(dy);
-  // Chưa đủ xa để biết hướng: tạm giữ trang đứng yên, trừ khi rõ ràng là đang cuộn lên/xuống trong thẻ dài.
-  const scrolling = ay > ax && !(dy > 0 && drag.atTop);
-  if (!scrolling) e.preventDefault();
+  if (canGrab(drag, t.clientX - drag.x, t.clientY - drag.y)) e.preventDefault();
 }, { passive: false });
 function endDrag(e) {
   if (!drag || e.pointerId !== drag.id) return;
   const d = drag;
   drag = null;
+  if (d.raf) cancelAnimationFrame(d.raf);
   if (!d.on) return;
   suppressClick = true;
   setTimeout(() => { suppressClick = false; }, 350);
   d.el.classList.remove('dragging');
-  if (e.type === 'pointerup' && d.el.isConnected) {
-    if (d.axis === 'y' && d.dy > 80) return rate('hard');
-    if (d.axis === 'x' && Math.abs(d.dx) > 90) return rate(d.dx < 0 ? 'again' : 'easy');
+  if (e.type === 'pointerup' && d.el.isConnected && !busy) {
+    // Vận tốc (px/ms) trong ~100ms cuối: hất nhanh một đoạn ngắn cũng được tính.
+    const lastP = d.track[d.track.length - 1];
+    const first = d.track.find((p) => lastP.t - p.t <= 100) || lastP;
+    const dt = Math.max(1, lastP.t - first.t);
+    const vx = (lastP.x - first.x) / dt, vy = (lastP.y - first.y) / dt;
+    // Quãng đường tính từ điểm chạm đầu tiên (kể cả đoạn đầu trước khi thẻ bắt đầu đi theo tay).
+    const horiz = Math.abs(lastP.x) >= Math.abs(lastP.y);
+    const dist = horiz ? lastP.x : lastP.y, vel = horiz ? vx : vy;
+    const flick = Math.abs(dist) > 24 && Math.abs(vel) > 0.35 && Math.sign(vel) === Math.sign(dist);
+    if (Math.abs(dist) > 80 || flick) {
+      d.el.style.transform = `translate3d(${d.dx}px, ${d.dy}px, 0) rotate(${d.dx / 20}deg)`;
+      return rate(horiz ? (dist < 0 ? 'again' : 'easy') : (dist > 0 ? 'hard' : 'known'), { dx: d.dx, dy: d.dy, vx, vy });
+    }
   }
-  d.el.style.transition = 'transform .22s cubic-bezier(.2,.8,.2,1)';
+  d.el.style.transition = 'transform .3s cubic-bezier(.2,.9,.3,1.15)';
   d.el.style.transform = '';
-  d.el.style.setProperty('--l', 0);
-  d.el.style.setProperty('--r', 0);
-  d.el.style.setProperty('--u', 0);
+  for (const k of ['--l', '--r', '--d', '--u']) d.el.style.setProperty(k, 0);
 }
 document.addEventListener('pointerup', endDrag);
 document.addEventListener('pointercancel', endDrag);
@@ -241,7 +285,7 @@ on('ses-flip', async () => {
   const st = ses.step;
   // Tự phát âm khi lật sang mặt đáp án (gọi ngay trong lượt chạm để iOS cho phép phát tiếng).
   if (!st.flipped && S.settings.autoSpeak !== false) speak(cur().word, voice());
-  const el = document.querySelector('.flash');
+  const el = document.querySelector('.ses-body .flash');
   if (el && motionOK()) {
     busy = true;
     el.classList.add(st.flipped ? 'out-b' : 'out-f');
@@ -352,9 +396,9 @@ function flashView(w) {
       : `<div class="vi">${esc(w.meaning || '(chưa có nghĩa)')}</div>${w.pos ? `<span class="tag">${esc(w.pos)}</span>` : ''}`;
     return {
       body: `<div class="flash ${st.still ? 'still' : st.seen ? 'turn' : ''}" data-act="ses-flip" role="button" aria-label="Lật thẻ">
-        <span class="stamp l" aria-hidden="true">Quên</span><span class="stamp r" aria-hidden="true">Dễ</span><span class="stamp u" aria-hidden="true">Khó</span>
+        <span class="stamp l" aria-hidden="true">Quên</span><span class="stamp r" aria-hidden="true">Dễ</span><span class="stamp d" aria-hidden="true">Khó</span><span class="stamp u" aria-hidden="true">Đã nhớ</span>
         ${ses.mode === 'en-vi' ? `<div class="speak">${speakBtn(w.word)}</div>` : ''}
-        <div class="front">${front}</div><p class="hint">Chạm để xem đáp án<br>Đã thuộc? Vuốt ← Quên · ↓ Khó · → Dễ</p></div>`,
+        <div class="front">${front}</div><p class="hint">Chạm để xem đáp án<br>Vuốt ← Quên · ↓ Khó · → Dễ · ↑ Đã nhớ</p></div>`,
       actions: `<button class="btn ghost" data-act="ses-flip">${st.seen ? 'Xem lại đáp án' : 'Xem đáp án'}</button>`,
     };
   }
@@ -362,12 +406,13 @@ function flashView(w) {
   const hint = (r) => (affects ? fmtInterval(preview(w.srs, r)) : r === 'again' && !isNew(w) ? 'hôm nay' : 'giữ lịch');
   return {
     body: `<div class="flash back ${st.more || st.still ? 'still' : ''}" data-act="ses-flip" role="button" aria-label="Lật lại mặt trước">
-      <span class="stamp l" aria-hidden="true">Quên</span><span class="stamp r" aria-hidden="true">Dễ</span><span class="stamp u" aria-hidden="true">Khó</span>
-      ${backFace(w, st.more)}<p class="hint">Chạm để lật lại · vuốt ← Quên · ↓ Khó · → Dễ</p></div>`,
+      <span class="stamp l" aria-hidden="true">Quên</span><span class="stamp r" aria-hidden="true">Dễ</span><span class="stamp d" aria-hidden="true">Khó</span><span class="stamp u" aria-hidden="true">Đã nhớ</span>
+      ${backFace(w, st.more)}<p class="hint">Chạm để lật lại · vuốt thẻ theo mũi tên để chấm</p></div>`,
     actions: `<div class="rate">
-      <button class="again" data-act="ses-rate" data-rating="again">Quên<small>${affects ? 'ôn lại ngay' : hint('again')}</small></button>
-      <button class="hard" data-act="ses-rate" data-rating="hard">Khó<small>${hint('hard')}</small></button>
-      <button class="easy" data-act="ses-rate" data-rating="easy">Dễ<small>${hint('easy')}</small></button>
+      <button class="again" data-act="ses-rate" data-rating="again"><i aria-hidden="true">←</i>Quên<small>${affects ? 'ôn lại ngay' : hint('again')}</small></button>
+      <button class="hard" data-act="ses-rate" data-rating="hard"><i aria-hidden="true">↓</i>Khó<small>${hint('hard')}</small></button>
+      <button class="easy" data-act="ses-rate" data-rating="easy"><i aria-hidden="true">→</i>Dễ<small>${hint('easy')}</small></button>
+      <button class="known" data-act="ses-rate" data-rating="known"><i aria-hidden="true">↑</i>Đã nhớ<small>${hint('known')}</small></button>
     </div>`,
   };
 }

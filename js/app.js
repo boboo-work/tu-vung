@@ -39,7 +39,7 @@ function render(resetScroll = false) {
   const body = view.querySelector('.ses-body');
   if (body) {
     if (!changed && !resetScroll) body.scrollTop = cardScroll;
-    body.querySelector('.flash.back')?.classList.toggle('fit', body.scrollHeight <= body.clientHeight + 2);
+    body.querySelector('.flash')?.classList.toggle('fit', body.scrollHeight <= body.clientHeight + 2);
   }
   if (changed) countUp(view);
   lastHash = location.hash;

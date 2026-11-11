@@ -42,6 +42,7 @@ Khi sửa mã và phát hành lại, tăng `VERSION` trong `sw.js`.
 
 - Quên → ôn lại ngay trong phiên, hệ số dễ −0.2, chu kỳ về đầu.
 - Khó / Đúng / Dễ → SM-2: lần 1 = 1–2 ngày, lần 2 = 3–6 ngày, sau đó khoảng cách × hệ số dễ.
+- Đã nhớ → giãn cách dài hơn Dễ: ít nhất 7 ngày, với từ đã ôn lâu thì gấp 1,3 lần khoảng cách của Dễ.
 - Từ chưa đến hạn: trả lời đúng không đổi lịch; trả lời sai bị kéo về danh sách cần ôn hôm nay.
 - "Đã ghi nhớ" = khoảng cách ôn ≥ 21 ngày.
 

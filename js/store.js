@@ -176,7 +176,7 @@ export const dayOf = (date = today()) => S.days.get(date) || blankDay(date);
 
 /**
  * Ghi nhận một lần trả lời và cập nhật lịch ôn.
- * rating: again | hard | good | easy.   source: 'learn' | 'review' | 'practice'
+ * rating: again | hard | good | easy | known.   source: 'learn' | 'review' | 'practice'
  * - Từ mới chỉ "ra khỏi" trạng thái mới khi học bằng flashcard (source = learn).
  * - Từ đến hạn: mọi đánh giá đều cập nhật lịch.
  * - Từ chưa đến hạn: chỉ khi trả lời sai mới bị kéo về danh sách cần ôn (tránh "ôn sớm" làm phồng khoảng cách).
