@@ -28,6 +28,7 @@ const ICONS = {
   ear: '<path d="M7 10a5 5 0 0 1 10 0c0 3-3 3.5-3 6.5a3 3 0 0 1-5.5 1.6M10 10.5a2 2 0 0 1 4 0"/>',
   list: '<path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>',
   swap: '<path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/>',
+  game: '<rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7 10.5v4M5 12.5h4M15.5 11.5h.01M18 13.5h.01"/>',
   blank: '<path d="M3 8h5M3 16h18M12 8h9"/><path d="M8.5 5.5v5h3v-5z"/>',
 };
 

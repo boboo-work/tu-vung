@@ -4,12 +4,13 @@ import { icon, actions, on, go, back, setRenderer, TABS, closeSheet } from './ui
 import { homeView, learnView, reviewView, vocabView, wordView, formView, decksView } from './views.js';
 import { statsView, settingsView, aiView, applyTheme } from './views2.js';
 import { sessionView } from './study.js';
+import { gameView } from './game.js';
 import { countUp } from './fx.js';
 
 const routes = {
   home: homeView, learn: learnView, review: reviewView, vocab: vocabView, stats: statsView,
   word: wordView, edit: formView, new: () => formView(null), decks: decksView,
-  settings: settingsView, ai: aiView, session: sessionView,
+  settings: settingsView, ai: aiView, session: sessionView, game: gameView,
 };
 const TAB_META = [['home', 'Trang chủ', 'home'], ['learn', 'Học', 'learn'], ['review', 'Ôn tập', 'review'], ['vocab', 'Từ vựng', 'vocab'], ['stats', 'Thống kê', 'stats']];
 
@@ -80,7 +81,7 @@ function bindEvents() {
   matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', applyTheme);
   // Sang ngày mới khi app đang mở nền → vẽ lại để cập nhật danh sách đến hạn.
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && !['session', 'edit', 'new', 'ai', 'settings'].includes(location.hash.split('/')[1])) render();
+    if (!document.hidden && !['session', 'game', 'edit', 'new', 'ai', 'settings'].includes(location.hash.split('/')[1])) render();
   });
 }
 
@@ -109,7 +110,7 @@ async function boot() {
     let reloading = false;
     const reloadWhenIdle = () => {
       if (reloading) return;
-      if (location.hash === '#/session') { addEventListener('hashchange', reloadWhenIdle, { once: true }); return; }
+      if (location.hash === '#/session' || location.hash === '#/game') { addEventListener('hashchange', reloadWhenIdle, { once: true }); return; }
       reloading = true;
       location.reload();
     };
