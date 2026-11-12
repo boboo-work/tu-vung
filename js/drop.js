@@ -8,7 +8,7 @@ import { confetti } from './fx.js';
 import { HEROES, GAME_MIN, gamePool, loadPrefs, slots, pickWords, roundLine } from './game.js';
 
 const ROUND = 15;
-const HAMMER = `<svg viewBox="0 0 40 56" aria-hidden="true"><rect x="17" y="14" width="6" height="40" rx="3" fill="#B7793A"/><rect x="3" y="2" width="34" height="18" rx="5" fill="#6C7280"/><rect x="3" y="2" width="9" height="18" rx="4" fill="#8E95A3"/></svg>`;
+export const HAMMER = `<svg viewBox="0 0 40 56" aria-hidden="true"><rect x="17" y="14" width="6" height="40" rx="3" fill="#B7793A"/><rect x="3" y="2" width="34" height="18" rx="5" fill="#6C7280"/><rect x="3" y="2" width="9" height="18" rx="4" fill="#8E95A3"/></svg>`;
 
 let D = null;
 // Kỷ lục lưu cùng dữ liệu app; bản cũ lưu theo máy vẫn được tính.

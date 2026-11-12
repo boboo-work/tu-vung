@@ -30,6 +30,8 @@ const ICONS = {
   swap: '<path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/>',
   game: '<rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7 10.5v4M5 12.5h4M15.5 11.5h.01M18 13.5h.01"/>',
   target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12h.01"/>',
+  link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  balloon: '<path d="M12 3a6 6 0 0 1 6 6c0 3.5-3 6.5-6 6.5S6 12.500 6 9a6 6 0 0 1 6-6zM12 15.500v2M12 17.500c-1.500 1 1.500 2 0 3.500"/>',
   blank: '<path d="M3 8h5M3 16h18M12 8h9"/><path d="M8.5 5.5v5h3v-5z"/>',
 };
 

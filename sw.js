@@ -1,11 +1,11 @@
 // Service worker: lưu sẵn toàn bộ app để chạy offline.
 // Chiến lược: ưu tiên mạng (luôn nhận bản mới khi online), rớt mạng hoặc quá 3 giây thì dùng bản đã lưu.
 // Khi phát hành bản mới, tăng VERSION để dọn cache cũ.
-const VERSION = 'v16';
+const VERSION = 'v17';
 const CACHE = `tu-vung-${VERSION}`;
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './css/app.css',
-  './js/app.js', './js/ui.js', './js/store.js', './js/srs.js', './js/util.js', './js/study.js', './js/game.js', './js/drop.js',
+  './js/app.js', './js/ui.js', './js/store.js', './js/srs.js', './js/util.js', './js/study.js', './js/game.js', './js/drop.js', './js/games2.js',
   './js/views.js', './js/views2.js', './js/io.js', './js/ai.js', './js/seed.js', './js/fx.js',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png',
 ];

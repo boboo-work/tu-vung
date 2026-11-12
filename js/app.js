@@ -6,12 +6,13 @@ import { statsView, settingsView, aiView, applyTheme } from './views2.js';
 import { sessionView } from './study.js';
 import { gameView } from './game.js';
 import { dropView } from './drop.js';
+import { matchView, popView } from './games2.js';
 import { countUp } from './fx.js';
 
 const routes = {
   home: homeView, learn: learnView, review: reviewView, vocab: vocabView, stats: statsView,
   word: wordView, edit: formView, new: () => formView(null), decks: decksView,
-  settings: settingsView, ai: aiView, session: sessionView, game: gameView, drop: dropView,
+  settings: settingsView, ai: aiView, session: sessionView, game: gameView, drop: dropView, match: matchView, pop: popView,
 };
 const TAB_META = [['home', 'Trang chủ', 'home'], ['learn', 'Học', 'learn'], ['review', 'Ôn tập', 'review'], ['vocab', 'Từ vựng', 'vocab'], ['stats', 'Thống kê', 'stats']];
 
@@ -82,7 +83,7 @@ function bindEvents() {
   matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', applyTheme);
   // Sang ngày mới khi app đang mở nền → vẽ lại để cập nhật danh sách đến hạn.
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && !['session', 'game', 'drop', 'edit', 'new', 'ai', 'settings'].includes(location.hash.split('/')[1])) render();
+    if (!document.hidden && !['session', 'game', 'drop', 'match', 'pop', 'edit', 'new', 'ai', 'settings'].includes(location.hash.split('/')[1])) render();
   });
 }
 
@@ -185,7 +186,7 @@ async function boot() {
     let reloading = false;
     const reloadWhenIdle = () => {
       if (reloading) return;
-      if (location.hash === '#/session' || location.hash === '#/game' || location.hash === '#/drop') { addEventListener('hashchange', reloadWhenIdle, { once: true }); return; }
+      if (['#/session', '#/game', '#/drop', '#/match', '#/pop'].includes(location.hash)) { addEventListener('hashchange', reloadWhenIdle, { once: true }); return; }
       reloading = true;
       location.reload();
     };

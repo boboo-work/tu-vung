@@ -135,6 +135,8 @@ export function learnView() {
     <h2>Mini game</h2>
     <button class="listlink" data-act="go" data-to="#/game"><span class="lead">${icon('game')}</span><span class="body"><b>Chạy & Gõ</b><small>${gamePool().length >= GAME_MIN ? 'Gõ đúng từ để nhảy qua chướng ngại vật · 3 mạng' : `Cần học ít nhất ${GAME_MIN} từ để chơi`}</small></span>${icon('chev')}</button>
     <button class="listlink" data-act="go" data-to="#/drop"><span class="lead">${icon('target')}</span><span class="body"><b>Bắn Từ</b><small>${gamePool().length >= GAME_MIN ? 'Từ rơi xuống, gõ đúng để bắn trúng · không có mạng' : `Cần học ít nhất ${GAME_MIN} từ để chơi`}</small></span>${icon('chev')}</button>
+    <button class="listlink" data-act="go" data-to="#/match"><span class="lead">${icon('link')}</span><span class="body"><b>Nối Cụm</b><small>Chọn từ đúng để hoàn thành cụm từ · không cần bàn phím</small></span>${icon('chev')}</button>
+    <button class="listlink" data-act="go" data-to="#/pop"><span class="lead">${icon('balloon')}</span><span class="body"><b>Nghe & Chạm</b><small>Nghe từ, chạm bong bóng có nghĩa đúng · không cần bàn phím</small></span>${icon('chev')}</button>
   </div>`;
 }
 on('learn-deck', (el) => { ui.learnDeck = el.value; rerender(); });

@@ -64,15 +64,16 @@ export const gamePool = () => allWords().filter((w) => !isNew(w) && (w.meaning |
 // Ưu tiên: (1) từ đang "nợ" — trượt lần trước, chưa gõ lại đúng; (2) từ chưa chơi trong vòng này, từ đến hạn ôn đứng trước,
 // rồi tới từ lâu chưa gặp nhất; (3) cuối vòng mà chưa đủ số lượng thì lấp bằng từ lâu chưa gặp nhất.
 const lastSeen = (w) => w.game?.last || 0;
-export function pickWords(n) {
-  const pool = gamePool();
+// filter: chỉ lấy những từ game đó dùng được (ví dụ Nối Cụm cần từ có cụm từ hoặc câu ví dụ).
+export function pickWords(n, filter) {
+  const pool = filter ? gamePool().filter(filter) : gamePool();
   const debt = shuffle(pool.filter((w) => w.game?.debt)).sort((a, b) => lastSeen(a) - lastSeen(b));
   const rest = pool.filter((w) => !w.game?.debt);
   const unplayed = () => shuffle(rest.filter((w) => w.game?.round !== S.game.round))
     .sort((a, b) => (isDue(b) ? 1 : 0) - (isDue(a) ? 1 : 0) || lastSeen(a) - lastSeen(b));
   let fresh = unplayed();
-  if (!fresh.length && rest.length) {
-    // Cả vòng đã chơi xong → mở vòng mới.
+  if (!fresh.length && rest.length && !filter) {
+    // Cả vòng đã chơi xong → mở vòng mới (game chỉ dùng một phần kho từ thì không tự mở vòng).
     S.game.round += 1;
     saveGame().catch(console.error);
     fresh = unplayed();
