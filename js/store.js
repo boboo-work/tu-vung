@@ -68,6 +68,7 @@ const DEFAULT_SETTINGS = {
   rate: 0.95,
   voiceName: '', // '' = tự chọn giọng tốt nhất trên máy
   autoSpeak: true, // tự phát âm khi lật thẻ sang mặt đáp án
+  autoFill: true, // tự tra thông tin khi gõ xong từ mới ở form thêm từ
   // Mỗi cách kết nối giữ key/mô hình riêng để đổi qua lại không bị lẫn.
   ai: { provider: 'anthropic', apiKey: '', model: 'claude-opus-5-5', endpoint: '', geminiKey: '', geminiModel: 'gemini-2.5-flash', oaBase: '', oaKey: '', oaModel: '' },
   lastBackup: null,
@@ -443,6 +444,7 @@ function cleanBackup(data) {
     rate: [0.75, 0.95, 1.1].includes(Number(st.rate)) ? Number(st.rate) : 0.95,
     voiceName: str(st.voiceName).slice(0, 80),
     autoSpeak: st.autoSpeak !== false,
+    autoFill: st.autoFill !== false,
     lastBackup: DATE_RE.test(str(st.lastBackup)) ? st.lastBackup : null,
   };
   return { decks, words, days, settings, game: cleanGame(data.game) };

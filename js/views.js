@@ -306,13 +306,13 @@ export function formView(id) {
     html: `<div class="page">${navBar(editing ? 'Sửa từ' : 'Thêm từ mới', { fallback: '#/vocab' })}
     <form class="form" data-submit="save-word" novalidate>
       <label for="f-word">Từ / cụm từ tiếng Anh *</label>
-      <input type="text" id="f-word" name="word" value="${esc(w.word)}" maxlength="120" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="ví dụ: resilient">
+      <input type="text" id="f-word" name="word" value="${esc(w.word)}" maxlength="120" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" placeholder="ví dụ: resilient">
       <p class="err" id="e-word" hidden></p>
       <div class="fill-row"><button type="button" class="btn soft sm" id="fill-btn" data-act="form-fill">${icon('sparkle', 'sm')} Tự điền thông tin</button></div>
-      <p class="small faint fill-hint">${aiReady(S.settings.ai)
-        ? 'Gõ từ tiếng Anh rồi bấm: IPA, loại từ, định nghĩa từ từ điển; nghĩa tiếng Việt, ví dụ, collocations từ Trợ lý AI. Chỉ điền vào ô còn trống.'
-        : 'Gõ từ tiếng Anh rồi bấm: IPA, loại từ, định nghĩa, ví dụ từ từ điển miễn phí. Muốn điền cả nghĩa tiếng Việt và collocations, hãy kết nối AI ở Cài đặt → Trợ lý AI.'}</p>
-      <p class="small fill-status" id="fill-status" role="status" hidden></p>
+      <p class="small faint fill-hint">${S.settings.autoFill !== false && !editing ? 'Tự tra khi bạn gõ xong từ (đổi ở Cài đặt). ' : ''}${aiReady(S.settings.ai)
+        ? 'IPA, loại từ, định nghĩa từ từ điển; nghĩa tiếng Việt, ví dụ, collocations từ Trợ lý AI. Chỉ điền vào ô còn trống.'
+        : 'IPA, định nghĩa, ví dụ từ từ điển; nghĩa tiếng Việt từ dịch miễn phí; đồng nghĩa và gợi ý collocations theo thống kê. Kết nối AI ở Cài đặt để kết quả sát và đầy đủ hơn.'}</p>
+      <div class="small fill-status" id="fill-status" role="status" hidden><p id="fill-text"></p><button type="button" class="btn ghost sm" id="fill-pick" data-act="form-pick-sense" hidden>Chọn nghĩa</button></div>
       <label for="f-meaning">Nghĩa tiếng Việt *</label>
       <input type="text" id="f-meaning" name="meaning" value="${esc(w.meaning)}" maxlength="300" autocomplete="off" placeholder="ví dụ: kiên cường">
       <p class="err" id="e-meaning" hidden></p>
@@ -348,71 +348,120 @@ on('form-diff', (el) => {
 let saving = false;
 // ---- Tự điền ----
 const FILL_LABELS = { ipa: 'IPA', pos: 'loại từ', meaning: 'nghĩa tiếng Việt', definition: 'định nghĩa', examples: 'ví dụ', collocations: 'collocations', synonyms: 'đồng nghĩa', antonyms: 'trái nghĩa', family: 'word family', mistakes: 'lỗi thường gặp' };
-function setFillStatus(text, kind = '') {
-  const el = document.getElementById('fill-status');
+const FILL_SOURCES = { dict: 'từ điển', ai: 'AI', tr: 'dịch miễn phí', dm: 'gợi ý thống kê' };
+const $id = (id) => document.getElementById(id);
+const wordNow = () => ($id('f-word')?.value || '').replace(/\s+/g, ' ').trim();
+function setFillStatus(text, kind = '', { pick = false } = {}) {
+  const el = $id('fill-status');
   if (!el) return;
-  el.textContent = text;
+  $id('fill-text').textContent = text;
   el.className = `small fill-status ${kind}`;
   el.hidden = !text;
+  $id('fill-pick').hidden = !pick;
 }
 // Chỉ điền vào ô còn trống; trả về true nếu đã điền.
 function fillIfEmpty(key, value) {
-  const el = document.getElementById('f-' + key);
+  const el = $id('f-' + key);
   if (!el || !value || (Array.isArray(value) && !value.length) || el.value.trim()) return false;
   if (key === 'pos' && ![...el.options].some((o) => o.value === value || o.text === value)) el.add(new Option(value, value));
   el.value = Array.isArray(value) ? value.join(['synonyms', 'antonyms'].includes(key) ? ', ' : '\n') : value;
   return true;
 }
-on('form-fill', async (btn) => {
-  const wordEl = document.getElementById('f-word');
-  const word = (wordEl?.value || '').replace(/\s+/g, ' ').trim();
-  if (!word) { setFillStatus('Hãy gõ từ tiếng Anh trước rồi bấm Tự điền.', 'bad'); wordEl?.focus(); return; }
+let fillBusy = '';   // từ đang được tra (tránh tra trùng khi vừa rời ô nhập vừa bấm nút)
+let lastLookup = null; // { word, r } — kết quả gần nhất, dùng cho nút "Chọn nghĩa"
+let lastAuto = '';   // từ đã tự tra gần nhất trong form này
+
+// Điền kết quả vào form và hiện tóm tắt. `needPick`: từ nhiều nghĩa nhưng chưa chọn nghĩa.
+function applyFill(r, word, sense, { needPick = false } = {}) {
+  const { fields, from } = buildFill(r, sense, { pickSense: !needPick });
+  const done = {};
+  for (const [k, v] of Object.entries(fields)) if (fillIfEmpty(k, v)) (done[from[k]] ||= []).push(FILL_LABELS[k]);
+  const lines = Object.entries(done).map(([src, ls]) => `${FILL_SOURCES[src][0].toUpperCase()}${FILL_SOURCES[src].slice(1)}: ${ls.join(', ')}`);
+  const notes = [];
+  if (from.ipa === 'ai' && done.ai?.includes('IPA')) notes.push('IPA do AI gợi ý, nên kiểm tra lại.');
+  if (r.dict && !r.dict.ipa && !r.ai) notes.push('Từ điển không có IPA cho từ này.');
+  if (done.tr) notes.push('Nghĩa tiếng Việt là dịch tự động, hãy xem có sát nghĩa bạn cần không.');
+  if (done.dm?.includes('collocations')) notes.push('Collocations là gợi ý theo thống kê, cần chọn lọc.');
+  if (!r.useAI && !r.web?.meaning && !$id('f-meaning')?.value.trim()) notes.push(r.web?.meaningFailed ? 'Chưa dịch được nghĩa tiếng Việt (dịch vụ không phản hồi), hãy nhập tay hoặc bấm Tự điền lại.' : 'Chưa có nghĩa tiếng Việt: hãy nhập tay hoặc kết nối AI.');
+  if (r.web?.hintsFailed) notes.push('Dịch vụ gợi ý từ chưa phản hồi.');
+  if (r.aiError) notes.push(`AI chưa trả lời được: ${r.aiError}`);
+  if (r.dictError) notes.push(`Từ điển: ${r.dictError}`);
+  if (!r.dict && !r.dictError && (r.ai || r.web)) notes.push('Từ điển không có từ này.');
+  if (needPick) notes.push(`Từ có ${r.dict.senses.length} nghĩa — chọn nghĩa bạn cần để điền định nghĩa, loại từ, ví dụ.`);
+  const attribution = [r.dict && 'từ điển: Wiktionary (CC BY-SA)', done.tr && 'dịch: MyMemory', done.dm && 'gợi ý: Datamuse'].filter(Boolean);
+  if (attribution.length) notes.push(`Nguồn ${attribution.join(' · ')}.`);
+  const head = lines.length ? `Đã điền — ${lines.join(' · ')}.` : 'Không có ô trống nào cần điền thêm.';
+  setFillStatus([head, ...notes, lines.length ? 'Hãy xem lại trước khi lưu.' : ''].filter(Boolean).join('\n'), lines.length ? 'ok' : '', { pick: needPick });
+}
+
+// auto = true: chạy tự động khi gõ xong từ (không bật bảng chọn nghĩa, không báo lỗi khi chưa gõ gì).
+async function runFill({ auto = false } = {}) {
+  const word = wordNow();
+  const btn = $id('fill-btn');
+  if (!btn) return;
+  if (!word) { if (!auto) { setFillStatus('Hãy gõ từ tiếng Anh trước rồi bấm Tự điền.', 'bad'); $id('f-word')?.focus(); } return; }
+  if (auto) {
+    if (word === lastAuto || word.length < 2 || !/^[A-Za-z][A-Za-z '’-]*$/.test(word)) return; // chưa gõ xong, đã tra rồi, hoặc không phải tiếng Anh
+    const dup = findByText(word, ui.form?.id);
+    if (dup) { lastAuto = word; setFillStatus(`“${dup.word}” đã có trong kho (${deckName(dup.deckId)}).`, 'bad'); return; }
+  }
   if (word.length > 60) { setFillStatus('Từ/cụm từ quá dài để tra cứu.', 'bad'); return; }
-  if (!navigator.onLine) { setFillStatus('Tự điền cần kết nối mạng. Hiện thiết bị đang offline — bạn vẫn có thể nhập tay.', 'bad'); return; }
+  if (!navigator.onLine) { if (!auto) setFillStatus('Tự điền cần kết nối mạng. Hiện thiết bị đang offline — bạn vẫn có thể nhập tay.', 'bad'); return; }
+  if (fillBusy === word) return;
+  fillBusy = word;
+  if (auto) lastAuto = word;
   const label = btn.innerHTML;
   btn.disabled = true; btn.textContent = 'Đang tra…';
   setFillStatus('');
-  // Nếu người dùng đã đổi từ (hoặc rời form) trong lúc chờ thì bỏ kết quả.
-  const stale = () => (document.getElementById('f-word')?.value || '').replace(/\s+/g, ' ').trim() !== word;
+  const stale = () => wordNow() !== word; // đã đổi từ hoặc rời form trong lúc chờ → bỏ kết quả
   try {
-    const r = await lookupWord(word, { meaning: document.getElementById('f-meaning')?.value.trim() || '', ai: S.settings.ai });
+    const have = Object.fromEntries(['meaning', 'collocations', 'synonyms', 'antonyms'].map((k) => [k, !!$id('f-' + k)?.value.trim()]));
+    const r = await lookupWord(word, { meaning: $id('f-meaning')?.value.trim() || '', ai: S.settings.ai, have });
     if (stale()) return;
-    if (!r.dict && !r.ai) {
-      setFillStatus(r.dictError || r.aiError ? `Không tra được: ${[r.dictError, r.aiError].filter(Boolean).join(' · ')}` : `Không tìm thấy “${word}” trong từ điển. Kiểm tra lại chính tả hoặc nhập tay.`, 'bad');
+    if (!r.dict && !r.ai && !r.web?.meaning && !r.web?.hints) {
+      setFillStatus(r.dictError || r.aiError ? `Không tra được: ${[r.dictError, r.aiError].filter(Boolean).join(' · ')}` : `Không tìm thấy “${word}”. Kiểm tra lại chính tả hoặc nhập tay.`, 'bad');
       return;
     }
+    lastLookup = { word, r };
     // Không có AI mà từ điển có nhiều nghĩa: nghĩa đầu tiên có thể không phải nghĩa bạn cần → cho chọn.
-    let sense = 0;
-    if (!r.ai && r.dict?.senses.length > 1) {
-      const picked = await chooseSheet({
-        title: 'Chọn nghĩa đúng với từ của bạn',
-        options: r.dict.senses.map((s, i) => ({ value: String(i), label: s.definition.length > 110 ? s.definition.slice(0, 107) + '…' : s.definition, sub: s.pos })),
-      });
+    const multi = !r.ai && r.dict?.senses.length > 1;
+    if (multi && !auto) {
+      const picked = await pickSense(r);
       if (stale()) return;
-      if (picked === null) { setFillStatus('Đã huỷ. Chỉ điền IPA nếu từ điển có.'); r.dict.senses = []; } else sense = Number(picked);
-    }
-    const { fields, from } = buildFill(r, sense);
-    const done = { dict: [], ai: [] };
-    for (const [k, v] of Object.entries(fields)) if (fillIfEmpty(k, v)) done[from[k]].push(FILL_LABELS[k]);
-    const parts = [];
-    if (done.dict.length) parts.push(`Từ từ điển: ${done.dict.join(', ')}`);
-    if (done.ai.length) parts.push(`Từ AI: ${done.ai.join(', ')}`);
-    const notes = [];
-    if (fields.ipa && from.ipa === 'ai' && done.ai.includes('IPA')) notes.push('IPA do AI gợi ý, nên kiểm tra lại.');
-    if (r.dict && !r.dict.ipa && !r.ai) notes.push('Từ điển không có IPA cho từ này.');
-    if (!r.useAI) notes.push('Nghĩa tiếng Việt và collocations cần nhập tay (hoặc kết nối AI ở Cài đặt).');
-    if (r.aiError) notes.push(`AI chưa trả lời được: ${r.aiError}`);
-    if (r.dictError) notes.push(`Từ điển: ${r.dictError}`);
-    if (!r.dict && !r.dictError && !r.aiError) notes.push('Từ điển không có từ này, chỉ dùng dữ liệu từ AI.');
-    if (r.dict) notes.push('Nguồn từ điển: Wiktionary (CC BY-SA).');
-    const head = parts.length ? parts.join(' · ') : 'Không có ô trống nào cần điền thêm';
-    setFillStatus(`${head}.${notes.length ? ' ' + notes.join(' ') : ''} Hãy xem lại trước khi lưu.`, parts.length ? 'ok' : '');
-    if (!document.getElementById('f-meaning')?.value.trim()) document.getElementById('f-meaning')?.focus({ preventScroll: true });
+      applyFill(r, word, picked ?? 0, { needPick: picked === null });
+    } else applyFill(r, word, 0, { needPick: multi });
+    if (!auto && !$id('f-meaning')?.value.trim()) $id('f-meaning')?.focus({ preventScroll: true });
   } catch (e) {
     setFillStatus(e?.message || 'Có lỗi khi tra cứu.', 'bad');
   } finally {
+    fillBusy = '';
     if (btn.isConnected) { btn.disabled = false; btn.innerHTML = label; }
   }
+}
+async function pickSense(r) {
+  const picked = await chooseSheet({
+    title: 'Chọn nghĩa đúng với từ của bạn',
+    options: r.dict.senses.map((s, i) => ({ value: String(i), label: s.definition.length > 110 ? s.definition.slice(0, 107) + '…' : s.definition, sub: s.pos })),
+  });
+  return picked === null ? null : Number(picked);
+}
+on('form-fill', () => runFill());
+on('form-pick-sense', async () => {
+  if (!lastLookup || lastLookup.word !== wordNow()) { setFillStatus('Hãy bấm Tự điền lại cho từ này.', 'bad'); return; }
+  const picked = await pickSense(lastLookup.r);
+  if (picked === null || lastLookup.word !== wordNow()) return;
+  applyFill(lastLookup.r, lastLookup.word, picked);
+});
+// Tự chạy khi gõ xong từ (rời ô nhập, hoặc bấm Enter / nút xong trên bàn phím) ở form THÊM từ mới.
+document.addEventListener('focusout', (e) => {
+  if (e.target?.id !== 'f-word' || ui.form?.id || S.settings.autoFill === false) return;
+  if (e.relatedTarget?.id === 'fill-btn') return; // người dùng bấm nút: nút sẽ tự chạy
+  runFill({ auto: true });
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter' || e.target?.id !== 'f-word') return;
+  e.preventDefault(); // Enter ở ô từ không nên lưu cả form: chuyển sang ô nghĩa
+  $id('f-meaning')?.focus();
 });
 
 on('save-word', async (form) => {

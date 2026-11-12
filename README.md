@@ -32,7 +32,7 @@ Dữ liệu gắn với địa chỉ (origin) của trang. Khi đổi địa ch�
 | `js/game.js` | Mini game “Chạy & Gõ”: gõ đúng từ để nhảy qua chướng ngại vật |
 | `js/drop.js` | Mini game “Bắn Từ”: từ rơi xuống, gõ đúng để bắn trúng, sai thì bị đập vỡ và gặp lại |
 | `js/games2.js` | Mini game “Nối Cụm” (hoàn thành collocation) và “Nghe & Chạm” (nghe, chạm bong bóng nghĩa đúng) |
-| `js/lookup.js` | Nút “Tự điền” ở form thêm từ: tra từ điển miễn phí (Wiktionary) và Trợ lý AI để điền IPA, định nghĩa, ví dụ, nghĩa tiếng Việt… |
+| `js/lookup.js` | “Tự điền” ở form thêm từ (tự chạy khi gõ xong từ, bật/tắt ở Cài đặt): từ điển Wiktionary, dịch MyMemory, gợi ý Datamuse và Trợ lý AI để điền IPA, định nghĩa, ví dụ, nghĩa tiếng Việt, collocations… |
 | `js/views.js`, `js/views2.js` | Các màn hình |
 | `js/io.js` | Import CSV/XLSX, export CSV, sao lưu JSON, bộ từ mẫu |
 | `js/ai.js` | Lớp kết nối Trợ lý AI (Claude API trực tiếp hoặc proxy riêng) |
