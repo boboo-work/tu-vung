@@ -77,6 +77,7 @@ export const S = {
   decks: [],
   days: new Map(),
   settings: structuredClone(DEFAULT_SETTINGS),
+  game: null, // dữ liệu mini game (vòng chơi, thống kê, kỷ lục) — tách riêng, không tính vào tiến độ học
   persisted: false,
 };
 
@@ -88,6 +89,7 @@ export async function init() {
   S.decks = decks.sort((a, b) => a.order - b.order);
   const saved = kv.find((x) => x.key === 'settings')?.value;
   if (saved) S.settings = { ...DEFAULT_SETTINGS, ...saved, ai: { ...DEFAULT_SETTINGS.ai, ...(saved.ai || {}) } };
+  S.game = cleanGame(kv.find((x) => x.key === 'game')?.value);
   if (!S.decks.length) {
     S.decks = DEFAULT_DECKS.map(([id, name], i) => ({ id, name, builtin: true, order: i }));
     await tx(['decks'], 'readwrite', (t) => S.decks.forEach((d) => t.objectStore('decks').put(d)));
@@ -312,12 +314,55 @@ export function forecast() {
   return out;
 }
 
+// ---- Mini game ----
+// Mỗi từ có thêm w.game = { last (ms), round, debt }:
+//   round = vòng gần nhất từ này xuất hiện trong game; debt = lần gần nhất gõ trượt và chưa gõ lại đúng.
+// S.game = { round, plays, best, days }: vòng hiện tại (dùng chung cho các game), số ván, kỷ lục, số lượt đúng/trượt theo ngày.
+const GAME_KEEP_DAYS = 120;
+function cleanGame(g) {
+  const o = g && typeof g === 'object' ? g : {};
+  const n = (v) => (Number.isFinite(Number(v)) && Number(v) >= 0 ? Math.round(Number(v)) : 0);
+  const days = {};
+  if (o.days && typeof o.days === 'object') {
+    for (const [d, v] of Object.entries(o.days)) if (/^\d{4}-\d{2}-\d{2}$/.test(d) && v && typeof v === 'object') days[d] = { ok: n(v.ok), miss: n(v.miss) };
+  }
+  const drop = o.best?.drop && typeof o.best.drop === 'object' ? { first: n(o.best.drop.first), ms: n(o.best.drop.ms) } : null;
+  return { round: Math.max(1, n(o.round)), plays: { run: n(o.plays?.run), drop: n(o.plays?.drop) }, best: { run: n(o.best?.run), drop }, days };
+}
+const cleanWordGame = (g) => (g && typeof g === 'object' && Number(g.last) > 0
+  ? { last: Number(g.last), round: Math.max(0, Math.round(Number(g.round)) || 0), debt: !!g.debt } : undefined);
+
+export async function saveGame(patch = {}) {
+  S.game = { ...S.game, ...patch };
+  await put('kv', { key: 'game', value: S.game });
+}
+
+/**
+ * Ghi nhận một lượt gõ trong mini game. Không đụng tới nhật ký học theo ngày, chuỗi ngày hay hệ số ôn tập.
+ * Gõ trượt: chỉ đưa từ vào danh sách cần ôn hôm nay (giữ nguyên khoảng cách và hệ số dễ), không tính là "Quên".
+ */
+export async function recordGame(wordId, ok) {
+  const w = S.words.get(wordId);
+  if (!w) return;
+  const t = today();
+  w.game = { last: Date.now(), round: S.game.round, debt: !ok };
+  if (!ok && !isNew(w) && (!w.srs.due || w.srs.due > t)) w.srs = { ...w.srs, due: t };
+  const day = (S.game.days[t] ||= { ok: 0, miss: 0 });
+  if (ok) day.ok += 1; else day.miss += 1;
+  const cutoff = addDays(t, -GAME_KEEP_DAYS);
+  for (const d of Object.keys(S.game.days)) if (d < cutoff) delete S.game.days[d];
+  await tx(['words', 'kv'], 'readwrite', (x) => {
+    x.objectStore('words').put(w);
+    x.objectStore('kv').put({ key: 'game', value: S.game });
+  });
+}
+
 // ---- Sao lưu / khôi phục ----
 export function exportData() {
   const { ai, ...settings } = S.settings; // không đưa API key vào file sao lưu
   return {
     app: 'vocab-app', version: 1, exportedAt: new Date().toISOString(),
-    settings, decks: S.decks, words: allWords(), days: [...S.days.values()],
+    settings, decks: S.decks, words: allWords(), days: [...S.days.values()], game: S.game,
   };
 }
 
@@ -371,6 +416,8 @@ function cleanBackup(data) {
         ease: Math.min(5, Math.max(1.3, Number(s.ease) || 2.5)), interval: int(s.interval, 0, 3650, 0), reps: int(s.reps, 0, 100000, 0), lapses: int(s.lapses, 0, 100000, 0),
       },
     });
+    const wg = cleanWordGame(w.game);
+    if (wg) words[words.length - 1].game = wg;
   }
   const days = (Array.isArray(data.days) ? data.days : []).filter((d) => d && DATE_RE.test(str(d.date))).map((d) => ({
     date: d.date,
@@ -390,7 +437,7 @@ function cleanBackup(data) {
     autoSpeak: st.autoSpeak !== false,
     lastBackup: DATE_RE.test(str(st.lastBackup)) ? st.lastBackup : null,
   };
-  return { decks, words, days, settings };
+  return { decks, words, days, settings, game: cleanGame(data.game) };
 }
 
 export async function restoreData(data) {
@@ -403,6 +450,7 @@ export async function restoreData(data) {
     clean.decks.forEach((d) => t.objectStore('decks').put(d));
     clean.days.forEach((d) => t.objectStore('days').put(d));
     t.objectStore('kv').put({ key: 'settings', value: { ...clean.settings, ai } });
+    t.objectStore('kv').put({ key: 'game', value: clean.game });
   });
   await init();
   return clean.words.length;

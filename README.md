@@ -50,3 +50,9 @@ Khi sửa mã và phát hành lại, tăng `VERSION` trong `sw.js`.
 
 Bọc nguyên thư mục này bằng Capacitor (WKWebView) để phát hành qua App Store; lớp `store.js`
 là nơi duy nhất cần thay nếu muốn chuyển sang SQLite hoặc đồng bộ đám mây.
+
+## Mini game và lịch ôn
+
+- Hai mini game chỉ dùng từ đã học, lấy theo "vòng": một vòng xong khi mọi từ đã xuất hiện ít nhất một lần, nên không từ nào bị sót. Từ gõ trượt ("nợ") được gặp lại đầu ván sau.
+- Game không ghi vào nhật ký học, chuỗi ngày hay tỉ lệ nhớ. Gõ trượt chỉ đưa từ vào danh sách cần ôn hôm nay, giữ nguyên khoảng cách và hệ số dễ.
+- Thống kê game (vòng, lượt gõ, kỷ lục) nằm riêng ở cuối tab Thống kê và có trong file sao lưu.

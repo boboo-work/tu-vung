@@ -1,9 +1,11 @@
 // Các màn hình: Statistics, Cài đặt (mục tiêu, giao diện, dữ liệu, AI), Trợ lý AI.
 import { S, allWords, summary, series, saveSettings, deckName, wipeAll } from './store.js';
-import { esc, toast, pickFile, fmtDate, speak, canSpeak, fold, englishVoices, onVoices } from './util.js';
+import { esc, toast, pickFile, fmtDate, speak, canSpeak, fold, englishVoices, onVoices, today, addDays } from './util.js';
 import { isNew, isMastered } from './srs.js';
 import { icon, on, go, rerender, navBar, confirmSheet, promptSheet, richText } from './ui.js';
 import { importFile, exportCSV, exportBackup, restoreBackup, downloadTemplate, loadSeed } from './io.js';
+import { roundInfo, bestRun } from './game.js';
+import { bestDrop, DROP_ROUND } from './drop.js';
 import { AI_ACTIONS, AI_MODELS, GEMINI_MODELS, aiReady, askAI } from './ai.js';
 
 const ui = { statsKind: 'day', statsSel: null, anim: false, ai: { wordId: null, action: 'context', input: '', q: '', loading: false, result: null, error: null } };
@@ -30,6 +32,36 @@ function mainChart() {
     ${total ? '' : '<p class="small faint center" style="margin-top:10px">Chưa có hoạt động trong khoảng thời gian này.</p>'}
     <details><summary>Xem dạng bảng</summary><table class="data"><tr><th>Thời gian</th><th>Từ mới</th><th>Từ ôn</th></tr>
       ${data.slice().reverse().map((x) => `<tr><td>${esc(x.label)}</td><td>${x.n}</td><td>${x.r}</td></tr>`).join('')}</table></details>`;
+}
+
+// Thống kê mini game: tách riêng, không tính vào tiến độ học.
+function gameStats() {
+  const g = S.game;
+  const r = roundInfo();
+  const days = Array.from({ length: 7 }, (_, i) => addDays(today(), i - 6)).map((d) => ({ date: d, ok: g.days[d]?.ok || 0, miss: g.days[d]?.miss || 0 }));
+  const all = Object.values(g.days).reduce((a, d) => ({ ok: a.ok + d.ok, miss: a.miss + d.miss }), { ok: 0, miss: 0 });
+  const total = all.ok + all.miss;
+  const max = Math.max(1, ...days.map((d) => d.ok + d.miss));
+  const names = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+  const drop = bestDrop();
+  const debt = allWords().filter((w) => w.game?.debt).length;
+  return `<h2>Mini game</h2>
+    <p class="muted small" style="margin:-4px 2px 10px">Chỉ để ôn từ cho vui — không tính vào tiến độ học, chuỗi ngày hay tỉ lệ nhớ ở trên.</p>
+    <div class="tiles">
+      <div class="tile"><b>${r.played}/${r.total}</b><span>Vòng ${r.round}</span></div>
+      <div class="tile"><b>${total}</b><span>Lượt gõ</span></div>
+      <div class="tile"><b>${total ? Math.round((all.ok / total) * 100) + '%' : '—'}</b><span>Gõ đúng</span></div>
+    </div>
+    <div class="card" style="margin-top:10px">
+      <div class="row-between"><b>7 ngày gần đây</b><span class="legend"><span><i style="background:var(--series-3)"></i>Đúng</span><span><i style="background:var(--series-2)"></i>Trượt</span></span></div>
+      <div class="chart"><div class="bars" style="height:96px">${days.map((d) => `<div class="bar" style="cursor:default" title="${fmtDate(d.date)}: ${d.ok} đúng, ${d.miss} trượt"><span class="small" style="font-size:11.5px;color:var(--text-2);font-weight:600">${d.ok + d.miss || ''}</span>${d.miss ? `<i style="height:${Math.max(3, (d.miss / max) * 70)}px;background:var(--series-2);width:100%;max-width:28px;border-radius:4px 4px 0 0"></i>` : ''}${d.ok ? `<i style="height:${Math.max(3, (d.ok / max) * 70)}px;background:var(--series-3);width:100%;max-width:28px;border-radius:${d.miss ? '0' : '4px 4px 0 0'}"></i>` : ''}</div>`).join('')}</div>
+      <div class="xlabels">${days.map((d, i) => `<span>${i === 6 ? 'Nay' : names[new Date(d.date + 'T00:00:00').getDay()]}</span>`).join('')}</div></div>
+    </div>
+    <div class="card" style="margin-top:10px">
+      <div class="field"><div class="row-between"><span style="font-weight:600">Chạy & Gõ</span><span class="small muted">${g.plays.run} ván · kỷ lục ${bestRun()} từ</span></div></div>
+      <div class="field"><div class="row-between"><span style="font-weight:600">Bắn Từ</span><span class="small muted">${g.plays.drop} ván · ${drop ? `kỷ lục ${drop.first}/${DROP_ROUND} đúng ngay` : 'chưa có kỷ lục'}</span></div></div>
+      <div class="field"><div class="row-between"><span style="font-weight:600">Từ đang nợ</span><span class="small muted">${debt} từ · gặp lại đầu ván sau</span></div></div>
+    </div>`;
 }
 
 export function statsView() {
@@ -67,6 +99,7 @@ export function statsView() {
     <h2>Theo chủ đề</h2>
     <div class="card">${byDeck.map((d) => `<div class="field"><div class="row-between"><span style="font-weight:600;min-width:0">${esc(d.name)}</span><span class="small muted" style="white-space:nowrap;flex:none">${d.learned}/${d.total} đã học · ${d.mastered} đã nhớ</span></div>
       <div class="mini-bar"><i style="width:${(d.learned / d.total) * 100}%"></i></div></div>`).join('')}</div>
+    ${gameStats()}
   </div>`;
 }
 on('stats-kind', (el) => { ui.statsKind = el.dataset.kind; ui.statsSel = null; ui.anim = true; rerender(); });
