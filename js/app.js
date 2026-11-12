@@ -92,9 +92,30 @@ function report(err) {
 }
 
 // ---- Bàn phím ảo ----
-// Khi bàn phím mở, iOS tự đẩy cả trang lên để "lộ" ô nhập, làm phần trên của màn hình bị khuất.
-// Thay vào đó: thu app lại cho vừa vùng nhìn thấy phía trên bàn phím và luôn kéo trang về vị trí gốc.
+// iOS tự đẩy cả trang lên khi người dùng chạm vào ô nhập, làm phần trên của màn hình bị khuất và gây giật.
+// Cách xử lý, theo thứ tự ưu tiên:
+//  1. Tự focus ô nhập với preventScroll ngay trong cú chạm → iOS mở bàn phím mà không đẩy trang (không có gì để giật).
+//  2. Thu app lại cho vừa vùng nhìn thấy phía trên bàn phím (--app-h) khi bàn phím đã mở xong.
+//  3. Nếu trang vẫn bị đẩy thì kéo về; chỉ khi đã đứng yên mà vẫn lệch mới dời app theo (--vv-top),
+//     không bù vị trí giữa lúc bàn phím đang trượt (đó là nguyên nhân màn hình nhảy xuống rồi bật lại).
 function watchKeyboard() {
+  const TYPING = 'input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=range]), textarea';
+  let tap = null;
+  document.addEventListener('touchstart', (e) => {
+    const el = e.touches.length === 1 ? e.target.closest?.(TYPING) : null;
+    tap = el && !el.disabled && !el.readOnly && document.activeElement !== el ? { el, x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+  }, { passive: true });
+  document.addEventListener('touchmove', (e) => {
+    if (tap && Math.hypot(e.touches[0].clientX - tap.x, e.touches[0].clientY - tap.y) > 10) tap = null; // đang cuộn, không phải chạm
+  }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const t = tap;
+    tap = null;
+    if (!t || !t.el.isConnected || !e.cancelable) return;
+    e.preventDefault(); // chặn cú focus mặc định (kèm việc iOS đẩy trang)
+    t.el.focus({ preventScroll: true });
+  }, { passive: false });
+
   const vv = window.visualViewport;
   if (!vv) return;
   const root = document.documentElement;
@@ -112,16 +133,24 @@ function watchKeyboard() {
     }
   };
   let lastH = 0;
+  let settleTimer = 0;
+  const settle = () => {
+    unshift();
+    const top = Math.max(0, Math.round(vv.offsetTop));
+    const kb = Math.max(0, Math.round(window.innerHeight - vv.height));
+    root.style.setProperty('--vv-top', `${top}px`);
+    root.style.setProperty('--kb', `${kb > 120 ? Math.max(0, kb - top) : 0}px`);
+  };
   const sync = () => {
     const kb = Math.max(0, Math.round(window.innerHeight - vv.height));
     const open = kb > 120;
     unshift();
-    // Nếu trình duyệt vẫn giữ vùng nhìn lệch xuống (không kéo về được), dời app theo để phần trên không bị khuất.
-    const top = Math.max(0, Math.round(vv.offsetTop));
     root.style.setProperty('--app-h', `${Math.round(vv.height)}px`);
-    root.style.setProperty('--vv-top', `${top}px`);
-    root.style.setProperty('--kb', `${open ? Math.max(0, kb - top) : 0}px`);
+    root.style.setProperty('--kb', `${open ? kb : 0}px`);
+    if (!vv.offsetTop) root.style.setProperty('--vv-top', '0px');
     document.body.classList.toggle('kb', open);
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(settle, 320);
     if (Math.round(vv.height) !== lastH) {
       lastH = Math.round(vv.height);
       // Sau khi thu app lại, đưa ô đang nhập vào vùng nhìn thấy nếu nó đang bị khuất (form thêm từ, cài đặt, màn hình thấp…).
@@ -132,9 +161,6 @@ function watchKeyboard() {
   vv.addEventListener('resize', sync);
   vv.addEventListener('scroll', sync);
   window.addEventListener('scroll', unshift, { passive: true });
-  // iOS đẩy trang trễ một nhịp sau khi ô nhập được focus → kéo về vài lần trong lúc bàn phím trượt lên.
-  document.addEventListener('focusin', () => { for (const ms of [0, 60, 180, 350, 600]) setTimeout(sync, ms); });
-  document.addEventListener('focusout', () => { for (const ms of [0, 120, 400]) setTimeout(sync, ms); });
   sync();
 }
 

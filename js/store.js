@@ -63,6 +63,7 @@ const DEFAULT_SETTINGS = {
   newPerDay: 10,
   reviewPerDay: 20,
   theme: 'auto', // auto | light | dark
+  accent: 'green', // màu chủ đạo: green | blue | purple | teal | orange | pink
   voice: 'en-US', // en-US | en-GB
   rate: 0.95,
   voiceName: '', // '' = tự chọn giọng tốt nhất trên máy
@@ -431,6 +432,7 @@ function cleanBackup(data) {
     newPerDay: int(st.newPerDay, 5, 200, DEFAULT_SETTINGS.newPerDay),
     reviewPerDay: int(st.reviewPerDay, 5, 200, DEFAULT_SETTINGS.reviewPerDay),
     theme: ['auto', 'light', 'dark'].includes(st.theme) ? st.theme : 'auto',
+    accent: ['green', 'blue', 'purple', 'teal', 'orange', 'pink'].includes(st.accent) ? st.accent : 'green',
     voice: ['en-US', 'en-GB'].includes(st.voice) ? st.voice : 'en-US',
     rate: [0.75, 0.95, 1.1].includes(Number(st.rate)) ? Number(st.rate) : 0.95,
     voiceName: str(st.voiceName).slice(0, 80),
