@@ -91,6 +91,53 @@ function report(err) {
   import('./util.js').then(({ toast }) => toast('Có lỗi xảy ra: ' + (err?.message || err), 'bad'));
 }
 
+// ---- Bàn phím ảo ----
+// Khi bàn phím mở, iOS tự đẩy cả trang lên để "lộ" ô nhập, làm phần trên của màn hình bị khuất.
+// Thay vào đó: thu app lại cho vừa vùng nhìn thấy phía trên bàn phím và luôn kéo trang về vị trí gốc.
+function watchKeyboard() {
+  const vv = window.visualViewport;
+  if (!vv) return;
+  const root = document.documentElement;
+  const fixedScreen = () => !!view.querySelector(':scope > .session, :scope > .game');
+  const unshift = () => {
+    if (window.scrollX || window.scrollY) window.scrollTo(0, 0);
+    if (root.scrollTop) root.scrollTop = 0;
+    if (document.body.scrollTop) document.body.scrollTop = 0;
+    // Phiên học và mini game được thiết kế nằm gọn một màn hình: không để trình duyệt tự cuộn khung chứa
+    // (trừ khi màn hình quá thấp, ô đang nhập sẽ bị khuất nếu kéo về đầu).
+    if (fixedScreen() && view.scrollTop) {
+      const el = document.activeElement;
+      const bottom = el && view.contains(el) ? el.getBoundingClientRect().bottom + view.scrollTop : 0;
+      if (bottom <= vv.height + vv.offsetTop) view.scrollTop = 0;
+    }
+  };
+  let lastH = 0;
+  const sync = () => {
+    const kb = Math.max(0, Math.round(window.innerHeight - vv.height));
+    const open = kb > 120;
+    unshift();
+    // Nếu trình duyệt vẫn giữ vùng nhìn lệch xuống (không kéo về được), dời app theo để phần trên không bị khuất.
+    const top = Math.max(0, Math.round(vv.offsetTop));
+    root.style.setProperty('--app-h', `${Math.round(vv.height)}px`);
+    root.style.setProperty('--vv-top', `${top}px`);
+    root.style.setProperty('--kb', `${open ? Math.max(0, kb - top) : 0}px`);
+    document.body.classList.toggle('kb', open);
+    if (Math.round(vv.height) !== lastH) {
+      lastH = Math.round(vv.height);
+      // Sau khi thu app lại, đưa ô đang nhập vào vùng nhìn thấy nếu nó đang bị khuất (form thêm từ, cài đặt, màn hình thấp…).
+      const el = document.activeElement;
+      if (open && el && el !== document.body && view.contains(el)) requestAnimationFrame(() => el.scrollIntoView({ block: 'nearest' }));
+    }
+  };
+  vv.addEventListener('resize', sync);
+  vv.addEventListener('scroll', sync);
+  window.addEventListener('scroll', unshift, { passive: true });
+  // iOS đẩy trang trễ một nhịp sau khi ô nhập được focus → kéo về vài lần trong lúc bàn phím trượt lên.
+  document.addEventListener('focusin', () => { for (const ms of [0, 60, 180, 350, 600]) setTimeout(sync, ms); });
+  document.addEventListener('focusout', () => { for (const ms of [0, 120, 400]) setTimeout(sync, ms); });
+  sync();
+}
+
 async function boot() {
   try {
     await init();
@@ -101,6 +148,7 @@ async function boot() {
   }
   applyTheme();
   bindEvents();
+  watchKeyboard();
   setRenderer(render);
   if (!location.hash || location.hash === '#/session') history.replaceState(null, '', '#/home');
   render();

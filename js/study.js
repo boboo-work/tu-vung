@@ -313,12 +313,21 @@ on('ses-choose', async (el) => {
   await grade(ses.step.correct ? 'good' : 'again');
   rerender();
 });
+// Lỗi nhập liệu hiện ngay dưới ô nhập (không dùng thông báo nổi: dễ đè lên nút và khuất sau bàn phím).
+function sesError(msg) {
+  const el = document.querySelector('.ses-error');
+  if (!el) return toast(msg);
+  el.textContent = msg;
+  el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+  el.scrollIntoView({ block: 'nearest' });
+}
+on('ses-clear-error', () => { const el = document.querySelector('.ses-error'); if (el) el.textContent = ''; });
 on('ses-check', async () => {
   if (ses.step.answered) return;
   const w = cur();
   const input = document.querySelector('.answer-input');
   const value = input?.value ?? '';
-  if (!value.trim()) { toast('Hãy nhập câu trả lời trước'); input?.focus(); return; }
+  if (!value.trim()) { sesError('Hãy nhập câu trả lời trước'); input?.focus(); return; }
   const accepted = [w.word];
   if (ses.mode === 'fill' && ses.step.blank) accepted.push(ses.step.blank.answer);
   ses.step.input = value;
@@ -331,8 +340,8 @@ on('ses-save-sentence', async () => {
   const w = cur();
   const ta = document.querySelector('#sentence-input');
   const text = (ta?.value || '').trim();
-  if (text.split(/\s+/).filter(Boolean).length < 3) { toast('Câu quá ngắn — hãy viết ít nhất 3 từ'); ta?.focus(); return; }
-  if (!findInSentence(w.word, text)) { toast(`Câu chưa chứa "${w.word}"`); ta?.focus(); return; }
+  if (text.split(/\s+/).filter(Boolean).length < 3) { sesError('Câu quá ngắn — hãy viết ít nhất 3 từ'); ta?.focus(); return; }
+  if (!findInSentence(w.word, text)) { sesError(`Câu chưa chứa “${w.word}”`); ta?.focus(); return; }
   w.sentences = [...(w.sentences || []), { text, at: Date.now() }];
   await saveWord(w);
   ses.step.input = text;
@@ -461,7 +470,7 @@ function typeView(w) {
   }
   const form = st.answered
     ? `<input class="answer-input" value="${esc(st.input)}" disabled>`
-    : `<form data-submit="ses-check"><input class="answer-input" placeholder="Nhập câu trả lời" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done"></form>`;
+    : `<form data-submit="ses-check"><input class="answer-input" data-in="ses-clear-error" placeholder="Nhập câu trả lời" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done"></form><p class="ses-error" role="alert"></p>`;
   return {
     body: q + form + feedback(w, st),
     actions: st.answered ? nextBtn() : `<button class="btn" data-act="ses-check">Kiểm tra</button>`,
@@ -476,7 +485,7 @@ function sentenceView(w) {
     ${w.collocations?.length ? `<div class="pill-list" style="margin-bottom:14px;justify-content:center">${w.collocations.slice(0, 3).map((c) => `<span>${esc(c)}</span>`).join('')}</div>` : ''}`;
   if (!st.answered) {
     return {
-      body: `${head}<textarea id="sentence-input" class="input" rows="4" placeholder="Viết một câu tiếng Anh có dùng từ này…" autocapitalize="sentences"></textarea>`,
+      body: `${head}<textarea id="sentence-input" class="input" rows="4" data-in="ses-clear-error" placeholder="Viết một câu tiếng Anh có dùng từ này…" autocapitalize="sentences"></textarea><p class="ses-error" role="alert"></p>`,
       actions: `<div class="btn-row"><button class="btn ghost" data-act="ses-skip" style="flex:.6">Bỏ qua</button><button class="btn" data-act="ses-save-sentence">Lưu câu</button></div>`,
       focus: '#sentence-input',
     };
@@ -531,7 +540,7 @@ export function sessionView() {
   const from = ses.shownPct ?? 0;
   ses.shownPct = pct;
   return {
-    html: `<div class="page session">
+    html: `<div class="page session ${isFlash(ses.mode) ? '' : 'compact'}">
       <div class="ses-top"><button class="iconbtn" data-act="ses-quit" aria-label="Thoát">${icon('x')}</button>
         <div class="progress"><i style="width:${pct}%;--from:${from}%"></i></div>
         <span class="count">${Math.min(ses.done + 1, ses.total)}/${ses.total}</span></div>
