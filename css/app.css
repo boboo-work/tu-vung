@@ -658,3 +658,10 @@ body.kb .game .d-stage { height: clamp(168px, calc(var(--app-h) - var(--safe-t) 
 .p-answer .ipa { font-size: 14px; }
 .p-answer span:last-child { display: block; color: var(--text); font-size: 15px; }
 .p-speak { position: absolute; left: 50%; bottom: 38px; translate: -50% 0; z-index: 4; }
+
+/* ===== Tự điền (form thêm từ) ===== */
+.fill-row { margin-top: 10px; }
+.fill-hint { margin-top: 6px; }
+.fill-status { margin-top: 8px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); color: var(--text-2); line-height: 1.45; }
+.fill-status.ok { background: var(--accent-soft); color: var(--text); }
+.fill-status.bad { background: var(--red-soft); color: var(--red); font-weight: 600; }
