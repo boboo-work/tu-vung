@@ -1,17 +1,19 @@
 // Mini game "Bắn Từ": khung chữ của từ rơi từ trên trời xuống, nghĩa tiếng Việt đứng yên phía trên.
 // Gõ đúng → Mochi bắn trúng, hiện "Correct!". Gõ nhầm được xoá và sửa; để rơi chạm đất → Bolt đập búa vỡ,
 // hiện đáp án và từ đó quay lại sau vài lượt. Không có mạng; mỗi ván tối đa 15 từ, xong khi bắn trúng hết.
-import { S, recordAnswer } from './store.js';
-import { esc, norm, shuffle, speak } from './util.js';
-import { isDue } from './srs.js';
+import { S, recordGame, saveGame } from './store.js';
+import { esc, norm, speak } from './util.js';
 import { icon, on, back, rerender, navBar } from './ui.js';
 import { confetti } from './fx.js';
-import { HEROES, GAME_MIN, gamePool, loadPrefs, savePrefs, slots } from './game.js';
+import { HEROES, GAME_MIN, gamePool, loadPrefs, slots, pickWords, roundLine } from './game.js';
 
 const ROUND = 15;
 const HAMMER = `<svg viewBox="0 0 40 56" aria-hidden="true"><rect x="17" y="14" width="6" height="40" rx="3" fill="#B7793A"/><rect x="3" y="2" width="34" height="18" rx="5" fill="#6C7280"/><rect x="3" y="2" width="9" height="18" rx="4" fill="#8E95A3"/></svg>`;
 
 let D = null;
+// Kỷ lục lưu cùng dữ liệu app; bản cũ lưu theo máy vẫn được tính.
+export const bestDrop = () => S.game.best.drop || loadPrefs().drop || null;
+export const DROP_ROUND = 15;
 const voice = () => ({ lang: S.settings.voice, rate: S.settings.rate, name: S.settings.voiceName });
 const $ = (sel) => document.querySelector(sel);
 const cur = () => S.words.get(D.queue[0]);
@@ -76,7 +78,7 @@ function after(ms, fn) {
 function correct() {
   const w = cur();
   D.mode = 'hit';
-  recordAnswer(w.id, 'good', 'practice').catch(console.error);
+  recordGame(w.id, true).catch(console.error);
   const tile = $('.d-tile'), stage = $('.d-stage'), gun = $('.d-mochi');
   tile.querySelector('.g-slots').innerHTML = slots(w.word, w.word);
   speak(w.word, voice());
@@ -108,7 +110,7 @@ function wrong() {
   const w = cur();
   D.mode = 'smash';
   if (!D.missed.includes(w.id)) D.missed.push(w.id);
-  recordAnswer(w.id, 'again', 'practice').catch(console.error);
+  recordGame(w.id, false).catch(console.error);
   const tile = $('.d-tile');
   const input = $('.d-input');
   if (input) { input.value = ''; input.classList.remove('bad'); }
@@ -131,10 +133,9 @@ function wrong() {
 
 function finish() {
   const first = D.total - D.missed.length;
-  const prefs = loadPrefs();
-  const old = prefs.drop;
+  const old = bestDrop();
   D.newBest = D.total >= ROUND && (!old || first > old.first || (first === old.first && D.elapsed < old.ms));
-  if (D.newBest) savePrefs({ drop: { first, ms: Math.round(D.elapsed) } });
+  if (D.newBest) saveGame({ best: { ...S.game.best, drop: { first, ms: Math.round(D.elapsed) } } }).catch(console.error);
   D.phase = 'over';
   if (D.raf) cancelAnimationFrame(D.raf);
   rerender(true);
@@ -153,8 +154,9 @@ on('drop-type', (el) => {
 });
 
 on('drop-start', () => {
-  const pool = shuffle(gamePool()).sort((a, b) => (isDue(b) ? 1 : 0) - (isDue(a) ? 1 : 0)).slice(0, ROUND);
-  D = { phase: 'play', queue: shuffle(pool.map((w) => w.id)), total: pool.length, missed: [], elapsed: 0, step: 0, mode: 'fall', t: 0, T: 1, last: 0 };
+  const ids = pickWords(ROUND);
+  saveGame({ plays: { ...S.game.plays, drop: S.game.plays.drop + 1 } }).catch(console.error);
+  D = { phase: 'play', queue: ids, total: ids.length, missed: [], elapsed: 0, step: 0, mode: 'fall', t: 0, T: 1, last: 0 };
   rerender(true);
   $('.d-input')?.focus({ preventScroll: true }); // focus ngay trong lượt chạm để iOS bật bàn phím
   showWord();
@@ -196,7 +198,7 @@ export function dropView() {
     </div>`;
   }
   const n = gamePool().length;
-  const best = loadPrefs().drop;
+  const best = bestDrop();
   return `<div class="page game">${navBar('Bắn Từ', { fallback: '#/learn' })}
     <div class="card">
       <div class="d-duo"><span class="g-hero big">${HEROES.mochi.svg}</span><span class="g-hero big">${HEROES.bolt.svg}</span></div>
@@ -206,9 +208,11 @@ export function dropView() {
         <li>Gõ đúng từ tiếng Anh: Mochi bắn trúng, hiện “Correct!”.</li>
         <li>Chữ bạn gõ hiện ngay trên khung đang rơi (đúng màu xanh, sai màu đỏ). Gõ nhầm cứ xoá và sửa.</li>
         <li>Để khung rơi chạm đất: Bolt đập vỡ, hiện đáp án, từ đó quay lại sau vài lượt.</li>
-        <li>Không có mạng. Mỗi ván ${ROUND} từ đã học, xong khi bắn trúng hết.</li>
+        <li>Không có mạng. Mỗi ván ${ROUND} từ đã học, lấy theo vòng để không sót từ nào; xong khi bắn trúng hết.</li>
+        <li>Từ bị đập vỡ vào danh sách cần ôn hôm nay; game không ảnh hưởng tới tiến độ học.</li>
       </ul>
-      <p class="muted small" style="margin-top:10px">${best ? `Kỷ lục: <b>${best.first}/${ROUND}</b> đúng ngay lần đầu · ${fmtTime(best.ms)}` : 'Chưa có kỷ lục'} · ${n} từ đã học</p>
+      <p class="muted small" style="margin-top:10px">${best ? `Kỷ lục: <b>${best.first}/${ROUND}</b> đúng ngay lần đầu · ${fmtTime(best.ms)}` : 'Chưa có kỷ lục'}</p>
+      <p class="muted small" style="margin-top:4px">${roundLine()}</p>
     </div>
     ${n >= GAME_MIN ? `<button class="btn" style="margin-top:18px" data-act="drop-start">Bắt đầu</button>`
       : `<p class="small center" style="margin-top:18px;color:var(--amber);font-weight:600">Cần học ít nhất ${GAME_MIN} từ để chơi (hiện có ${n}).</p>

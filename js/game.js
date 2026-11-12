@@ -1,6 +1,6 @@
 // Mini game "Chạy & Gõ": nhân vật chạy, gõ đúng từ tiếng Anh để nhảy qua chướng ngại vật.
 // Chỉ dùng từ đã học. 3 mạng; hết mạng thì chơi tiếp từ đúng từ vừa trượt (điểm tính lại từ 0).
-import { S, allWords, recordAnswer } from './store.js';
+import { S, allWords, recordGame, saveGame } from './store.js';
 import { esc, norm, shuffle, speak } from './util.js';
 import { isNew, isDue } from './srs.js';
 import { icon, on, back, rerender, navBar } from './ui.js';
@@ -59,8 +59,52 @@ let G = null;
 const voice = () => ({ lang: S.settings.voice, rate: S.settings.rate, name: S.settings.voiceName });
 export const gamePool = () => allWords().filter((w) => !isNew(w) && (w.meaning || '').trim() && w.word.length <= 28);
 
+// ---- Lấy từ theo "vòng": không từ đã học nào bị sót ----
+// Một vòng kết thúc khi mọi từ trong kho game đã xuất hiện ít nhất một lần (ở bất kỳ game nào); khi đó mới sang vòng mới.
+// Ưu tiên: (1) từ đang "nợ" — trượt lần trước, chưa gõ lại đúng; (2) từ chưa chơi trong vòng này, từ đến hạn ôn đứng trước,
+// rồi tới từ lâu chưa gặp nhất; (3) cuối vòng mà chưa đủ số lượng thì lấp bằng từ lâu chưa gặp nhất.
+const lastSeen = (w) => w.game?.last || 0;
+export function pickWords(n) {
+  const pool = gamePool();
+  const debt = shuffle(pool.filter((w) => w.game?.debt)).sort((a, b) => lastSeen(a) - lastSeen(b));
+  const rest = pool.filter((w) => !w.game?.debt);
+  const unplayed = () => shuffle(rest.filter((w) => w.game?.round !== S.game.round))
+    .sort((a, b) => (isDue(b) ? 1 : 0) - (isDue(a) ? 1 : 0) || lastSeen(a) - lastSeen(b));
+  let fresh = unplayed();
+  if (!fresh.length && rest.length) {
+    // Cả vòng đã chơi xong → mở vòng mới.
+    S.game.round += 1;
+    saveGame().catch(console.error);
+    fresh = unplayed();
+  }
+  // Từ nợ chiếm tối đa một phần ba số chỗ, để từ đến hạn và từ chưa chơi không bị chèn hết.
+  const out = debt.slice(0, Math.max(1, Math.floor(n / 3)));
+  out.push(...fresh.slice(0, n - out.length));
+  if (out.length < n) {
+    const have = new Set(out);
+    out.push(...debt.filter((w) => !have.has(w)).slice(0, n - out.length));
+    out.push(...rest.filter((w) => !fresh.includes(w)).sort((a, b) => lastSeen(a) - lastSeen(b)).slice(0, n - out.length));
+  }
+  return out.map((w) => w.id);
+}
+// Tiến độ vòng hiện tại + số từ đã học nhưng không vào game được (quá dài hoặc chưa có nghĩa).
+export function roundInfo() {
+  const pool = gamePool();
+  const played = pool.filter((w) => w.game?.round === S.game.round).length;
+  const learned = allWords().filter((w) => !isNew(w)).length;
+  // Mọi từ đã chơi hết thì ván kế tiếp sẽ mở vòng mới.
+  const done = pool.length > 0 && played >= pool.length;
+  return { round: S.game.round + (done ? 1 : 0), played: done ? 0 : played, total: pool.length, skipped: learned - pool.length };
+}
+export const roundLine = () => {
+  const r = roundInfo();
+  return `Vòng ${r.round} · đã chơi ${r.played}/${r.total} từ${r.skipped ? ` · ${r.skipped} từ không vào game (quá dài hoặc chưa có nghĩa)` : ''}`;
+};
+// Kỷ lục lưu cùng dữ liệu app (có trong file sao lưu); bản cũ lưu theo máy vẫn được tính.
+export const bestRun = () => Math.max(S.game.best.run || 0, loadPrefs().best || 0);
+
 function buildQueue(avoidId) {
-  const ids = shuffle(gamePool()).sort((a, b) => (isDue(b) ? 1 : 0) - (isDue(a) ? 1 : 0)).map((w) => w.id);
+  const ids = pickWords(20);
   if (ids.length > 1 && ids[0] === avoidId) ids.push(ids.shift());
   return ids;
 }
@@ -148,7 +192,7 @@ function correct() {
   const w = cur();
   G.mode = 'jumping';
   G.score++;
-  recordAnswer(w.id, 'good', 'practice').catch(console.error);
+  recordGame(w.id, true).catch(console.error);
   refreshHud();
   $('.g-slots').innerHTML = slots(w.word, w.word);
   speak(w.word, voice());
@@ -164,7 +208,7 @@ function miss() {
   G.mode = 'retype';
   G.lives--;
   if (!G.missed.includes(w.id)) G.missed.push(w.id);
-  recordAnswer(w.id, 'again', 'practice').catch(console.error);
+  recordGame(w.id, false).catch(console.error);
   refreshHud();
   $('.g-hero')?.classList.add('hurt');
   $('.g-stage')?.classList.add('stop');
@@ -175,9 +219,8 @@ function miss() {
     $('.g-slots').innerHTML = slots(w.word, '', true);
     setTimeout(() => {
       if (!G || G.mode !== 'dead') return;
-      const prefs = loadPrefs();
-      G.newBest = G.score > prefs.best;
-      if (G.newBest) savePrefs({ best: G.score });
+      G.newBest = G.score > bestRun();
+      if (G.newBest) saveGame({ best: { ...S.game.best, run: G.score } }).catch(console.error);
       G.phase = 'over';
       rerender(true);
       if (G.newBest) confetti({ count: 120 });
@@ -214,7 +257,8 @@ on('game-type', (el) => {
 function begin({ keepPlace = false } = {}) {
   const prefs = loadPrefs();
   if (!keepPlace || !G) G = { queue: buildQueue(), i: 0 };
-  Object.assign(G, { phase: 'play', lives: LIVES, score: 0, missed: [], best: prefs.best, hero: prefs.hero, newBest: false, mode: 'run', t: 0, T: 1 });
+  saveGame({ plays: { ...S.game.plays, run: S.game.plays.run + 1 } }).catch(console.error);
+  Object.assign(G, { phase: 'play', lives: LIVES, score: 0, missed: [], best: bestRun(), hero: prefs.hero, newBest: false, mode: 'run', t: 0, T: 1 });
   rerender(true);
   // Focus ngay trong lượt chạm để iOS bật bàn phím.
   $('.g-input')?.focus({ preventScroll: true });
@@ -276,9 +320,10 @@ export function gameView() {
         <li>Màn hình hiện nghĩa tiếng Việt — gõ đúng từ tiếng Anh để nhảy qua chướng ngại vật.</li>
         <li>Gõ nhầm cứ xoá và sửa. Chỉ mất mạng khi chướng ngại vật chạm tới mà chưa gõ xong.</li>
         <li>Có ${LIVES} mạng. Hết mạng, bạn chơi tiếp từ đúng từ vừa trượt.</li>
-        <li>Chỉ dùng từ đã học. Từ gõ trượt được đưa vào danh sách cần ôn.</li>
+        <li>Chỉ dùng từ đã học, lấy theo vòng để không sót từ nào. Từ gõ trượt vào danh sách cần ôn hôm nay; game không ảnh hưởng tới tiến độ học.</li>
       </ul>
-      <p class="muted small" style="margin-top:10px">Kỷ lục: <b>${prefs.best}</b> từ · ${n} từ đã học</p>
+      <p class="muted small" style="margin-top:10px">Kỷ lục: <b>${bestRun()}</b> từ</p>
+      <p class="muted small" style="margin-top:4px">${roundLine()}</p>
     </div>
     ${ready ? `<button class="btn" style="margin-top:18px" data-act="game-start">Bắt đầu</button>`
       : `<p class="small center" style="margin-top:18px;color:var(--amber);font-weight:600">Cần học ít nhất ${GAME_MIN} từ để chơi (hiện có ${n}).</p>
