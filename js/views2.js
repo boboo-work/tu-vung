@@ -106,11 +106,16 @@ on('stats-kind', (el) => { ui.statsKind = el.dataset.kind; ui.statsSel = null; u
 on('stats-sel', (el) => { ui.statsSel = Number(el.dataset.i); rerender(); });
 
 // ================= SETTINGS =================
+// Màu chủ đạo: [id, tên, màu mẫu hiển thị trên nút chọn]. Giá trị thật cho sáng/tối nằm trong css/app.css.
+const ACCENTS = [['green', 'Xanh lá', '#1F6F54'], ['blue', 'Xanh dương', '#1F5FBF'], ['purple', 'Tím', '#6B3FB8'], ['teal', 'Xanh ngọc', '#0F7480'], ['orange', 'Cam', '#B4530F'], ['pink', 'Hồng', '#B8336F']];
 export function applyTheme() {
   let t = S.settings.theme;
   try { localStorage.setItem('theme', t); } catch {}
   if (t === 'auto') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   document.documentElement.dataset.theme = t;
+  const accent = ACCENTS.some(([id]) => id === S.settings.accent) ? S.settings.accent : 'green';
+  try { localStorage.setItem('accent', accent); } catch {}
+  document.documentElement.dataset.accent = accent;
   document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'dark' ? '#0F1110' : '#F5F4EF');
 }
 
@@ -157,6 +162,7 @@ export function settingsView() {
     <h2>Giao diện & phát âm</h2>
     <div class="card">
       <div class="setrow"><b>Chế độ</b>${seg('theme', s.theme, [['auto', 'Tự động'], ['light', 'Sáng'], ['dark', 'Tối']])}</div>
+      <div class="setrow" style="flex-wrap:wrap;row-gap:10px"><b style="flex:1 0 100%">Màu chủ đạo</b><div class="swatches" role="radiogroup" aria-label="Màu chủ đạo">${ACCENTS.map(([id, name, c]) => `<button class="swatch ${(s.accent || 'green') === id ? 'on' : ''}" style="--c:${c}" data-act="set" data-key="accent" data-value="${id}" role="radio" aria-checked="${(s.accent || 'green') === id}" aria-label="${name}" title="${name}">${(s.accent || 'green') === id ? icon('check') : ''}</button>`).join('')}</div></div>
       <div class="setrow"><b>Giọng đọc</b>${seg('voice', s.voice, [['en-US', 'Anh-Mỹ'], ['en-GB', 'Anh-Anh']])}</div>
       <div class="setrow"><div style="min-width:0"><b>Giọng</b><small>${voiceList.length ? `${voiceList.length} giọng trên máy này` : 'Chưa tải được danh sách giọng'}</small></div>
         <select class="input" style="max-width:190px" data-change="voice-name" aria-label="Giọng đọc"><option value="">Tự động (tốt nhất)</option>${voiceList.map((v) => `<option value="${esc(v.name)}" ${v.name === s.voiceName ? 'selected' : ''}>${esc(v.name)}</option>`).join('')}</select></div>
@@ -200,7 +206,7 @@ on('set', async (el) => {
   const key = el.dataset.key;
   const v = key === 'rate' ? Number(el.dataset.value) : key === 'autoSpeak' ? el.dataset.value === 'true' : el.dataset.value;
   await saveSettings(key === 'voice' ? { voice: v, voiceName: '' } : { [key]: v });
-  if (key === 'theme') applyTheme();
+  if (key === 'theme' || key === 'accent') applyTheme();
   rerender();
 });
 on('test-voice', () => speak('Practice makes perfect. This is how your words will sound.', { lang: S.settings.voice, rate: S.settings.rate, name: S.settings.voiceName }));
