@@ -170,6 +170,7 @@ export function settingsView() {
         <select class="input" style="max-width:190px" data-change="voice-name" aria-label="Giọng đọc"><option value="">Tự động (tốt nhất)</option>${voiceList.map((v) => `<option value="${esc(v.name)}" ${v.name === s.voiceName ? 'selected' : ''}>${esc(v.name)}</option>`).join('')}</select></div>
       <div class="setrow"><b>Tốc độ đọc</b>${seg('rate', s.rate, [[0.75, 'Chậm'], [0.95, 'Vừa'], [1.1, 'Nhanh']])}</div>
       <div class="setrow"><div><b>Tự phát âm khi lật thẻ</b><small>Đọc từ ngay khi lật sang mặt đáp án</small></div>${seg('autoSpeak', s.autoSpeak !== false, [['true', 'Bật'], ['false', 'Tắt']]).replace('min-width:190px', 'min-width:120px')}</div>
+      <div class="setrow"><div><b>Tự điền khi gõ xong từ mới</b><small>Tự tra IPA, nghĩa, ví dụ… ngay khi bạn gõ xong từ (gửi từ đó tới dịch vụ tra cứu; nếu đã kết nối AI thì gọi AI một lần mỗi từ)</small></div>${seg('autoFill', s.autoFill !== false, [['true', 'Bật'], ['false', 'Tắt']]).replace('min-width:190px', 'min-width:120px')}</div>
       <div class="setrow"><div><b>Nghe thử</b>${canSpeak() ? '' : '<small>Thiết bị này không hỗ trợ phát âm</small>'}</div><button class="speakbtn" data-act="test-voice" aria-label="Nghe thử">${icon('speaker')}</button></div>
       <p class="small faint" style="margin-top:10px">Muốn giọng tự nhiên hơn: mở Cài đặt của iPhone → Trợ năng → Nội dung được đọc → Giọng nói → Tiếng Anh, tải một giọng “Nâng cao” hoặc “Cao cấp” (ví dụ Ava, Zoe, Daniel), rồi quay lại đây chọn giọng đó.</p>
     </div>
@@ -206,7 +207,7 @@ on('step', async (el) => {
 });
 on('set', async (el) => {
   const key = el.dataset.key;
-  const v = key === 'rate' ? Number(el.dataset.value) : key === 'autoSpeak' ? el.dataset.value === 'true' : el.dataset.value;
+  const v = key === 'rate' ? Number(el.dataset.value) : (key === 'autoSpeak' || key === 'autoFill') ? el.dataset.value === 'true' : el.dataset.value;
   await saveSettings(key === 'voice' ? { voice: v, voiceName: '' } : { [key]: v });
   if (key === 'theme' || key === 'accent') applyTheme();
   rerender();

@@ -665,3 +665,6 @@ body.kb .game .d-stage { height: clamp(168px, calc(var(--app-h) - var(--safe-t) 
 .fill-status { margin-top: 8px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); color: var(--text-2); line-height: 1.45; }
 .fill-status.ok { background: var(--accent-soft); color: var(--text); }
 .fill-status.bad { background: var(--red-soft); color: var(--red); font-weight: 600; }
+
+.fill-status { white-space: pre-line; }
+.fill-status #fill-pick { margin-top: 8px; width: 100%; }

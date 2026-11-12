@@ -94,42 +94,118 @@ export async function askWordInfo(ai, word, meaning) {
   };
 }
 
-// ---- Gọi cả hai nguồn song song; lỗi của một nguồn không làm mất kết quả của nguồn kia ----
-export async function lookupWord(word, { meaning = '', ai } = {}) {
+// ---- Nguồn miễn phí bổ sung (dùng khi không có AI, hoặc AI lỗi) ----
+//  - MyMemory (api.mymemory.translated.net): nghĩa tiếng Việt. Không cần key, hạn mức ngày, chất lượng khá với từ thông dụng.
+//  - Datamuse (api.datamuse.com): đồng/trái nghĩa và các từ hay đi liền nhau (dùng làm gợi ý collocation theo thống kê).
+//    Không dùng IPA của Datamuse: dấu nhấn âm bị đặt sai chỗ (ví dụ rɪzˈɪɫjʌnt thay vì /rɪˈzɪliənt/) nên dễ dạy sai.
+const MM_URL = 'https://api.mymemory.translated.net/get';
+const DM_URL = 'https://api.datamuse.com/words';
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+async function getJSON(url, { tries = 2, timeout = 6000 } = {}) {
+  let last;
+  for (let i = 0; i < tries; i++) {
+    if (i) await sleep(600);
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), timeout);
+    try {
+      const res = await fetch(url, { signal: ctl.signal });
+      if (res.ok) return await res.json();
+      last = new Error(`HTTP ${res.status}`);
+      if (res.status < 500 && res.status !== 429) break;
+    } catch (e) { last = e; } finally { clearTimeout(timer); }
+  }
+  throw last || new Error('Không kết nối được');
+}
+const sameText = (a, b) => clean(a).toLowerCase() === clean(b).toLowerCase();
+
+export async function fetchTranslation(word) {
+  const d = await getJSON(`${MM_URL}?q=${encodeURIComponent(word)}&langpair=en|vi`);
+  const fix = (t) => (word === word.toLowerCase() ? clean(t, 80).toLowerCase() : clean(t, 80));
+  const main = clean(d?.responseData?.translatedText, 80);
+  // Hết hạn mức ngày hoặc không dịch được (trả lại nguyên từ gốc) → coi như không có.
+  if (!main || /MYMEMORY|WARNING|INVALID/i.test(main) || sameText(main, word)) return '';
+  const out = [fix(main)];
+  // Thêm một nghĩa phụ nếu rất sát và gọn (nhiều mục phía dưới của MyMemory là rác nên lọc chặt).
+  const alt = (d.matches || [])
+    .filter((m) => sameText(m.segment, word) && Number(m.match) >= 0.99)
+    .map((m) => clean(m.translation, 80))
+    .find((t) => /^[\p{L} ]+$/u.test(t) && t.split(' ').length <= 4 && !out.some((o) => sameText(o, t)));
+  if (alt) out.push(fix(alt));
+  return out.join('; ');
+}
+
+const STOP = new Set(('a an the of and or to in on at for with by from as is are was were be been being it its this that these those not no nor but if than then so such very more most much many ' +
+  'other another each every all any some can could may might will would shall should do does did has have had which who whom whose what when where why how there here you he she we they me him her us them my your his our their one two out up').split(' '));
+export async function fetchHints(word) {
+  // Chỉ có ý nghĩa với từ đơn; cụm nhiều chữ thì bỏ qua.
+  if (/\s/.test(word)) return { synonyms: [], antonyms: [], collocations: [], failed: 0 };
+  const w = encodeURIComponent(word.toLowerCase());
+  const q = (rel, max) => getJSON(`${DM_URL}?${rel}=${w}&max=${max}`);
+  const [syn, ant, aft, bef] = await Promise.allSettled([q('rel_syn', 10), q('rel_ant', 6), q('rel_bga', 16), q('rel_bgb', 16)]);
+  const words = (r, n) => (r.status === 'fulfilled' && Array.isArray(r.value) ? r.value : []).map((x) => x.word).filter((x) => /^[a-z]{3,}$/.test(x) && !STOP.has(x) && x !== word.toLowerCase()).slice(0, n);
+  const after = words(aft, 3).map((x) => `${word} ${x}`);
+  const before = words(bef, 3).map((x) => `${x} ${word}`);
+  const collocations = [];
+  for (let i = 0; i < 3; i++) { if (before[i]) collocations.push(before[i]); if (after[i]) collocations.push(after[i]); }
+  return { synonyms: words(syn, 5), antonyms: words(ant, 3), collocations, failed: [syn, ant, aft, bef].filter((r) => r.status === 'rejected').length };
+}
+
+// `have` = các ô đã có dữ liệu → không cần gọi nguồn tương ứng (đỡ tốn hạn mức).
+async function fetchExtras(word, have = {}) {
+  const needHints = !(have.synonyms && have.antonyms && have.collocations);
+  const [t, h] = await Promise.allSettled([have.meaning ? Promise.resolve('') : fetchTranslation(word), needHints ? fetchHints(word) : Promise.resolve(null)]);
+  return {
+    meaning: t.status === 'fulfilled' ? t.value : '', meaningFailed: t.status === 'rejected',
+    hints: h.status === 'fulfilled' ? h.value : null, hintsFailed: h.status === 'rejected' || (h.status === 'fulfilled' && h.value?.failed >= 3),
+  };
+}
+
+// ---- Gọi các nguồn song song; lỗi của một nguồn không làm mất kết quả của nguồn khác ----
+export async function lookupWord(word, { meaning = '', ai, have = {} } = {}) {
   const useAI = aiReady(ai);
-  const [d, a] = await Promise.allSettled([fetchDictionary(word), useAI ? askWordInfo(ai, word, meaning) : Promise.resolve(null)]);
+  const [d, a, x] = await Promise.allSettled([fetchDictionary(word), useAI ? askWordInfo(ai, word, meaning) : Promise.resolve(null), useAI ? Promise.resolve(null) : fetchExtras(word, have)]);
+  let web = x.status === 'fulfilled' ? x.value : null;
+  // AI đã kết nối mà lỗi → dùng nguồn miễn phí thay thế.
+  if (useAI && a.status === 'rejected') web = await fetchExtras(word, have).catch(() => null);
   return {
     useAI,
     dict: d.status === 'fulfilled' ? d.value : null, dictError: d.status === 'rejected' ? d.reason?.message || 'Lỗi từ điển.' : '',
     ai: a.status === 'fulfilled' ? a.value : null, aiError: a.status === 'rejected' ? a.reason?.message || 'Lỗi AI.' : '',
+    web,
   };
 }
 
 // Ghép kết quả thành các ô của form. `senseIdx` = nghĩa từ điển đã chọn (khi không có AI).
-// Trả về { fields, from } — from[field] = 'dict' | 'ai'. Chỉ có khóa cho ô thực sự có dữ liệu.
-export function buildFill(r, senseIdx = 0) {
+// Trả về { fields, from } — from[field] = 'dict' | 'ai' | 'tr' (dịch miễn phí) | 'dm' (gợi ý thống kê). Chỉ có khóa cho ô thực sự có dữ liệu.
+// `pickSense: false` = chưa chọn nghĩa (từ nhiều nghĩa, không có AI) → chưa điền các ô phụ thuộc vào nghĩa.
+export function buildFill(r, senseIdx = 0, { pickSense = true } = {}) {
   const fields = {}, from = {};
   const put = (k, v, src) => { if (Array.isArray(v) ? v.length : v) { fields[k] = v; from[k] = src; } };
-  const sense = r.dict?.senses?.[senseIdx] || r.dict?.senses?.[0] || null;
+  const sense = pickSense ? (r.dict?.senses?.[senseIdx] || r.dict?.senses?.[0] || null) : null;
   const sameGroup = sense ? r.dict.senses.filter((s) => s.pos === sense.pos) : [];
   const dictExamples = list(sameGroup.map((s) => s.example), 3);
+  const hints = r.web?.hints;
   put('ipa', r.dict?.ipa || r.ai?.ipa, r.dict?.ipa ? 'dict' : 'ai');
   if (r.ai) {
     put('pos', r.ai.pos || sense?.pos, r.ai.pos ? 'ai' : 'dict');
-    put('meaning', r.ai.meaning, 'ai');
+    put('meaning', r.ai.meaning || r.web?.meaning, r.ai.meaning ? 'ai' : 'tr');
     put('definition', r.ai.definition || sense?.definition, r.ai.definition ? 'ai' : 'dict');
     put('examples', r.ai.examples.length ? r.ai.examples : dictExamples, r.ai.examples.length ? 'ai' : 'dict');
-    put('collocations', r.ai.collocations, 'ai');
-    put('synonyms', r.ai.synonyms.length ? r.ai.synonyms : sense?.synonyms, r.ai.synonyms.length ? 'ai' : 'dict');
-    put('antonyms', r.ai.antonyms.length ? r.ai.antonyms : sense?.antonyms, r.ai.antonyms.length ? 'ai' : 'dict');
+    put('collocations', r.ai.collocations.length ? r.ai.collocations : hints?.collocations, r.ai.collocations.length ? 'ai' : 'dm');
+    put('synonyms', r.ai.synonyms.length ? r.ai.synonyms : sense?.synonyms?.length ? sense.synonyms : hints?.synonyms, r.ai.synonyms.length ? 'ai' : sense?.synonyms?.length ? 'dict' : 'dm');
+    put('antonyms', r.ai.antonyms.length ? r.ai.antonyms : sense?.antonyms?.length ? sense.antonyms : hints?.antonyms, r.ai.antonyms.length ? 'ai' : sense?.antonyms?.length ? 'dict' : 'dm');
     put('family', r.ai.family, 'ai');
     put('mistakes', r.ai.mistakes, 'ai');
-  } else if (sense) {
-    put('pos', sense.pos, 'dict');
-    put('definition', sense.definition, 'dict');
-    put('examples', dictExamples, 'dict');
-    put('synonyms', sense.synonyms, 'dict');
-    put('antonyms', sense.antonyms, 'dict');
+  } else {
+    put('meaning', r.web?.meaning, 'tr');
+    if (sense) {
+      put('pos', sense.pos, 'dict');
+      put('definition', sense.definition, 'dict');
+      put('examples', dictExamples, 'dict');
+    }
+    put('collocations', hints?.collocations, 'dm');
+    put('synonyms', sense?.synonyms?.length ? sense.synonyms : hints?.synonyms, sense?.synonyms?.length ? 'dict' : 'dm');
+    put('antonyms', sense?.antonyms?.length ? sense.antonyms : hints?.antonyms, sense?.antonyms?.length ? 'dict' : 'dm');
   }
   return { fields, from };
 }
