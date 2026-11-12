@@ -6,6 +6,7 @@ import { icon, on, go, rerender, navBar, confirmSheet, promptSheet, richText } f
 import { importFile, exportCSV, exportBackup, restoreBackup, downloadTemplate, loadSeed } from './io.js';
 import { roundInfo, bestRun } from './game.js';
 import { bestDrop, DROP_ROUND } from './drop.js';
+import { bestOf, ROUND2 } from './games2.js';
 import { AI_ACTIONS, AI_MODELS, GEMINI_MODELS, aiReady, askAI } from './ai.js';
 
 const ui = { statsKind: 'day', statsSel: null, anim: false, ai: { wordId: null, action: 'context', input: '', q: '', loading: false, result: null, error: null } };
@@ -60,6 +61,7 @@ function gameStats() {
     <div class="card" style="margin-top:10px">
       <div class="field"><div class="row-between"><span style="font-weight:600">Chạy & Gõ</span><span class="small muted">${g.plays.run} ván · kỷ lục ${bestRun()} từ</span></div></div>
       <div class="field"><div class="row-between"><span style="font-weight:600">Bắn Từ</span><span class="small muted">${g.plays.drop} ván · ${drop ? `kỷ lục ${drop.first}/${DROP_ROUND} đúng ngay` : 'chưa có kỷ lục'}</span></div></div>
+      ${[['match', 'Nối Cụm'], ['pop', 'Nghe & Chạm']].map(([k, name]) => `<div class="field"><div class="row-between"><span style="font-weight:600">${name}</span><span class="small muted">${g.plays[k] || 0} ván · ${bestOf(k) ? `kỷ lục ${bestOf(k).first}/${ROUND2} đúng ngay` : 'chưa có kỷ lục'}</span></div></div>`).join('')}
       <div class="field"><div class="row-between"><span style="font-weight:600">Từ đang nợ</span><span class="small muted">${debt} từ · gặp lại đầu ván sau</span></div></div>
     </div>`;
 }

@@ -573,3 +573,88 @@ body.kb .game .d-stage { height: clamp(168px, calc(var(--app-h) - var(--safe-t) 
 .swatch::after { content: ""; position: absolute; inset: -5px; border-radius: 50%; }
 .swatch.on { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--c); }
 .swatch .ic { width: 18px; height: 18px; }
+
+/* ===== Mini game "Nối Cụm" & "Nghe & Chạm": Mochi và Bolt tương tác ===== */
+.x-stage .g-hero svg, .x-stage .g-hero .leg { animation: none; }
+.x-stage .g-ground::after, .x-stage .g-cloud { animation: none; }
+.x-mochi { left: 10%; }
+.x-bolt { left: auto; right: 10%; }
+.x-hammer { position: absolute; right: -16px; top: -26px; width: 28px; height: 42px; transform-origin: 50% 95%; transform: rotate(-20deg); opacity: 0; }
+.x-hammer svg { width: 100%; height: 100%; display: block; }
+.x-fx { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+/* Ôm: Mochi chạy sang, hai bạn áp vào nhau, tim bay lên. */
+.x-stage.hug .x-mochi { animation: x-run-hug 1.4s ease both; }
+.x-stage.hug .x-bolt { animation: x-hugged 1.4s ease both; }
+@keyframes x-run-hug { 0% { transform: none; } 12% { transform: translate(calc(var(--run) * .3), -10px); } 30%, 72% { transform: translateX(var(--run)) rotate(8deg); } 40%, 56% { transform: translateX(calc(var(--run) + 3px)) rotate(12deg) scale(1.06, .96); } 100% { transform: none; } }
+@keyframes x-hugged { 0%, 28% { transform: none; } 40%, 56% { transform: rotate(-10deg) scale(.96, 1.05); } 48% { transform: rotate(-12deg) translateY(-4px); } 72% { transform: rotate(-6deg); } 100% { transform: none; } }
+.x-fx .hrt { position: absolute; right: calc(10% + 44px); bottom: 84px; font-style: normal; font-size: 20px; color: var(--red); opacity: 0; animation: x-heart 1s ease-out both; animation-delay: calc(.42s + var(--d)); }
+@keyframes x-heart { 0% { opacity: 0; transform: translate(var(--x), 8px) scale(.4); } 25% { opacity: 1; transform: translate(var(--x), -6px) scale(1.1); } 100% { opacity: 0; transform: translate(calc(var(--x) * 1.6), -54px) scale(.9); } }
+/* Gõ búa: Mochi chạy sang, vung búa lên đầu Bolt; Bolt bẹp xuống, sao quay vòng. */
+.x-stage.bonk .x-mochi { animation: x-run-bonk 1.7s ease both; }
+.x-stage.bonk .x-hammer { animation: x-bonk 1.7s ease both; }
+.x-stage.bonk .x-bolt { animation: x-bonked 1.7s ease both; }
+@keyframes x-run-bonk { 0% { transform: none; } 10% { transform: translate(calc(var(--run) * .3), -10px); } 24%, 74% { transform: translateX(calc(var(--run) - 16px)); } 38% { transform: translate(calc(var(--run) - 16px), -12px); } 100% { transform: none; } }
+@keyframes x-bonk { 0%, 20% { opacity: 0; transform: rotate(-20deg); } 26% { opacity: 1; transform: rotate(-50deg); } 36% { opacity: 1; transform: rotate(-70deg); } 44%, 62% { opacity: 1; transform: rotate(75deg); } 74% { opacity: 1; transform: rotate(-20deg); } 84%, 100% { opacity: 0; transform: rotate(-20deg); } }
+@keyframes x-bonked { 0%, 42% { transform: none; } 46% { transform: translateY(8px) scale(1.2, .68); } 56% { transform: translateY(3px) scale(1.08, .88) rotate(-5deg); } 66% { transform: rotate(5deg); } 76% { transform: rotate(-4deg); } 86% { transform: rotate(3deg); } 100% { transform: none; } }
+.x-fx .str { position: absolute; right: calc(10% + 22px); bottom: 92px; font-style: normal; font-size: 15px; color: var(--amber); opacity: 0; animation: x-star 1.2s linear both; animation-delay: .78s; }
+.x-stage.oops .x-fx .str { right: auto; left: calc(10% + 22px); animation-delay: .05s; }
+@keyframes x-star { 0% { opacity: 0; transform: rotate(var(--a)) translateX(16px) rotate(calc(-1 * var(--a))); } 15%, 80% { opacity: 1; } 100% { opacity: 0; transform: rotate(calc(var(--a) + 420deg)) translateX(16px) rotate(calc(-1 * var(--a) - 420deg)); } }
+/* Đập tay: hai bạn chạy vào giữa, nhảy lên chạm nhau. */
+.x-stage.five .x-mochi { animation: x-five-m 1.3s ease both; }
+.x-stage.five .x-bolt { animation: x-five-b 1.3s ease both; }
+@keyframes x-five-m { 0% { transform: none; } 30% { transform: translateX(calc(var(--run) * .5)); } 48% { transform: translate(calc(var(--run) * .5 + 6px), -46px) rotate(14deg); } 66% { transform: translateX(calc(var(--run) * .5)); } 78% { transform: translate(calc(var(--run) * .5), -12px); } 100% { transform: none; } }
+@keyframes x-five-b { 0% { transform: none; } 30% { transform: translateX(calc(var(--run) * -.5)); } 48% { transform: translate(calc(var(--run) * -.5 - 6px), -46px) rotate(-14deg); } 66% { transform: translateX(calc(var(--run) * -.5)); } 78% { transform: translate(calc(var(--run) * -.5), -12px); } 100% { transform: none; } }
+.x-fx .spark { position: absolute; left: 50%; bottom: 118px; translate: -50% 0; font-style: normal; font-size: 30px; color: var(--amber); opacity: 0; animation: x-spark .5s ease-out .56s both; }
+@keyframes x-spark { 0% { opacity: 0; transform: scale(.2) rotate(0); } 40% { opacity: 1; transform: scale(1.3) rotate(40deg); } 100% { opacity: 0; transform: scale(1.8) rotate(90deg); } }
+/* Chọn sai ở Nghe & Chạm: Mochi choáng vì bóng rơi trúng, Bolt lắc đầu. Hết giờ: cả hai ỉu xìu. */
+.x-stage.oops .x-mochi { animation: x-dizzy 1.4s ease both; }
+.x-stage.oops .x-bolt { animation: x-nono 1.2s ease both; }
+@keyframes x-dizzy { 0% { transform: translateY(7px) scale(1.18, .7); } 16% { transform: translateY(2px) scale(1.05, .92) rotate(-8deg); } 34% { transform: rotate(8deg); } 52% { transform: rotate(-6deg); } 70% { transform: rotate(5deg); } 100% { transform: none; } }
+@keyframes x-nono { 0%, 100% { transform: none; } 15%, 45%, 75% { transform: rotate(-9deg); } 30%, 60%, 90% { transform: rotate(9deg); } }
+.x-stage.sad .x-mochi, .x-stage.sad .x-bolt { animation: x-sad 1.6s ease both; }
+@keyframes x-sad { 0%, 100% { transform: none; } 20%, 80% { transform: translateY(5px) scale(1.04, .92) rotate(-4deg); } }
+
+/* Nối Cụm */
+.m-card { text-align: center; padding: 18px 6px 6px; }
+.m-text { font: 600 26px/1.3 var(--serif); margin-top: 8px; overflow-wrap: anywhere; }
+.m-text.example { font-size: 20px; font-weight: 500; text-align: left; }
+.m-blank { display: inline-block; min-width: 92px; border-bottom: 3px solid var(--accent); margin: 0 4px; line-height: 1.15; }
+.m-blank.ok { color: var(--green); border-color: var(--green); }
+.m-blank.no { color: var(--red); border-color: var(--red); }
+.m-note { min-height: 44px; margin-top: 10px; color: var(--text-2); font-size: 15px; }
+.m-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+.m-opt { min-height: 60px; padding: 8px 10px; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); border: 2px solid transparent; font: 600 17px/1.2 var(--serif); color: var(--text); overflow-wrap: anywhere; transition: transform .12s; }
+.m-opt:active { transform: scale(.97); }
+.m-opt.ok { border-color: var(--green); background: var(--green-soft); color: var(--green); }
+.m-opt.no { border-color: var(--red); background: var(--red-soft); color: var(--red); animation: shake .3s; }
+.m-opt[disabled]:not(.ok):not(.no) { opacity: .5; }
+
+/* Nghe & Chạm */
+.p-page { display: flex; flex-direction: column; height: 100%; }
+#view:has(> .p-page) { overflow: hidden; }
+.p-stage { flex: 1 1 auto; height: auto; min-height: 300px; }
+.p-band { position: absolute; left: 0; right: 0; bottom: 0; height: 104px; background: var(--surface); z-index: 2; }
+.p-stage .g-ground, .p-stage .g-hero, .p-stage .x-fx { z-index: 3; }
+.p-stage.done .p-speak { opacity: 0; pointer-events: none; transition: opacity .2s; }
+.p-bub { position: absolute; top: calc(100% - 104px); width: 45%; min-height: 58px; padding: 10px 12px; border-radius: 22px; background: var(--accent-soft); color: var(--text); border: 2px solid var(--accent); font-size: 15.5px; font-weight: 650; line-height: 1.25; z-index: 1; overflow-wrap: anywhere; animation: p-rise linear both; will-change: transform; }
+.p-bub.c0 { left: 3.5%; }
+.p-bub.c1 { right: 3.5%; }
+.p-bub::after { content: ""; position: absolute; left: 50%; top: 100%; width: 2px; height: 16px; background: var(--neutral-mark); }
+@keyframes p-rise { from { transform: translateY(0); } to { transform: translateY(calc(-1 * var(--rise, 600px))); } }
+.p-bub.fade { opacity: .25; transition: opacity .3s; }
+.p-bub.right { border-color: var(--green); background: var(--green-soft); color: var(--green); box-shadow: 0 0 0 4px var(--green-soft); }
+.p-bub.wrong { border-color: var(--red); background: var(--red-soft); color: var(--red); }
+.p-burst { position: absolute; width: 0; height: 0; z-index: 4; pointer-events: none; }
+.p-burst i { position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 3px; background: var(--c); animation: p-shard .6s ease-out both; }
+@keyframes p-shard { from { transform: rotate(var(--a)) translateX(6px); opacity: 1; } to { transform: rotate(var(--a)) translateX(74px) rotate(180deg); opacity: 0; } }
+/* Khung đáp án nằm dưới sân chơi (không che bong bóng); chiều cao giữ cố định để sân chơi không xê dịch. */
+.p-foot { flex: none; min-height: 96px; display: grid; place-items: center; padding-top: 8px; }
+.p-foot .g-note { margin: 0; text-align: center; }
+.p-answer { width: 100%; text-align: center; padding: 8px 16px 10px; border-radius: 18px; animation: pop .3s both; }
+.p-answer.ok { background: var(--green-soft); color: var(--green); }
+.p-answer.no { background: var(--red-soft); color: var(--red); }
+.p-answer small { display: block; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.p-answer b { font-size: 22px; line-height: 1.25; color: var(--text); }
+.p-answer .ipa { font-size: 14px; }
+.p-answer span:last-child { display: block; color: var(--text); font-size: 15px; }
+.p-speak { position: absolute; left: 50%; bottom: 38px; translate: -50% 0; z-index: 4; }

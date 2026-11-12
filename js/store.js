@@ -328,7 +328,13 @@ function cleanGame(g) {
     for (const [d, v] of Object.entries(o.days)) if (/^\d{4}-\d{2}-\d{2}$/.test(d) && v && typeof v === 'object') days[d] = { ok: n(v.ok), miss: n(v.miss) };
   }
   const drop = o.best?.drop && typeof o.best.drop === 'object' ? { first: n(o.best.drop.first), ms: n(o.best.drop.ms) } : null;
-  return { round: Math.max(1, n(o.round)), plays: { run: n(o.plays?.run), drop: n(o.plays?.drop) }, best: { run: n(o.best?.run), drop }, days };
+  const rec = (b) => (b && typeof b === 'object' ? { first: n(b.first), ms: n(b.ms) } : null);
+  return {
+    round: Math.max(1, n(o.round)),
+    plays: { run: n(o.plays?.run), drop: n(o.plays?.drop), match: n(o.plays?.match), pop: n(o.plays?.pop) },
+    best: { run: n(o.best?.run), drop, match: rec(o.best?.match), pop: rec(o.best?.pop) },
+    days,
+  };
 }
 const cleanWordGame = (g) => (g && typeof g === 'object' && Number(g.last) > 0
   ? { last: Number(g.last), round: Math.max(0, Math.round(Number(g.round)) || 0), debt: !!g.debt } : undefined);
