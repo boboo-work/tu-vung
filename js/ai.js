@@ -59,7 +59,7 @@ export const AI_ACTIONS = [
 
 export class AIError extends Error {}
 
-export async function askAI(ai, prompt) {
+export async function askAI(ai, prompt, { system = SYSTEM } = {}) {
   if (!aiReady(ai)) throw new AIError('Chưa kết nối AI. Hãy cấu hình trong Cài đặt → Trợ lý AI.');
   if (!navigator.onLine) throw new AIError('Trợ lý AI cần kết nối mạng. Hiện thiết bị đang offline.');
 
@@ -69,7 +69,7 @@ export async function askAI(ai, prompt) {
       res = await fetch(ai.endpoint.trim(), {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ system: SYSTEM, prompt, model: ai.model }),
+        body: JSON.stringify({ system, prompt, model: ai.model }),
       });
     } catch { throw new AIError('Không kết nối được tới máy chủ AI của bạn.'); }
     if (!res.ok) throw new AIError(`Máy chủ AI trả về lỗi ${res.status}.`);
@@ -79,7 +79,7 @@ export async function askAI(ai, prompt) {
   }
 
   const chat = chatConfig(ai);
-  if (chat) return askChat(chat, prompt);
+  if (chat) return askChat(chat, prompt, system);
 
   // Claude Messages API (gọi trực tiếp từ trình duyệt).
   let res;
@@ -97,7 +97,7 @@ export async function askAI(ai, prompt) {
         model: ai.model || 'claude-opus-5-5',
         max_tokens: 16000,
         fallbacks: 'default',
-        system: SYSTEM,
+        system,
         messages: [{ role: 'user', content: prompt }],
       }),
     });
@@ -119,14 +119,14 @@ export async function askAI(ai, prompt) {
 }
 
 // Định dạng "chat completions" (OpenAI, Gemini qua cổng tương thích, và nhiều nhà cung cấp khác).
-async function askChat({ name, base, key, model }, prompt) {
+async function askChat({ name, base, key, model }, prompt, system = SYSTEM) {
   const url = base.trim().replace(/\/+$/, '').replace(/\/chat\/completions$/, '') + '/chat/completions';
   let res;
   try {
     res = await fetch(url, {
       method: 'POST',
       headers: { 'content-type': 'application/json', authorization: `Bearer ${key.trim()}` },
-      body: JSON.stringify({ model: model.trim(), messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content: prompt }] }),
+      body: JSON.stringify({ model: model.trim(), messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }] }),
     });
   } catch {
     throw new AIError(`Không kết nối được tới ${name}. Kiểm tra mạng và địa chỉ API; cũng có thể nhà cung cấp này không cho gọi thẳng từ trình duyệt.`);
