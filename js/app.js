@@ -7,12 +7,14 @@ import { sessionView } from './study.js';
 import { gameView } from './game.js';
 import { dropView } from './drop.js';
 import { matchView, popView } from './games2.js';
+import { loadGrammar, grammarView, unitView, lessonView, cardsView, errorsView, testView, gDueCount } from './grammar.js';
 import { countUp } from './fx.js';
 
 const routes = {
   home: homeView, learn: learnView, review: reviewView, vocab: vocabView, stats: statsView,
   word: wordView, edit: formView, new: () => formView(null), decks: decksView,
   settings: settingsView, ai: aiView, session: sessionView, game: gameView, drop: dropView, match: matchView, pop: popView,
+  grammar: grammarView, gunit: unitView, glesson: lessonView, gcards: cardsView, gerrors: errorsView, gtest: testView,
 };
 const TAB_META = [['home', 'Trang chủ', 'home'], ['learn', 'Học', 'learn'], ['review', 'Ôn tập', 'review'], ['vocab', 'Từ vựng', 'vocab'], ['stats', 'Thống kê', 'stats']];
 
@@ -20,7 +22,7 @@ const view = document.getElementById('view');
 let lastHash = null;
 
 function renderTabs(active) {
-  const due = dueWords().length;
+  const due = dueWords().length + gDueCount();
   document.getElementById('tabbar').innerHTML = TAB_META.map(([id, label, ic]) =>
     `<a class="tab ${id === active ? 'on' : ''}" href="#/${id}" data-act="go" data-to="#/${id}" ${id === active ? 'aria-current="page"' : ''}>${icon(ic)}<span>${label}</span>${id === 'review' && due ? `<span class="badge">${due > 99 ? '99+' : due}</span>` : ''}</a>`).join('');
 }
@@ -44,7 +46,7 @@ function render(resetScroll = false) {
   }
   if (changed) countUp(view);
   lastHash = location.hash;
-  renderTabs(route);
+  renderTabs(route === 'grammar' ? 'learn' : route);
   if (out?.focus) {
     const el = view.querySelector(out.focus);
     // Chỉ tự focus khi đổi bước/đổi trang, tránh bật bàn phím ngoài ý muốn khi vẽ lại.
@@ -83,7 +85,7 @@ function bindEvents() {
   matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', applyTheme);
   // Sang ngày mới khi app đang mở nền → vẽ lại để cập nhật danh sách đến hạn.
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && !['session', 'game', 'drop', 'match', 'pop', 'edit', 'new', 'ai', 'settings'].includes(location.hash.split('/')[1])) render();
+    if (!document.hidden && !['session', 'game', 'drop', 'match', 'pop', 'edit', 'new', 'ai', 'settings', 'glesson', 'gcards', 'gtest'].includes(location.hash.split('/')[1])) render();
   });
 }
 
@@ -177,8 +179,10 @@ async function boot() {
   bindEvents();
   watchKeyboard();
   setRenderer(render);
-  if (!location.hash || location.hash === '#/session') history.replaceState(null, '', '#/home');
+  if (!location.hash || /^#\/(session|glesson|gcards|gtest)\b/.test(location.hash)) history.replaceState(null, '', '#/home');
   render();
+  // Nội dung ngữ pháp tải sau, không chặn lần mở app đầu tiên.
+  loadGrammar().then(() => { if (!document.querySelector('.session')) render(); });
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     const sw = navigator.serviceWorker;
     // Có bản mới → tự tải lại để dùng ngay (không tải lại giữa phiên học, chờ tới khi rời phiên).
@@ -186,7 +190,7 @@ async function boot() {
     let reloading = false;
     const reloadWhenIdle = () => {
       if (reloading) return;
-      if (['#/session', '#/game', '#/drop', '#/match', '#/pop'].includes(location.hash)) { addEventListener('hashchange', reloadWhenIdle, { once: true }); return; }
+      if (/^#\/(session|game|drop|match|pop|glesson|gcards|gtest)\b/.test(location.hash)) { addEventListener('hashchange', reloadWhenIdle, { once: true }); return; }
       reloading = true;
       location.reload();
     };

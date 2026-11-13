@@ -1,0 +1,3854 @@
+{
+ "id": "c1",
+ "title": "Nền tảng",
+ "level": "A1–A2",
+ "version": 1,
+ "tags": {
+  "subject": {
+   "name": "Thiếu chủ ngữ (It is…)",
+   "lesson": "u1-order"
+  },
+  "word-order": {
+   "name": "Sai trật tự từ",
+   "lesson": "u1-order"
+  },
+  "be-form": {
+   "name": "Chia sai am / is / are",
+   "lesson": "u1-be"
+  },
+  "be-missing": {
+   "name": "Thiếu động từ to be",
+   "lesson": "u1-be"
+  },
+  "be-verb": {
+   "name": "Dùng to be cùng động từ thường (I am agree)",
+   "lesson": "u1-be"
+  },
+  "be-question": {
+   "name": "Câu hỏi và phủ định với to be",
+   "lesson": "u1-neg"
+  },
+  "pronoun": {
+   "name": "Đại từ I / me / my / mine",
+   "lesson": "u2-pron"
+  },
+  "demonstrative": {
+   "name": "this / that / these / those",
+   "lesson": "u2-this"
+  },
+  "s-3rd": {
+   "name": "Thiếu -s/-es ở ngôi thứ ba",
+   "lesson": "u3-ps"
+  },
+  "freq-adv": {
+   "name": "Vị trí trạng từ tần suất",
+   "lesson": "u3-ps"
+  },
+  "do-does": {
+   "name": "do / does trong câu hỏi, phủ định",
+   "lesson": "u3-dodoes"
+  },
+  "have-has": {
+   "name": "have / has",
+   "lesson": "u3-have"
+  },
+  "there-be": {
+   "name": "There is / There are",
+   "lesson": "u3-have"
+  },
+  "can": {
+   "name": "can + V và câu mệnh lệnh",
+   "lesson": "u3-can"
+  },
+  "cont": {
+   "name": "Hiện tại tiếp diễn",
+   "lesson": "u3-cont"
+  },
+  "simple-cont": {
+   "name": "Hiện tại đơn hay tiếp diễn",
+   "lesson": "u3-vs"
+  },
+  "plural": {
+   "name": "Danh từ số nhiều",
+   "lesson": "u4-plural"
+  },
+  "countable": {
+   "name": "Đếm được / không đếm được",
+   "lesson": "u4-count"
+  },
+  "article": {
+   "name": "Mạo từ a / an / the",
+   "lesson": "u4-article"
+  },
+  "quantifier": {
+   "name": "some / any / much / many",
+   "lesson": "u4-quant"
+  },
+  "was-were": {
+   "name": "was / were",
+   "lesson": "u5-was"
+  },
+  "past-form": {
+   "name": "Dạng quá khứ của động từ",
+   "lesson": "u5-past"
+  },
+  "did": {
+   "name": "did + V nguyên mẫu",
+   "lesson": "u5-did"
+  },
+  "wh": {
+   "name": "Câu hỏi với từ để hỏi",
+   "lesson": "u6-wh"
+  },
+  "prep-time": {
+   "name": "in / on / at chỉ thời gian",
+   "lesson": "u6-time"
+  },
+  "prep-place": {
+   "name": "in / on / at chỉ nơi chốn, go home",
+   "lesson": "u6-place"
+  },
+  "numbers-dates": {
+   "name": "Số thứ tự, giờ, ngày tháng",
+   "lesson": "u6-date"
+  },
+  "adj": {
+   "name": "Tính từ: vị trí, -ed / -ing",
+   "lesson": "u7-adj"
+  },
+  "adverb": {
+   "name": "Trạng từ chỉ cách thức",
+   "lesson": "u7-adv"
+  },
+  "comparative": {
+   "name": "So sánh hơn",
+   "lesson": "u7-comp"
+  },
+  "superlative": {
+   "name": "So sánh nhất",
+   "lesson": "u7-sup"
+  },
+  "future": {
+   "name": "will / be going to",
+   "lesson": "u8-future"
+  },
+  "present-perfect": {
+   "name": "Hiện tại hoàn thành",
+   "lesson": "u8-pp"
+  },
+  "conjunction": {
+   "name": "Liên từ (because / so, although / but)",
+   "lesson": "u9-conj"
+  },
+  "verb-pattern": {
+   "name": "to V hay V-ing",
+   "lesson": "u9-toving"
+  },
+  "modal": {
+   "name": "should / must / have to",
+   "lesson": "u9-modal"
+  },
+  "if1": {
+   "name": "Câu điều kiện loại 1",
+   "lesson": "u9-if"
+  }
+ },
+ "units": [
+  {
+   "id": "u1",
+   "no": "1",
+   "title": "Câu cơ bản và động từ to be",
+   "goal": "Giới thiệu bản thân, hỏi đáp Yes/No",
+   "lessons": [
+    {
+     "id": "u1-order",
+     "title": "Thứ tự từ: S + V + O",
+     "rule": [
+      "Câu tiếng Anh cơ bản: **Chủ ngữ (S) + Động từ (V) + Tân ngữ/bổ ngữ (O)**.",
+      "Câu luôn cần chủ ngữ, kể cả khi nói về thời tiết, giờ giấc: dùng **It**.",
+      "Tính từ đứng **trước** danh từ: *a big house*, không nói *a house big*.",
+      "Thời gian thường đứng cuối câu: *I study at home every evening.*"
+     ],
+     "examples": [
+      {
+       "en": "*I drink* coffee every morning.",
+       "vi": "Tôi uống cà phê mỗi sáng."
+      },
+      {
+       "en": "*It is* cold today.",
+       "vi": "Hôm nay trời lạnh."
+      },
+      {
+       "en": "She has *a small car*.",
+       "vi": "Cô ấy có một chiếc xe nhỏ."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "___ is raining outside.",
+       "opts": [
+        "It",
+        "Is",
+        "There"
+       ],
+       "a": 0,
+       "why": "Câu cần chủ ngữ; nói về thời tiết dùng **It**.",
+       "tag": "subject"
+      },
+      {
+       "t": "mc",
+       "q": "Chọn câu đúng thứ tự:",
+       "opts": [
+        "She has a red bag.",
+        "She has a bag red.",
+        "Has she a red bag."
+       ],
+       "a": 0,
+       "why": "Tính từ đứng trước danh từ: *a red bag*.",
+       "tag": "word-order"
+      },
+      {
+       "t": "tf",
+       "q": "Is very hot today.",
+       "a": false,
+       "why": "Thiếu chủ ngữ. Thời tiết dùng **It is…**",
+       "tag": "subject",
+       "fix": "It is very hot today."
+      },
+      {
+       "t": "tf",
+       "q": "We play football on Sundays.",
+       "a": true,
+       "why": "Đúng thứ tự: S + V + O + thời gian.",
+       "tag": "word-order"
+      },
+      {
+       "t": "fix",
+       "q": "I every day read the news.",
+       "a": [
+        "I read the news every day."
+       ],
+       "why": "Thời gian (every day) thường đứng cuối câu.",
+       "tag": "word-order"
+      },
+      {
+       "t": "fix",
+       "q": "Is 7 o'clock now.",
+       "a": [
+        "It is 7 o'clock now.",
+        "It's 7 o'clock now."
+       ],
+       "why": "Giờ giấc dùng chủ ngữ **It**.",
+       "tag": "subject"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u1-order-1",
+       "front": "Nói về thời tiết hôm nay",
+       "pattern": "**It is** + tính từ (+ today)",
+       "example": "*It is* sunny today.",
+       "vi": "Hôm nay trời nắng."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu về việc bạn làm mỗi sáng, theo thứ tự S + V + O + thời gian.",
+      "samples": [
+       "I drink tea every morning.",
+       "My brother reads the news before work."
+      ],
+      "check": [
+       "Câu có chủ ngữ chưa?",
+       "Thời gian đứng cuối câu chưa?"
+      ]
+     }
+    },
+    {
+     "id": "u1-be",
+     "title": "Động từ to be: am / is / are",
+     "rule": [
+      "**I am** · **he / she / it is** · **you / we / they are**.",
+      "Dạng rút gọn: I'm, he's, she's, it's, you're, we're, they're.",
+      "Dùng to be trước tính từ, danh từ, nơi chốn: *She is tired.* · *He is a doctor.* · *We are at home.*",
+      "Không dùng to be cùng động từ thường: ✗ *I am agree* → ✓ *I agree*."
+     ],
+     "examples": [
+      {
+       "en": "*I am* a student.",
+       "vi": "Tôi là sinh viên."
+      },
+      {
+       "en": "*They are* from Da Nang.",
+       "vi": "Họ đến từ Đà Nẵng."
+      },
+      {
+       "en": "The room *is* clean.",
+       "vi": "Căn phòng sạch sẽ."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "My parents ___ teachers.",
+       "opts": [
+        "are",
+        "is",
+        "am"
+       ],
+       "a": 0,
+       "why": "Chủ ngữ số nhiều (my parents = they) đi với **are**.",
+       "tag": "be-form"
+      },
+      {
+       "t": "mc",
+       "q": "This coffee ___ too hot.",
+       "opts": [
+        "is",
+        "are",
+        "be"
+       ],
+       "a": 0,
+       "why": "Danh từ số ít (this coffee = it) đi với **is**.",
+       "tag": "be-form"
+      },
+      {
+       "t": "fill",
+       "q": "She ___ very kind.",
+       "a": [
+        "is",
+        "'s"
+       ],
+       "why": "Trước tính từ cần to be; she đi với **is**.",
+       "tag": "be-missing",
+       "hint": "một dạng của to be"
+      },
+      {
+       "t": "tf",
+       "q": "I am agree with you.",
+       "a": false,
+       "why": "agree là động từ thường, không dùng thêm am.",
+       "tag": "be-verb",
+       "fix": "I agree with you."
+      },
+      {
+       "t": "fix",
+       "q": "My sister very tall.",
+       "a": [
+        "My sister is very tall.",
+        "My sister's very tall."
+       ],
+       "why": "Thiếu to be trước tính từ.",
+       "tag": "be-missing"
+      },
+      {
+       "t": "fix",
+       "q": "The children is in the garden.",
+       "a": [
+        "The children are in the garden."
+       ],
+       "why": "children là số nhiều → **are**.",
+       "tag": "be-form"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u1-be-1",
+       "front": "Giới thiệu nghề nghiệp và quê của bạn",
+       "pattern": "I **am** + nghề · I **am** from + nơi",
+       "example": "*I am* a nurse. *I am* from Hue.",
+       "vi": "Tôi là y tá. Tôi đến từ Huế."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 1–2 câu giới thiệu bản thân với am / is / are.",
+      "samples": [
+       "I am a designer and I am from Hanoi.",
+       "My best friend is very funny."
+      ],
+      "check": [
+       "I đi với am, số nhiều đi với are?",
+       "Có lỡ dùng am cùng động từ thường không?"
+      ],
+      "must": [
+       "\\b(am|is|are)\\b|'(m|s|re)\\b"
+      ],
+      "hint": "Câu cần có am, is hoặc are"
+     }
+    },
+    {
+     "id": "u1-neg",
+     "title": "Phủ định và câu hỏi với to be",
+     "rule": [
+      "Phủ định: thêm **not** sau to be: *I am not*, *he is not (isn't)*, *they are not (aren't)*.",
+      "Câu hỏi Yes/No: đưa to be lên đầu: *Are you ready?* · *Is she at work?*",
+      "Trả lời ngắn: *Yes, I am.* · *No, she isn't.* Câu trả lời khẳng định không rút gọn: ✗ *Yes, I'm*."
+     ],
+     "examples": [
+      {
+       "en": "*Are you* hungry? — Yes, I am.",
+       "vi": "Bạn đói không? — Có."
+      },
+      {
+       "en": "He *isn't* at home now.",
+       "vi": "Bây giờ anh ấy không ở nhà."
+      },
+      {
+       "en": "*Is it* expensive? — No, it isn't.",
+       "vi": "Nó có đắt không? — Không."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "___ your brother a student?",
+       "opts": [
+        "Is",
+        "Are",
+        "Does"
+       ],
+       "a": 0,
+       "why": "Câu hỏi với to be: đưa **Is** lên đầu (your brother = he).",
+       "tag": "be-question"
+      },
+      {
+       "t": "mc",
+       "q": "We ___ tired. We slept well.",
+       "opts": [
+        "aren't",
+        "isn't",
+        "don't"
+       ],
+       "a": 0,
+       "why": "we đi với **are** → phủ định *aren't*.",
+       "tag": "be-question"
+      },
+      {
+       "t": "fill",
+       "q": "___ they your friends? — Yes, they are.",
+       "a": [
+        "Are"
+       ],
+       "why": "they → **Are** đứng đầu câu hỏi.",
+       "tag": "be-question"
+      },
+      {
+       "t": "tf",
+       "q": "Yes, I'm.",
+       "a": false,
+       "why": "Câu trả lời ngắn khẳng định không rút gọn.",
+       "tag": "be-question",
+       "fix": "Yes, I am."
+      },
+      {
+       "t": "fix",
+       "q": "You are hungry?",
+       "a": [
+        "Are you hungry?"
+       ],
+       "why": "Câu hỏi: to be đứng trước chủ ngữ.",
+       "tag": "be-question"
+      },
+      {
+       "t": "fix",
+       "q": "She not is at school.",
+       "a": [
+        "She is not at school.",
+        "She isn't at school.",
+        "She's not at school."
+       ],
+       "why": "not đứng sau to be.",
+       "tag": "be-question"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u1-neg-1",
+       "front": "Hỏi ai đó đã sẵn sàng chưa",
+       "pattern": "**Be + S + …?** → Yes, S + be. / No, S + be + not.",
+       "example": "*Are you* ready? — Yes, I am.",
+       "vi": "Bạn sẵn sàng chưa? — Rồi."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu hỏi Yes/No với to be và câu trả lời ngắn.",
+      "samples": [
+       "Are you free tonight? — No, I'm not.",
+       "Is the shop open? — Yes, it is."
+      ],
+      "check": [
+       "To be đứng đầu câu hỏi?",
+       "Câu trả lời ngắn có lặp lại to be?"
+      ],
+      "must": [
+       "^\\s*(am|is|are)\\b"
+      ],
+      "hint": "Câu hỏi bắt đầu bằng Am / Is / Are"
+     }
+    }
+   ]
+  },
+  {
+   "id": "u2",
+   "no": "2",
+   "title": "Đại từ và this / that",
+   "goal": "Nói về người và đồ vật quanh bạn",
+   "lessons": [
+    {
+     "id": "u2-pron",
+     "title": "Đại từ: I / me / my / mine",
+     "rule": [
+      "Chủ ngữ: **I, you, he, she, it, we, they** — đứng trước động từ.",
+      "Tân ngữ: **me, you, him, her, it, us, them** — đứng sau động từ hoặc giới từ.",
+      "Tính từ sở hữu + danh từ: **my, your, his, her, its, our, their** + N.",
+      "Đại từ sở hữu đứng một mình: **mine, yours, his, hers, ours, theirs**."
+     ],
+     "examples": [
+      {
+       "en": "*She* calls *me* every day.",
+       "vi": "Cô ấy gọi cho tôi mỗi ngày."
+      },
+      {
+       "en": "This is *our* house.",
+       "vi": "Đây là nhà của chúng tôi."
+      },
+      {
+       "en": "The blue pen is *mine*.",
+       "vi": "Cây bút xanh là của tôi."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Can you help ___?",
+       "opts": [
+        "me",
+        "I",
+        "my"
+       ],
+       "a": 0,
+       "why": "Sau động từ (help) dùng tân ngữ **me**.",
+       "tag": "pronoun"
+      },
+      {
+       "t": "mc",
+       "q": "This is ___ phone, not yours.",
+       "opts": [
+        "my",
+        "mine",
+        "me"
+       ],
+       "a": 0,
+       "why": "Trước danh từ (phone) dùng **my**.",
+       "tag": "pronoun"
+      },
+      {
+       "t": "fill",
+       "q": "These keys aren't mine. Are they ___?",
+       "a": [
+        "yours"
+       ],
+       "why": "Đứng một mình, không có danh từ theo sau → **yours**.",
+       "tag": "pronoun",
+       "hint": "của bạn"
+      },
+      {
+       "t": "tf",
+       "q": "Me like this song.",
+       "a": false,
+       "why": "Chủ ngữ phải là **I**.",
+       "tag": "pronoun",
+       "fix": "I like this song."
+      },
+      {
+       "t": "fix",
+       "q": "This is mine bag.",
+       "a": [
+        "This is my bag."
+       ],
+       "why": "Trước danh từ dùng **my**, không dùng mine.",
+       "tag": "pronoun"
+      },
+      {
+       "t": "fix",
+       "q": "I see they every morning.",
+       "a": [
+        "I see them every morning."
+       ],
+       "why": "Sau động từ dùng tân ngữ **them**.",
+       "tag": "pronoun"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u2-pron-1",
+       "front": "Nói một món đồ là của bạn",
+       "pattern": "This is **my** + N. · It's **mine**.",
+       "example": "This is *my* umbrella. It's *mine*.",
+       "vi": "Đây là ô của tôi. Nó là của tôi."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu có cả my và mine (hoặc your và yours).",
+      "samples": [
+       "That isn't my coat. Mine is black.",
+       "Is this your book or hers?"
+      ],
+      "check": [
+       "my/your đứng trước danh từ?",
+       "mine/yours đứng một mình?"
+      ],
+      "must": [
+       "\\b(mine|yours|his|hers|ours|theirs)\\b"
+      ],
+      "hint": "Câu cần có mine, yours, hers, ours hoặc theirs"
+     }
+    },
+    {
+     "id": "u2-this",
+     "title": "this / that / these / those",
+     "rule": [
+      "**this** (gần, số ít) · **these** (gần, số nhiều).",
+      "**that** (xa, số ít) · **those** (xa, số nhiều).",
+      "Danh từ và động từ phải khớp: *this book is* · *these books are*."
+     ],
+     "examples": [
+      {
+       "en": "*This* bag is heavy.",
+       "vi": "Cái túi này nặng."
+      },
+      {
+       "en": "*Those* people are my neighbours.",
+       "vi": "Những người kia là hàng xóm của tôi."
+      },
+      {
+       "en": "Is *that* your car?",
+       "vi": "Kia có phải xe của bạn không?"
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "___ shoes are new.",
+       "opts": [
+        "These",
+        "This",
+        "That"
+       ],
+       "a": 0,
+       "why": "Gần + số nhiều → **these**.",
+       "tag": "demonstrative"
+      },
+      {
+       "t": "mc",
+       "q": "Look at ___ bird over there!",
+       "opts": [
+        "that",
+        "these",
+        "this"
+       ],
+       "a": 0,
+       "why": "Xa + số ít → **that**.",
+       "tag": "demonstrative"
+      },
+      {
+       "t": "fill",
+       "q": "___ apples on that tree are very sweet.",
+       "a": [
+        "Those"
+       ],
+       "why": "Xa + số nhiều → **Those**.",
+       "tag": "demonstrative",
+       "hint": "ở xa, số nhiều"
+      },
+      {
+       "t": "tf",
+       "q": "This books are interesting.",
+       "a": false,
+       "why": "books số nhiều → **these**.",
+       "tag": "demonstrative",
+       "fix": "These books are interesting."
+      },
+      {
+       "t": "fix",
+       "q": "That are my friends.",
+       "a": [
+        "Those are my friends."
+       ],
+       "why": "friends số nhiều → **those … are**.",
+       "tag": "demonstrative"
+      },
+      {
+       "t": "fix",
+       "q": "These is my brother.",
+       "a": [
+        "This is my brother."
+       ],
+       "why": "Một người → **this is**.",
+       "tag": "demonstrative"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u2-this-1",
+       "front": "Giới thiệu người đứng cạnh bạn",
+       "pattern": "**This is** + người (số ít) · **These are** + người (số nhiều)",
+       "example": "*This is* my colleague, Lan.",
+       "vi": "Đây là đồng nghiệp của tôi, Lan."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu với these hoặc those.",
+      "samples": [
+       "These shoes are comfortable.",
+       "Those buildings are very old."
+      ],
+      "check": [
+       "Danh từ có ở số nhiều?",
+       "Động từ là are?"
+      ],
+      "must": [
+       "\\b(these|those)\\b"
+      ],
+      "hint": "Câu cần có these hoặc those"
+     }
+    }
+   ]
+  },
+  {
+   "id": "u3",
+   "no": "3",
+   "title": "Hiện tại đơn và hiện tại tiếp diễn",
+   "goal": "Nói về thói quen và việc đang làm",
+   "lessons": [
+    {
+     "id": "u3-ps",
+     "title": "Hiện tại đơn: thói quen, sự thật",
+     "rule": [
+      "Dùng cho thói quen và sự thật: *I walk to work.* · *Water boils at 100°C.*",
+      "**he / she / it + V-s/es**: works, goes, watches, studies.",
+      "Thêm **-es** sau -o, -s, -sh, -ch, -x; phụ âm + y → **-ies** (study → studies).",
+      "Trạng từ tần suất (always, usually, often, sometimes, never) đứng **trước động từ thường** nhưng **sau to be**."
+     ],
+     "examples": [
+      {
+       "en": "She *works* in a bank.",
+       "vi": "Cô ấy làm ở ngân hàng."
+      },
+      {
+       "en": "I *usually get up* at six.",
+       "vi": "Tôi thường dậy lúc 6 giờ."
+      },
+      {
+       "en": "He *is always* late.",
+       "vi": "Anh ấy luôn đến muộn."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "My father ___ the newspaper every morning.",
+       "opts": [
+        "reads",
+        "read",
+        "reading"
+       ],
+       "a": 0,
+       "why": "he/she/it + V-s: **reads**.",
+       "tag": "s-3rd"
+      },
+      {
+       "t": "mc",
+       "q": "Chọn câu đúng:",
+       "opts": [
+        "She is always busy.",
+        "She always is busy.",
+        "Always she is busy."
+       ],
+       "a": 0,
+       "why": "Trạng từ tần suất đứng **sau** to be.",
+       "tag": "freq-adv"
+      },
+      {
+       "t": "fill",
+       "q": "Tom ___ TV after dinner.",
+       "a": [
+        "watches"
+       ],
+       "why": "watch tận cùng -ch → **watches**.",
+       "tag": "s-3rd",
+       "hint": "watch"
+      },
+      {
+       "t": "fill",
+       "q": "My sister ___ English at night.",
+       "a": [
+        "studies"
+       ],
+       "why": "Phụ âm + y → **-ies**: studies.",
+       "tag": "s-3rd",
+       "hint": "study"
+      },
+      {
+       "t": "tf",
+       "q": "He go to the gym on Mondays.",
+       "a": false,
+       "why": "Ngôi thứ ba số ít thêm **-es**: goes.",
+       "tag": "s-3rd",
+       "fix": "He goes to the gym on Mondays."
+      },
+      {
+       "t": "fix",
+       "q": "I drink often coffee in the afternoon.",
+       "a": [
+        "I often drink coffee in the afternoon."
+       ],
+       "why": "often đứng **trước** động từ thường.",
+       "tag": "freq-adv"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u3-ps-1",
+       "front": "Nói một thói quen của người thân (he/she)",
+       "pattern": "**He/She + V-s/es** + thời gian",
+       "example": "My mother *cooks* dinner every evening.",
+       "vi": "Mẹ tôi nấu bữa tối mỗi tối."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu về thói quen của một người bạn biết (he/she), có trạng từ tần suất.",
+      "samples": [
+       "My friend usually goes jogging in the morning.",
+       "My boss never drinks coffee."
+      ],
+      "check": [
+       "Động từ có thêm -s/-es?",
+       "Trạng từ đứng trước động từ thường?"
+      ],
+      "must": [
+       "\\b(always|usually|often|sometimes|never|rarely)\\b"
+      ],
+      "hint": "Câu cần có always / usually / often / sometimes / never"
+     }
+    },
+    {
+     "id": "u3-dodoes",
+     "title": "Phủ định và câu hỏi: do / does",
+     "rule": [
+      "Phủ định: **don't / doesn't + V nguyên mẫu**.",
+      "Câu hỏi: **Do / Does + S + V nguyên mẫu?**",
+      "Đã có does thì động từ **không** thêm -s: ✗ *Does he plays?* → ✓ *Does he play?*"
+     ],
+     "examples": [
+      {
+       "en": "I *don't eat* meat.",
+       "vi": "Tôi không ăn thịt."
+      },
+      {
+       "en": "*Does* she *speak* French?",
+       "vi": "Cô ấy có nói tiếng Pháp không?"
+      },
+      {
+       "en": "He *doesn't like* rainy days.",
+       "vi": "Anh ấy không thích ngày mưa."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "___ your children like vegetables?",
+       "opts": [
+        "Do",
+        "Does",
+        "Are"
+       ],
+       "a": 0,
+       "why": "your children = they → **Do**.",
+       "tag": "do-does"
+      },
+      {
+       "t": "mc",
+       "q": "She doesn't ___ in this city.",
+       "opts": [
+        "live",
+        "lives",
+        "living"
+       ],
+       "a": 0,
+       "why": "Sau doesn't dùng **V nguyên mẫu**.",
+       "tag": "do-does"
+      },
+      {
+       "t": "fill",
+       "q": "___ he work on Saturdays?",
+       "a": [
+        "Does"
+       ],
+       "why": "he → **Does** đứng đầu câu hỏi.",
+       "tag": "do-does"
+      },
+      {
+       "t": "tf",
+       "q": "Does she plays the piano?",
+       "a": false,
+       "why": "Sau does dùng động từ nguyên mẫu.",
+       "tag": "do-does",
+       "fix": "Does she play the piano?"
+      },
+      {
+       "t": "fix",
+       "q": "I not like spicy food.",
+       "a": [
+        "I don't like spicy food.",
+        "I do not like spicy food."
+       ],
+       "why": "Phủ định động từ thường cần **don't**.",
+       "tag": "do-does"
+      },
+      {
+       "t": "fix",
+       "q": "My brother don't drive.",
+       "a": [
+        "My brother doesn't drive.",
+        "My brother does not drive."
+       ],
+       "why": "my brother = he → **doesn't**.",
+       "tag": "do-does"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u3-dodoes-1",
+       "front": "Hỏi ai đó có thích một món ăn không",
+       "pattern": "**Do/Does + S + V?**",
+       "example": "*Do* you *like* noodles?",
+       "vi": "Bạn có thích mì không?"
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu hỏi với Do/Does và một câu phủ định với don't/doesn't.",
+      "samples": [
+       "Does your friend play tennis? He doesn't play tennis, but he swims.",
+       "I don't watch TV at night."
+      ],
+      "check": [
+       "Sau does/doesn't động từ ở dạng nguyên mẫu?"
+      ],
+      "must": [
+       "\\b(do|does|don't|doesn't)\\b"
+      ],
+      "hint": "Câu cần có do, does, don't hoặc doesn't"
+     }
+    },
+    {
+     "id": "u3-have",
+     "title": "have / has và there is / there are",
+     "rule": [
+      "**I / you / we / they have** · **he / she / it has**.",
+      "Nói \"có\" theo nghĩa tồn tại ở đâu đó: **There is** + số ít/không đếm được · **There are** + số nhiều.",
+      "Không dùng have cho nghĩa này: ✗ *There have a cat* → ✓ *There is a cat*."
+     ],
+     "examples": [
+      {
+       "en": "She *has* two brothers.",
+       "vi": "Cô ấy có hai anh trai."
+      },
+      {
+       "en": "*There is* a bank near my house.",
+       "vi": "Gần nhà tôi có một ngân hàng."
+      },
+      {
+       "en": "*There are* five people in my family.",
+       "vi": "Gia đình tôi có năm người."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "My friend ___ a new laptop.",
+       "opts": [
+        "has",
+        "have",
+        "is"
+       ],
+       "a": 0,
+       "why": "my friend = he/she → **has**.",
+       "tag": "have-has"
+      },
+      {
+       "t": "mc",
+       "q": "___ many students in the library.",
+       "opts": [
+        "There are",
+        "There is",
+        "They have"
+       ],
+       "a": 0,
+       "why": "students số nhiều → **There are**.",
+       "tag": "there-be"
+      },
+      {
+       "t": "fill",
+       "q": "There ___ some milk in the fridge.",
+       "a": [
+        "is",
+        "'s"
+       ],
+       "why": "milk không đếm được → **There is**.",
+       "tag": "there-be"
+      },
+      {
+       "t": "tf",
+       "q": "There have a park near here.",
+       "a": false,
+       "why": "\"Có\" theo nghĩa tồn tại dùng **There is/are**.",
+       "tag": "there-be",
+       "fix": "There is a park near here."
+      },
+      {
+       "t": "fix",
+       "q": "He have a big dog.",
+       "a": [
+        "He has a big dog."
+       ],
+       "why": "he → **has**.",
+       "tag": "have-has"
+      },
+      {
+       "t": "fix",
+       "q": "There is three chairs in the room.",
+       "a": [
+        "There are three chairs in the room."
+       ],
+       "why": "three chairs số nhiều → **There are**.",
+       "tag": "there-be"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u3-have-1",
+       "front": "Mô tả khu phố của bạn có gì",
+       "pattern": "**There is** + a/an + N · **There are** + N số nhiều",
+       "example": "*There is* a market and *there are* two schools.",
+       "vi": "Có một cái chợ và có hai trường học."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 1–2 câu mô tả căn phòng của bạn với there is / there are.",
+      "samples": [
+       "There is a desk by the window.",
+       "There are two lamps in my room."
+      ],
+      "check": [
+       "Số ít dùng is, số nhiều dùng are?"
+      ],
+      "must": [
+       "\\bthere\\s*('s|is|are)\\b"
+      ],
+      "hint": "Câu cần có there is hoặc there are"
+     }
+    },
+    {
+     "id": "u3-can",
+     "title": "can / can't và câu mệnh lệnh",
+     "rule": [
+      "**can / can't + V nguyên mẫu**: khả năng, sự cho phép. Không thêm -s: *She can swim.*",
+      "Câu hỏi: **Can + S + V?** — *Can you drive?*",
+      "Câu mệnh lệnh bắt đầu bằng **V nguyên mẫu**: *Open the door.* · Phủ định: **Don't + V**: *Don't run.*"
+     ],
+     "examples": [
+      {
+       "en": "I *can speak* a little Japanese.",
+       "vi": "Tôi nói được một chút tiếng Nhật."
+      },
+      {
+       "en": "*Can* I *sit* here?",
+       "vi": "Tôi ngồi đây được không?"
+      },
+      {
+       "en": "*Don't forget* your keys.",
+       "vi": "Đừng quên chìa khoá."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "She can ___ three languages.",
+       "opts": [
+        "speak",
+        "speaks",
+        "to speak"
+       ],
+       "a": 0,
+       "why": "Sau can dùng **V nguyên mẫu**.",
+       "tag": "can"
+      },
+      {
+       "t": "mc",
+       "q": "___ late again, please!",
+       "opts": [
+        "Don't be",
+        "Not be",
+        "No be"
+       ],
+       "a": 0,
+       "why": "Mệnh lệnh phủ định: **Don't + V**.",
+       "tag": "can"
+      },
+      {
+       "t": "fill",
+       "q": "___ you help me with this box?",
+       "a": [
+        "Can",
+        "Could"
+       ],
+       "why": "Nhờ giúp đỡ: **Can you…?**",
+       "tag": "can"
+      },
+      {
+       "t": "tf",
+       "q": "He cans play the guitar.",
+       "a": false,
+       "why": "can không thêm -s với he/she/it.",
+       "tag": "can",
+       "fix": "He can play the guitar."
+      },
+      {
+       "t": "fix",
+       "q": "I can to cook pasta.",
+       "a": [
+        "I can cook pasta."
+       ],
+       "why": "Sau can không có to.",
+       "tag": "can"
+      },
+      {
+       "t": "fix",
+       "q": "Please you close the window.",
+       "a": [
+        "Please close the window.",
+        "Close the window, please."
+       ],
+       "why": "Câu mệnh lệnh bắt đầu bằng động từ, không có you.",
+       "tag": "can"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u3-can-1",
+       "front": "Nói một việc bạn làm được và một việc chưa làm được",
+       "pattern": "S + **can / can't** + V",
+       "example": "I *can ride* a bike, but I *can't drive*.",
+       "vi": "Tôi đi được xe đạp nhưng chưa lái được ô tô."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu với can và một câu với can't.",
+      "samples": [
+       "My son can read, but he can't write yet.",
+       "I can't sing very well."
+      ],
+      "check": [
+       "Sau can là động từ nguyên mẫu, không có to?"
+      ],
+      "must": [
+       "\\bcan('t|not)?\\b"
+      ],
+      "hint": "Câu cần có can hoặc can't"
+     }
+    },
+    {
+     "id": "u3-cont",
+     "title": "Hiện tại tiếp diễn: việc đang xảy ra",
+     "rule": [
+      "**am / is / are + V-ing**: việc đang xảy ra lúc nói, hoặc việc tạm thời: *I'm working from home this week.*",
+      "Dấu hiệu: now, right now, at the moment, today, this week, Look!, Listen!",
+      "Thêm -ing: make → making (bỏ e), run → running (gấp đôi phụ âm cuối)."
+     ],
+     "examples": [
+      {
+       "en": "She *is cooking* dinner now.",
+       "vi": "Cô ấy đang nấu bữa tối."
+      },
+      {
+       "en": "*Are* you *listening* to me?",
+       "vi": "Bạn có đang nghe tôi nói không?"
+      },
+      {
+       "en": "They *aren't working* today.",
+       "vi": "Hôm nay họ không làm việc."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Look! The baby ___.",
+       "opts": [
+        "is sleeping",
+        "sleeps",
+        "sleeping"
+       ],
+       "a": 0,
+       "why": "Look! → việc đang xảy ra: **is + V-ing**.",
+       "tag": "cont"
+      },
+      {
+       "t": "mc",
+       "q": "We ___ dinner at the moment.",
+       "opts": [
+        "are having",
+        "have",
+        "are have"
+       ],
+       "a": 0,
+       "why": "at the moment → **are having**.",
+       "tag": "cont"
+      },
+      {
+       "t": "fill",
+       "q": "I ___ an email right now.",
+       "a": [
+        "am writing",
+        "'m writing"
+       ],
+       "why": "right now → **am writing** (write bỏ e).",
+       "tag": "cont",
+       "hint": "write"
+      },
+      {
+       "t": "tf",
+       "q": "He is runing in the park.",
+       "a": false,
+       "why": "run → **running** (gấp đôi n).",
+       "tag": "cont",
+       "fix": "He is running in the park."
+      },
+      {
+       "t": "fix",
+       "q": "She watching TV now.",
+       "a": [
+        "She is watching TV now.",
+        "She's watching TV now."
+       ],
+       "why": "Thiếu to be: **is** watching.",
+       "tag": "cont"
+      },
+      {
+       "t": "fix",
+       "q": "What you are doing?",
+       "a": [
+        "What are you doing?"
+       ],
+       "why": "Câu hỏi: to be đứng trước chủ ngữ.",
+       "tag": "cont"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u3-cont-1",
+       "front": "Kể bạn đang làm gì ngay lúc này",
+       "pattern": "S + **am/is/are + V-ing** (now)",
+       "example": "*I'm reading* a book at the moment.",
+       "vi": "Lúc này tôi đang đọc sách."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu kể việc bạn hoặc người bên cạnh đang làm ngay lúc này.",
+      "samples": [
+       "My cat is sleeping on the sofa.",
+       "I'm learning English on my phone right now."
+      ],
+      "check": [
+       "Có to be trước V-ing?",
+       "Chính tả -ing đúng chưa?"
+      ],
+      "must": [
+       "(\\b(am|is|are)|'(m|s|re))\\s+\\w+ing\\b"
+      ],
+      "hint": "Câu cần có am/is/are + V-ing"
+     }
+    },
+    {
+     "id": "u3-vs",
+     "title": "Hiện tại đơn hay tiếp diễn?",
+     "rule": [
+      "Hiện tại đơn: thói quen, việc lâu dài — *I work in Hanoi.*",
+      "Hiện tại tiếp diễn: đang xảy ra, tạm thời — *I'm working in Hue this month.*",
+      "Động từ chỉ trạng thái **không** dùng tiếp diễn: know, like, love, want, need, believe, understand: ✗ *I'm knowing* → ✓ *I know*."
+     ],
+     "examples": [
+      {
+       "en": "He usually *drives*, but today he *is taking* the bus.",
+       "vi": "Anh ấy thường lái xe, nhưng hôm nay đi xe buýt."
+      },
+      {
+       "en": "I *want* a glass of water.",
+       "vi": "Tôi muốn một cốc nước."
+      },
+      {
+       "en": "Listen! Someone *is singing*.",
+       "vi": "Nghe kìa! Có ai đang hát."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Every Sunday we ___ our grandparents.",
+       "opts": [
+        "visit",
+        "are visiting",
+        "visiting"
+       ],
+       "a": 0,
+       "why": "Every Sunday → thói quen → hiện tại đơn.",
+       "tag": "simple-cont"
+      },
+      {
+       "t": "mc",
+       "q": "I ___ what you mean.",
+       "opts": [
+        "understand",
+        "am understanding",
+        "understanding"
+       ],
+       "a": 0,
+       "why": "understand là động từ trạng thái → không dùng tiếp diễn.",
+       "tag": "simple-cont"
+      },
+      {
+       "t": "fill",
+       "q": "Be quiet! The children ___.",
+       "a": [
+        "are sleeping",
+        "'re sleeping"
+       ],
+       "why": "Đang xảy ra lúc nói → **are sleeping**.",
+       "tag": "simple-cont",
+       "hint": "sleep"
+      },
+      {
+       "t": "tf",
+       "q": "She is knowing the answer.",
+       "a": false,
+       "why": "know không dùng ở dạng tiếp diễn.",
+       "tag": "simple-cont",
+       "fix": "She knows the answer."
+      },
+      {
+       "t": "fix",
+       "q": "I am usually walking to work.",
+       "a": [
+        "I usually walk to work."
+       ],
+       "why": "usually → thói quen → hiện tại đơn.",
+       "tag": "simple-cont"
+      },
+      {
+       "t": "fix",
+       "q": "Right now he plays football.",
+       "a": [
+        "Right now he is playing football.",
+        "He is playing football right now.",
+        "Right now he's playing football."
+       ],
+       "why": "Right now → hiện tại tiếp diễn.",
+       "tag": "simple-cont"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u3-vs-1",
+       "front": "So sánh thói quen hằng ngày với việc khác thường hôm nay",
+       "pattern": "S + **usually + V(s)**, but today S + **am/is/are + V-ing**",
+       "example": "I usually *cook* at home, but today *I'm eating* out.",
+       "vi": "Tôi thường nấu ở nhà, nhưng hôm nay ăn ngoài."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu so sánh thói quen thường ngày với việc khác thường hôm nay (usually …, but today …).",
+      "samples": [
+       "I usually take the bus, but today I'm cycling.",
+       "She usually works late, but this week she is leaving early."
+      ],
+      "check": [
+       "Vế thói quen dùng hiện tại đơn?",
+       "Vế hôm nay dùng am/is/are + V-ing?"
+      ],
+      "must": [
+       "\\bbut\\b"
+      ],
+      "hint": "Thử dùng mẫu: usually …, but today …"
+     }
+    }
+   ]
+  },
+  {
+   "id": "u4",
+   "no": "4",
+   "title": "Danh từ, mạo từ và lượng từ",
+   "goal": "Nói về đồ vật và số lượng",
+   "lessons": [
+    {
+     "id": "u4-plural",
+     "title": "Danh từ số nhiều",
+     "rule": [
+      "Thường thêm **-s**: book → books. Sau -s, -sh, -ch, -x, -o thêm **-es**: box → boxes, potato → potatoes.",
+      "Phụ âm + y → **-ies**: city → cities. Nguyên âm + y giữ nguyên: day → days.",
+      "-f/-fe → **-ves**: knife → knives, leaf → leaves.",
+      "Bất quy tắc: man → men, woman → women, child → children, person → people, tooth → teeth, foot → feet."
+     ],
+     "examples": [
+      {
+       "en": "I have two *children*.",
+       "vi": "Tôi có hai con."
+      },
+      {
+       "en": "There are many *cities* in Asia.",
+       "vi": "Châu Á có nhiều thành phố."
+      },
+      {
+       "en": "Wash the *dishes*, please.",
+       "vi": "Rửa bát giúp nhé."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "There are three ___ in the box.",
+       "opts": [
+        "knives",
+        "knifes",
+        "knife"
+       ],
+       "a": 0,
+       "why": "-fe → **-ves**: knives.",
+       "tag": "plural"
+      },
+      {
+       "t": "mc",
+       "q": "How many ___ are in your team?",
+       "opts": [
+        "people",
+        "peoples",
+        "person"
+       ],
+       "a": 0,
+       "why": "Số nhiều của person là **people**.",
+       "tag": "plural"
+      },
+      {
+       "t": "fill",
+       "q": "She bought two ___.",
+       "a": [
+        "watches"
+       ],
+       "why": "-ch → thêm **-es**.",
+       "tag": "plural",
+       "hint": "watch"
+      },
+      {
+       "t": "tf",
+       "q": "I have two book.",
+       "a": false,
+       "why": "Sau số lớn hơn 1 dùng danh từ số nhiều.",
+       "tag": "plural",
+       "fix": "I have two books."
+      },
+      {
+       "t": "fix",
+       "q": "Many childs play in the park.",
+       "a": [
+        "Many children play in the park."
+       ],
+       "why": "child → **children**.",
+       "tag": "plural"
+      },
+      {
+       "t": "fix",
+       "q": "We visited three citys.",
+       "a": [
+        "We visited three cities."
+       ],
+       "why": "Phụ âm + y → **-ies**: cities.",
+       "tag": "plural"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u4-plural-1",
+       "front": "Kể số lượng người trong một nhóm",
+       "pattern": "số + danh từ **số nhiều** (people, children, men…)",
+       "example": "There are twenty *people* in my class.",
+       "vi": "Lớp tôi có hai mươi người."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu có ít nhất hai danh từ số nhiều.",
+      "samples": [
+       "I have three brothers and two sisters.",
+       "The shelves are full of boxes."
+      ],
+      "check": [
+       "Có danh từ bất quy tắc nào không (people, children…)?"
+      ]
+     }
+    },
+    {
+     "id": "u4-count",
+     "title": "Danh từ đếm được và không đếm được",
+     "rule": [
+      "Đếm được: có số ít và số nhiều (an apple, two apples).",
+      "Không đếm được: không có số nhiều, không đi với a/an: water, rice, money, information, advice, furniture, homework, news.",
+      "Muốn đếm, dùng đơn vị: *a glass of water*, *a piece of advice*, *two bottles of milk*.",
+      "Danh từ không đếm được đi với động từ số ít: *The information **is** useful.*"
+     ],
+     "examples": [
+      {
+       "en": "Can I have *a glass of water*?",
+       "vi": "Cho tôi một cốc nước nhé?"
+      },
+      {
+       "en": "She gave me *some good advice*.",
+       "vi": "Cô ấy cho tôi vài lời khuyên hay."
+      },
+      {
+       "en": "*The furniture is* new.",
+       "vi": "Đồ đạc còn mới."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I need some ___ about the course.",
+       "opts": [
+        "information",
+        "informations",
+        "an information"
+       ],
+       "a": 0,
+       "why": "information không đếm được, không có -s.",
+       "tag": "countable"
+      },
+      {
+       "t": "mc",
+       "q": "Let me give you ___ advice.",
+       "opts": [
+        "a piece of",
+        "an",
+        "two"
+       ],
+       "a": 0,
+       "why": "Đếm advice cần đơn vị: **a piece of**.",
+       "tag": "countable"
+      },
+      {
+       "t": "fill",
+       "q": "The news ___ very good today.",
+       "a": [
+        "is"
+       ],
+       "why": "news không đếm được → động từ số ít **is**.",
+       "tag": "countable",
+       "hint": "be"
+      },
+      {
+       "t": "tf",
+       "q": "We have a lot of homeworks.",
+       "a": false,
+       "why": "homework không đếm được.",
+       "tag": "countable",
+       "fix": "We have a lot of homework."
+      },
+      {
+       "t": "fix",
+       "q": "She bought two breads.",
+       "a": [
+        "She bought two loaves of bread.",
+        "She bought two pieces of bread."
+       ],
+       "why": "bread không đếm được: *two loaves of bread*.",
+       "tag": "countable"
+      },
+      {
+       "t": "fix",
+       "q": "The money are on the table.",
+       "a": [
+        "The money is on the table."
+       ],
+       "why": "money không đếm được → **is**.",
+       "tag": "countable"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u4-count-1",
+       "front": "Xin một ly đồ uống",
+       "pattern": "**a glass / cup / bottle of** + danh từ không đếm được",
+       "example": "Could I have *a cup of tea*, please?",
+       "vi": "Cho tôi một tách trà nhé?"
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu dùng a glass of / a piece of / a bottle of …",
+      "samples": [
+       "I drink two glasses of water after lunch.",
+       "My teacher gave me a useful piece of advice."
+      ],
+      "check": [
+       "Danh từ sau of là danh từ không đếm được?"
+      ],
+      "must": [
+       "\\b(glass|glasses|cup|cups|piece|pieces|bottle|bottles|bowl|slice|loaf|loaves|kilo)\\s+of\\b"
+      ],
+      "hint": "Câu cần có a glass of / a piece of / a bottle of…"
+     }
+    },
+    {
+     "id": "u4-article",
+     "title": "Mạo từ a / an / the",
+     "rule": [
+      "**a** + âm phụ âm, **an** + âm nguyên âm — tính theo **âm**, không theo chữ: *a university*, *an hour*.",
+      "a/an: nhắc lần đầu, một vật bất kỳ. **the**: vật đã nhắc đến, hoặc cả hai bên đều biết: *I saw a dog. The dog was black.*",
+      "the cho vật duy nhất: *the sun*, *the internet*.",
+      "Nói chung về danh từ số nhiều/không đếm được thì không dùng mạo từ: *I like music.* · *Cats are cute.*"
+     ],
+     "examples": [
+      {
+       "en": "She is *an* engineer.",
+       "vi": "Cô ấy là kỹ sư."
+      },
+      {
+       "en": "I bought *a* bag. *The* bag is red.",
+       "vi": "Tôi mua một cái túi. Cái túi màu đỏ."
+      },
+      {
+       "en": "*The* moon is bright tonight.",
+       "vi": "Tối nay trăng sáng."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "He studies at ___ university in Hue.",
+       "opts": [
+        "a",
+        "an",
+        "the"
+       ],
+       "a": 0,
+       "why": "university đọc /juː/ (âm phụ âm) → **a**.",
+       "tag": "article"
+      },
+      {
+       "t": "mc",
+       "q": "I'll be back in ___ hour.",
+       "opts": [
+        "an",
+        "a",
+        "the"
+       ],
+       "a": 0,
+       "why": "hour có h câm, bắt đầu bằng âm nguyên âm → **an**.",
+       "tag": "article"
+      },
+      {
+       "t": "fill",
+       "q": "I have a cat and a dog. ___ cat is white.",
+       "a": [
+        "The"
+       ],
+       "why": "Đã nhắc đến rồi → **The**.",
+       "tag": "article"
+      },
+      {
+       "t": "tf",
+       "q": "I like the music very much.",
+       "a": false,
+       "why": "Nói chung về âm nhạc → không dùng the.",
+       "tag": "article",
+       "fix": "I like music very much."
+      },
+      {
+       "t": "fix",
+       "q": "She is a honest person.",
+       "a": [
+        "She is an honest person.",
+        "She's an honest person."
+       ],
+       "why": "honest có h câm → **an**.",
+       "tag": "article"
+      },
+      {
+       "t": "fix",
+       "q": "Sun rises in the east.",
+       "a": [
+        "The sun rises in the east."
+       ],
+       "why": "Mặt trời là duy nhất → **the sun**.",
+       "tag": "article"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u4-article-1",
+       "front": "Kể một món đồ bạn mới mua, rồi mô tả nó",
+       "pattern": "I bought **a/an** + N. **The** + N + is …",
+       "example": "I bought *a* lamp. *The* lamp is very bright.",
+       "vi": "Tôi mua một cái đèn. Cái đèn rất sáng."
+      }
+     ],
+     "write": {
+      "prompt": "Viết hai câu: câu đầu nhắc một vật với a/an, câu sau nói tiếp về nó với the.",
+      "samples": [
+       "I met a teacher yesterday. The teacher was very friendly.",
+       "We watched a film. The film was too long."
+      ],
+      "check": [
+       "Lần đầu dùng a/an, lần sau dùng the?",
+       "a/an chọn theo âm đầu?"
+      ],
+      "must": [
+       "\\bthe\\b"
+      ],
+      "hint": "Câu thứ hai cần có the"
+     }
+    },
+    {
+     "id": "u4-quant",
+     "title": "some / any / much / many / a lot of",
+     "rule": [
+      "**some**: câu khẳng định (và lời mời: *Would you like some tea?*).",
+      "**any**: câu phủ định và câu hỏi: *I don't have any money.* · *Do you have any questions?*",
+      "**many** + danh từ đếm được số nhiều · **much** + danh từ không đếm được (thường trong câu phủ định và câu hỏi).",
+      "**a lot of** dùng được cho cả hai: *a lot of friends*, *a lot of time*."
+     ],
+     "examples": [
+      {
+       "en": "There are *some* eggs in the fridge.",
+       "vi": "Trong tủ lạnh có vài quả trứng."
+      },
+      {
+       "en": "We don't have *much* time.",
+       "vi": "Chúng ta không có nhiều thời gian."
+      },
+      {
+       "en": "How *many* languages do you speak?",
+       "vi": "Bạn nói được bao nhiêu thứ tiếng?"
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Is there ___ sugar left?",
+       "opts": [
+        "any",
+        "some",
+        "many"
+       ],
+       "a": 0,
+       "why": "Câu hỏi → **any**.",
+       "tag": "quantifier"
+      },
+      {
+       "t": "mc",
+       "q": "How ___ water do you drink a day?",
+       "opts": [
+        "much",
+        "many",
+        "a lot"
+       ],
+       "a": 0,
+       "why": "water không đếm được → **How much**.",
+       "tag": "quantifier"
+      },
+      {
+       "t": "fill",
+       "q": "I don't have ___ free time this week.",
+       "a": [
+        "much"
+       ],
+       "why": "time không đếm được, câu phủ định → **much**.",
+       "tag": "quantifier",
+       "hint": "nhiều"
+      },
+      {
+       "t": "tf",
+       "q": "There aren't some chairs in the room.",
+       "a": false,
+       "why": "Câu phủ định → **any**.",
+       "tag": "quantifier",
+       "fix": "There aren't any chairs in the room."
+      },
+      {
+       "t": "fix",
+       "q": "We need many water for the trip.",
+       "a": [
+        "We need a lot of water for the trip.",
+        "We need much water for the trip.",
+        "We need lots of water for the trip."
+       ],
+       "why": "water không đếm được → **a lot of** (hoặc much).",
+       "tag": "quantifier"
+      },
+      {
+       "t": "fix",
+       "q": "How much people came to the party?",
+       "a": [
+        "How many people came to the party?"
+       ],
+       "why": "people đếm được → **How many**.",
+       "tag": "quantifier"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u4-quant-1",
+       "front": "Hỏi cần bao nhiêu thứ gì đó",
+       "pattern": "**How many** + N số nhiều? · **How much** + N không đếm được?",
+       "example": "*How much* money do we need?",
+       "vi": "Chúng ta cần bao nhiêu tiền?"
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu hỏi với How many hoặc How much.",
+      "samples": [
+       "How many hours do you sleep a night?",
+       "How much coffee do you drink?"
+      ],
+      "check": [
+       "many đi với danh từ đếm được số nhiều?",
+       "much đi với danh từ không đếm được?"
+      ],
+      "must": [
+       "\\bhow\\s+(many|much)\\b"
+      ],
+      "hint": "Câu cần có How many hoặc How much"
+     }
+    }
+   ]
+  },
+  {
+   "id": "u5",
+   "no": "5",
+   "title": "Quá khứ đơn",
+   "goal": "Kể chuyện hôm qua, cuối tuần",
+   "lessons": [
+    {
+     "id": "u5-was",
+     "title": "was / were",
+     "rule": [
+      "Quá khứ của to be: **I / he / she / it was** · **you / we / they were**.",
+      "Phủ định: wasn't, weren't. Câu hỏi: *Was she …?* · *Were you …?*",
+      "Dấu hiệu: yesterday, last night, last week, two days ago, in 2020."
+     ],
+     "examples": [
+      {
+       "en": "I *was* at home yesterday.",
+       "vi": "Hôm qua tôi ở nhà."
+      },
+      {
+       "en": "They *weren't* happy with the result.",
+       "vi": "Họ không hài lòng với kết quả."
+      },
+      {
+       "en": "*Were* you tired after the trip?",
+       "vi": "Bạn có mệt sau chuyến đi không?"
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "We ___ in Da Lat last summer.",
+       "opts": [
+        "were",
+        "was",
+        "are"
+       ],
+       "a": 0,
+       "why": "we + quá khứ → **were**.",
+       "tag": "was-were"
+      },
+      {
+       "t": "mc",
+       "q": "___ the film good?",
+       "opts": [
+        "Was",
+        "Were",
+        "Did"
+       ],
+       "a": 0,
+       "why": "the film = it → **Was**.",
+       "tag": "was-were"
+      },
+      {
+       "t": "fill",
+       "q": "My parents ___ at home last night.",
+       "a": [
+        "weren't",
+        "were not"
+       ],
+       "why": "my parents = they → **weren't**.",
+       "tag": "was-were",
+       "hint": "not be"
+      },
+      {
+       "t": "tf",
+       "q": "She were very busy yesterday.",
+       "a": false,
+       "why": "she → **was**.",
+       "tag": "was-were",
+       "fix": "She was very busy yesterday."
+      },
+      {
+       "t": "fix",
+       "q": "I am sick last week.",
+       "a": [
+        "I was sick last week."
+       ],
+       "why": "last week → quá khứ: **was**.",
+       "tag": "was-were"
+      },
+      {
+       "t": "fix",
+       "q": "Where you were yesterday?",
+       "a": [
+        "Where were you yesterday?"
+       ],
+       "why": "Câu hỏi: were đứng trước chủ ngữ.",
+       "tag": "was-were"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u5-was-1",
+       "front": "Kể hôm qua bạn ở đâu và cảm thấy thế nào",
+       "pattern": "S + **was/were** + nơi chốn / tính từ + yesterday",
+       "example": "I *was* at the office all day yesterday.",
+       "vi": "Hôm qua tôi ở văn phòng cả ngày."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu về nơi bạn ở và cảm giác của bạn hôm qua.",
+      "samples": [
+       "Yesterday I was at the beach and I was very relaxed.",
+       "My friends were at a concert last night."
+      ],
+      "check": [
+       "I/he/she/it đi với was, số nhiều đi với were?"
+      ],
+      "must": [
+       "\\b(was|were)\\b"
+      ],
+      "hint": "Câu cần có was hoặc were"
+     }
+    },
+    {
+     "id": "u5-past",
+     "title": "Quá khứ đơn: động từ có quy tắc và bất quy tắc",
+     "rule": [
+      "Việc đã xong ở một thời điểm xác định trong quá khứ.",
+      "Có quy tắc: **V + -ed**: work → worked, live → lived, stop → stopped, study → studied.",
+      "Bất quy tắc phải học thuộc: go → **went**, have → **had**, see → **saw**, buy → **bought**, eat → **ate**, make → **made**.",
+      "Dạng quá khứ giống nhau cho mọi ngôi: *I went, she went, they went.*"
+     ],
+     "examples": [
+      {
+       "en": "We *visited* our grandparents last weekend.",
+       "vi": "Cuối tuần trước chúng tôi thăm ông bà."
+      },
+      {
+       "en": "She *bought* a new phone yesterday.",
+       "vi": "Hôm qua cô ấy mua điện thoại mới."
+      },
+      {
+       "en": "I *went* to bed at 11 last night.",
+       "vi": "Tối qua tôi đi ngủ lúc 11 giờ."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Last year we ___ to Japan.",
+       "opts": [
+        "went",
+        "goed",
+        "go"
+       ],
+       "a": 0,
+       "why": "go là bất quy tắc: **went**.",
+       "tag": "past-form"
+      },
+      {
+       "t": "mc",
+       "q": "He ___ the bus this morning.",
+       "opts": [
+        "missed",
+        "miss",
+        "missing"
+       ],
+       "a": 0,
+       "why": "this morning (đã qua) → **missed**.",
+       "tag": "past-form"
+      },
+      {
+       "t": "fill",
+       "q": "I ___ at the shop on my way home.",
+       "a": [
+        "stopped"
+       ],
+       "why": "stop: gấp đôi p rồi thêm -ed → **stopped**.",
+       "tag": "past-form",
+       "hint": "stop"
+      },
+      {
+       "t": "fill",
+       "q": "She ___ noodles for lunch yesterday.",
+       "a": [
+        "ate"
+       ],
+       "why": "eat là bất quy tắc: **ate**.",
+       "tag": "past-form",
+       "hint": "eat"
+      },
+      {
+       "t": "tf",
+       "q": "I go to the cinema yesterday.",
+       "a": false,
+       "why": "yesterday → quá khứ: **went**.",
+       "tag": "past-form",
+       "fix": "I went to the cinema yesterday."
+      },
+      {
+       "t": "fix",
+       "q": "We buyed some flowers for her.",
+       "a": [
+        "We bought some flowers for her."
+       ],
+       "why": "buy → **bought** (bất quy tắc).",
+       "tag": "past-form"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u5-past-1",
+       "front": "Kể một việc bạn làm cuối tuần trước",
+       "pattern": "S + **V2 / V-ed** + last weekend",
+       "example": "I *cleaned* my room and *saw* a film last weekend.",
+       "vi": "Cuối tuần trước tôi dọn phòng và xem phim."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 1–2 câu kể cuối tuần trước của bạn, có ít nhất một động từ bất quy tắc.",
+      "samples": [
+       "Last Saturday I went to the market and bought some fruit.",
+       "On Sunday we had lunch with my aunt."
+      ],
+      "check": [
+       "Động từ đã ở dạng quá khứ?",
+       "Động từ bất quy tắc đúng dạng?"
+      ]
+     }
+    },
+    {
+     "id": "u5-did",
+     "title": "Quá khứ đơn: phủ định và câu hỏi với did",
+     "rule": [
+      "Phủ định: **didn't + V nguyên mẫu**: *I didn't go.*",
+      "Câu hỏi: **Did + S + V nguyên mẫu?**: *Did you see it?*",
+      "Đã có did thì động từ **trở về nguyên mẫu**: ✗ *Did she came?* → ✓ *Did she come?*",
+      "Với to be không dùng did: *Were you late?*"
+     ],
+     "examples": [
+      {
+       "en": "I *didn't sleep* well last night.",
+       "vi": "Tối qua tôi ngủ không ngon."
+      },
+      {
+       "en": "*Did* you *call* your mother?",
+       "vi": "Bạn đã gọi cho mẹ chưa?"
+      },
+      {
+       "en": "Where *did* they *go* on holiday?",
+       "vi": "Họ đi nghỉ ở đâu?"
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "___ you finish your homework?",
+       "opts": [
+        "Did",
+        "Were",
+        "Do"
+       ],
+       "a": 0,
+       "why": "Câu hỏi quá khứ với động từ thường → **Did**.",
+       "tag": "did"
+      },
+      {
+       "t": "mc",
+       "q": "She didn't ___ the email.",
+       "opts": [
+        "send",
+        "sent",
+        "sends"
+       ],
+       "a": 0,
+       "why": "Sau didn't dùng **V nguyên mẫu**.",
+       "tag": "did"
+      },
+      {
+       "t": "fill",
+       "q": "What time ___ you get up yesterday?",
+       "a": [
+        "did"
+       ],
+       "why": "Câu hỏi quá khứ: **did** + S + V.",
+       "tag": "did"
+      },
+      {
+       "t": "tf",
+       "q": "Did he went to work yesterday?",
+       "a": false,
+       "why": "Sau did dùng động từ nguyên mẫu.",
+       "tag": "did",
+       "fix": "Did he go to work yesterday?"
+      },
+      {
+       "t": "fix",
+       "q": "I didn't saw him at the party.",
+       "a": [
+        "I didn't see him at the party.",
+        "I did not see him at the party."
+       ],
+       "why": "didn't + **see** (nguyên mẫu).",
+       "tag": "did"
+      },
+      {
+       "t": "fix",
+       "q": "Where you went last summer?",
+       "a": [
+        "Where did you go last summer?"
+       ],
+       "why": "Câu hỏi quá khứ cần **did** và động từ nguyên mẫu.",
+       "tag": "did"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u5-did-1",
+       "front": "Hỏi bạn bè đã làm gì tối qua",
+       "pattern": "**What did** + S + **V** + last night?",
+       "example": "*What did* you *do* last night?",
+       "vi": "Tối qua bạn làm gì?"
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu hỏi với Did / What did… và một câu phủ định với didn't.",
+      "samples": [
+       "Did you watch the match? I didn't watch it because I was busy.",
+       "What did your sister cook for dinner?"
+      ],
+      "check": [
+       "Sau did/didn't là động từ nguyên mẫu?"
+      ],
+      "must": [
+       "\\bdid(n't)?\\b"
+      ],
+      "hint": "Câu cần có did hoặc didn't"
+     }
+    }
+   ]
+  },
+  {
+   "id": "u6",
+   "no": "6",
+   "title": "Từ để hỏi, giới từ, giờ và ngày tháng",
+   "goal": "Hỏi đường, hỏi giờ, hẹn lịch",
+   "lessons": [
+    {
+     "id": "u6-wh",
+     "title": "Câu hỏi với từ để hỏi",
+     "rule": [
+      "**What** (cái gì) · **Where** (ở đâu) · **When** (khi nào) · **Who** (ai) · **Why** (tại sao) · **How** (thế nào) · **How much / How many** (bao nhiêu) · **How often** (bao lâu một lần).",
+      "Cấu trúc: **Wh- + trợ động từ (do/does/did/is/are…) + S + V?**",
+      "Khi hỏi về chủ ngữ thì không cần trợ động từ: *Who lives here?*"
+     ],
+     "examples": [
+      {
+       "en": "*Where do you* work?",
+       "vi": "Bạn làm việc ở đâu?"
+      },
+      {
+       "en": "*Why is she* sad?",
+       "vi": "Tại sao cô ấy buồn?"
+      },
+      {
+       "en": "*How often do you* exercise?",
+       "vi": "Bạn tập thể dục bao lâu một lần?"
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "___ do you go to the gym? — Three times a week.",
+       "opts": [
+        "How often",
+        "How much",
+        "When"
+       ],
+       "a": 0,
+       "why": "Hỏi tần suất → **How often**.",
+       "tag": "wh"
+      },
+      {
+       "t": "mc",
+       "q": "___ is your birthday? — In May.",
+       "opts": [
+        "When",
+        "Where",
+        "Who"
+       ],
+       "a": 0,
+       "why": "Hỏi thời gian → **When**.",
+       "tag": "wh"
+      },
+      {
+       "t": "fill",
+       "q": "___ does this bag cost? — 200,000 dong.",
+       "a": [
+        "How much"
+       ],
+       "why": "Hỏi giá → **How much**.",
+       "tag": "wh"
+      },
+      {
+       "t": "tf",
+       "q": "Where you live?",
+       "a": false,
+       "why": "Thiếu trợ động từ **do**.",
+       "tag": "wh",
+       "fix": "Where do you live?"
+      },
+      {
+       "t": "fix",
+       "q": "What time she starts work?",
+       "a": [
+        "What time does she start work?"
+       ],
+       "why": "Cần **does** và động từ nguyên mẫu.",
+       "tag": "wh"
+      },
+      {
+       "t": "fix",
+       "q": "Why you are late?",
+       "a": [
+        "Why are you late?"
+       ],
+       "why": "to be đứng trước chủ ngữ.",
+       "tag": "wh"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u6-wh-1",
+       "front": "Hỏi ai đó làm việc ở đâu",
+       "pattern": "**Wh- + do/does + S + V?**",
+       "example": "*Where does* your brother *work*?",
+       "vi": "Anh trai bạn làm việc ở đâu?"
+      }
+     ],
+     "write": {
+      "prompt": "Viết hai câu hỏi với hai từ để hỏi khác nhau.",
+      "samples": [
+       "Where do you usually have lunch? Why do you like it?",
+       "How often does your family eat out?"
+      ],
+      "check": [
+       "Có trợ động từ sau từ để hỏi?",
+       "Động từ chính ở dạng nguyên mẫu?"
+      ],
+      "must": [
+       "^\\s*(what|where|when|who|why|how)\\b"
+      ],
+      "hint": "Câu hỏi bắt đầu bằng What / Where / When / Who / Why / How"
+     }
+    },
+    {
+     "id": "u6-time",
+     "title": "Giới từ chỉ thời gian: in / on / at",
+     "rule": [
+      "**at** + giờ, thời điểm: at 7 o'clock, at night, at the weekend.",
+      "**on** + thứ, ngày tháng: on Monday, on 2 September, on my birthday.",
+      "**in** + tháng, năm, mùa, buổi: in May, in 2025, in summer, in the morning.",
+      "Không dùng giới từ trước this, next, last, every: *next week*, *every day*."
+     ],
+     "examples": [
+      {
+       "en": "The meeting starts *at* 9 a.m.",
+       "vi": "Cuộc họp bắt đầu lúc 9 giờ sáng."
+      },
+      {
+       "en": "We have class *on* Tuesdays.",
+       "vi": "Chúng tôi có lớp vào thứ Ba."
+      },
+      {
+       "en": "She was born *in* 1998.",
+       "vi": "Cô ấy sinh năm 1998."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I usually read ___ the evening.",
+       "opts": [
+        "in",
+        "on",
+        "at"
+       ],
+       "a": 0,
+       "why": "Buổi trong ngày → **in** the evening.",
+       "tag": "prep-time"
+      },
+      {
+       "t": "mc",
+       "q": "The shop closes ___ 10 p.m.",
+       "opts": [
+        "at",
+        "in",
+        "on"
+       ],
+       "a": 0,
+       "why": "Giờ cụ thể → **at**.",
+       "tag": "prep-time"
+      },
+      {
+       "t": "fill",
+       "q": "My birthday is ___ 15 April.",
+       "a": [
+        "on"
+       ],
+       "why": "Ngày tháng cụ thể → **on**.",
+       "tag": "prep-time"
+      },
+      {
+       "t": "tf",
+       "q": "See you on next Friday.",
+       "a": false,
+       "why": "Trước next không dùng giới từ.",
+       "tag": "prep-time",
+       "fix": "See you next Friday."
+      },
+      {
+       "t": "fix",
+       "q": "We go swimming at summer.",
+       "a": [
+        "We go swimming in summer.",
+        "We go swimming in the summer."
+       ],
+       "why": "Mùa → **in** summer.",
+       "tag": "prep-time"
+      },
+      {
+       "t": "fix",
+       "q": "I was born on 2001.",
+       "a": [
+        "I was born in 2001."
+       ],
+       "why": "Năm → **in**.",
+       "tag": "prep-time"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u6-time-1",
+       "front": "Hẹn một cuộc gặp: ngày và giờ",
+       "pattern": "**on** + thứ/ngày · **at** + giờ",
+       "example": "Let's meet *on* Friday *at* 3 p.m.",
+       "vi": "Gặp nhau thứ Sáu lúc 3 giờ chiều nhé."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu hẹn lịch có cả on và at.",
+      "samples": [
+       "My dentist appointment is on Monday at 10 a.m.",
+       "The party starts at 7 on Saturday."
+      ],
+      "check": [
+       "Thứ/ngày dùng on, giờ dùng at?"
+      ],
+      "must": [
+       "\\b(on|at)\\b"
+      ],
+      "hint": "Câu cần có on và at"
+     }
+    },
+    {
+     "id": "u6-place",
+     "title": "Giới từ nơi chốn và go home",
+     "rule": [
+      "**in** + không gian bao quanh, thành phố, nước: in the room, in Hanoi, in Vietnam.",
+      "**on** + bề mặt, tầng, đường: on the table, on the 3rd floor, on Le Loi Street.",
+      "**at** + một điểm, địa chỉ: at the bus stop, at home, at work, at 25 Tran Phu Street.",
+      "**go home**, **go there**: không có to. Nhưng *go to work*, *go to school*."
+     ],
+     "examples": [
+      {
+       "en": "My keys are *on* the table.",
+       "vi": "Chìa khoá ở trên bàn."
+      },
+      {
+       "en": "She lives *in* Can Tho.",
+       "vi": "Cô ấy sống ở Cần Thơ."
+      },
+      {
+       "en": "I'm *at* the bus stop.",
+       "vi": "Tôi đang ở trạm xe buýt."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The cat is sleeping ___ the sofa.",
+       "opts": [
+        "on",
+        "in",
+        "at"
+       ],
+       "a": 0,
+       "why": "Trên bề mặt → **on**.",
+       "tag": "prep-place"
+      },
+      {
+       "t": "mc",
+       "q": "Let's meet ___ the station.",
+       "opts": [
+        "at",
+        "on",
+        "in"
+       ],
+       "a": 0,
+       "why": "Một điểm hẹn → **at**.",
+       "tag": "prep-place"
+      },
+      {
+       "t": "fill",
+       "q": "My office is ___ the fifth floor.",
+       "a": [
+        "on"
+       ],
+       "why": "Tầng → **on**.",
+       "tag": "prep-place"
+      },
+      {
+       "t": "tf",
+       "q": "I go to home after work.",
+       "a": false,
+       "why": "**go home** không có to.",
+       "tag": "prep-place",
+       "fix": "I go home after work."
+      },
+      {
+       "t": "fix",
+       "q": "He lives on London.",
+       "a": [
+        "He lives in London."
+       ],
+       "why": "Thành phố → **in**.",
+       "tag": "prep-place"
+      },
+      {
+       "t": "fix",
+       "q": "She is in work now.",
+       "a": [
+        "She is at work now.",
+        "She's at work now."
+       ],
+       "why": "**at work**: ở chỗ làm.",
+       "tag": "prep-place"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u6-place-1",
+       "front": "Chỉ chỗ một món đồ trong phòng",
+       "pattern": "**in** (trong) · **on** (trên) · **at** (tại một điểm)",
+       "example": "Your phone is *on* the desk, *in* the bedroom.",
+       "vi": "Điện thoại của bạn ở trên bàn, trong phòng ngủ."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu nói nơi bạn sống và nơi bạn làm việc hoặc học.",
+      "samples": [
+       "I live in Da Nang and I work at a hotel.",
+       "My school is on Nguyen Trai Street."
+      ],
+      "check": [
+       "Thành phố dùng in, đường dùng on, điểm cụ thể dùng at?"
+      ],
+      "must": [
+       "\\b(in|on|at)\\b"
+      ],
+      "hint": "Câu cần có in, on hoặc at"
+     }
+    },
+    {
+     "id": "u6-date",
+     "title": "Số thứ tự, giờ và ngày tháng",
+     "rule": [
+      "Số thứ tự: first (1st), second (2nd), third (3rd), fourth (4th) … twenty-first (21st).",
+      "Ngày tháng: viết *2 September*, đọc *the second of September*.",
+      "Giờ: *seven o'clock* · *half past six* (6:30) · *a quarter to nine* (8:45) · hoặc đọc số: *six thirty*.",
+      "Hỏi giờ: *What time is it?* · Hỏi ngày: *What's the date today?*"
+     ],
+     "examples": [
+      {
+       "en": "Today is *the third of* May.",
+       "vi": "Hôm nay là mùng 3 tháng 5."
+      },
+      {
+       "en": "It's *half past* seven.",
+       "vi": "Bây giờ là 7 giờ rưỡi."
+      },
+      {
+       "en": "My flat is on the *twelfth* floor.",
+       "vi": "Căn hộ của tôi ở tầng 12."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Christmas is on the ___ of December.",
+       "opts": [
+        "twenty-fifth",
+        "twenty-five",
+        "twentieth-five"
+       ],
+       "a": 0,
+       "why": "Ngày dùng số thứ tự: **twenty-fifth**.",
+       "tag": "numbers-dates"
+      },
+      {
+       "t": "mc",
+       "q": "8:45 = ___",
+       "opts": [
+        "a quarter to nine",
+        "a quarter past eight",
+        "half past eight"
+       ],
+       "a": 0,
+       "why": "Còn 15 phút nữa là 9 giờ → **a quarter to nine**.",
+       "tag": "numbers-dates"
+      },
+      {
+       "t": "fill",
+       "q": "It's 6:30. It's half ___ six.",
+       "a": [
+        "past"
+       ],
+       "why": "6:30 → **half past six**.",
+       "tag": "numbers-dates"
+      },
+      {
+       "t": "tf",
+       "q": "She lives on the three floor.",
+       "a": false,
+       "why": "Tầng dùng số thứ tự: **third**.",
+       "tag": "numbers-dates",
+       "fix": "She lives on the third floor."
+      },
+      {
+       "t": "fix",
+       "q": "What time it is?",
+       "a": [
+        "What time is it?"
+       ],
+       "why": "Câu hỏi: is đứng trước it.",
+       "tag": "numbers-dates"
+      },
+      {
+       "t": "fix",
+       "q": "Today is the two of June.",
+       "a": [
+        "Today is the second of June."
+       ],
+       "why": "Ngày dùng số thứ tự: **second**.",
+       "tag": "numbers-dates"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u6-date-1",
+       "front": "Nói ngày sinh nhật của bạn",
+       "pattern": "My birthday is on **the + số thứ tự + of + tháng**",
+       "example": "My birthday is on *the fourteenth of* July.",
+       "vi": "Sinh nhật tôi là ngày 14 tháng 7."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu nói ngày sinh nhật của bạn và giờ bạn thường dậy.",
+      "samples": [
+       "My birthday is on the ninth of March, and I usually get up at half past six.",
+       "I was born on the first of January."
+      ],
+      "check": [
+       "Ngày dùng số thứ tự (first, second…)?"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "u7",
+   "no": "7",
+   "title": "Tính từ, trạng từ và so sánh",
+   "goal": "Mô tả và so sánh người, vật, nơi chốn",
+   "lessons": [
+    {
+     "id": "u7-adj",
+     "title": "Tính từ: vị trí và đuôi -ed / -ing",
+     "rule": [
+      "Tính từ đứng **trước danh từ** (*a quiet street*) hoặc **sau to be / look / feel / seem** (*She looks tired*).",
+      "Tính từ không có số nhiều: *two old houses*, không phải *olds*.",
+      "**-ed**: cảm xúc của người: *I'm bored.* · **-ing**: thứ gây ra cảm xúc: *The film is boring.*"
+     ],
+     "examples": [
+      {
+       "en": "We live in *a quiet* street.",
+       "vi": "Chúng tôi sống trên một con phố yên tĩnh."
+      },
+      {
+       "en": "I'm *interested* in history.",
+       "vi": "Tôi thích lịch sử."
+      },
+      {
+       "en": "The news was *surprising*.",
+       "vi": "Tin đó thật bất ngờ."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I'm ___ in learning Korean.",
+       "opts": [
+        "interested",
+        "interesting",
+        "interest"
+       ],
+       "a": 0,
+       "why": "Cảm xúc của người → **-ed**: interested.",
+       "tag": "adj"
+      },
+      {
+       "t": "mc",
+       "q": "The lesson was very ___.",
+       "opts": [
+        "boring",
+        "bored",
+        "bore"
+       ],
+       "a": 0,
+       "why": "Tính chất của bài học → **-ing**: boring.",
+       "tag": "adj"
+      },
+      {
+       "t": "fill",
+       "q": "She felt ___ after the long trip.",
+       "a": [
+        "tired"
+       ],
+       "why": "Cảm giác của người → **tired**.",
+       "tag": "adj",
+       "hint": "tire"
+      },
+      {
+       "t": "tf",
+       "q": "She has a dress beautiful.",
+       "a": false,
+       "why": "Tính từ đứng trước danh từ.",
+       "tag": "adj",
+       "fix": "She has a beautiful dress."
+      },
+      {
+       "t": "fix",
+       "q": "I am very exciting about the trip.",
+       "a": [
+        "I am very excited about the trip.",
+        "I'm very excited about the trip."
+       ],
+       "why": "Người cảm thấy → **excited**.",
+       "tag": "adj"
+      },
+      {
+       "t": "fix",
+       "q": "These are olds photos.",
+       "a": [
+        "These are old photos."
+       ],
+       "why": "Tính từ không thêm -s.",
+       "tag": "adj"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u7-adj-1",
+       "front": "Kể cảm giác của bạn về một bộ phim",
+       "pattern": "The film was **-ing**. I was **-ed**.",
+       "example": "The film was *amazing*. I was really *surprised* by the ending.",
+       "vi": "Bộ phim tuyệt lắm. Tôi rất bất ngờ với cái kết."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu có tính từ -ing và một câu có tính từ -ed.",
+      "samples": [
+       "The trip was tiring, so I was exhausted.",
+       "I was bored because the meeting was boring."
+      ],
+      "check": [
+       "-ed cho cảm xúc của người, -ing cho thứ gây ra cảm xúc?"
+      ],
+      "must": [
+       "\\w+(ed|ing)\\b"
+      ],
+      "hint": "Câu cần có tính từ đuôi -ed hoặc -ing"
+     }
+    },
+    {
+     "id": "u7-adv",
+     "title": "Trạng từ chỉ cách thức",
+     "rule": [
+      "Trạng từ bổ nghĩa cho **động từ**: *She sings beautifully.* Tính từ bổ nghĩa cho **danh từ**: *a beautiful song*.",
+      "Thường thêm **-ly**: quick → quickly, careful → carefully, easy → easily.",
+      "Bất quy tắc: good → **well**, fast → fast, hard → hard, late → late.",
+      "Sau look / feel / seem / be dùng **tính từ**: *You look good.*"
+     ],
+     "examples": [
+      {
+       "en": "He drives *carefully*.",
+       "vi": "Anh ấy lái xe cẩn thận."
+      },
+      {
+       "en": "She speaks English *well*.",
+       "vi": "Cô ấy nói tiếng Anh giỏi."
+      },
+      {
+       "en": "They work *hard*.",
+       "vi": "Họ làm việc chăm chỉ."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Please speak more ___.",
+       "opts": [
+        "slowly",
+        "slow",
+        "slowness"
+       ],
+       "a": 0,
+       "why": "Bổ nghĩa cho động từ speak → trạng từ **slowly**.",
+       "tag": "adverb"
+      },
+      {
+       "t": "mc",
+       "q": "He plays the guitar very ___.",
+       "opts": [
+        "well",
+        "good",
+        "goodly"
+       ],
+       "a": 0,
+       "why": "Trạng từ của good là **well**.",
+       "tag": "adverb"
+      },
+      {
+       "t": "fill",
+       "q": "She finished the test ___.",
+       "a": [
+        "easily"
+       ],
+       "why": "easy → **easily** (y → i + ly).",
+       "tag": "adverb",
+       "hint": "easy"
+      },
+      {
+       "t": "tf",
+       "q": "She sings beautiful.",
+       "a": false,
+       "why": "Bổ nghĩa cho động từ → trạng từ **beautifully**.",
+       "tag": "adverb",
+       "fix": "She sings beautifully."
+      },
+      {
+       "t": "fix",
+       "q": "He works very hardly.",
+       "a": [
+        "He works very hard."
+       ],
+       "why": "hard là trạng từ bất quy tắc; *hardly* nghĩa là \"hầu như không\".",
+       "tag": "adverb"
+      },
+      {
+       "t": "fix",
+       "q": "Drive careful!",
+       "a": [
+        "Drive carefully!",
+        "Drive carefully."
+       ],
+       "why": "Bổ nghĩa cho drive → **carefully**.",
+       "tag": "adverb"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u7-adv-1",
+       "front": "Nói một người bạn biết làm việc gì đó giỏi",
+       "pattern": "S + V + **trạng từ** (well, quickly, carefully…)",
+       "example": "My sister cooks really *well*.",
+       "vi": "Chị tôi nấu ăn rất ngon."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu mô tả cách một người làm việc gì đó, có dùng trạng từ.",
+      "samples": [
+       "My grandfather walks slowly but he thinks quickly.",
+       "Our teacher explains things clearly."
+      ],
+      "check": [
+       "Trạng từ đứng sau động từ (hoặc sau tân ngữ)?"
+      ],
+      "must": [
+       "\\b(\\w+ly|well|hard|fast)\\b"
+      ],
+      "hint": "Câu cần có trạng từ như quickly, carefully, well…"
+     }
+    },
+    {
+     "id": "u7-comp",
+     "title": "So sánh hơn",
+     "rule": [
+      "Tính từ ngắn: **adj + -er + than**: taller than, cheaper than, bigger than (gấp đôi phụ âm), easier than (y → ier).",
+      "Tính từ dài: **more + adj + than**: more expensive than, more interesting than.",
+      "Bất quy tắc: good → **better**, bad → **worse**, far → **further/farther**.",
+      "Không dùng cả hai: ✗ *more taller*. Sau so sánh dùng **than**, không dùng *that*."
+     ],
+     "examples": [
+      {
+       "en": "My brother is *taller than* me.",
+       "vi": "Anh tôi cao hơn tôi."
+      },
+      {
+       "en": "Trains are *more comfortable than* buses.",
+       "vi": "Tàu hoả thoải mái hơn xe buýt."
+      },
+      {
+       "en": "Today is *better than* yesterday.",
+       "vi": "Hôm nay tốt hơn hôm qua."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "This phone is ___ than that one.",
+       "opts": [
+        "cheaper",
+        "more cheap",
+        "cheapest"
+       ],
+       "a": 0,
+       "why": "cheap là tính từ ngắn → **cheaper**.",
+       "tag": "comparative"
+      },
+      {
+       "t": "mc",
+       "q": "English is ___ than I thought.",
+       "opts": [
+        "more difficult",
+        "difficulter",
+        "most difficult"
+       ],
+       "a": 0,
+       "why": "difficult dài → **more difficult**.",
+       "tag": "comparative"
+      },
+      {
+       "t": "fill",
+       "q": "My new flat is ___ than my old one.",
+       "a": [
+        "bigger"
+       ],
+       "why": "big → gấp đôi g → **bigger**.",
+       "tag": "comparative",
+       "hint": "big"
+      },
+      {
+       "t": "tf",
+       "q": "She is more taller than her sister.",
+       "a": false,
+       "why": "Không dùng cả more và -er.",
+       "tag": "comparative",
+       "fix": "She is taller than her sister."
+      },
+      {
+       "t": "fix",
+       "q": "Your idea is gooder than mine.",
+       "a": [
+        "Your idea is better than mine."
+       ],
+       "why": "good → **better** (bất quy tắc).",
+       "tag": "comparative"
+      },
+      {
+       "t": "fix",
+       "q": "He runs faster that me.",
+       "a": [
+        "He runs faster than me.",
+        "He runs faster than I do."
+       ],
+       "why": "So sánh hơn dùng **than**.",
+       "tag": "comparative"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u7-comp-1",
+       "front": "So sánh hai thành phố bạn biết",
+       "pattern": "A is **adj-er / more adj + than** B",
+       "example": "Hanoi is *colder than* Ho Chi Minh City in winter.",
+       "vi": "Mùa đông Hà Nội lạnh hơn TP. Hồ Chí Minh."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu so sánh hai đồ vật hoặc hai nơi.",
+      "samples": [
+       "My laptop is lighter than my old one.",
+       "The countryside is quieter and more peaceful than the city."
+      ],
+      "check": [
+       "Tính từ ngắn thêm -er, tính từ dài dùng more?",
+       "Có than?"
+      ],
+      "must": [
+       "\\bthan\\b"
+      ],
+      "hint": "Câu so sánh cần có than"
+     }
+    },
+    {
+     "id": "u7-sup",
+     "title": "So sánh nhất",
+     "rule": [
+      "Tính từ ngắn: **the + adj + -est**: the tallest, the biggest, the easiest.",
+      "Tính từ dài: **the most + adj**: the most beautiful, the most important.",
+      "Bất quy tắc: good → **the best**, bad → **the worst**, far → **the furthest**.",
+      "Thường đi với **in** + nơi/nhóm hoặc **of** + số lượng: *the tallest in my class*, *the best of all*."
+     ],
+     "examples": [
+      {
+       "en": "This is *the cheapest* restaurant in town.",
+       "vi": "Đây là nhà hàng rẻ nhất thị trấn."
+      },
+      {
+       "en": "She is *the most hard-working* person in our team.",
+       "vi": "Cô ấy là người chăm chỉ nhất nhóm."
+      },
+      {
+       "en": "That was *the best* day of the year.",
+       "vi": "Đó là ngày tuyệt nhất trong năm."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Fansipan is ___ mountain in Vietnam.",
+       "opts": [
+        "the highest",
+        "the higher",
+        "highest"
+       ],
+       "a": 0,
+       "why": "So sánh nhất → **the highest**.",
+       "tag": "superlative"
+      },
+      {
+       "t": "mc",
+       "q": "It was ___ film of the year.",
+       "opts": [
+        "the worst",
+        "the baddest",
+        "the most bad"
+       ],
+       "a": 0,
+       "why": "bad → **the worst**.",
+       "tag": "superlative"
+      },
+      {
+       "t": "fill",
+       "q": "This is ___ part of the lesson.",
+       "a": [
+        "the most important"
+       ],
+       "why": "important dài → **the most important**.",
+       "tag": "superlative",
+       "hint": "important"
+      },
+      {
+       "t": "tf",
+       "q": "He is the most tall student in our class.",
+       "a": false,
+       "why": "tall ngắn → **the tallest**.",
+       "tag": "superlative",
+       "fix": "He is the tallest student in our class."
+      },
+      {
+       "t": "fix",
+       "q": "July is hottest month of the year.",
+       "a": [
+        "July is the hottest month of the year."
+       ],
+       "why": "So sánh nhất cần **the**.",
+       "tag": "superlative"
+      },
+      {
+       "t": "fix",
+       "q": "She is the best singer of the city.",
+       "a": [
+        "She is the best singer in the city."
+       ],
+       "why": "Với nơi chốn dùng **in**.",
+       "tag": "superlative"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u7-sup-1",
+       "front": "Kể nơi hoặc món ăn bạn thích nhất",
+       "pattern": "**the + adj-est / the most + adj** + in …",
+       "example": "This is *the most popular* café *in* my area.",
+       "vi": "Đây là quán cà phê đông khách nhất khu tôi."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu so sánh nhất về một người hoặc nơi bạn biết.",
+      "samples": [
+       "My grandmother is the kindest person in my family.",
+       "This is the most popular café in my area."
+      ],
+      "check": [
+       "Có the trước so sánh nhất?",
+       "Nơi chốn dùng in?"
+      ],
+      "must": [
+       "\\bthe\\s+(\\w+est|most|best|worst)\\b"
+      ],
+      "hint": "Câu cần có the …est hoặc the most…"
+     }
+    }
+   ]
+  },
+  {
+   "id": "u8",
+   "no": "8",
+   "title": "Tương lai và hiện tại hoàn thành",
+   "goal": "Nói kế hoạch và kinh nghiệm",
+   "lessons": [
+    {
+     "id": "u8-future",
+     "title": "Tương lai: will và be going to",
+     "rule": [
+      "**will + V**: quyết định ngay lúc nói, lời hứa, dự đoán theo ý kiến: *I'll help you.* · *I think it will rain.*",
+      "**am / is / are going to + V**: kế hoạch đã có từ trước, dự đoán có căn cứ trước mắt: *I'm going to visit Hue next month.* · *Look at the clouds! It's going to rain.*",
+      "Phủ định: won't + V · am/is/are not going to + V."
+     ],
+     "examples": [
+      {
+       "en": "The phone is ringing. *I'll answer* it.",
+       "vi": "Điện thoại reo. Để tôi nghe."
+      },
+      {
+       "en": "*We're going to move* house in June.",
+       "vi": "Chúng tôi sẽ chuyển nhà vào tháng 6."
+      },
+      {
+       "en": "I think she *will like* the gift.",
+       "vi": "Tôi nghĩ cô ấy sẽ thích món quà."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I've decided. I ___ a new bike next week.",
+       "opts": [
+        "am going to buy",
+        "will buying",
+        "buy"
+       ],
+       "a": 0,
+       "why": "Đã quyết định từ trước → **be going to**.",
+       "tag": "future"
+      },
+      {
+       "t": "mc",
+       "q": "It's cold in here. — ___ close the window.",
+       "opts": [
+        "I'll",
+        "I'm going",
+        "I"
+       ],
+       "a": 0,
+       "why": "Quyết định ngay lúc nói → **I'll**.",
+       "tag": "future"
+      },
+      {
+       "t": "fill",
+       "q": "Don't worry, I ___ anyone.",
+       "a": [
+        "won't tell",
+        "will not tell"
+       ],
+       "why": "Lời hứa → **won't tell**.",
+       "tag": "future",
+       "hint": "not tell"
+      },
+      {
+       "t": "tf",
+       "q": "I will to call you tomorrow.",
+       "a": false,
+       "why": "will + V nguyên mẫu, không có to.",
+       "tag": "future",
+       "fix": "I will call you tomorrow."
+      },
+      {
+       "t": "fix",
+       "q": "She going to study abroad next year.",
+       "a": [
+        "She is going to study abroad next year.",
+        "She's going to study abroad next year."
+       ],
+       "why": "Thiếu to be: **is** going to.",
+       "tag": "future"
+      },
+      {
+       "t": "fix",
+       "q": "Look at those clouds! It will rains.",
+       "a": [
+        "Look at those clouds! It's going to rain.",
+        "Look at those clouds! It is going to rain."
+       ],
+       "why": "Dự đoán có căn cứ trước mắt → **is going to rain**.",
+       "tag": "future"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u8-future-1",
+       "front": "Nói kế hoạch đã định cho cuối tuần này",
+       "pattern": "S + **am/is/are going to** + V",
+       "example": "*I'm going to visit* my parents this weekend.",
+       "vi": "Cuối tuần này tôi sẽ về thăm bố mẹ."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu về kế hoạch đã định (going to) và một lời hứa hoặc dự đoán (will).",
+      "samples": [
+       "I'm going to learn to swim this summer. I think I'll enjoy it.",
+       "We're going to have a party, and I'll bring a cake."
+      ],
+      "check": [
+       "Kế hoạch có sẵn dùng going to, quyết định tức thì dùng will?"
+      ],
+      "must": [
+       "\\b(going to|will|won't)\\b|'ll\\b"
+      ],
+      "hint": "Câu cần có going to hoặc will"
+     }
+    },
+    {
+     "id": "u8-pp",
+     "title": "Hiện tại hoàn thành: mở đầu",
+     "rule": [
+      "**have / has + V3** (quá khứ phân từ): *I have seen*, *she has finished*.",
+      "Dùng cho kinh nghiệm, không nói lúc nào: *I have been to Phu Quoc.*",
+      "Việc kéo dài từ quá khứ đến nay với **for** (khoảng thời gian) / **since** (mốc): *I have lived here for five years / since 2020.*",
+      "Có thời điểm cụ thể trong quá khứ (yesterday, last year…) thì dùng **quá khứ đơn**: *I went there last year.*"
+     ],
+     "examples": [
+      {
+       "en": "I *have visited* Singapore twice.",
+       "vi": "Tôi đã đến Singapore hai lần."
+      },
+      {
+       "en": "She *has worked* here *since* 2021.",
+       "vi": "Cô ấy làm ở đây từ năm 2021."
+      },
+      {
+       "en": "*Have* you ever *tried* durian?",
+       "vi": "Bạn đã bao giờ ăn sầu riêng chưa?"
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "We ___ each other for ten years.",
+       "opts": [
+        "have known",
+        "knew",
+        "know"
+       ],
+       "a": 0,
+       "why": "Kéo dài đến nay + for → **have known**.",
+       "tag": "present-perfect"
+      },
+      {
+       "t": "mc",
+       "q": "I ___ that film last night.",
+       "opts": [
+        "saw",
+        "have seen",
+        "have saw"
+       ],
+       "a": 0,
+       "why": "last night là thời điểm cụ thể → quá khứ đơn **saw**.",
+       "tag": "present-perfect"
+      },
+      {
+       "t": "fill",
+       "q": "She has lived in Hanoi ___ 2019.",
+       "a": [
+        "since"
+       ],
+       "why": "Mốc thời gian → **since**.",
+       "tag": "present-perfect"
+      },
+      {
+       "t": "tf",
+       "q": "I have been to Japan last year.",
+       "a": false,
+       "why": "Có last year → dùng quá khứ đơn.",
+       "tag": "present-perfect",
+       "fix": "I went to Japan last year."
+      },
+      {
+       "t": "fix",
+       "q": "He have finished his report.",
+       "a": [
+        "He has finished his report.",
+        "He's finished his report."
+       ],
+       "why": "he → **has** + V3.",
+       "tag": "present-perfect"
+      },
+      {
+       "t": "fix",
+       "q": "Have you ever eat sushi?",
+       "a": [
+        "Have you ever eaten sushi?"
+       ],
+       "why": "Sau have dùng V3: **eaten**.",
+       "tag": "present-perfect"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u8-pp-1",
+       "front": "Kể bạn đã sống ở nơi hiện tại bao lâu",
+       "pattern": "S + **have/has + V3 + for / since** …",
+       "example": "I *have lived* in this flat *for* three years.",
+       "vi": "Tôi đã sống ở căn hộ này ba năm."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu về kinh nghiệm của bạn, hoặc việc kéo dài đến nay với for / since.",
+      "samples": [
+       "I have worked as a cashier since 2022.",
+       "I have never tried skydiving, but I want to."
+      ],
+      "check": [
+       "have/has + V3?",
+       "Không có từ chỉ thời điểm quá khứ cụ thể (yesterday, last…)?"
+      ],
+      "must": [
+       "\\b(have|has)\\b|'ve\\b"
+      ],
+      "hint": "Câu cần có have/has + V3"
+     }
+    }
+   ]
+  },
+  {
+   "id": "u9",
+   "no": "9",
+   "title": "Nối câu, to V / V-ing, modal và câu điều kiện",
+   "goal": "Viết đoạn 5–8 câu có nối ý",
+   "lessons": [
+    {
+     "id": "u9-conj",
+     "title": "Liên từ: and, but, because, so, although",
+     "rule": [
+      "**and** (và) · **but** (nhưng) · **or** (hoặc) · **because** (vì: nêu lý do) · **so** (nên: nêu kết quả).",
+      "Mỗi cặp ý chỉ dùng **một** liên từ: ✗ *Because it rained, so we stayed home.* → ✓ *Because it rained, we stayed home.* hoặc *It rained, so we stayed home.*",
+      "Tương tự, ✗ *Although …, but …* → chỉ giữ một: *Although it was late, we kept working.*"
+     ],
+     "examples": [
+      {
+       "en": "I was tired, *so* I went to bed early.",
+       "vi": "Tôi mệt nên đi ngủ sớm."
+      },
+      {
+       "en": "She stayed home *because* she was ill.",
+       "vi": "Cô ấy ở nhà vì bị ốm."
+      },
+      {
+       "en": "*Although* it was expensive, he bought it.",
+       "vi": "Dù đắt, anh ấy vẫn mua."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I like tea, ___ I don't like coffee.",
+       "opts": [
+        "but",
+        "so",
+        "because"
+       ],
+       "a": 0,
+       "why": "Hai ý tương phản → **but**.",
+       "tag": "conjunction"
+      },
+      {
+       "t": "mc",
+       "q": "It was raining, ___ we took a taxi.",
+       "opts": [
+        "so",
+        "because",
+        "although"
+       ],
+       "a": 0,
+       "why": "Nêu kết quả → **so**.",
+       "tag": "conjunction"
+      },
+      {
+       "t": "fill",
+       "q": "He was late ___ he missed the bus.",
+       "a": [
+        "because"
+       ],
+       "why": "Nêu lý do → **because**.",
+       "tag": "conjunction"
+      },
+      {
+       "t": "tf",
+       "q": "Because I was hungry, so I ate a sandwich.",
+       "a": false,
+       "why": "Chỉ dùng một liên từ: bỏ so (hoặc bỏ because).",
+       "tag": "conjunction",
+       "fix": "Because I was hungry, I ate a sandwich."
+      },
+      {
+       "t": "fix",
+       "q": "Although the hotel was old, but it was clean.",
+       "a": [
+        "Although the hotel was old, it was clean.",
+        "The hotel was old, but it was clean."
+       ],
+       "why": "Although và but không đi cùng nhau.",
+       "tag": "conjunction"
+      },
+      {
+       "t": "fix",
+       "q": "I stayed home so I was sick.",
+       "a": [
+        "I stayed home because I was sick.",
+        "I was sick, so I stayed home."
+       ],
+       "why": "Ốm là lý do → **because**.",
+       "tag": "conjunction"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u9-conj-1",
+       "front": "Nêu lý do bạn học tiếng Anh",
+       "pattern": "S + V + **because** + S + V · S + V, **so** + S + V",
+       "example": "I study English *because* I want a better job.",
+       "vi": "Tôi học tiếng Anh vì muốn có công việc tốt hơn."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2–3 câu về một ngày của bạn, dùng ít nhất hai liên từ khác nhau.",
+      "samples": [
+       "I got up late, so I skipped breakfast. I was hungry all morning, but I felt fine after lunch.",
+       "Although I was busy, I called my friend because it was her birthday."
+      ],
+      "check": [
+       "Mỗi cặp ý chỉ có một liên từ?",
+       "because nêu lý do, so nêu kết quả?"
+      ],
+      "must": [
+       "\\b(and|but|because|so|although|or)\\b"
+      ],
+      "hint": "Câu cần có and / but / because / so / although"
+     }
+    },
+    {
+     "id": "u9-toving",
+     "title": "To V hay V-ing",
+     "rule": [
+      "Sau **want, need, decide, plan, hope, would like, learn** → **to V**: *I want to travel.*",
+      "Sau **enjoy, finish, avoid, mind, keep** → **V-ing**: *She enjoys cooking.* (like, love, hate dùng được cả hai)",
+      "Sau giới từ (in, at, of, about, for, without…) luôn là **V-ing**: *I'm good at drawing.*"
+     ],
+     "examples": [
+      {
+       "en": "We *decided to stay* at home.",
+       "vi": "Chúng tôi quyết định ở nhà."
+      },
+      {
+       "en": "He *enjoys playing* chess.",
+       "vi": "Anh ấy thích chơi cờ."
+      },
+      {
+       "en": "Thank you *for helping* me.",
+       "vi": "Cảm ơn bạn đã giúp tôi."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I hope ___ you again soon.",
+       "opts": [
+        "to see",
+        "seeing",
+        "see"
+       ],
+       "a": 0,
+       "why": "Sau hope → **to V**.",
+       "tag": "verb-pattern"
+      },
+      {
+       "t": "mc",
+       "q": "She has finished ___ the report.",
+       "opts": [
+        "writing",
+        "to write",
+        "write"
+       ],
+       "a": 0,
+       "why": "Sau finish → **V-ing**.",
+       "tag": "verb-pattern"
+      },
+      {
+       "t": "fill",
+       "q": "I'm interested in ___ photography.",
+       "a": [
+        "learning"
+       ],
+       "why": "Sau giới từ in → **V-ing**.",
+       "tag": "verb-pattern",
+       "hint": "learn"
+      },
+      {
+       "t": "tf",
+       "q": "I want going to the beach this weekend.",
+       "a": false,
+       "why": "Sau want → **to V**.",
+       "tag": "verb-pattern",
+       "fix": "I want to go to the beach this weekend."
+      },
+      {
+       "t": "fix",
+       "q": "He avoids to eat sugar.",
+       "a": [
+        "He avoids eating sugar."
+       ],
+       "why": "Sau avoid → **V-ing**.",
+       "tag": "verb-pattern"
+      },
+      {
+       "t": "fix",
+       "q": "I like go shopping on weekends.",
+       "a": [
+        "I like going shopping on weekends.",
+        "I like to go shopping on weekends."
+       ],
+       "why": "Hai động từ liền nhau: động từ sau là **V-ing** hoặc **to V**.",
+       "tag": "verb-pattern"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u9-toving-1",
+       "front": "Nói một sở thích và một kế hoạch",
+       "pattern": "I **enjoy + V-ing** · I **want / plan + to V**",
+       "example": "I *enjoy reading*, and I *want to write* a book one day.",
+       "vi": "Tôi thích đọc sách và muốn một ngày nào đó viết sách."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu với enjoy / like + V-ing và một câu với want / plan + to V.",
+      "samples": [
+       "My dad loves gardening, and he plans to grow vegetables.",
+       "I need to save money because I want to travel next year."
+      ],
+      "check": [
+       "enjoy / finish / avoid + V-ing?",
+       "want / need / decide + to V?"
+      ],
+      "must": [
+       "\\b(enjoy|enjoys|like|likes|love|loves|hate|hates|finish|avoid|mind|keep)\\s+\\w+ing\\b",
+       "\\b(want|wants|need|needs|plan|plans|decide|decided|hope|hopes|would like|learn)\\s+to\\b"
+      ],
+      "hint": "Thử dùng enjoy + V-ing hoặc want + to V"
+     }
+    },
+    {
+     "id": "u9-modal",
+     "title": "should / must / have to",
+     "rule": [
+      "**should + V**: lời khuyên: *You should drink more water.*",
+      "**must + V**: bắt buộc (do người nói, do luật): *You must wear a helmet.* · **mustn't**: cấm.",
+      "**have to / has to + V**: bắt buộc do hoàn cảnh: *I have to work on Saturday.* · **don't have to**: không cần.",
+      "Sau should / must không có to và không thêm -s: ✗ *She musts* · ✗ *should to go*."
+     ],
+     "examples": [
+      {
+       "en": "You *should see* a doctor.",
+       "vi": "Bạn nên đi khám bác sĩ."
+      },
+      {
+       "en": "Students *mustn't use* phones in the exam.",
+       "vi": "Học sinh không được dùng điện thoại trong giờ thi."
+      },
+      {
+       "en": "She *has to get up* at 5 a.m.",
+       "vi": "Cô ấy phải dậy lúc 5 giờ sáng."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "You look tired. You ___ rest.",
+       "opts": [
+        "should",
+        "should to",
+        "shoulds"
+       ],
+       "a": 0,
+       "why": "Lời khuyên → **should + V**.",
+       "tag": "modal"
+      },
+      {
+       "t": "mc",
+       "q": "It's a holiday tomorrow, so we ___ go to work.",
+       "opts": [
+        "don't have to",
+        "mustn't",
+        "shouldn't to"
+       ],
+       "a": 0,
+       "why": "Không cần đi làm → **don't have to**.",
+       "tag": "modal"
+      },
+      {
+       "t": "fill",
+       "q": "Drivers ___ stop at a red light.",
+       "a": [
+        "must",
+        "have to"
+       ],
+       "why": "Luật bắt buộc → **must**.",
+       "tag": "modal",
+       "hint": "bắt buộc"
+      },
+      {
+       "t": "tf",
+       "q": "He should to study harder.",
+       "a": false,
+       "why": "Sau should không có to.",
+       "tag": "modal",
+       "fix": "He should study harder."
+      },
+      {
+       "t": "fix",
+       "q": "She musts wear a uniform at work.",
+       "a": [
+        "She must wear a uniform at work.",
+        "She has to wear a uniform at work."
+       ],
+       "why": "must không thêm -s.",
+       "tag": "modal"
+      },
+      {
+       "t": "fix",
+       "q": "You mustn't to smoke here.",
+       "a": [
+        "You mustn't smoke here.",
+        "You must not smoke here."
+       ],
+       "why": "Sau mustn't không có to.",
+       "tag": "modal"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u9-modal-1",
+       "front": "Khuyên một người bạn đang mệt",
+       "pattern": "You **should / shouldn't** + V",
+       "example": "You *should go* to bed earlier.",
+       "vi": "Bạn nên đi ngủ sớm hơn."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một lời khuyên với should và một quy định với must hoặc have to.",
+      "samples": [
+       "You should take a break every hour. In my office we have to start at 8.",
+       "Children must wear a seatbelt in the car."
+      ],
+      "check": [
+       "Sau should / must là động từ nguyên mẫu, không có to?"
+      ],
+      "must": [
+       "\\b(should|shouldn't|must|mustn't|have to|has to)\\b"
+      ],
+      "hint": "Câu cần có should, must hoặc have to"
+     }
+    },
+    {
+     "id": "u9-if",
+     "title": "Câu điều kiện loại 1",
+     "rule": [
+      "Điều có thể xảy ra ở tương lai: **If + hiện tại đơn, S + will + V**.",
+      "Mệnh đề if **không** dùng will: ✗ *If it will rain* → ✓ *If it rains*.",
+      "Có thể đảo vế: *I will stay home if it rains.* Khi if đứng giữa câu thì không cần dấu phẩy."
+     ],
+     "examples": [
+      {
+       "en": "*If you study* hard, you *will pass*.",
+       "vi": "Nếu học chăm, bạn sẽ đỗ."
+      },
+      {
+       "en": "*If it rains*, we *will stay* inside.",
+       "vi": "Nếu trời mưa, chúng ta sẽ ở trong nhà."
+      },
+      {
+       "en": "She *will be* angry *if you are* late.",
+       "vi": "Cô ấy sẽ giận nếu bạn đến muộn."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "If you ___ now, you will catch the train.",
+       "opts": [
+        "leave",
+        "will leave",
+        "left"
+       ],
+       "a": 0,
+       "why": "Mệnh đề if dùng hiện tại đơn: **leave**.",
+       "tag": "if1"
+      },
+      {
+       "t": "mc",
+       "q": "If she calls, I ___ you.",
+       "opts": [
+        "will tell",
+        "tell",
+        "told"
+       ],
+       "a": 0,
+       "why": "Mệnh đề chính: **will + V**.",
+       "tag": "if1"
+      },
+      {
+       "t": "fill",
+       "q": "If we ___, we will miss the bus.",
+       "a": [
+        "don't hurry",
+        "do not hurry"
+       ],
+       "why": "Mệnh đề if, phủ định hiện tại đơn: **don't hurry**.",
+       "tag": "if1",
+       "hint": "not hurry"
+      },
+      {
+       "t": "tf",
+       "q": "If it will be sunny, we will go to the beach.",
+       "a": false,
+       "why": "Mệnh đề if không dùng will.",
+       "tag": "if1",
+       "fix": "If it is sunny, we will go to the beach."
+      },
+      {
+       "t": "fix",
+       "q": "If he come, I will be happy.",
+       "a": [
+        "If he comes, I will be happy.",
+        "If he comes, I'll be happy."
+       ],
+       "why": "he → **comes** (hiện tại đơn).",
+       "tag": "if1"
+      },
+      {
+       "t": "fix",
+       "q": "I call you if I will have time.",
+       "a": [
+        "I will call you if I have time.",
+        "I'll call you if I have time."
+       ],
+       "why": "Vế chính dùng will, vế if dùng hiện tại đơn.",
+       "tag": "if1"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u9-if-1",
+       "front": "Nói kế hoạch phụ thuộc thời tiết ngày mai",
+       "pattern": "**If + S + V(s), S + will + V**",
+       "example": "*If it's sunny* tomorrow, *we'll go* for a walk.",
+       "vi": "Nếu mai trời nắng, chúng ta sẽ đi dạo."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu điều kiện loại 1 về ngày mai của bạn.",
+      "samples": [
+       "If I finish work early, I will go to the gym.",
+       "If my friend is free, we'll have dinner together."
+      ],
+      "check": [
+       "Vế if dùng hiện tại đơn?",
+       "Vế chính dùng will + V?"
+      ],
+      "must": [
+       "\\bif\\b"
+      ],
+      "hint": "Câu cần có if"
+     }
+    },
+    {
+     "id": "u9-review",
+     "title": "Ôn tập: các lỗi hay gặp nhất",
+     "rule": [
+      "Bài này ôn lại các lỗi người mới học hay mắc nhất. Câu nào sai sẽ được ghi vào **Sổ lỗi**, để bạn biết cần ôn phần nào.",
+      "Trước khi nộp một câu, tự hỏi ba điều: **Có chủ ngữ và động từ chưa? Động từ chia đúng chưa? Danh từ số ít hay số nhiều?**"
+     ],
+     "examples": [
+      {
+       "en": "She *is* very nice.",
+       "vi": "Cô ấy rất dễ mến."
+      },
+      {
+       "en": "He *goes* to school by bike.",
+       "vi": "Cậu ấy đi học bằng xe đạp."
+      },
+      {
+       "en": "I *went* there yesterday.",
+       "vi": "Hôm qua tôi đã đến đó."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Chọn câu đúng:",
+       "opts": [
+        "I agree with you.",
+        "I am agree with you.",
+        "I agreeing with you."
+       ],
+       "a": 0,
+       "why": "agree là động từ, không cần am.",
+       "tag": "be-verb"
+      },
+      {
+       "t": "mc",
+       "q": "Chọn câu đúng:",
+       "opts": [
+        "She sings beautifully.",
+        "She sings beautiful.",
+        "She beautiful sings."
+       ],
+       "a": 0,
+       "why": "Bổ nghĩa cho động từ → trạng từ.",
+       "tag": "adverb"
+      },
+      {
+       "t": "tf",
+       "q": "There have a lot of people here.",
+       "a": false,
+       "why": "\"Có\" theo nghĩa tồn tại = **there is / there are**.",
+       "tag": "there-be",
+       "fix": "There are a lot of people here."
+      },
+      {
+       "t": "tf",
+       "q": "If it rains, I will stay home.",
+       "a": true,
+       "why": "Đúng: if + hiện tại đơn, will + V.",
+       "tag": "if1"
+      },
+      {
+       "t": "fix",
+       "q": "He go to work by bus.",
+       "a": [
+        "He goes to work by bus."
+       ],
+       "why": "he → **goes**.",
+       "tag": "s-3rd"
+      },
+      {
+       "t": "fix",
+       "q": "Did she came to the party?",
+       "a": [
+        "Did she come to the party?"
+       ],
+       "why": "Sau did dùng V nguyên mẫu.",
+       "tag": "did"
+      },
+      {
+       "t": "fix",
+       "q": "I bought two book yesterday.",
+       "a": [
+        "I bought two books yesterday."
+       ],
+       "why": "two + danh từ số nhiều.",
+       "tag": "plural"
+      },
+      {
+       "t": "fix",
+       "q": "She is more taller than me.",
+       "a": [
+        "She is taller than me.",
+        "She's taller than me.",
+        "She is taller than I am."
+       ],
+       "why": "Không dùng cả more và -er.",
+       "tag": "comparative"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u9-review-1",
+       "front": "Ba câu hỏi tự sửa lỗi trước khi nộp bài",
+       "pattern": "Có **chủ ngữ + động từ**? Động từ **chia đúng**? Danh từ **số ít / nhiều**?",
+       "example": "*He goes* to work by bus every day.",
+       "vi": "Anh ấy đi làm bằng xe buýt mỗi ngày."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một đoạn 3–5 câu kể về ngày hôm qua của bạn, rồi dò lại bằng ba câu hỏi tự sửa lỗi.",
+      "samples": [
+       "Yesterday I got up at six. I had breakfast with my family, and then I went to work by bus. In the evening I was tired, so I went to bed early."
+      ],
+      "check": [
+       "Mỗi câu có chủ ngữ và động từ?",
+       "Động từ ở dạng quá khứ?",
+       "Danh từ số nhiều có -s?"
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

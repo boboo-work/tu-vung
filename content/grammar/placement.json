@@ -1,0 +1,319 @@
+{
+ "version": 1,
+ "items": [
+  {
+   "q": "My sister ___ a nurse.",
+   "opts": [
+    "is",
+    "are",
+    "am"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u1"
+  },
+  {
+   "q": "___ you from Hanoi?",
+   "opts": [
+    "Are",
+    "Is",
+    "Do"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u1"
+  },
+  {
+   "q": "This is ___ car. It belongs to them.",
+   "opts": [
+    "their",
+    "them",
+    "they"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u2"
+  },
+  {
+   "q": "He ___ to work by bike every day.",
+   "opts": [
+    "goes",
+    "go",
+    "going"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u3"
+  },
+  {
+   "q": "___ she like coffee?",
+   "opts": [
+    "Does",
+    "Do",
+    "Is"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u3"
+  },
+  {
+   "q": "Listen! Someone ___ the piano.",
+   "opts": [
+    "is playing",
+    "plays",
+    "play"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u3"
+  },
+  {
+   "q": "I need some ___ about the trip.",
+   "opts": [
+    "information",
+    "informations",
+    "an information"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u4"
+  },
+  {
+   "q": "She is ___ engineer.",
+   "opts": [
+    "an",
+    "a",
+    "the"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u4"
+  },
+  {
+   "q": "We ___ to the beach last Sunday.",
+   "opts": [
+    "went",
+    "go",
+    "goed"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u5"
+  },
+  {
+   "q": "___ you see the match yesterday?",
+   "opts": [
+    "Did",
+    "Were",
+    "Do"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u5"
+  },
+  {
+   "q": "The meeting is ___ Monday.",
+   "opts": [
+    "on",
+    "in",
+    "at"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u6"
+  },
+  {
+   "q": "My brother is ___ than me.",
+   "opts": [
+    "taller",
+    "more tall",
+    "tallest"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u7"
+  },
+  {
+   "q": "I ___ here since 2020.",
+   "opts": [
+    "have lived",
+    "live",
+    "lived"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u8"
+  },
+  {
+   "q": "If it ___ tomorrow, we will stay home.",
+   "opts": [
+    "rains",
+    "will rain",
+    "rained"
+   ],
+   "a": 0,
+   "lvl": 1,
+   "unit": "u9"
+  },
+  {
+   "q": "By the time we arrived, the film ___.",
+   "opts": [
+    "had started",
+    "has started",
+    "starts"
+   ],
+   "a": 0,
+   "lvl": 2
+  },
+  {
+   "q": "If I ___ more free time, I would learn Spanish.",
+   "opts": [
+    "had",
+    "have",
+    "will have"
+   ],
+   "a": 0,
+   "lvl": 2
+  },
+  {
+   "q": "The bridge ___ in 2015.",
+   "opts": [
+    "was built",
+    "built",
+    "is building"
+   ],
+   "a": 0,
+   "lvl": 2
+  },
+  {
+   "q": "The woman ___ lives next door is a doctor.",
+   "opts": [
+    "who",
+    "which",
+    "whose"
+   ],
+   "a": 0,
+   "lvl": 2
+  },
+  {
+   "q": "She suggested ___ a taxi.",
+   "opts": [
+    "taking",
+    "to take",
+    "take"
+   ],
+   "a": 0,
+   "lvl": 2
+  },
+  {
+   "q": "___ it was raining, we went out.",
+   "opts": [
+    "Although",
+    "Despite",
+    "Because of"
+   ],
+   "a": 0,
+   "lvl": 2
+  },
+  {
+   "q": "The number of tourists ___ increased.",
+   "opts": [
+    "has",
+    "have",
+    "are"
+   ],
+   "a": 0,
+   "lvl": 2
+  },
+  {
+   "q": "Prices have risen steadily ___ the last decade.",
+   "opts": [
+    "over",
+    "since",
+    "at"
+   ],
+   "a": 0,
+   "lvl": 2
+  },
+  {
+   "q": "You ___ have told me earlier; I could have helped.",
+   "opts": [
+    "should",
+    "must",
+    "can"
+   ],
+   "a": 0,
+   "lvl": 3
+  },
+  {
+   "q": "Could you tell me ___?",
+   "opts": [
+    "where the station is",
+    "where is the station",
+    "where the station"
+   ],
+   "a": 0,
+   "lvl": 3
+  },
+  {
+   "q": "Sales rose ___ 20% to 35% in 2024.",
+   "opts": [
+    "from",
+    "by",
+    "of"
+   ],
+   "a": 0,
+   "lvl": 3
+  },
+  {
+   "q": "There was a sharp ___ in the number of visitors.",
+   "opts": [
+    "increase",
+    "increasing",
+    "increased"
+   ],
+   "a": 0,
+   "lvl": 3
+  },
+  {
+   "q": "___ the report, she sent it to her manager.",
+   "opts": [
+    "Having finished",
+    "Being finished",
+    "To have finished"
+   ],
+   "a": 0,
+   "lvl": 4
+  },
+  {
+   "q": "Not only ___ late, but he also forgot the tickets.",
+   "opts": [
+    "was he",
+    "he was",
+    "he is"
+   ],
+   "a": 0,
+   "lvl": 4
+  },
+  {
+   "q": "It is essential that every student ___ the form by Friday.",
+   "opts": [
+    "submit",
+    "submits",
+    "submitted"
+   ],
+   "a": 0,
+   "lvl": 4
+  },
+  {
+   "q": "I have many colleagues, most of ___ work remotely.",
+   "opts": [
+    "whom",
+    "them",
+    "who"
+   ],
+   "a": 0,
+   "lvl": 4
+  }
+ ]
+}

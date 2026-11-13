@@ -160,6 +160,8 @@ export function settingsView() {
     <div class="card">
       <div class="setrow"><div><b>Từ mới</b><small>Số từ mới học mỗi ngày</small></div>${stepper('newPerDay', s.newPerDay)}</div>
       <div class="setrow"><div><b>Từ ôn tập</b><small>Số từ mỗi lượt ôn</small></div>${stepper('reviewPerDay', s.reviewPerDay)}</div>
+      <div class="setrow"><div><b>Bài ngữ pháp</b><small>Số bài mỗi ngày · 0 = tắt mục tiêu</small></div>${seg('grammarPerDay', s.grammarPerDay, [[0, '0'], [1, '1'], [2, '2']])}</div>
+      <div class="setrow"><div><b>Thẻ ngữ pháp</b><small>Số thẻ mẫu câu mỗi lượt ôn</small></div>${stepper('grammarReviewPerDay', s.grammarReviewPerDay)}</div>
     </div>
     <h2>Giao diện & phát âm</h2>
     <div class="card">
@@ -207,7 +209,7 @@ on('step', async (el) => {
 });
 on('set', async (el) => {
   const key = el.dataset.key;
-  const v = key === 'rate' ? Number(el.dataset.value) : (key === 'autoSpeak' || key === 'autoFill') ? el.dataset.value === 'true' : el.dataset.value;
+  const v = key === 'rate' || key === 'grammarPerDay' ? Number(el.dataset.value) : (key === 'autoSpeak' || key === 'autoFill') ? el.dataset.value === 'true' : el.dataset.value;
   await saveSettings(key === 'voice' ? { voice: v, voiceName: '' } : { [key]: v });
   if (key === 'theme' || key === 'accent') applyTheme();
   rerender();

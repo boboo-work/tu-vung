@@ -40,6 +40,12 @@ Dữ liệu gắn với địa chỉ (origin) của trang. Khi đổi địa ch�
 
 Khi sửa mã và phát hành lại, tăng `VERSION` trong `sw.js`.
 
+## Ngữ pháp
+
+Tab **Học** có công tắc *Từ vựng | Ngữ pháp*. Khoá **Nền tảng** (A1–A2) gồm 9 unit, 33 bài; mỗi bài 6 bước: khởi động → quy tắc → ví dụ → luyện tập → sửa lỗi → tự đặt câu. Mỗi bài tạo thẻ mẫu câu ôn bằng cùng thuật toán với từ vựng; câu sai được ghi vào **Sổ lỗi** theo loại lỗi. Có bài kiểm tra đầu vào 30 câu để biết nên bắt đầu từ đâu.
+
+Nội dung nằm ở `content/grammar/*.json` (dữ liệu, không phải code). Mỗi bài: `rule` (dòng quy tắc, hỗ trợ `**đậm**`, `*nghiêng*`), `examples`, `items` (dạng `mc` chọn đáp án, `fill` điền chỗ trống `___`, `tf` đúng/sai, `fix` sửa câu; mỗi câu có `why` và nhãn lỗi `tag`), `cards` (thẻ mẫu câu), `write` (đề tự đặt câu + câu mẫu). Thêm bài mới hoặc khoá mới chỉ cần thêm dữ liệu; khi phát hành nhớ tăng `VERSION` trong `sw.js`.
+
 ## Thuật toán ôn tập
 
 - Quên → ôn lại ngay trong phiên, hệ số dễ −0.2, chu kỳ về đầu.

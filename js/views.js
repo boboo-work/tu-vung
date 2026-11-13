@@ -1,6 +1,6 @@
 // Các màn hình chính: Home, Learn, Review, Vocabulary (danh sách, chi tiết, form, chủ đề).
 import { gamePool, GAME_MIN } from './game.js';
-import { S, allWords, dueWords, newWords, dayOf, summary, forecast, deckName, blankWord, saveWord, deleteWord, findByText, addDeck, renameDeck, deleteDeck, resetProgress, FALLBACK_DECK } from './store.js';
+import { S, dayActive, allWords, dueWords, newWords, dayOf, summary, forecast, deckName, blankWord, saveWord, deleteWord, findByText, addDeck, renameDeck, deleteDeck, resetProgress, FALLBACK_DECK } from './store.js';
 import { esc, today, addDays, parseDate, fmtDate, relDay, fmtInterval, speak, toast, splitList, dayDiff, fold } from './util.js';
 import { statusOf, isNew, isDue } from './srs.js';
 import { icon, on, go, back, rerender, navBar, confirmSheet, promptSheet, chooseSheet } from './ui.js';
@@ -8,6 +8,8 @@ import { MODES, startSession, practicePool } from './study.js';
 import { loadSeed } from './io.js';
 import { aiReady } from './ai.js';
 import { lookupWord, buildFill, POS_LIST } from './lookup.js';
+import { G, nextLesson, todayLessons, gDueCount, grammarReviewCard } from './grammar.js';
+import { learnSwitch } from './ui.js';
 
 const ui = { learnDeck: '', vocab: { q: '', filter: 'all', limit: 60 }, form: null };
 const voice = () => ({ lang: S.settings.voice, rate: S.settings.rate, name: S.settings.voiceName });
@@ -34,7 +36,9 @@ export function homeView() {
   const head = `<header class="top"><div><p class="eyebrow">${WEEKDAYS[now.getDay()]}, ${now.getDate()} tháng ${now.getMonth() + 1}</p><h1>Hôm nay</h1></div>
     <button class="iconbtn tonal" data-act="go" data-to="#/settings" aria-label="Cài đặt">${icon('gear')}</button></header>`;
 
-  if (!sum.total) {
+  // Chưa có từ nào và chưa học ngữ pháp → màn hình bắt đầu. Đã học ngữ pháp thì hiện Trang chủ đầy đủ.
+  const learnedGrammar = [...S.grammar.keys()].some((k) => k.startsWith('L:'));
+  if (!sum.total && !learnedGrammar) {
     return `<div class="page">${head}
       <div class="card empty"><div class="art">${icon('learn')}</div>
         <h3>Bắt đầu kho từ của bạn</h3>
@@ -43,7 +47,8 @@ export function homeView() {
           <button class="btn" data-act="go" data-to="#/new">${icon('plus', 'sm')} Thêm từ đầu tiên</button>
           <button class="btn soft" data-act="seed">Nạp 20 từ mẫu</button>
           <button class="btn ghost" data-act="go" data-to="#/settings">Import CSV / Excel</button>
-        </div></div></div>`;
+        </div></div>
+      <button class="listlink" data-act="go" data-to="#/grammar" style="margin-top:12px"><span class="lead">${icon('learn')}</span><span class="body"><b>Học ngữ pháp</b><small>Khoá Nền tảng: 9 unit, 33 bài ngắn</small></span>${icon('chev')}</button></div>`;
   }
 
   const day = dayOf();
@@ -51,7 +56,7 @@ export function homeView() {
   const week = Array.from({ length: 7 }, (_, i) => {
     const d = addDays(t, i - 6);
     const x = S.days.get(d);
-    const active = !!x && x.correct + x.wrong > 0;
+    const active = dayActive(x);
     return `<div class="${active ? 'on' : ''}"><i></i>${['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'][parseDate(d).getDay()]}</div>`;
   }).join('');
   const due = sum.due;
@@ -60,20 +65,28 @@ export function homeView() {
   const canLearn = Math.min(fresh, newLeft);
   const backupAge = S.settings.lastBackup ? dayDiff(S.settings.lastBackup, t) : null;
   const needBackup = sum.total >= 10 && (backupAge === null || backupAge >= 14);
+  const gReady = G.state === 'ready';
+  const gGoal = gReady ? S.settings.grammarPerDay : 0;
+  const gToday = todayLessons();
+  const gDue = gDueCount();
+  const gNext = gReady && gToday < gGoal ? nextLesson() : null;
 
   return `<div class="page">${head}
     <div class="hero">
       <div class="row-between"><div><div class="big" data-count="${sum.streak}">${sum.streak}</div><div class="lbl">ngày học liên tiếp</div></div>${icon('flame')}</div>
       <div class="week">${week}</div>
     </div>
-    <div class="goals">
+    <div class="goals ${gGoal ? 'three' : ''}">
       <div class="goal">${ring(day.newIds.length, S.settings.newPerDay)}<div><b>${day.newIds.length}/${S.settings.newPerDay}</b><span>Từ mới</span></div></div>
       <div class="goal">${ring(day.reviewIds.length, S.settings.reviewPerDay)}<div><b>${day.reviewIds.length}/${S.settings.reviewPerDay}</b><span>Ôn tập</span></div></div>
+      ${gGoal ? `<div class="goal" data-act="go" data-to="#/grammar" role="button">${ring(gToday, gGoal)}<div><b>${gToday}/${gGoal}</b><span>Ngữ pháp</span></div></div>` : ''}
     </div>
     <div class="cta-stack">
       ${due ? `<button class="btn" data-act="start-review">${icon('review', 'sm')} Ôn tập ${due} từ đến hạn</button>` : ''}
       ${canLearn ? `<button class="btn ${due ? 'ghost' : ''}" data-act="start-learn" data-all="1">${icon('learn', 'sm')} Học ${canLearn} từ mới</button>` : ''}
-      ${!due && !canLearn ? `<div class="banner info">${icon('check')}<span>${fresh ? 'Bạn đã hoàn thành mục tiêu hôm nay. Muốn học thêm, mở tab <b>Học</b>.' : 'Không còn từ nào cần học hôm nay. Hãy thêm từ mới hoặc luyện tập tự do ở tab <b>Học</b>.'}</span></div>` : ''}
+      ${gDue ? `<button class="btn ${due || canLearn ? 'ghost' : ''}" data-act="g-cards">${icon('review', 'sm')} Ôn ${gDue} thẻ ngữ pháp</button>` : ''}
+      ${gNext ? `<button class="btn ${due || canLearn || gDue ? 'ghost' : ''}" data-act="g-start" data-id="${gNext.id}">${icon('learn', 'sm')} Ngữ pháp: ${esc(gNext.title)}</button>` : ''}
+      ${!due && !canLearn && !gDue && !gNext ? `<div class="banner info">${icon('check')}<span>${fresh ? 'Bạn đã hoàn thành mục tiêu hôm nay. Muốn học thêm, mở tab <b>Học</b>.' : 'Không còn từ nào cần học hôm nay. Hãy thêm từ mới hoặc luyện tập tự do ở tab <b>Học</b>.'}</span></div>` : ''}
     </div>
     <h2>Tổng quan</h2>
     <div class="tiles">
@@ -129,6 +142,7 @@ export function learnView() {
              <button class="btn soft" style="margin-top:10px" data-act="start-learn" data-extra="${Math.min(5, fresh)}">Học thêm ${Math.min(5, fresh)} từ</button>`}
     </div>`;
   return `<div class="page"><header class="top"><div><p class="eyebrow">Flashcard</p><h1>Học từ mới</h1></div></header>
+    ${learnSwitch('vocab')}
     ${deckSelect(ui.learnDeck, 'learn-deck')}
     <div style="margin-top:12px">${main}</div>
     <h2>Luyện tập</h2>
@@ -161,6 +175,7 @@ export function reviewView() {
       <div class="card empty"><div class="art">${icon('check')}</div><h3>${learned.length ? 'Đã ôn hết hôm nay' : 'Chưa có từ cần ôn'}</h3>
       <p>${learned.length ? `Lần ôn kế tiếp: ${relDay(next)}. Hệ thống sẽ tự đưa từ đến hạn vào đây.` : 'Học từ mới trước — hệ thống sẽ tự lên lịch ôn cho bạn.'}</p>
       <button class="btn soft" data-act="go" data-to="#/learn">Sang tab Học</button></div>
+      ${grammarReviewCard()}
       ${learned.length ? `<div style="margin-top:12px">${fcChart}</div>` : ''}</div>`;
   }
   const batch = Math.min(due.length, S.settings.reviewPerDay);
@@ -168,6 +183,7 @@ export function reviewView() {
   return `<div class="page"><header class="top"><div><p class="eyebrow">Spaced Repetition</p><h1>Ôn tập</h1></div></header>
     <div class="hero"><div class="big">${due.length}</div><div class="lbl">từ đến hạn ôn hôm nay${overdue ? ` · ${overdue} từ quá hạn` : ''}</div>
       <button class="btn" style="margin-top:18px;background:var(--accent-ink);color:var(--accent)" data-act="start-review">Bắt đầu ôn ${batch} từ</button></div>
+    ${grammarReviewCard()}
     <h2>Ôn bằng bài tập</h2>
     ${modeRows('review-mode', (m) => (S.words.size < m.min ? `Cần ít nhất ${m.min} từ trong kho` : ''), ['en-vi'])}
     <h2>Lịch sắp tới</h2>${fcChart}

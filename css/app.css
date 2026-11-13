@@ -668,3 +668,39 @@ body.kb .game .d-stage { height: clamp(168px, calc(var(--app-h) - var(--safe-t) 
 
 .fill-status { white-space: pre-line; }
 .fill-status #fill-pick { margin-top: 8px; width: 100%; }
+
+/* ===== Ngữ pháp ===== */
+.learn-switch { margin-bottom: 14px; }
+.goals.three { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.goals.three .goal { flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px; }
+.goals.three .ring { width: 44px; height: 44px; }
+.goals.three .goal b { font-size: 18px; }
+.goal[role=button] { cursor: pointer; }
+.listlink.soon { opacity: .5; }
+.wlist.flat { box-shadow: none; border-radius: 0; border-top: 1px solid var(--line); }
+.wrow .num { width: 32px; height: 32px; border-radius: 50%; background: var(--surface-2); color: var(--text-2); display: grid; place-items: center; font-weight: 700; font-size: 14px; flex: none; }
+.wrow .num.done { background: var(--green-soft); color: var(--green); }
+.wrow .num.cur { background: var(--accent); color: var(--accent-ink); }
+.wrow > .ic:last-child { color: var(--text-3); margin-right: 8px; }
+.qlabel { font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px; }
+.lesson-title { font-size: 24px; line-height: 1.2; margin: 0 0 12px; letter-spacing: -.01em; text-transform: none; color: var(--text); font-weight: 700; }
+.rule p, .rule li { font-size: 16.5px; line-height: 1.55; }
+.rule p + p, .rule ul + p, .rule p + ul { margin-top: 10px; }
+.rule ul { padding-left: 20px; margin: 0; }
+.rule li + li { margin-top: 6px; }
+.rule em, .ex-row em, .sentence em, .opt em, .feedback em { font-style: italic; }
+.ex-row { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; }
+.ex-row + .ex-row { border-top: 1px solid var(--line); }
+.ex-row:first-child { padding-top: 0; }
+.ex-row:last-child { padding-bottom: 0; }
+.ex-row .en { font: 500 18px/1.4 var(--serif); }
+.ex-row small { color: var(--text-2); display: block; margin-top: 3px; font-size: 14px; }
+.speakbtn.sm { width: 40px; height: 40px; }
+.speakbtn.sm .ic { width: 19px; height: 19px; }
+.tf { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tf .opt { justify-content: center; text-align: center; font-weight: 650; }
+textarea.answer-input.fix { height: auto; min-height: 96px; padding: 14px 16px; text-align: left; line-height: 1.45; resize: none; font-size: 18px; }
+ul.checks { margin: 0; padding-left: 20px; }
+ul.checks li + li { margin-top: 4px; }
+.tag.warn { background: var(--amber-soft); color: var(--amber); }
+.session .options { display: grid; gap: 10px; }
