@@ -9,7 +9,7 @@ import { loadSeed } from './io.js';
 import { aiReady } from './ai.js';
 import { lookupWord, buildFill, POS_LIST } from './lookup.js';
 import { G, nextLesson, todayLessons, gDueCount, grammarReviewCard } from './grammar.js';
-import { W, nextPart, todayWriting } from './writing.js';
+import { W, nextPart, todayWriting, essayDraft, essayDraftCta } from './writing.js';
 import { learnSwitch } from './ui.js';
 
 const ui = { learnDeck: '', vocab: { q: '', filter: 'all', limit: 60 }, form: null };
@@ -39,7 +39,8 @@ export function homeView() {
 
   // Chưa có từ nào và chưa học ngữ pháp → màn hình bắt đầu. Đã học ngữ pháp thì hiện Trang chủ đầy đủ.
   const learnedGrammar = S.grammar.size > 0; // đã học bài hoặc đã làm kiểm tra đầu vào
-  if (!sum.total && !learnedGrammar) {
+  const wroteSomething = S.writing.size > 0; // đã nộp bài hoặc đang có bản nháp Writing
+  if (!sum.total && !learnedGrammar && !wroteSomething) {
     return `<div class="page">${head}
       <div class="card empty"><div class="art">${icon('learn')}</div>
         <h3>Bắt đầu kho từ của bạn</h3>
@@ -49,7 +50,8 @@ export function homeView() {
           <button class="btn soft" data-act="seed">Nạp 20 từ mẫu</button>
           <button class="btn ghost" data-act="go" data-to="#/settings">Import CSV / Excel</button>
         </div></div>
-      <button class="listlink" data-act="go" data-to="#/grammar" style="margin-top:12px"><span class="lead">${icon('learn')}</span><span class="body"><b>Học ngữ pháp</b><small>4 khoá từ A1 đến band 7.0, bài ngắn 8–12 phút</small></span>${icon('chev')}</button></div>`;
+      <button class="listlink" data-act="go" data-to="#/grammar" style="margin-top:12px"><span class="lead">${icon('learn')}</span><span class="body"><b>Học ngữ pháp</b><small>4 khoá từ A1 đến band 7.0, bài ngắn 8–12 phút</small></span>${icon('chev')}</button>
+      <button class="listlink" data-act="go" data-to="#/writing"><span class="lead">${icon('pen')}</span><span class="body"><b>Luyện Writing</b><small>Task 2 theo đoạn hoặc cả bài 40 phút, Task 1 biểu đồ</small></span>${icon('chev')}</button></div>`;
   }
 
   const day = dayOf();
@@ -73,7 +75,9 @@ export function homeView() {
   const gNext = gReady && gToday < gGoal ? nextLesson() : null;
   const wGoal = W.state === 'ready' ? S.settings.writingPerDay : 0;
   const wToday = todayWriting();
-  const wNext = wGoal && wToday < wGoal ? nextPart() : null;
+  const wDraft = essayDraft();
+  // Có bài 40 phút viết dở thì nhắc viết tiếp bài đó thay cho phần luyện hằng ngày.
+  const wNext = !wDraft && wGoal && wToday < wGoal ? nextPart() : null;
   const ringCount = 2 + (gGoal ? 1 : 0) + (wGoal ? 1 : 0);
 
   return `<div class="page">${head}
@@ -92,8 +96,9 @@ export function homeView() {
       ${canLearn ? `<button class="btn ${due ? 'ghost' : ''}" data-act="start-learn" data-all="1">${icon('learn', 'sm')} Học ${canLearn} từ mới</button>` : ''}
       ${gDue ? `<button class="btn ${due || canLearn ? 'ghost' : ''}" data-act="g-cards">${icon('review', 'sm')} Ôn ${gDue} thẻ ngữ pháp</button>` : ''}
       ${gNext ? `<button class="btn ${due || canLearn || gDue ? 'ghost' : ''}" data-act="g-start" data-id="${gNext.id}">${icon('learn', 'sm')} Ngữ pháp: ${esc(gNext.title)}</button>` : ''}
+      ${wDraft ? essayDraftCta(wDraft, due || canLearn || gDue || gNext ? 'ghost' : '') : ''}
       ${wNext ? `<button class="btn ${due || canLearn || gDue || gNext ? 'ghost' : ''}" data-act="w-today">${icon('pen', 'sm')} Writing: ${esc(wNext.part.name)}</button>` : ''}
-      ${!due && !canLearn && !gDue && !gNext && !wNext ? `<div class="banner info">${icon('check')}<span>${fresh ? 'Bạn đã hoàn thành mục tiêu hôm nay. Muốn học thêm, mở tab <b>Học</b>.' : 'Không còn từ nào cần học hôm nay. Hãy thêm từ mới hoặc luyện tập tự do ở tab <b>Học</b>.'}</span></div>` : ''}
+      ${!due && !canLearn && !gDue && !gNext && !wNext && !wDraft ? `<div class="banner info">${icon('check')}<span>${fresh ? 'Bạn đã hoàn thành mục tiêu hôm nay. Muốn học thêm, mở tab <b>Học</b>.' : 'Không còn từ nào cần học hôm nay. Hãy thêm từ mới hoặc luyện tập tự do ở tab <b>Học</b>.'}</span></div>` : ''}
     </div>
     <h2>Tổng quan</h2>
     <div class="tiles">

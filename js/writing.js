@@ -567,6 +567,19 @@ function startRewrite(id) {
 on('w-rewrite', (el) => startRewrite(el.dataset.id));
 on('w-open', (el) => replace('#/wessay/' + el.dataset.id));
 
+/** Bài 40 phút đang viết dở gần nhất (nếu có): đề, thời gian còn lại. */
+export function essayDraft() {
+  if (W.state !== 'ready') return null;
+  const ds = [...S.writing.values()].filter((d) => d.kind === 'draft' && /^draft:[^:]+:essay$/.test(d.id) && (d.text?.trim() || Object.values(d.plan || {}).some(Boolean)));
+  if (!ds.length) return null;
+  const d = ds.sort((a, b) => (b.ts || 0) - (a.ts || 0))[0];
+  const prompt = W.prompts.get(d.id.split(':')[1]);
+  if (!prompt) return null;
+  const left = ESSAY.ms - (Number(d.spent) || 0);
+  return { prompt, left, words: countWords(d.text || ''), label: left > 0 ? `còn ${Math.ceil(left / 60e3)} phút` : 'đã hết giờ' };
+}
+export const essayDraftCta = (d, cls = '') => `<button class="btn ${cls}" data-act="w-essay" data-p="${d.prompt.id}">${icon('pen', 'sm')} Viết tiếp bài 40 phút · ${d.label}</button>`;
+
 // ---- Đồng hồ 40 phút ----
 const mmss = (ms) => { const sec = Math.floor(Math.abs(ms) / 1000); return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`; };
 function timerState() {
@@ -589,7 +602,7 @@ function startTick() { clearInterval(tick); tick = setInterval(paintTimer, 1000)
 function draftRec(s) {
   const rec = { id: s.key, kind: 'draft', text: s.text, at: today() };
   if (s.kind === 'task1') rec.chart = { tpl: s.chart.tpl.id, seed: s.chart.seed, target: s.chart.target, mode: s.mode.id };
-  if (s.kind === 'essay') Object.assign(rec, { plan: { ...s.plan }, stage: s.stage, spent: Date.now() - s.startedAt });
+  if (s.kind === 'essay') Object.assign(rec, { plan: { ...s.plan }, stage: s.stage, spent: Date.now() - s.startedAt, ts: Date.now() });
   return rec;
 }
 function queueSave() {
@@ -758,7 +771,9 @@ export function writingView() {
   if (W.state !== 'ready') return `<div class="page">${head}${loadingCard()}</div>`;
   const goal = S.settings.writingPerDay, done = todayWriting(), next = nextPart();
   const all = essays();
-  const today_ = `<div class="card">
+  const dr = essayDraft();
+  const draftCard = dr ? `<div class="card w-draft"><p class="small muted">Bài 40 phút đang viết dở · ${dr.words} từ · ${dr.label}</p><p class="w-clip2" style="margin-top:4px">${esc(dr.prompt.q)}</p>${essayDraftCta(dr, '').replace('class="btn ', 'style="margin-top:12px" class="btn ')}</div>` : '';
+  const today_ = `${draftCard}<div class="card">
     <div class="row-between"><div style="min-width:0"><p class="small muted">${goal ? `Hôm nay: ${done}/${goal} bài` : `Hôm nay: ${done} bài`}</p>
       ${next ? `<b style="font-size:18px;display:block;margin-top:2px">${esc(next.part.name)}</b><p class="small muted w-clip">${esc(next.prompt.q)}</p>` : '<b>Bạn đã viết hết các phần của 30 đề</b>'}</div>${goal ? ring(done, goal) : ''}</div>
     ${next ? `<button class="btn" style="margin-top:14px" data-act="w-today">Viết phần này · ${next.part.min}–${next.part.max} từ</button>` : ''}
