@@ -333,8 +333,11 @@ const FLAT = /\b(stable|steady|remain\w*|unchanged|level\w* off|plateau\w*|const
 const APPROX = /\b(about|around|approximately|roughly|nearly|almost|just over|just under|over|under|some)\b/i;
 const OVERVIEW = /\b(overall|in general|generally|it is clear|it is evident|it can be seen|on the whole)\b/i;
 
+// Năm: 19xx/20xx, hoặc số 4 chữ số đứng sau "in" ("in 1850") dù không có trên biểu đồ.
+const yearsIn = (t) => [...String(t).matchAll(/\b(in\s+)?(\d{4})\b/gi)].filter((m) => m[1] || /^(19|20)/.test(m[2])).map((m) => Number(m[2]));
+const stripYears = (t) => String(t).replace(/\b(in\s+)?(\d{4})\b/gi, (m, pre, y) => (pre || /^(19|20)/.test(y) ? (pre || '') + ' ' : m));
 function readNumbers(sentence, tpl) {
-  const noYears = sentence.replace(/\b(19|20)\d{2}\b/g, ' ');
+  const noYears = stripYears(sentence);
   const out = [];
   const re = /(\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?)/g;
   let m;
@@ -364,13 +367,13 @@ function detailChecks(ch, sentence, t, { skipName = false } = {}) {
     else if (mentioned.length) c.push({ ok: false, msg: `Câu đang nói về ${ch.series[mentioned[0]].name}, bài yêu cầu ${name}.` });
     else c.push({ ok: false, msg: `Câu chưa nêu tên đối tượng (${name}).` });
   }
-  const years = [...sentence.matchAll(/\b(?:19|20)\d{2}\b/g)].map((m) => Number(m[0]));
+  const years = yearsIn(sentence);
   const bad = years.filter((y) => !xs.includes(y));
   bad.forEach((y) => c.push({ ok: false, msg: `Năm ${y} không có trong biểu đồ (${xs[0]}–${xs[xs.length - 1]}).` }));
   const ys = [...new Set(years.filter((y) => xs.includes(y)))].sort();
   const i0 = ys.length >= 2 ? xs.indexOf(ys[0]) : ys.length ? null : 0;
   const i1 = ys.length >= 2 ? xs.indexOf(ys[ys.length - 1]) : ys.length ? null : xs.length - 1;
-  if (!skipName) c.push(ys.length ? { ok: true, msg: 'Có mốc thời gian.' } : { ok: null, msg: 'Nên nêu năm cho số liệu.' });
+  if (!skipName && !bad.length) c.push(ys.length ? { ok: true, msg: 'Có mốc thời gian.' } : { ok: null, msg: 'Nên nêu năm cho số liệu.' });
   // Xu hướng
   const up = UP.test(sentence), down = DOWN.test(sentence), flat = FLAT.test(sentence);
   if (i0 !== null && i1 !== null && (up || down || flat)) {
@@ -435,7 +438,7 @@ function fullChecks(ch, text) {
   for (const s of sents) {
     if (s === ov) continue;
     const idx = ch.series.map((x, i) => (new RegExp(`\\b${x.key}\\b`, 'i').test(s) ? i : -1)).filter((i) => i >= 0);
-    if (idx.length !== 1 || !(/\d/.test(s.replace(/\b(19|20)\d{2}\b/g, '')) || UP.test(s) || DOWN.test(s) || FLAT.test(s))) continue;
+    if (idx.length !== 1 || !(/\d/.test(stripYears(s)) || UP.test(s) || DOWN.test(s) || FLAT.test(s))) continue;
     total++;
     const res = detailChecks(ch, s, idx[0], { skipName: true });
     const errs = res.filter((x) => x.ok === false);

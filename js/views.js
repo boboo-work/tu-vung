@@ -432,7 +432,7 @@ async function runFill({ auto = false } = {}) {
   if (!navigator.onLine) { if (!auto) setFillStatus('Tự điền cần kết nối mạng. Hiện thiết bị đang offline — bạn vẫn có thể nhập tay.', 'bad'); return; }
   if (fillBusy === word) return;
   fillBusy = word;
-  if (auto) lastAuto = word;
+  lastAuto = word; // đã tra từ này (tự động hoặc bấm nút) → không tự tra lại khi rời ô
   const label = btn.innerHTML;
   btn.disabled = true; btn.textContent = 'Đang tra…';
   setFillStatus('');
@@ -478,8 +478,16 @@ on('form-pick-sense', async () => {
 // Tự chạy khi gõ xong từ (rời ô nhập, hoặc bấm Enter / nút xong trên bàn phím) ở form THÊM từ mới.
 document.addEventListener('focusout', (e) => {
   if (e.target?.id !== 'f-word' || ui.form?.id || S.settings.autoFill === false) return;
-  if (e.relatedTarget?.id === 'fill-btn') return; // người dùng bấm nút: nút sẽ tự chạy
+  // Rời ô sang nút Tự điền: nếu là bấm nút thì nút tự chạy; nếu chỉ là Tab bàn phím thì vẫn tự tra.
+  if (e.relatedTarget?.id === 'fill-btn') { setTimeout(() => runFill({ auto: true }), 400); return; }
   runFill({ auto: true });
+});
+// Gõ lại vào ô đang báo lỗi thì ẩn lỗi đi (lỗi trùng từ sẽ được kiểm tra lại khi bấm Lưu).
+document.addEventListener('input', (e) => {
+  const id = e.target?.id;
+  if (id !== 'f-word' && id !== 'f-meaning') return;
+  const p = $id('e-' + id.slice(2));
+  if (p && !p.hidden && e.target.value.trim()) { p.hidden = true; p.textContent = ''; e.target.classList.remove('bad'); }
 });
 document.addEventListener('keydown', (e) => {
   if (e.key !== 'Enter' || e.target?.id !== 'f-word') return;
