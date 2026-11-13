@@ -451,6 +451,7 @@ function cleanWriting(w) {
     self: Object.fromEntries(Object.entries(w.self && typeof w.self === 'object' ? w.self : {}).map(([k, v]) => [str(k).slice(0, 30), !!v]).slice(0, 30)),
     plan: pl ? Object.fromEntries(['view', 'p1', 'p2', 'ex'].map((k) => [k, str(pl[k]).slice(0, 1000)])) : null,
     used: (Array.isArray(w.used) ? w.used : []).map((x) => str(x).slice(0, 80)).slice(0, 20),
+    prev: W_ID.test(str(w.prev)) ? w.prev : null, version: int(w.version, 1, 50, 1),
   };
 }
 const G_ID = /^(?:[LCE]:[A-Za-z0-9_-]{1,64}|placement)$/;

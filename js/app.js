@@ -7,7 +7,7 @@ import { sessionView } from './study.js';
 import { gameView } from './game.js';
 import { dropView } from './drop.js';
 import { matchView, popView } from './games2.js';
-import { loadWriting, writingView, typeView as wTypeView, promptView as wPromptView, writeView, essaysView, essayView } from './writing.js';
+import { loadWriting, writingView, typeView as wTypeView, promptView as wPromptView, writeView, essaysView, essayView, statsView as wStatsView } from './writing.js';
 import { loadGrammar, grammarView, unitView, lessonView, cardsView, errorsView, testView, gDueCount } from './grammar.js';
 import { countUp } from './fx.js';
 
@@ -15,7 +15,7 @@ const routes = {
   home: homeView, learn: learnView, review: reviewView, vocab: vocabView, stats: statsView,
   word: wordView, edit: formView, new: () => formView(null), decks: decksView,
   settings: settingsView, ai: aiView, session: sessionView, game: gameView, drop: dropView, match: matchView, pop: popView,
-  writing: writingView, wtype: wTypeView, wprompt: wPromptView, wwrite: writeView, wessays: essaysView, wessay: essayView,
+  writing: writingView, wtype: wTypeView, wprompt: wPromptView, wwrite: writeView, wessays: essaysView, wessay: essayView, wstats: wStatsView,
   grammar: grammarView, gunit: unitView, glesson: lessonView, gcards: cardsView, gerrors: errorsView, gtest: testView,
 };
 const TAB_META = [['home', 'Trang chủ', 'home'], ['learn', 'Học', 'learn'], ['review', 'Ôn tập', 'review'], ['vocab', 'Từ vựng', 'vocab'], ['stats', 'Thống kê', 'stats']];

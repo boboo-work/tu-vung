@@ -2,7 +2,7 @@
 // Phản hồi không dùng AI: thống kê (đếm), đối chiếu số liệu (Task 1, app biết số liệu gốc),
 // dò lỗi theo mẫu (luật trong content/writing/rules.json, chỉ là gợi ý), bài mẫu và tự chấm.
 import { S, wPut, wDel, essays, logGrammarDay, dayOf, saveWord, findByText, blankWord, recordAnswer } from './store.js';
-import { esc, toast, today, uid } from './util.js';
+import { esc, toast, today, uid, download } from './util.js';
 import { icon, on, go, back, replace, rerender, navBar, learnSwitch, confirmSheet } from './ui.js';
 import { G as GR, logGrammarError } from './grammar.js';
 import { confetti } from './fx.js';
@@ -189,6 +189,59 @@ function vocabHtml(list, text) {
   return `<div class="w-vocab"><p class="small muted">Từ trong kho hợp với đề, thử dùng (chạm để xem nghĩa):</p><div class="w-chips">${list.map((x) => `<button type="button" class="w-chip ${new RegExp(x.re, 'i').test(text) ? 'used' : ''}" data-re="${esc(x.re)}" data-act="w-chip" data-m="${esc(x.meaning)}">${esc(x.word)}</button>`).join('')}</div></div>`;
 }
 on('w-chip', (el) => toast(el.dataset.m ? `${el.textContent}: ${el.dataset.m}` : el.textContent));
+
+// ================= VIẾT LẠI & SO SÁNH =================
+/** So từng từ giữa hai bản (LCS), trả về các đoạn giữ / bỏ / thêm. */
+export function wordDiff(a, b) {
+  const A = String(a).split(/(\s+)/).filter((x) => x !== ''), B = String(b).split(/(\s+)/).filter((x) => x !== '');
+  const n = A.length, m = B.length;
+  if (n * m > 1.2e6) return [{ t: 'del', s: a }, { t: 'ins', s: b }];
+  const k = (x) => (/^\s+$/.test(x) ? ' ' : x);
+  const L = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = k(A[i]) === k(B[j]) ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  const out = [];
+  const push = (t, x) => { const last = out[out.length - 1]; if (last && last.t === t) last.s += x; else out.push({ t, s: x }); };
+  let i = 0, j = 0;
+  while (i < n && j < m) {
+    if (k(A[i]) === k(B[j])) { push('eq', B[j]); i++; j++; }
+    else if (L[i + 1][j] >= L[i][j + 1]) push('del', A[i++]);
+    else push('ins', B[j++]);
+  }
+  while (i < n) push('del', A[i++]);
+  while (j < m) push('ins', B[j++]);
+  return out;
+}
+const liveHits = (rec) => rec.report.hits.filter((h) => !rec.report.dismissed.includes(h.rule + '|' + h.text));
+const okCount = (rec) => rec.report.checks.filter((c) => c.ok === true).length;
+/** So bản mới với bản trước: thống kê, số gợi ý lỗi, lỗi đã sửa / lỗi mới theo loại. */
+export function compareVersions(prev, cur) {
+  const count = (rec) => { const m = {}; for (const h of liveHits(rec)) m[h.rule] = (m[h.rule] || 0) + 1; return m; };
+  const a = count(prev), b = count(cur);
+  const fixed = Object.keys(a).filter((r) => (b[r] || 0) < a[r]);
+  const added = Object.keys(b).filter((r) => (a[r] || 0) < b[r]);
+  const row = (label, x, y, better) => ({ label, x, y, good: y === x ? null : better === 'up' ? y > x : better === 'down' ? y < x : null });
+  return {
+    rows: [
+      row('Gợi ý lỗi', liveHits(prev).length, liveHits(cur).length, 'down'),
+      row('Kiểm tra đạt', `${okCount(prev)}/${prev.report.checks.length}`, `${okCount(cur)}/${cur.report.checks.length}`, null),
+      row('Số từ', prev.report.stats.words || prev.words, cur.report.stats.words || cur.words, null),
+      row('Câu phức', prev.report.stats.complex || 0, cur.report.stats.complex || 0, 'up'),
+      row('Từ nối', prev.report.stats.linkers || 0, cur.report.stats.linkers || 0, 'up'),
+    ].map((r) => (r.label === 'Kiểm tra đạt' ? { ...r, good: okCount(cur) === okCount(prev) ? null : okCount(cur) > okCount(prev) } : r)),
+    fixed, added,
+  };
+}
+function compareHtml(prev, cur) {
+  const c = compareVersions(prev, cur);
+  const arrow = (r) => (r.good === true ? `<span class="up">${icon('check', 'sm')}</span>` : r.good === false ? '<span class="down">!</span>' : '');
+  const name = (id) => esc(GR.tags[ruleOf(id)?.tag]?.name || ruleOf(id)?.why?.replace(/\*+/g, '').slice(0, 50) || id);
+  const diff = wordDiff(prev.text, cur.text).map((d) => (d.t === 'eq' ? esc(d.s) : d.t === 'del' ? `<del>${esc(d.s)}</del>` : `<ins>${esc(d.s)}</ins>`)).join('');
+  return `<h3 class="w-h">So với bản ${prev.version || 1}</h3><div class="card"><table class="data w-cmp"><tr><th></th><th>Bản ${prev.version || 1}</th><th>Bản ${cur.version || 2}</th><th></th></tr>
+    ${c.rows.map((r) => `<tr><td>${r.label}</td><td>${r.x}</td><td><b>${r.y}</b></td><td>${arrow(r)}</td></tr>`).join('')}</table>
+    ${c.fixed.length ? `<p class="small" style="margin-top:10px"><b class="ok-t">Đã sửa:</b> ${[...new Set(c.fixed.map(name))].join(' · ')}</p>` : ''}
+    ${c.added.length ? `<p class="small" style="margin-top:6px"><b class="no-t">Lỗi mới:</b> ${[...new Set(c.added.map(name))].join(' · ')}</p>` : ''}
+    <details class="w-diff"><summary>Xem chỗ đã sửa</summary><div class="w-text en">${diff}</div></details></div>`;
+}
 
 // ================= TASK 1: SINH BIỂU ĐỒ =================
 function rng(seed) {
@@ -489,13 +542,35 @@ function startEssay(promptId) {
   startTick();
 }
 
+/** Viết lại một bài đã nộp: mở sẵn bài cũ để sửa, không tính giờ; nộp xong so với bản trước. */
+function startRewrite(id) {
+  const e = S.writing.get(id);
+  if (!e || e.kind === 'draft') return toast('Không tìm thấy bài này');
+  const key = `draft:rw:${id}`;
+  const d = S.writing.get(key);
+  const base = { key, text: d?.text ?? e.text, stage: 'write', startedAt: Date.now(), self: {}, prev: id, version: (e.version || 1) + 1, rewrite: true };
+  if (e.kind === 'task1') {
+    if (!e.chart) return toast('Không mở lại được biểu đồ của bài này');
+    const m = W.modes.find((x) => x.id === e.chart.mode) || W.modes[0];
+    ws = { ...base, kind: 'task1', chart: genChart(e.chart.tpl, e.chart.seed, e.chart.target), mode: m };
+  } else {
+    const prompt = W.prompts.get(e.promptId);
+    if (!prompt) return toast('Không tìm thấy đề của bài này');
+    if (e.kind === 'part') { const part = W.parts.find((x) => x.id === e.part); if (!part) return toast('Không tìm thấy phần này'); ws = { ...base, kind: 'part', prompt, part, vocab: suggestWords(prompt, 5) }; }
+    else ws = { ...base, kind: 'essay', prompt, plan: { view: '', p1: '', p2: '', ex: '', ...(e.plan || {}) }, vocab: suggestWords(prompt, 8) };
+  }
+  go('#/wwrite');
+}
+on('w-rewrite', (el) => startRewrite(el.dataset.id));
+on('w-open', (el) => replace('#/wessay/' + el.dataset.id));
+
 // ---- Đồng hồ 40 phút ----
 const mmss = (ms) => { const sec = Math.floor(Math.abs(ms) / 1000); return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`; };
 function timerState() {
   const spent = Date.now() - ws.startedAt, left = ESSAY.ms - spent;
   return { spent, left, text: left >= 0 ? mmss(left) : '+' + mmss(left), cls: 'w-timer' + (left < 0 ? ' over' : left < 5 * 60e3 ? ' low' : '') };
 }
-const timing = () => ws?.kind === 'essay' && ['plan', 'write'].includes(ws.stage);
+const timing = () => ws?.kind === 'essay' && !ws.rewrite && ['plan', 'write'].includes(ws.stage);
 function paintTimer() {
   if (!timing()) { clearInterval(tick); tick = null; return; }
   const t = timerState();
@@ -548,7 +623,7 @@ on('w-today', () => { const n = nextPart(); if (n) startPart(n.prompt.id, n.part
 on('w-chart', (el) => startChart(el.dataset.mode));
 on('w-essay', (el) => startEssay(el.dataset.p));
 // Đề khác: thay biểu đồ ngay tại chỗ, không thêm trang vào lịch sử.
-on('w-newchart', () => { if (ws?.kind === 'task1') startChart(ws.mode.id, undefined, undefined, false); });
+on('w-newchart', () => { if (ws?.kind === 'task1' && !ws.rewrite) startChart(ws.mode.id, undefined, undefined, false); });
 on('w-input', (el) => {
   if (!ws) return;
   ws.text = el.value;
@@ -560,7 +635,7 @@ on('w-input', (el) => {
 });
 on('w-plan', (el) => { if (ws?.kind === 'essay') { ws.plan[el.dataset.k] = el.value; queueSave(); } });
 on('w-quit', async () => {
-  if (ws && ['plan', 'write'].includes(ws.stage) && (saveSnap || (ws.kind === 'essay' && (ws.text || Object.values(ws.plan).some(Boolean))))) {
+  if (ws && ['plan', 'write'].includes(ws.stage) && (saveSnap || (ws.kind === 'essay' && !ws.rewrite && (ws.text || Object.values(ws.plan).some(Boolean))))) {
     saveSnap = { ...ws, plan: ws.plan && { ...ws.plan } };
     await flushSave();
   }
@@ -581,7 +656,7 @@ on('w-submit', async () => {
   const hits = runRules(text);
   let checks, title;
   if (ws.kind === 'part') { checks = partChecks(ws.prompt, ws.part, text); title = `${ws.part.name} · ${ws.prompt.q.slice(0, 80)}`; }
-  else if (ws.kind === 'essay') { checks = essayChecks(ws.prompt, text, ms); title = `Cả bài · ${ws.prompt.q.slice(0, 80)}`; }
+  else if (ws.kind === 'essay') { checks = essayChecks(ws.prompt, text, ms); if (ws.rewrite) checks = checks.filter((c) => !/phút/.test(c.msg)); title = `Cả bài · ${ws.prompt.q.slice(0, 80)}`; }
   else {
     const ch = ws.chart;
     checks = ws.mode.id === 'detail' ? [lengthCheck(text, ws.mode), ...detailChecks(ch, text, ch.target)] : ws.mode.id === 'overview' ? [lengthCheck(text, ws.mode), ...overviewChecks(ch, text)] : [lengthCheck(text, ws.mode), ...fullChecks(ch, text)];
@@ -596,6 +671,7 @@ on('w-submit', async () => {
     self: {},
   };
   if (ws.kind === 'essay') rec.plan = { ...ws.plan };
+  if (ws.rewrite) { rec.prev = ws.prev; rec.version = ws.version; rec.title = `Bản ${ws.version} · ${rec.title}`; }
   // Từ trong kho đã dùng trong bài: ghi là một lần ôn (đúng hạn thì lịch ôn được cập nhật).
   const used = usedWords(ws.vocab, text);
   if (used.length) rec.used = used.map((x) => x.word);
@@ -604,7 +680,11 @@ on('w-submit', async () => {
   await wDel(ws.key).catch(() => {});
   await logGrammarDay('wEssays', id);
   // Lỗi bắt được → Sổ lỗi (mỗi nhãn một lần cho mỗi bài).
-  for (const tag of new Set(hits.map((h) => ruleOf(h.rule)?.tag).filter(Boolean))) await logGrammarError(tag, false);
+  const tags = new Set(hits.map((h) => ruleOf(h.rule)?.tag).filter(Boolean));
+  for (const tag of tags) await logGrammarError(tag, false);
+  // Bản viết lại: loại lỗi có ở bản trước mà nay hết → ghi là đã làm đúng.
+  const before = ws.rewrite && S.writing.get(ws.prev);
+  if (before) for (const tag of new Set(liveHits(before).map((h) => ruleOf(h.rule)?.tag).filter(Boolean))) if (!tags.has(tag)) await logGrammarError(tag, true);
   Object.assign(ws, { stage: 'report', essayId: id, stats, hits, checks, used });
   rerender(true);
 });
@@ -694,6 +774,7 @@ export function writingView() {
   }).join('');
   return `<div class="page">${head}${today_}${full}${t1}<h2>Task 2 theo dạng đề</h2>${types}
     <button class="listlink" data-act="go" data-to="#/wessays" style="margin-top:14px"><span class="lead">${icon('list')}</span><span class="body"><b>Bài đã viết</b><small>${all.length} bài</small></span>${icon('chev')}</button>
+    <button class="listlink" data-act="go" data-to="#/wstats"><span class="lead">${icon('stats')}</span><span class="body"><b>Hồ sơ Writing</b><small>Lỗi theo tuần, lỗi hay gặp, xuất bài</small></span>${icon('chev')}</button>
     <p class="small faint" style="margin:14px 2px 0">App kiểm tra độ dài, số liệu và các lỗi hay gặp theo mẫu; không chấm band và không nhận xét lập luận.</p></div>`;
 }
 
@@ -765,8 +846,8 @@ function modelText() {
 
 export function writeView() {
   if (!ws) { setTimeout(() => replace('#/writing')); return ''; }
-  const label = ws.kind === 'part' ? `Task 2 · ${ws.part.name}` : ws.kind === 'essay' ? 'Task 2 · Cả bài' : `Task 1 · ${ws.mode.name}`;
-  const steps = ws.kind === 'essay' ? ['plan', 'write', 'report', 'model', 'self'] : ['write', 'report', 'model', 'self'];
+  const label = (ws.kind === 'part' ? `Task 2 · ${ws.part.name}` : ws.kind === 'essay' ? 'Task 2 · Cả bài' : `Task 1 · ${ws.mode.name}`) + (ws.rewrite ? ` · Bản ${ws.version}` : '');
+  const steps = ws.kind === 'essay' && !ws.rewrite ? ['plan', 'write', 'report', 'model', 'self'] : ['write', 'report', 'model', 'self'];
   const pct = Math.round((steps.indexOf(ws.stage) / steps.length) * 100);
   const t = timing() ? timerState() : null;
   const top = `<div class="ses-top"><button class="iconbtn" data-act="w-quit" aria-label="Thoát">${icon('x')}</button><div class="progress"><i style="width:${pct}%"></i></div>${t ? `<span id="w-timer" class="${t.cls}" role="timer" aria-label="Thời gian còn lại">${t.text}</span>` : `<span class="count">${steps.indexOf(ws.stage) + 1}/${steps.length}</span>`}</div>
@@ -785,17 +866,18 @@ export function writeView() {
     if (!Object.values(ws.plan).some(Boolean)) focus = '.w-plan textarea';
   } else if (ws.stage === 'write') {
     const n = countWords(ws.text);
-    const task = ws.kind === 'task1' && ws.mode.id === 'detail' ? `${p.task} Đối tượng: <b>${esc(ws.chart.series[ws.chart.target].name)}</b>.` : ws.kind === 'essay' ? 'Viết 4–5 đoạn, xuống dòng giữa các đoạn.' : esc(p.task);
+    const task = ws.rewrite ? 'Sửa bài cũ theo các gợi ý và bài mẫu, không giới hạn thời gian. Nộp xong app so với bản trước.' : ws.kind === 'task1' && ws.mode.id === 'detail' ? `${p.task} Đối tượng: <b>${esc(ws.chart.series[ws.chart.target].name)}</b>.` : ws.kind === 'essay' ? 'Viết 4–5 đoạn, xuống dòng giữa các đoạn.' : esc(p.task);
     const pl = ws.kind === 'essay' && Object.values(ws.plan).some(Boolean)
       ? `<details class="card w-plansum"><summary>Dàn ý của bạn</summary><dl>${[['view', 'Quan điểm'], ['p1', 'Thân bài 1'], ['p2', 'Thân bài 2'], ['ex', 'Ví dụ']].filter(([k]) => ws.plan[k]).map(([k, lab]) => `<dt>${lab}</dt><dd>${esc(ws.plan[k])}</dd>`).join('')}</dl></details>` : '';
     body = `${promptCard}${pl}<p class="w-task">${task}</p>
       <textarea id="w-text" class="input w-editor" rows="${ws.kind === 'essay' ? 16 : p.max > 100 ? 12 : 5}" data-in="w-input" placeholder="Viết bằng tiếng Anh…" autocapitalize="sentences" spellcheck="false">${esc(ws.text)}</textarea>
       <p id="w-count" class="w-count ${n < p.min ? '' : n > p.max ? 'over' : 'ok'}">${countLabel(n, p)}</p>${vocabHtml(ws.vocab, ws.text)}`;
     if (!ws.text) focus = '#w-text';
-    actions = `<div class="btn-row">${ws.kind === 'task1' ? `<button class="btn ghost" data-act="w-newchart" style="flex:.7">Đề khác</button>` : ws.kind === 'essay' ? `<button class="btn ghost" data-act="w-stage" data-to="plan" style="flex:.7">Dàn ý</button>` : ''}<button class="btn" data-act="w-submit">Nộp bài</button></div>`;
+    actions = `<div class="btn-row">${ws.kind === 'task1' && !ws.rewrite ? `<button class="btn ghost" data-act="w-newchart" style="flex:.7">Đề khác</button>` : ws.kind === 'essay' && !ws.rewrite ? `<button class="btn ghost" data-act="w-stage" data-to="plan" style="flex:.7">Dàn ý</button>` : ''}<button class="btn" data-act="w-submit">Nộp bài</button></div>`;
   } else if (ws.stage === 'report') {
     const rec = S.writing.get(ws.essayId);
-    body = `<h3 class="w-h">Kiểm tra tự động</h3>${checksHtml(ws.checks)}<h3 class="w-h">Thống kê</h3>${statsHtml(ws.stats)}
+    const prevRec = ws.rewrite && S.writing.get(ws.prev);
+    body = `${prevRec ? compareHtml(prevRec, rec) : ''}<h3 class="w-h">Kiểm tra tự động</h3>${checksHtml(ws.checks)}<h3 class="w-h">Thống kê</h3>${statsHtml(ws.stats)}
       <h3 class="w-h">Gợi ý sửa lỗi</h3>${hitsHtml(rec, ws.hits)}${usedHtml(ws.vocab, ws.used)}`;
     actions = `<button class="btn" data-act="w-stage" data-to="model">Xem bài mẫu</button>`;
   } else if (ws.stage === 'model') {
@@ -829,6 +911,7 @@ export function essaysView() {
     return `<div class="wrow" data-act="go" data-to="#/wessay/${e.id}"><div class="body"><span style="font-weight:600" class="w-clip">${esc(e.title)}</span><p>${e.at.split('-').reverse().join('/')} · ${e.words} từ · ${errs} gợi ý sửa</p></div>${icon('chev')}</div>`;
   }).join('');
   return `<div class="page">${navBar('Bài đã viết', { fallback: '#/writing' })}
+    ${list.length ? `<button class="listlink" data-act="go" data-to="#/wstats" style="margin-bottom:12px"><span class="lead">${icon('stats')}</span><span class="body"><b>Hồ sơ & xuất bài</b><small>Lỗi theo tuần, lỗi hay gặp</small></span>${icon('chev')}</button>` : ''}
     ${list.length ? `<div class="wlist" style="margin-top:0">${rows}</div>` : `<div class="card empty"><div class="art">${icon('pen')}</div><h3>Chưa có bài nào</h3><p>Bài bạn nộp sẽ được lưu ở đây cùng báo cáo.</p></div>`}</div>`;
 }
 
@@ -840,20 +923,100 @@ export function essayView(id) {
   const prompt = (e.kind === 'part' || e.kind === 'essay') && W.prompts.get(e.promptId);
   const hits = e.report.hits.map((h) => ({ ...h, match: (() => { const r = ruleOf(h.rule); if (!r) return ''; r.rx.lastIndex = 0; const m = r.rx.exec(h.text); return m ? m[0].replace(/^[.!?\n\s]+/, '').trim() : ''; })() }));
   const self = Object.entries(e.self || {});
+  const prevE = e.prev && S.writing.get(e.prev);
+  // Chuỗi các bản: lần ngược về bản 1 rồi xuôi theo các bản viết lại.
+  let root = e; const seen = new Set([e.id]);
+  while (root.prev && S.writing.get(root.prev) && !seen.has(root.prev)) { seen.add(root.prev); root = S.writing.get(root.prev); }
+  const chain = [root];
+  for (let cur = root; ;) { const nx = essays().filter((x) => x.prev === cur.id).sort((a, b) => (a.version || 1) - (b.version || 1))[0]; if (!nx || chain.includes(nx)) break; chain.push(nx); cur = nx; }
+  const chainHtml = chain.length > 1 ? `<div class="pill-list" style="margin:0 2px 10px">${chain.map((x) => (x.id === e.id ? `<span class="tag on">Bản ${x.version || 1}</span>` : `<button class="tag" data-act="w-open" data-id="${x.id}">Bản ${x.version || 1}</button>`)).join('')}</div>` : '';
   return `<div class="page">${navBar('Bài viết', { fallback: '#/wessays' })}
-    <p class="small muted" style="margin:0 2px 8px">${esc(e.title)} · ${e.at.split('-').reverse().join('/')}</p>
+    <p class="small muted" style="margin:0 2px 8px">${esc(e.title)} · ${e.at.split('-').reverse().join('/')}</p>${chainHtml}
     ${prompt ? `<div class="card"><p class="w-prompt small">${esc(prompt.q)}</p></div>` : ''}${chart}
     ${e.plan && Object.values(e.plan).some(Boolean) ? `<details class="card w-plansum"><summary>Dàn ý</summary><dl>${[['view', 'Quan điểm'], ['p1', 'Thân bài 1'], ['p2', 'Thân bài 2'], ['ex', 'Ví dụ']].filter(([k]) => e.plan[k]).map(([k, lab]) => `<dt>${lab}</dt><dd>${esc(e.plan[k])}</dd>`).join('')}</dl></details>` : ''}
     <h3 class="w-h">Bài của bạn</h3><div class="card w-text">${esc(e.text)}</div>
     ${e.kind === 'essay' && e.ms ? `<p class="small muted" style="margin:6px 2px 0">Thời gian: ${Math.round(e.ms / 60e3)} phút</p>` : ''}
+    ${prevE && W.state === 'ready' ? compareHtml(prevE, e) : ''}
     <h3 class="w-h">Kiểm tra tự động</h3>${checksHtml(e.report.checks)}
     <h3 class="w-h">Thống kê</h3>${statsHtml({ ...e.report.stats, repeated: textStats(e.text).repeated })}
     <h3 class="w-h">Gợi ý sửa lỗi</h3>${W.state === 'ready' ? hitsHtml(e, hits) : ''}
     ${e.used?.length ? `<h3 class="w-h">Từ trong kho đã dùng</h3><p class="small">${e.used.map((x) => `<b class="en">${esc(x)}</b>`).join(', ')}</p>` : ''}
     ${self.length ? `<h3 class="w-h">Tự chấm</h3><p class="small muted">${self.filter(([, v]) => v).length}/${self.length} mục “Có”</p>` : ''}
-    ${prompt ? (e.kind === 'essay' ? `<button class="btn soft" style="margin-top:16px" data-act="w-essay" data-p="${e.promptId}">Viết lại cả bài</button>` : `<button class="btn soft" style="margin-top:16px" data-act="w-part" data-p="${e.promptId}" data-part="${e.part}">Viết lại phần này</button>`) : ''}
+    ${W.state === 'ready' ? `<button class="btn soft" style="margin-top:16px" data-act="w-rewrite" data-id="${e.id}">${S.writing.get(`draft:rw:${e.id}`) ? 'Sửa tiếp bản nháp' : `Sửa thành bản ${(e.version || 1) + 1}`}</button>` : ''}
+    ${prompt && e.kind === 'essay' ? `<button class="btn ghost" style="margin-top:10px" data-act="w-essay" data-p="${e.promptId}">Viết cả bài mới (40 phút)</button>` : ''}
     <button class="btn danger" style="margin-top:10px" data-act="w-delete" data-id="${e.id}">${icon('trash', 'sm')} Xoá bài</button></div>`;
 }
 
+// ================= HỒ SƠ WRITING =================
+const mondayOf = (iso) => { const d = new Date(iso + 'T00:00:00'); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d; };
+const isoOf = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+/** Số liệu cho trang hồ sơ: tổng, 8 tuần gần nhất (gợi ý lỗi / 100 từ), loại lỗi hay gặp. */
+export function portfolio(list = essays(), now = today()) {
+  const words = list.reduce((a, e) => a + (e.words || 0), 0), ms = list.reduce((a, e) => a + (e.ms || 0), 0);
+  const start = mondayOf(now);
+  const weeks = Array.from({ length: 8 }, (_, i) => { const d = new Date(start); d.setDate(d.getDate() - 7 * (7 - i)); return { from: isoOf(d), n: 0, words: 0, errs: 0 }; });
+  for (const e of list) {
+    const wk = isoOf(mondayOf(e.at)), w = weeks.find((x) => x.from === wk);
+    if (w) { w.n++; w.words += e.words || 0; w.errs += liveHits(e).length; }
+  }
+  weeks.forEach((w) => { w.rate = w.words ? Math.round((w.errs / w.words) * 1000) / 10 : null; });
+  const tags = {};
+  for (const e of list) for (const h of liveHits(e)) { const t = ruleOf(h.rule)?.tag || h.rule; tags[t] = (tags[t] || 0) + 1; }
+  const top = Object.entries(tags).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([tag, n]) => ({ tag, n }));
+  const full = list.filter((e) => e.kind === 'essay' && !e.prev);
+  return {
+    count: list.length, words, ms, weeks, top,
+    kinds: { part: list.filter((e) => e.kind === 'part').length, essay: list.filter((e) => e.kind === 'essay').length, task1: list.filter((e) => e.kind === 'task1').length, rewrite: list.filter((e) => e.prev).length },
+    full: full.length ? { n: full.length, words: Math.round(full.reduce((a, e) => a + e.words, 0) / full.length), min: Math.round(full.reduce((a, e) => a + e.ms, 0) / full.length / 60e3), onTime: full.filter((e) => e.ms <= ESSAY.ms && e.words >= ESSAY.min).length } : null,
+  };
+}
+/** Toàn bộ bài viết thành một file văn bản để lưu hoặc gửi thầy cô. */
+export function exportText(list = essays()) {
+  const sorted = list.slice().sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : 0));
+  const blocks = sorted.map((e) => {
+    const p = W.prompts.get(e.promptId);
+    const ch = e.kind === 'task1' && e.chart && W.charts.length ? genChart(e.chart.tpl, e.chart.seed, e.chart.target) : null;
+    const head = [`${e.title}`, `Ngày ${e.at.split('-').reverse().join('/')} · ${e.words} từ${e.ms ? ` · ${Math.round(e.ms / 60e3)} phút` : ''}`];
+    if (p) head.push(`Đề: ${p.q}`);
+    if (ch) head.push(`Đề: ${chartPrompt(ch)}`);
+    const checks = e.report.checks.map((c) => `${c.ok === true ? '[x]' : c.ok === false ? '[ ]' : '[-]'} ${c.msg.replace(/\*+/g, '')}`).join('\n');
+    const hits = liveHits(e).map((h) => `- ${h.text} → ${(ruleOf(h.rule)?.fix || '').replace(/\*+/g, '')}`).join('\n');
+    return `${head.join('\n')}\n\n${e.text}\n\nKiểm tra tự động:\n${checks}${hits ? `\n\nGợi ý sửa lỗi:\n${hits}` : ''}`;
+  });
+  return `BÀI VIẾT IELTS · xuất ngày ${today().split('-').reverse().join('/')} · ${sorted.length} bài\n\n` + blocks.join('\n\n' + '='.repeat(40) + '\n\n') + '\n';
+}
+on('w-export', async () => {
+  const list = essays();
+  if (!list.length) return toast('Chưa có bài nào để xuất');
+  const ok = await download(`writing-${today()}.txt`, exportText(list), 'text/plain;charset=utf-8');
+  if (ok !== false) toast(`Đã xuất ${list.length} bài`);
+});
+
+export function statsView() {
+  const nav = navBar('Hồ sơ Writing', { fallback: '#/writing' });
+  if (W.state !== 'ready') return `<div class="page">${nav}${loadingCard()}</div>`;
+  const P = portfolio();
+  if (!P.count) return `<div class="page">${nav}<div class="card empty"><div class="art">${icon('stats')}</div><h3>Chưa có bài nào</h3><p>Nộp bài đầu tiên, hồ sơ sẽ hiện số liệu ở đây.</p></div></div>`;
+  const hrs = P.ms >= 3600e3 ? `${Math.floor(P.ms / 3600e3)}g${String(Math.round((P.ms % 3600e3) / 60e3)).padStart(2, '0')}` : Math.round(P.ms / 60e3), hrsL = P.ms >= 3600e3 ? 'thời gian' : 'phút';
+  const tiles = `<div class="tiles w-tiles"><div class="tile"><b>${P.count}</b><span>bài</span></div><div class="tile"><b>${P.words.toLocaleString('vi-VN')}</b><span>từ</span></div><div class="tile"><b>${hrs}</b><span>${hrsL}</span></div><div class="tile"><b>${P.kinds.rewrite}</b><span>bản sửa</span></div></div>
+    <p class="small muted" style="margin:8px 2px 0">${P.kinds.part} phần Task 2 · ${P.kinds.essay} cả bài · ${P.kinds.task1} bài Task 1</p>`;
+  const rated = P.weeks.filter((w) => w.rate !== null), max = Math.max(1, ...rated.map((w) => w.rate));
+  const lbl = (w) => w.from.slice(8, 10) + '/' + w.from.slice(5, 7);
+  const chart = `<div class="card"><p class="small muted">Gợi ý lỗi trên mỗi 100 từ, theo tuần (thấp hơn là tốt hơn)</p>
+    <div class="chart"><div class="bars w-bars" style="height:110px">${P.weeks.map((w) => `<div class="bar" style="cursor:default" title="Tuần ${lbl(w)}: ${w.n} bài, ${w.errs} gợi ý lỗi"><span class="small" style="font-size:11.5px;color:var(--text-2);font-weight:600">${w.rate === null ? '' : w.rate.toLocaleString('vi-VN')}</span>${w.rate === null ? '<i class="none"></i>' : `<i style="height:${Math.max(3, (w.rate / max) * 76)}px"></i>`}<em>${lbl(w)}</em></div>`).join('')}</div></div>
+    <p class="small faint" style="margin-top:6px">Tuần trống là tuần chưa nộp bài. Chạm “Câu này đúng” ở bài cũ để bỏ gợi ý sai khỏi số liệu.</p></div>`;
+  const top = P.top.length ? P.top.map((x) => {
+    const tag = GR.tags[x.tag] || { name: ruleOf(x.tag)?.why?.replace(/\*+/g, '') || x.tag };
+    const lesson = tag.lesson && GR.lessons?.get(tag.lesson);
+    return `<div class="card w-top"><div class="row-between"><b style="min-width:0">${esc(tag.name)}</b><span class="tag">${x.n} lần</span></div>
+      ${lesson ? `<button class="btn ghost sm" style="margin-top:10px" data-act="g-start" data-id="${lesson.id}" data-fresh="1">Học lại: ${esc(lesson.title)}</button>` : ''}</div>`;
+  }).join('') : `<div class="feedback ok"><b class="t">${icon('check', 'sm')} Chưa có lỗi nào trong danh sách app theo dõi</b></div>`;
+  const full = P.full ? `<h2>Cả bài 40 phút</h2><div class="card"><p>${P.full.n} bài · trung bình <b>${P.full.words}</b> từ trong <b>${P.full.min}</b> phút</p><p class="small muted" style="margin-top:4px">${P.full.onTime}/${P.full.n} bài đủ 250 từ và xong trong 40 phút</p></div>` : '';
+  return `<div class="page">${nav}${tiles}<h2>Lỗi theo tuần</h2>${chart}<h2>Lỗi hay gặp</h2>${top}${full}
+    <h2>Xuất bài</h2><div class="card"><p class="small muted">Tất cả bài kèm đề, kết quả kiểm tra và gợi ý sửa, trong một file văn bản (.txt). Trên iPhone sẽ mở bảng Chia sẻ để lưu vào Tệp hoặc gửi đi.</p>
+      <button class="btn soft" style="margin-top:12px" data-act="w-export">${icon('download', 'sm')} Xuất ${P.count} bài</button></div>
+    <p class="small faint" style="margin:14px 2px 0">Bài viết cũng nằm trong file sao lưu (Cài đặt → Sao lưu).</p></div>`;
+}
+
 // Dùng cho kiểm thử tự động (không dùng trong giao diện).
-export const _check = { detailChecks, overviewChecks, fullChecks, chartModel, essayChecks, suggestWords, wordRe, fullModel };
+export const _check = { detailChecks, overviewChecks, fullChecks, chartModel, essayChecks, suggestWords, wordRe, fullModel, wordDiff, compareVersions, portfolio, exportText };

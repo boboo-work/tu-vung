@@ -768,3 +768,23 @@ ul.checks li + li { margin-top: 4px; }
 .w-chip { border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 14px; cursor: pointer; }
 .w-chip.used { background: var(--green-soft, rgba(52,168,83,.12)); border-color: var(--green); color: var(--green); }
 .w-chip.used::before { content: '✓ '; }
+
+/* Writing: so sánh bản viết lại, hồ sơ */
+table.w-cmp td:nth-child(4) { width: 26px; text-align: center; }
+.w-cmp .up { color: var(--green); display: inline-flex; }
+.w-cmp .down { color: var(--amber); font-weight: 800; }
+.ok-t { color: var(--green); }
+.no-t { color: var(--amber); }
+.w-diff { margin-top: 12px; }
+.w-diff summary { font-weight: 650; cursor: pointer; font-size: 14px; }
+.w-diff .w-text { margin-top: 8px; white-space: pre-wrap; line-height: 1.6; }
+.w-diff del { color: var(--red); text-decoration: line-through; background: color-mix(in srgb, var(--red) 10%, transparent); }
+.w-diff ins { color: var(--green); text-decoration: none; background: var(--green-soft); border-radius: 3px; }
+button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.tag.on { background: var(--accent); color: var(--surface); }
+.w-bars { margin-bottom: 26px; }
+.w-bars .bar { position: relative; }
+.w-bars .bar i { background: var(--series-2); border-radius: 4px 4px 0 0; }
+.w-bars .bar i.none { height: 0; }
+.w-bars .bar em { position: absolute; bottom: -17px; font-style: normal; font-size: 10.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.w-top .tag { flex: none; }
