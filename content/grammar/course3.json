@@ -1,0 +1,1667 @@
+{
+ "id": "c3",
+ "title": "IELTS 6.5 Booster",
+ "level": "Band 6.0–6.5",
+ "version": 1,
+ "tags": {
+  "k3-modal": {
+   "name": "Modal: dạng và nghĩa (must / have to / mustn't)",
+   "lesson": "k3-modal1"
+  },
+  "k3-maymight": {
+   "name": "may / might / could: suy đoán, ý kiến mềm",
+   "lesson": "k3-modal2"
+  },
+  "k3-modalperf": {
+   "name": "Modal hoàn thành (should have, must have…)",
+   "lesson": "k3-modal3"
+  },
+  "k3-prep-time": {
+   "name": "at / on / in; không giới từ trước last, next",
+   "lesson": "k3-prep1"
+  },
+  "k3-prep-adj": {
+   "name": "Tính từ + giới từ",
+   "lesson": "k3-prep2"
+  },
+  "k3-prep-verb": {
+   "name": "Động từ / danh từ + giới từ",
+   "lesson": "k3-prep3"
+  },
+  "k3-no-prep": {
+   "name": "Động từ không cần giới từ (discuss, contact…)",
+   "lesson": "k3-prep3"
+  },
+  "k3-nounclause": {
+   "name": "Mệnh đề danh ngữ (that / what / whether)",
+   "lesson": "k3-noun1"
+  },
+  "k3-indirect": {
+   "name": "Câu hỏi gián tiếp: không đảo",
+   "lesson": "k3-indirect"
+  },
+  "k3-trendform": {
+   "name": "Xu hướng: động từ + trạng từ hay tính từ + danh từ",
+   "lesson": "k3-trend1"
+  },
+  "k3-trendprep": {
+   "name": "Giới từ với số liệu (by / to / at / of / in)",
+   "lesson": "k3-trend2"
+  },
+  "k3-trendmore": {
+   "name": "Ước lượng, tỉ lệ, dự báo",
+   "lesson": "k3-trend3"
+  },
+  "k3-splice": {
+   "name": "Nối hai câu bằng dấu phẩy; câu thiếu mệnh đề chính",
+   "lesson": "k3-punct1"
+  },
+  "k3-comma": {
+   "name": "Dấu phẩy, it's / its, viết hoa",
+   "lesson": "k3-punct2"
+  }
+ },
+ "units": [
+  {
+   "id": "k3u1",
+   "no": "1",
+   "title": "Động từ khuyết thiếu",
+   "goal": "Speaking Part 3: nêu ý kiến có cân nhắc; nói về quá khứ",
+   "lessons": [
+    {
+     "id": "k3-modal1",
+     "title": "Khả năng, bắt buộc, lời khuyên",
+     "rule": [
+      "Quy tắc chung: **modal + V nguyên mẫu**; không thêm -s, không có to: ✗ *She cans* · ✗ *must to go*.",
+      "**must**: bắt buộc do người nói thấy cần · **have to**: bắt buộc do quy định, hoàn cảnh.",
+      "**mustn't** = cấm · **don't have to** = không cần (làm cũng được). Hai nghĩa khác hẳn nhau.",
+      "**should / ought to**: lời khuyên · **can / be able to**: khả năng. Sau modal khác dùng *be able to*: *will be able to*.",
+      "**could**: khả năng trong quá khứ, hoặc gợi ý: *The city could build more parks.*"
+     ],
+     "examples": [
+      {
+       "en": "You *mustn't* park here.",
+       "vi": "Bạn không được đỗ xe ở đây."
+      },
+      {
+       "en": "You *don't have to* pay; it's free.",
+       "vi": "Bạn không cần trả tiền; miễn phí."
+      },
+      {
+       "en": "Students *should* get enough sleep.",
+       "vi": "Học sinh nên ngủ đủ giấc."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Tomorrow is a holiday, so I ___ get up early.",
+       "opts": [
+        "don't have to",
+        "mustn't",
+        "shouldn't to"
+       ],
+       "a": 0,
+       "why": "Không cần → **don't have to**.",
+       "tag": "k3-modal"
+      },
+      {
+       "t": "mc",
+       "q": "With more practice, you will ___ speak fluently.",
+       "opts": [
+        "be able to",
+        "can",
+        "able"
+       ],
+       "a": 0,
+       "why": "Sau will dùng **be able to**, không dùng can.",
+       "tag": "k3-modal"
+      },
+      {
+       "t": "fill",
+       "q": "Visitors ___ touch the paintings. It is forbidden.",
+       "a": [
+        "mustn't",
+        "must not",
+        "cannot",
+        "can't"
+       ],
+       "why": "Cấm → **mustn't**.",
+       "tag": "k3-modal",
+       "hint": "cấm"
+      },
+      {
+       "t": "tf",
+       "q": "She can to speak three languages.",
+       "a": false,
+       "why": "Sau modal không có to.",
+       "tag": "k3-modal",
+       "fix": "She can speak three languages."
+      },
+      {
+       "t": "fix",
+       "q": "He musts wear a uniform at work.",
+       "a": [
+        "He must wear a uniform at work.",
+        "He has to wear a uniform at work."
+       ],
+       "why": "Modal không thêm -s.",
+       "tag": "k3-modal"
+      },
+      {
+       "t": "fix",
+       "q": "You mustn't come if you are busy; it's optional.",
+       "a": [
+        "You don't have to come if you are busy; it's optional.",
+        "You don't have to come if you are busy. It's optional."
+       ],
+       "why": "Không bắt buộc (optional) → **don't have to**; mustn't là cấm.",
+       "tag": "k3-modal"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-modal1-1",
+       "front": "mustn't khác don't have to thế nào?",
+       "pattern": "**mustn't + V** = cấm · **don't have to + V** = không cần",
+       "example": "You *mustn't* smoke here. / You *don't have to* wait.",
+       "vi": "Bạn không được hút thuốc ở đây. / Bạn không cần đợi."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một quy định ở nơi làm việc hoặc trường học với mustn't, và một việc không bắt buộc với don't have to.",
+      "samples": [
+       "Employees mustn't share their passwords. They don't have to wear a uniform.",
+       "You mustn't use your phone in the exam, but you don't have to write in pen."
+      ],
+      "check": [
+       "Sau modal là V nguyên mẫu, không có to?",
+       "mustn't = cấm, don't have to = không cần?"
+      ],
+      "must": [
+       "\\b(mustn't|must not|don't have to|doesn't have to)\\b"
+      ],
+      "hint": "Câu cần có mustn't hoặc don't have to"
+     }
+    },
+    {
+     "id": "k3-modal2",
+     "title": "may, might, could: suy đoán và ý kiến mềm",
+     "rule": [
+      "**may / might / could + V**: có lẽ, có thể (might ít chắc hơn may).",
+      "**must + V**: suy đoán chắc chắn đúng: *He must be tired.* · **can't + V**: chắc chắn không: *That can't be true.*",
+      "Trong Speaking Part 3 và Task 2, dùng may / might / could / would để ý kiến nghe **cân nhắc** hơn, tránh khẳng định tuyệt đối.",
+      "So sánh: *Social media **causes** stress.* (tuyệt đối) → *Social media **may cause** stress.* (cân nhắc)"
+     ],
+     "examples": [
+      {
+       "en": "Working from home *may reduce* stress.",
+       "vi": "Làm việc ở nhà có thể giảm căng thẳng."
+      },
+      {
+       "en": "It *might be* because young people spend more time online.",
+       "vi": "Có lẽ là vì người trẻ dành nhiều thời gian trên mạng hơn."
+      },
+      {
+       "en": "She *must be* at work; her car isn't here.",
+       "vi": "Cô ấy hẳn đang ở chỗ làm; xe cô ấy không có ở đây."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I'm not sure, but it ___ rain this evening.",
+       "opts": [
+        "might",
+        "must",
+        "can't"
+       ],
+       "a": 0,
+       "why": "Không chắc → **might**.",
+       "tag": "k3-maymight"
+      },
+      {
+       "t": "mc",
+       "q": "He's been working for 12 hours. He ___ be exhausted.",
+       "opts": [
+        "must",
+        "might not",
+        "can't"
+       ],
+       "a": 0,
+       "why": "Suy đoán chắc chắn → **must**.",
+       "tag": "k3-maymight"
+      },
+      {
+       "t": "fill",
+       "q": "This ___ be the right address. The house is empty.",
+       "a": [
+        "can't",
+        "cannot",
+        "couldn't"
+       ],
+       "why": "Chắc chắn không → **can't**.",
+       "tag": "k3-maymight",
+       "hint": "chắc chắn không"
+      },
+      {
+       "t": "tf",
+       "q": "Technology may improves education in the future.",
+       "a": false,
+       "why": "may + V nguyên mẫu.",
+       "tag": "k3-maymight",
+       "fix": "Technology may improve education in the future."
+      },
+      {
+       "t": "fix",
+       "q": "It might to be a good idea to wait.",
+       "a": [
+        "It might be a good idea to wait."
+       ],
+       "why": "might + V, không có to.",
+       "tag": "k3-maymight"
+      },
+      {
+       "t": "fix",
+       "q": "She must is very happy with the results.",
+       "a": [
+        "She must be very happy with the results."
+       ],
+       "why": "must + **be**.",
+       "tag": "k3-maymight"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-modal2-1",
+       "front": "Làm mềm một ý kiến tuyệt đối trong Speaking Part 3",
+       "pattern": "S + **may / might / could** + V · It **might be because** + S + V",
+       "example": "It *might be because* people are busier these days.",
+       "vi": "Có lẽ là vì dạo này mọi người bận hơn."
+      }
+     ],
+     "write": {
+      "prompt": "Trả lời: Why do many young people prefer living in cities? Dùng may / might / could ít nhất hai lần.",
+      "samples": [
+       "It might be because cities offer more jobs. Young people may also enjoy the nightlife and the social life there.",
+       "They could earn more in cities, and they might find better schools for their children."
+      ],
+      "check": [
+       "may / might / could + V nguyên mẫu?",
+       "Tránh khẳng định tuyệt đối?"
+      ],
+      "must": [
+       "\\b(may|might|could)\\b"
+      ],
+      "hint": "Câu cần có may, might hoặc could"
+     }
+    },
+    {
+     "id": "k3-modal3",
+     "title": "Modal hoàn thành: nói về quá khứ",
+     "rule": [
+      "**modal + have + V3** nói về quá khứ.",
+      "**should have + V3**: lẽ ra nên (nhưng đã không) → tiếc nuối, trách.",
+      "**must have + V3**: chắc hẳn đã · **might / could have + V3**: có thể đã · **can't / couldn't have + V3**: không thể nào đã.",
+      "**needn't have + V3**: lẽ ra không cần (nhưng đã làm).",
+      "Luôn là *have*, không chia *has / had*: ✗ *She should has* → ✓ *She should have*."
+     ],
+     "examples": [
+      {
+       "en": "I *should have started* earlier.",
+       "vi": "Lẽ ra tôi nên bắt đầu sớm hơn."
+      },
+      {
+       "en": "He *must have forgotten* the meeting.",
+       "vi": "Chắc hẳn anh ấy đã quên cuộc họp."
+      },
+      {
+       "en": "She *might have missed* the bus.",
+       "vi": "Có thể cô ấy đã lỡ xe buýt."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The ground is wet. It ___ last night.",
+       "opts": [
+        "must have rained",
+        "should have rained",
+        "must rain"
+       ],
+       "a": 0,
+       "why": "Suy đoán chắc chắn về quá khứ → **must have + V3**.",
+       "tag": "k3-modalperf"
+      },
+      {
+       "t": "mc",
+       "q": "I failed the test. I ___ harder.",
+       "opts": [
+        "should have studied",
+        "must have studied",
+        "should study"
+       ],
+       "a": 0,
+       "why": "Lẽ ra nên (đã không làm) → **should have + V3**.",
+       "tag": "k3-modalperf"
+      },
+      {
+       "t": "fill",
+       "q": "She isn't here yet. She might ___ missed the train.",
+       "a": [
+        "have"
+       ],
+       "why": "might **have** + V3.",
+       "tag": "k3-modalperf"
+      },
+      {
+       "t": "tf",
+       "q": "He should has told me the truth.",
+       "a": false,
+       "why": "Sau modal luôn là **have**.",
+       "tag": "k3-modalperf",
+       "fix": "He should have told me the truth."
+      },
+      {
+       "t": "fix",
+       "q": "You must have be very tired after the trip.",
+       "a": [
+        "You must have been very tired after the trip."
+       ],
+       "why": "must have + V3: **been**.",
+       "tag": "k3-modalperf"
+      },
+      {
+       "t": "fix",
+       "q": "I shouldn't ate so much last night.",
+       "a": [
+        "I shouldn't have eaten so much last night.",
+        "I should not have eaten so much last night."
+       ],
+       "why": "Nói về quá khứ: shouldn't **have eaten**.",
+       "tag": "k3-modalperf"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-modal3-1",
+       "front": "Nói một điều lẽ ra bạn nên làm",
+       "pattern": "S + **should have + V3**",
+       "example": "I *should have saved* more money when I was younger.",
+       "vi": "Lẽ ra tôi nên tiết kiệm nhiều hơn khi còn trẻ."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu tiếc nuối với should have + V3 và một câu suy đoán về quá khứ với must have / might have + V3.",
+      "samples": [
+       "I should have learned to swim as a child. My parents must have been too busy to teach me.",
+       "She didn't answer; she might have been asleep."
+      ],
+      "check": [
+       "modal + have + V3?",
+       "Luôn là have, không phải has / had?"
+      ],
+      "must": [
+       "\\b(should|shouldn't|must|might|could|couldn't|can't|needn't)(n't)? have\\b"
+      ],
+      "hint": "Câu cần có should have / must have / might have + V3"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k3u2",
+   "no": "2",
+   "title": "Giới từ",
+   "goal": "Dùng đúng cụm giới từ hay gặp trong IELTS",
+   "lessons": [
+    {
+     "id": "k3-prep1",
+     "title": "at, on, in: thời gian và nơi chốn",
+     "rule": [
+      "Từ nhỏ đến lớn: **at** (điểm) → **on** (ngày, bề mặt) → **in** (khoảng lớn, không gian kín).",
+      "Thời gian: *at 7 am, at night, at the weekend* · *on Monday, on 5 June* · *in May, in 2025, in the morning*.",
+      "Nơi chốn: *at the bus stop, at work* · *on the wall, on the 5th floor, on the bus* · *in the office, in Hanoi, in a taxi*.",
+      "**Không** dùng giới từ trước *last, next, this, every, today, tomorrow*: ✗ *in last year* → ✓ *last year*."
+     ],
+     "examples": [
+      {
+       "en": "I met her *on the bus*.",
+       "vi": "Tôi gặp cô ấy trên xe buýt."
+      },
+      {
+       "en": "He left *in a taxi*.",
+       "vi": "Anh ấy rời đi bằng taxi."
+      },
+      {
+       "en": "We moved here *last year*.",
+       "vi": "Chúng tôi chuyển đến đây năm ngoái."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I usually read ___ the train.",
+       "opts": [
+        "on",
+        "in",
+        "at"
+       ],
+       "a": 0,
+       "why": "Phương tiện công cộng → **on**.",
+       "tag": "k3-prep-time"
+      },
+      {
+       "t": "mc",
+       "q": "She started her new job ___.",
+       "opts": [
+        "last month",
+        "in last month",
+        "on last month"
+       ],
+       "a": 0,
+       "why": "Trước last không dùng giới từ.",
+       "tag": "k3-prep-time"
+      },
+      {
+       "t": "fill",
+       "q": "There is a picture ___ the wall.",
+       "a": [
+        "on"
+       ],
+       "why": "Bề mặt → **on**.",
+       "tag": "k3-prep-time"
+      },
+      {
+       "t": "tf",
+       "q": "I will see you on next Monday.",
+       "a": false,
+       "why": "Trước next không dùng giới từ.",
+       "tag": "k3-prep-time",
+       "fix": "I will see you next Monday."
+      },
+      {
+       "t": "fix",
+       "q": "He arrived at the airport in a bus.",
+       "a": [
+        "He arrived at the airport on a bus.",
+        "He arrived at the airport by bus."
+       ],
+       "why": "Xe buýt → **on** a bus (hoặc by bus).",
+       "tag": "k3-prep-time"
+      },
+      {
+       "t": "fix",
+       "q": "We have a meeting in every Friday.",
+       "a": [
+        "We have a meeting every Friday."
+       ],
+       "why": "Trước every không dùng giới từ.",
+       "tag": "k3-prep-time"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-prep1-1",
+       "front": "on the bus hay in a taxi?",
+       "pattern": "**on** + phương tiện công cộng (bus, train, plane) · **in** + ô tô, taxi",
+       "example": "I read *on the train* and sleep *in the car*.",
+       "vi": "Tôi đọc sách trên tàu và ngủ trong ô tô."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2 câu về lịch tuần tới của bạn: có ngày, giờ, nơi chốn, và một cụm với next hoặc every.",
+      "samples": [
+       "I have an interview at 9 a.m. on Tuesday at a hotel in the city centre.",
+       "Next weekend I am visiting my parents."
+      ],
+      "check": [
+       "at + giờ, on + ngày, in + tháng/năm?",
+       "Không có giới từ trước next / last / every?"
+      ]
+     }
+    },
+    {
+     "id": "k3-prep2",
+     "title": "Tính từ + giới từ",
+     "rule": [
+      "Học theo cụm, không học từng từ.",
+      "**interested in** · **good / bad at** · **responsible for** · **afraid of** · **worried about** · **keen on**.",
+      "**familiar with** · **aware of** · **satisfied with** · **different from** · **similar to** · **proud of**.",
+      "Sau giới từ là danh từ hoặc **V-ing**: *good at **solving** problems*."
+     ],
+     "examples": [
+      {
+       "en": "She is *responsible for* the budget.",
+       "vi": "Cô ấy chịu trách nhiệm về ngân sách."
+      },
+      {
+       "en": "I'm not *familiar with* this software.",
+       "vi": "Tôi không quen phần mềm này."
+      },
+      {
+       "en": "City life is *different from* village life.",
+       "vi": "Cuộc sống thành phố khác cuộc sống làng quê."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Many people are worried ___ the cost of living.",
+       "opts": [
+        "about",
+        "of",
+        "for"
+       ],
+       "a": 0,
+       "why": "worried **about**.",
+       "tag": "k3-prep-adj"
+      },
+      {
+       "t": "mc",
+       "q": "He is very good ___ explaining difficult ideas.",
+       "opts": [
+        "at",
+        "in",
+        "on"
+       ],
+       "a": 0,
+       "why": "good **at** + V-ing.",
+       "tag": "k3-prep-adj"
+      },
+      {
+       "t": "fill",
+       "q": "Most customers were satisfied ___ the service.",
+       "a": [
+        "with"
+       ],
+       "why": "satisfied **with**.",
+       "tag": "k3-prep-adj"
+      },
+      {
+       "t": "tf",
+       "q": "Young people are keen in trying new things.",
+       "a": false,
+       "why": "keen **on**.",
+       "tag": "k3-prep-adj",
+       "fix": "Young people are keen on trying new things."
+      },
+      {
+       "t": "fix",
+       "q": "I am interested on learning about other cultures.",
+       "a": [
+        "I am interested in learning about other cultures.",
+        "I'm interested in learning about other cultures."
+       ],
+       "why": "interested **in**.",
+       "tag": "k3-prep-adj"
+      },
+      {
+       "t": "fix",
+       "q": "Parents should be aware about the risks.",
+       "a": [
+        "Parents should be aware of the risks."
+       ],
+       "why": "aware **of**.",
+       "tag": "k3-prep-adj"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-prep2-1",
+       "front": "6 cụm tính từ + giới từ hay dùng nhất",
+       "pattern": "interested **in** · good **at** · responsible **for** · aware **of** · satisfied **with** · different **from**",
+       "example": "I'm *interested in* art and *good at* drawing.",
+       "vi": "Tôi thích nghệ thuật và vẽ giỏi."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2 câu về bản thân, mỗi câu dùng một cụm tính từ + giới từ khác nhau.",
+      "samples": [
+       "I am keen on hiking, but I am afraid of heights.",
+       "My job is very different from my sister's."
+      ],
+      "check": [
+       "Giới từ đúng với tính từ?",
+       "Sau giới từ là danh từ hoặc V-ing?"
+      ],
+      "must": [
+       "\\b(in|at|for|of|about|on|with|from|to)\\b"
+      ],
+      "hint": "Câu cần có cụm tính từ + giới từ"
+     }
+    },
+    {
+     "id": "k3-prep3",
+     "title": "Động từ, danh từ + giới từ; động từ không cần giới từ",
+     "rule": [
+      "Động từ + giới từ: **depend on, focus on, rely on, apply for, deal with, suffer from, participate in, contribute to, belong to, consist of**.",
+      "Danh từ + giới từ: **reason for, increase in, solution to, impact / effect on, access to, demand for, attitude towards**.",
+      "Động từ **không** có giới từ: **discuss, enter, contact, marry, reach, attend, emphasise, lack**: ✗ *discuss about* · ✗ *contact with* · ✗ *enter into the room*.",
+      "Lưu ý: *an increase **in** sales* (tăng về cái gì) nhưng *an increase **of** 10%* (tăng bao nhiêu)."
+     ],
+     "examples": [
+      {
+       "en": "Success *depends on* hard work.",
+       "vi": "Thành công phụ thuộc vào sự chăm chỉ."
+      },
+      {
+       "en": "There is no easy *solution to* this problem.",
+       "vi": "Không có giải pháp dễ cho vấn đề này."
+      },
+      {
+       "en": "Please *contact* me by email.",
+       "vi": "Vui lòng liên hệ tôi qua email."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Pollution has a serious effect ___ health.",
+       "opts": [
+        "on",
+        "to",
+        "for"
+       ],
+       "a": 0,
+       "why": "effect **on**.",
+       "tag": "k3-prep-verb"
+      },
+      {
+       "t": "mc",
+       "q": "We need to ___ the plan before Friday.",
+       "opts": [
+        "discuss",
+        "discuss about",
+        "discuss on"
+       ],
+       "a": 0,
+       "why": "discuss không cần giới từ.",
+       "tag": "k3-no-prep"
+      },
+      {
+       "t": "fill",
+       "q": "Many people suffer ___ stress at work.",
+       "a": [
+        "from"
+       ],
+       "why": "suffer **from**.",
+       "tag": "k3-prep-verb"
+      },
+      {
+       "t": "tf",
+       "q": "She married with a doctor.",
+       "a": false,
+       "why": "marry không cần giới từ.",
+       "tag": "k3-no-prep",
+       "fix": "She married a doctor."
+      },
+      {
+       "t": "fix",
+       "q": "Everyone should contribute for the community.",
+       "a": [
+        "Everyone should contribute to the community."
+       ],
+       "why": "contribute **to**.",
+       "tag": "k3-prep-verb"
+      },
+      {
+       "t": "fix",
+       "q": "The main reason of the problem is cost.",
+       "a": [
+        "The main reason for the problem is cost."
+       ],
+       "why": "reason **for**.",
+       "tag": "k3-prep-verb"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-prep3-1",
+       "front": "8 động từ KHÔNG đi với giới từ",
+       "pattern": "**discuss, enter, contact, marry, reach, attend, emphasise, lack** + tân ngữ trực tiếp",
+       "example": "We *discussed the plan* and *contacted the manager*.",
+       "vi": "Chúng tôi thảo luận kế hoạch và liên hệ quản lý."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu Task 2 với một cụm danh từ + giới từ (effect on, solution to, reason for…) và một câu với discuss / attend / lack.",
+      "samples": [
+       "Fast food has a negative effect on children's health.",
+       "Many rural schools lack qualified teachers."
+      ],
+      "check": [
+       "Giới từ đi đúng với danh từ?",
+       "discuss / attend / lack không có giới từ?"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "k3u3",
+   "no": "3",
+   "title": "Mệnh đề danh ngữ và câu hỏi gián tiếp",
+   "goal": "Câu phức dễ dùng nhất trong Speaking",
+   "lessons": [
+    {
+     "id": "k3-noun1",
+     "title": "Mệnh đề danh ngữ: that, what, whether",
+     "rule": [
+      "Mệnh đề danh ngữ là cả một mệnh đề (S + V) đóng vai một danh từ: làm chủ ngữ, tân ngữ hoặc bổ ngữ.",
+      "**that**: *I think (that) public transport is improving.* · *The problem is that buses are often late.* · *It is clear that…*",
+      "**what / why / how / where / when**: ***What I need** is more practice.* · *I don't know **why he left**.*",
+      "**whether / if**: *I'm not sure **whether I'll go**.*",
+      "Mệnh đề danh ngữ làm chủ ngữ → động từ chính **số ít**: *What he said **was** true.*"
+     ],
+     "examples": [
+      {
+       "en": "*What I like most* is the food.",
+       "vi": "Điều tôi thích nhất là đồ ăn."
+      },
+      {
+       "en": "The problem is *that housing is too expensive*.",
+       "vi": "Vấn đề là nhà ở quá đắt."
+      },
+      {
+       "en": "I'm not sure *whether it will work*.",
+       "vi": "Tôi không chắc liệu nó có hiệu quả không."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "___ I enjoy most about my job is meeting new people.",
+       "opts": [
+        "What",
+        "That",
+        "Which"
+       ],
+       "a": 0,
+       "why": "Điều mà… → **What** + S + V.",
+       "tag": "k3-nounclause"
+      },
+      {
+       "t": "mc",
+       "q": "It is clear ___ technology has changed education.",
+       "opts": [
+        "that",
+        "what",
+        "whether"
+       ],
+       "a": 0,
+       "why": "It is clear **that** + mệnh đề.",
+       "tag": "k3-nounclause"
+      },
+      {
+       "t": "fill",
+       "q": "I can't decide ___ to accept the offer or not.",
+       "a": [
+        "whether"
+       ],
+       "why": "… or not → **whether**.",
+       "tag": "k3-nounclause"
+      },
+      {
+       "t": "tf",
+       "q": "What she said were very helpful.",
+       "a": false,
+       "why": "Mệnh đề danh ngữ làm chủ ngữ → động từ số ít.",
+       "tag": "k3-nounclause",
+       "fix": "What she said was very helpful."
+      },
+      {
+       "t": "fix",
+       "q": "The problem is what many people cannot afford a house.",
+       "a": [
+        "The problem is that many people cannot afford a house."
+       ],
+       "why": "Sau the problem is + mệnh đề đầy đủ → **that**.",
+       "tag": "k3-nounclause"
+      },
+      {
+       "t": "fix",
+       "q": "I don't understand that he means.",
+       "a": [
+        "I don't understand what he means."
+       ],
+       "why": "means thiếu tân ngữ → **what**.",
+       "tag": "k3-nounclause"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-noun1-1",
+       "front": "Mở đầu câu trả lời Speaking bằng 'Điều tôi thích nhất là…'",
+       "pattern": "**What I + V + (most)** + is / was + …",
+       "example": "*What I like most* about my city *is* the street food.",
+       "vi": "Điều tôi thích nhất ở thành phố của tôi là đồ ăn đường phố."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu bắt đầu bằng What I … is … và một câu với The problem is that …",
+      "samples": [
+       "What I enjoy most about weekends is having time to cook.",
+       "The problem is that many young people cannot find stable jobs."
+      ],
+      "check": [
+       "What + S + V làm chủ ngữ, động từ chính số ít?"
+      ],
+      "must": [
+       "\\bwhat\\b|\\bthat\\b|\\bwhether\\b"
+      ],
+      "hint": "Câu cần có What… is… hoặc …is that…"
+     }
+    },
+    {
+     "id": "k3-indirect",
+     "title": "Câu hỏi gián tiếp",
+     "rule": [
+      "Sau cụm mở đầu (*Do you know…, Could you tell me…, I wonder…, I'm not sure…*), trật tự là **S + V**: không đảo, không do / does / did.",
+      "*Where is the station?* → *Do you know where **the station is**?*",
+      "*What time does it start?* → *Could you tell me what time **it starts**?*",
+      "Câu hỏi Yes/No → dùng **if / whether**: *I wonder **if** this seat **is** free.*",
+      "Câu hỏi gián tiếp nghe lịch sự hơn, rất hợp khi hỏi lại giám khảo."
+     ],
+     "examples": [
+      {
+       "en": "Could you tell me *where the library is*?",
+       "vi": "Bạn cho tôi hỏi thư viện ở đâu?"
+      },
+      {
+       "en": "I wonder *why she left* so early.",
+       "vi": "Tôi tự hỏi sao cô ấy về sớm thế."
+      },
+      {
+       "en": "Do you know *if the shop is* open?",
+       "vi": "Bạn có biết cửa hàng có mở không?"
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Do you know what time ___?",
+       "opts": [
+        "the bank opens",
+        "does the bank open",
+        "opens the bank"
+       ],
+       "a": 0,
+       "why": "Câu hỏi gián tiếp: **S + V**, không có does.",
+       "tag": "k3-indirect"
+      },
+      {
+       "t": "mc",
+       "q": "I wonder ___ she got my message.",
+       "opts": [
+        "if",
+        "that",
+        "what"
+       ],
+       "a": 0,
+       "why": "Câu hỏi Yes/No gián tiếp → **if / whether**.",
+       "tag": "k3-indirect"
+      },
+      {
+       "t": "fill",
+       "q": "Could you tell me how much this ___?",
+       "a": [
+        "costs",
+        "is"
+       ],
+       "why": "S + V: this **costs**.",
+       "tag": "k3-indirect",
+       "hint": "cost"
+      },
+      {
+       "t": "tf",
+       "q": "I don't know where does he live.",
+       "a": false,
+       "why": "Không dùng does trong câu hỏi gián tiếp.",
+       "tag": "k3-indirect",
+       "fix": "I don't know where he lives."
+      },
+      {
+       "t": "fix",
+       "q": "Can you tell me where is the nearest bank?",
+       "a": [
+        "Can you tell me where the nearest bank is?"
+       ],
+       "why": "Không đảo: where + S + **is**.",
+       "tag": "k3-indirect"
+      },
+      {
+       "t": "fix",
+       "q": "I'm not sure what did she say.",
+       "a": [
+        "I'm not sure what she said."
+       ],
+       "why": "Bỏ did, động từ về quá khứ: **said**.",
+       "tag": "k3-indirect"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-indirect-1",
+       "front": "Hỏi đường lịch sự",
+       "pattern": "**Could you tell me / Do you know + wh- + S + V?**",
+       "example": "*Could you tell me where the station is?*",
+       "vi": "Bạn cho tôi hỏi nhà ga ở đâu?"
+      }
+     ],
+     "write": {
+      "prompt": "Chuyển thành câu hỏi gián tiếp: 'What time does the museum close?' và 'Is there a bus to the airport?'",
+      "samples": [
+       "Could you tell me what time the museum closes?",
+       "Do you know if there is a bus to the airport?"
+      ],
+      "check": [
+       "Sau từ để hỏi là S + V?",
+       "Không còn do / does / did?"
+      ],
+      "must": [
+       "\\b(tell me|know|wonder|sure|idea)\\b"
+      ],
+      "hint": "Mở đầu bằng Could you tell me / Do you know / I wonder"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k3u4",
+   "no": "4",
+   "title": "Ngữ pháp mô tả xu hướng",
+   "goal": "Writing Task 1: biểu đồ đường, cột, bảng",
+   "lessons": [
+    {
+     "id": "k3-trend1",
+     "title": "Ba cách viết một xu hướng",
+     "rule": [
+      "1. **S + V + trạng từ**: *The number of bus users **rose sharply**.*",
+      "2. **There was + a/an + tính từ + danh từ + in + S**: *There was **a sharp rise in** the number of bus users.*",
+      "3. **Thời gian + saw / experienced + a/an + tính từ + danh từ**: *2020 **saw a dramatic fall in** car sales.*",
+      "Động từ → **trạng từ** (rose sharply); danh từ → **tính từ** (a sharp rise). Không trộn: ✗ *a sharply rise* · ✗ *rose sharp*.",
+      "Từ vựng: increase, rise, grow · decrease, fall, decline, drop · fluctuate · remain stable, level off · peak."
+     ],
+     "examples": [
+      {
+       "en": "Prices *increased steadily* over the period.",
+       "vi": "Giá tăng đều trong giai đoạn này."
+      },
+      {
+       "en": "There was *a slight decrease in* sales.",
+       "vi": "Có một sự giảm nhẹ về doanh số."
+      },
+      {
+       "en": "The 1990s *saw a significant growth in* tourism.",
+       "vi": "Thập niên 1990 chứng kiến du lịch tăng trưởng đáng kể."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The number of visitors fell ___ in 2020.",
+       "opts": [
+        "dramatically",
+        "dramatic",
+        "a dramatic"
+       ],
+       "a": 0,
+       "why": "Bổ nghĩa cho động từ fell → **trạng từ**.",
+       "tag": "k3-trendform"
+      },
+      {
+       "t": "mc",
+       "q": "There was a ___ in unemployment.",
+       "opts": [
+        "gradual decline",
+        "gradually decline",
+        "gradual declined"
+       ],
+       "a": 0,
+       "why": "a + **tính từ + danh từ**.",
+       "tag": "k3-trendform"
+      },
+      {
+       "t": "fill",
+       "q": "Sales remained ___ between March and June.",
+       "a": [
+        "stable",
+        "steady",
+        "constant",
+        "unchanged"
+       ],
+       "why": "remain **stable**.",
+       "tag": "k3-trendform",
+       "hint": "ổn định"
+      },
+      {
+       "t": "tf",
+       "q": "There was a sharply increase in prices.",
+       "a": false,
+       "why": "Trước danh từ dùng tính từ: **sharp**.",
+       "tag": "k3-trendform",
+       "fix": "There was a sharp increase in prices."
+      },
+      {
+       "t": "fix",
+       "q": "The figure rose significant in 2015.",
+       "a": [
+        "The figure rose significantly in 2015."
+       ],
+       "why": "Sau động từ dùng trạng từ: **significantly**.",
+       "tag": "k3-trendform"
+      },
+      {
+       "t": "fix",
+       "q": "The year 2010 saw a steadily growth in exports.",
+       "a": [
+        "The year 2010 saw a steady growth in exports.",
+        "The year 2010 saw steady growth in exports."
+       ],
+       "why": "Trước danh từ growth dùng tính từ: **steady**.",
+       "tag": "k3-trendform"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-trend1-1",
+       "front": "Viết lại 'Sales rose sharply' bằng danh từ",
+       "pattern": "S + **V + adv** ⇄ There was **a/an + adj + N + in** + S",
+       "example": "Sales *rose sharply*. = There was *a sharp rise in* sales.",
+       "vi": "Doanh số tăng mạnh."
+      }
+     ],
+     "write": {
+      "prompt": "Viết cùng một xu hướng theo hai cách: (1) S + V + trạng từ, (2) There was a/an + tính từ + danh từ + in …",
+      "samples": [
+       "The number of students increased gradually. There was a gradual increase in the number of students.",
+       "House prices fell sharply. There was a sharp fall in house prices."
+      ],
+      "check": [
+       "Động từ đi với trạng từ?",
+       "Danh từ đi với tính từ và có in?"
+      ],
+      "must": [
+       "\\bthere (was|were|has been)\\b"
+      ],
+      "hint": "Cần một câu với There was a/an…"
+     }
+    },
+    {
+     "id": "k3-trend2",
+     "title": "Giới từ với số liệu",
+     "rule": [
+      "**rise / fall by** + lượng thay đổi: *rose **by** 10%* (từ 20% lên 30%).",
+      "**rise / fall to** + mức đến: *rose **to** 30%* · **from … to …**: *from 20% to 30%*.",
+      "**stand at** + mức tại một thời điểm: *stood **at** 20% in 2010* · **peak at / reach a peak of**.",
+      "Danh từ: **an increase of** + con số · **an increase in** + đối tượng: *an increase **of** 10% **in** sales*.",
+      "**between** 2010 **and** 2020 · **over** the period · **during** the 1990s."
+     ],
+     "examples": [
+      {
+       "en": "The rate fell *from* 15% *to* 9%.",
+       "vi": "Tỉ lệ giảm từ 15% xuống 9%."
+      },
+      {
+       "en": "Exports peaked *at* 5 million tonnes.",
+       "vi": "Xuất khẩu đạt đỉnh ở 5 triệu tấn."
+      },
+      {
+       "en": "There was a rise *of* 200 *in* the number of staff.",
+       "vi": "Số nhân viên tăng 200 người."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The price rose ___ 5 dollars, from 20 to 25.",
+       "opts": [
+        "by",
+        "to",
+        "at"
+       ],
+       "a": 0,
+       "why": "Lượng thay đổi → **by**.",
+       "tag": "k3-trendprep"
+      },
+      {
+       "t": "mc",
+       "q": "In 2015, the figure stood ___ 40%.",
+       "opts": [
+        "at",
+        "in",
+        "on"
+       ],
+       "a": 0,
+       "why": "stand **at** + mức.",
+       "tag": "k3-trendprep"
+      },
+      {
+       "t": "fill",
+       "q": "There was an increase ___ the number of cars.",
+       "a": [
+        "in"
+       ],
+       "why": "increase **in** + đối tượng.",
+       "tag": "k3-trendprep"
+      },
+      {
+       "t": "tf",
+       "q": "The population rose by 2 million to reach 10 million.",
+       "a": true,
+       "why": "Đúng: by + lượng tăng, to + mức đến.",
+       "tag": "k3-trendprep"
+      },
+      {
+       "t": "fix",
+       "q": "Sales increased from 100 until 150 units.",
+       "a": [
+        "Sales increased from 100 to 150 units."
+       ],
+       "why": "from … **to** …",
+       "tag": "k3-trendprep"
+      },
+      {
+       "t": "fix",
+       "q": "There was a decrease of the number of smokers.",
+       "a": [
+        "There was a decrease in the number of smokers."
+       ],
+       "why": "decrease **in** + đối tượng (of + con số).",
+       "tag": "k3-trendprep"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-trend2-1",
+       "front": "rose by 10% khác rose to 10% thế nào?",
+       "pattern": "**by** + lượng thay đổi · **to** + mức đến · **at** + mức tại một thời điểm",
+       "example": "It rose *by* 10% *to* 30%, then stood *at* 30%.",
+       "vi": "Nó tăng thêm 10% lên 30%, rồi giữ ở mức 30%."
+      }
+     ],
+     "write": {
+      "prompt": "Mô tả một số liệu tăng từ 20% lên 35% trong giai đoạn 2010–2020 bằng 2 câu, dùng from … to … và by.",
+      "samples": [
+       "The figure rose from 20% to 35% between 2010 and 2020. In other words, it increased by 15%.",
+       "There was an increase of 15% in the figure over the period."
+      ],
+      "check": [
+       "by + lượng, to + mức?",
+       "of + con số, in + đối tượng?"
+      ],
+      "must": [
+       "\\b(from|by|to|at|of|in)\\b"
+      ],
+      "hint": "Câu cần có from … to … hoặc by"
+     }
+    },
+    {
+     "id": "k3-trend3",
+     "title": "Ước lượng, tỉ lệ và dự báo",
+     "rule": [
+      "Ước lượng: **approximately, around, nearly, just over, just under** + con số: *just under a third*.",
+      "Tỉ lệ: **account for / make up** + %: *Cars **accounted for** 40% of the total.*",
+      "Đối chiếu: **while / whereas**; **twice as many … as**; **the highest / the lowest**.",
+      "Thì: năm đã qua → **quá khứ đơn**; giai đoạn đến nay → **hiện tại hoàn thành**.",
+      "Dự báo: **is expected / projected / predicted to + V**: *The figure **is expected to reach** 50% by 2030.*"
+     ],
+     "examples": [
+      {
+       "en": "Rent *accounts for* nearly half of their income.",
+       "vi": "Tiền thuê nhà chiếm gần nửa thu nhập của họ."
+      },
+      {
+       "en": "*Just over* a quarter of people cycle to work.",
+       "vi": "Hơn một phần tư số người một chút đi làm bằng xe đạp."
+      },
+      {
+       "en": "The population *is projected to grow* to 110 million.",
+       "vi": "Dân số được dự báo tăng lên 110 triệu."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Food ___ 30% of household spending.",
+       "opts": [
+        "accounted for",
+        "accounted",
+        "was accounted"
+       ],
+       "a": 0,
+       "why": "**account for** + %.",
+       "tag": "k3-trendmore"
+      },
+      {
+       "t": "mc",
+       "q": "The number of users is expected ___ by 2030.",
+       "opts": [
+        "to double",
+        "doubling",
+        "double"
+       ],
+       "a": 0,
+       "why": "is expected **to + V**.",
+       "tag": "k3-trendmore"
+      },
+      {
+       "t": "fill",
+       "q": "___ under half of the students passed. (49%)",
+       "a": [
+        "Just"
+       ],
+       "why": "**Just under** half.",
+       "tag": "k3-trendmore"
+      },
+      {
+       "t": "tf",
+       "q": "In 2010, the figure has been 20%.",
+       "a": false,
+       "why": "Năm đã qua → quá khứ đơn.",
+       "tag": "k3-trendmore",
+       "fix": "In 2010, the figure was 20%."
+      },
+      {
+       "t": "fix",
+       "q": "Sales are predicted reaching 5 million next year.",
+       "a": [
+        "Sales are predicted to reach 5 million next year."
+       ],
+       "why": "are predicted **to reach**.",
+       "tag": "k3-trendmore"
+      },
+      {
+       "t": "fix",
+       "q": "Men made 60% of the workforce.",
+       "a": [
+        "Men made up 60% of the workforce.",
+        "Men accounted for 60% of the workforce."
+       ],
+       "why": "Chiếm tỉ lệ → **made up / accounted for**.",
+       "tag": "k3-trendmore"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-trend3-1",
+       "front": "Viết một dự báo trong Task 1",
+       "pattern": "S + **is expected / projected / predicted to** + V + by + năm",
+       "example": "The figure *is expected to rise* to 60% *by 2030*.",
+       "vi": "Số liệu được dự báo tăng lên 60% vào năm 2030."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2 câu Task 1: một câu về tỉ lệ (accounted for / made up), một câu dự báo (is expected to…).",
+      "samples": [
+       "In 2020, online sales accounted for around a third of the total.",
+       "This figure is expected to reach 50% by 2030."
+      ],
+      "check": [
+       "account for + %?",
+       "is expected to + V nguyên mẫu?"
+      ],
+      "must": [
+       "\\b(accounted for|accounts for|account for|made up|make up|makes up|expected to|projected to|predicted to)\\b"
+      ],
+      "hint": "Câu cần có accounted for hoặc is expected to"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k3u5",
+   "no": "5",
+   "title": "Ranh giới câu và dấu câu",
+   "goal": "Writing: không mất điểm vì câu nối sai",
+   "lessons": [
+    {
+     "id": "k3-punct1",
+     "title": "Mỗi câu một mệnh đề chính",
+     "rule": [
+      "Mỗi câu cần ít nhất một **mệnh đề chính** (S + V).",
+      "Hai mệnh đề độc lập **không** nối chỉ bằng dấu phẩy: ✗ *I like my job, it is interesting.*",
+      "Ba cách sửa: thêm **liên từ** (*because, and, but, so*); dùng **dấu chấm**; hoặc dùng **dấu chấm phẩy**.",
+      "Mệnh đề bắt đầu bằng *because, although, when, if* không đứng một mình: ✗ *Because the traffic is bad.*",
+      "**However** không nối hai câu bằng dấu phẩy: ✓ *I like it. However, it is expensive.*"
+     ],
+     "examples": [
+      {
+       "en": "I like my job *because* it is interesting.",
+       "vi": "Tôi thích công việc của mình vì nó thú vị."
+      },
+      {
+       "en": "The bus was late*, so* I missed the meeting.",
+       "vi": "Xe buýt trễ nên tôi lỡ cuộc họp."
+      },
+      {
+       "en": "I leave early *because the traffic is bad*.",
+       "vi": "Tôi đi sớm vì giao thông tệ."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Chọn câu đúng:",
+       "opts": [
+        "The city is crowded, but I like living here.",
+        "The city is crowded, I like living here.",
+        "The city is crowded, however I like living here."
+       ],
+       "a": 0,
+       "why": "Hai mệnh đề cần liên từ (but), không chỉ dấu phẩy.",
+       "tag": "k3-splice"
+      },
+      {
+       "t": "mc",
+       "q": "Chọn câu hoàn chỉnh:",
+       "opts": [
+        "Although it was late, we continued working.",
+        "Although it was late.",
+        "Because of we were tired."
+       ],
+       "a": 0,
+       "why": "Câu cần có mệnh đề chính.",
+       "tag": "k3-splice"
+      },
+      {
+       "t": "tf",
+       "q": "Because the rent is too high.",
+       "a": false,
+       "why": "Chỉ có mệnh đề phụ, thiếu mệnh đề chính.",
+       "tag": "k3-splice",
+       "fix": "Many people share flats because the rent is too high."
+      },
+      {
+       "t": "tf",
+       "q": "Online shopping is convenient; it saves a lot of time.",
+       "a": true,
+       "why": "Đúng: dấu chấm phẩy nối hai mệnh đề độc lập có liên quan.",
+       "tag": "k3-splice"
+      },
+      {
+       "t": "fix",
+       "q": "I enjoy cooking, it helps me relax.",
+       "a": [
+        "I enjoy cooking because it helps me relax.",
+        "I enjoy cooking. It helps me relax.",
+        "I enjoy cooking; it helps me relax.",
+        "I enjoy cooking, and it helps me relax.",
+        "I enjoy cooking as it helps me relax."
+       ],
+       "why": "Không nối hai câu chỉ bằng dấu phẩy.",
+       "tag": "k3-splice",
+       "strict": true
+      },
+      {
+       "t": "fix",
+       "q": "The film was long, however it was interesting.",
+       "a": [
+        "The film was long. However, it was interesting.",
+        "The film was long; however, it was interesting.",
+        "The film was long, but it was interesting."
+       ],
+       "why": "However mở đầu câu mới (hoặc sau dấu chấm phẩy), có dấu phẩy theo sau.",
+       "tag": "k3-splice",
+       "strict": true
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-punct1-1",
+       "front": "Ba cách sửa lỗi nối hai câu bằng dấu phẩy",
+       "pattern": "Thêm **liên từ** · dùng **dấu chấm** · dùng **dấu chấm phẩy**",
+       "example": "I like tea*, but* my wife prefers coffee.",
+       "vi": "Tôi thích trà, nhưng vợ tôi thích cà phê hơn."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 3 câu về nơi bạn sống. Mỗi câu phải có mệnh đề chính; nếu nối hai ý thì dùng liên từ hoặc dấu chấm.",
+      "samples": [
+       "My neighbourhood is quiet, so I can sleep well. However, it is far from the city centre. I usually take the bus because parking is expensive.",
+       "I live in a small flat. It is close to a park, and I walk there every evening."
+      ],
+      "check": [
+       "Mỗi câu có S + V chính?",
+       "Không có hai câu nối chỉ bằng dấu phẩy?"
+      ]
+     }
+    },
+    {
+     "id": "k3-punct2",
+     "title": "Dấu phẩy, it's / its và viết hoa",
+     "rule": [
+      "Dấu phẩy **sau** mệnh đề hoặc cụm đứng đầu câu: *If I have time, I will call you.* Đảo về sau thì không cần: *I will call you if I have time.*",
+      "Dấu phẩy sau trạng từ nối đầu câu: *However, … · In addition, … · For example, …*",
+      "Dấu phẩy trước *and / but / so* khi nối hai mệnh đề dài.",
+      "**Không** đặt dấu phẩy giữa chủ ngữ và động từ: ✗ *The number of cars, increased.*",
+      "**it's** = it is / it has · **its** = của nó. Viết hoa: thứ, tháng, ngôn ngữ, quốc tịch (*Monday, June, English, Vietnamese*)."
+     ],
+     "examples": [
+      {
+       "en": "*When I was young,* I lived by the sea.",
+       "vi": "Khi còn nhỏ, tôi sống gần biển."
+      },
+      {
+       "en": "The company changed *its* logo.",
+       "vi": "Công ty đã đổi logo của mình."
+      },
+      {
+       "en": "*It's* difficult to learn a language quickly.",
+       "vi": "Học nhanh một ngôn ngữ rất khó."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Chọn câu đúng:",
+       "opts": [
+        "The city has its own airport.",
+        "The city has it's own airport.",
+        "The city has its' own airport."
+       ],
+       "a": 0,
+       "why": "Sở hữu → **its** (không có dấu nháy).",
+       "tag": "k3-comma"
+      },
+      {
+       "t": "mc",
+       "q": "Chọn câu đúng:",
+       "opts": [
+        "If it rains, we will stay at home.",
+        "If it rains we, will stay at home.",
+        "If, it rains we will stay at home."
+       ],
+       "a": 0,
+       "why": "Dấu phẩy sau mệnh đề if đứng đầu câu.",
+       "tag": "k3-comma"
+      },
+      {
+       "t": "tf",
+       "q": "The number of tourists, increased last year.",
+       "a": false,
+       "why": "Không đặt dấu phẩy giữa chủ ngữ và động từ.",
+       "tag": "k3-comma",
+       "fix": "The number of tourists increased last year."
+      },
+      {
+       "t": "tf",
+       "q": "I started learning english in june.",
+       "a": false,
+       "why": "Viết hoa tên ngôn ngữ và tháng.",
+       "tag": "k3-comma",
+       "fix": "I started learning English in June."
+      },
+      {
+       "t": "fix",
+       "q": "Its important to protect the environment.",
+       "a": [
+        "It's important to protect the environment.",
+        "It is important to protect the environment."
+       ],
+       "why": "It is → **It's** (có dấu nháy).",
+       "tag": "k3-comma",
+       "strict": true
+      },
+      {
+       "t": "fix",
+       "q": "In addition public transport is cheaper.",
+       "a": [
+        "In addition, public transport is cheaper."
+       ],
+       "why": "Sau trạng từ nối đầu câu cần dấu phẩy.",
+       "tag": "k3-comma",
+       "strict": true
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-punct2-1",
+       "front": "it's hay its?",
+       "pattern": "**it's** = it is / it has · **its** = của nó",
+       "example": "*It's* a small town, but *its* market is famous.",
+       "vi": "Đó là thị trấn nhỏ, nhưng chợ của nó nổi tiếng."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2 câu: một câu bắt đầu bằng mệnh đề When / If / Although (có dấu phẩy), một câu có cả it's và its.",
+      "samples": [
+       "Although the city is small, its nightlife is lively.",
+       "It's a quiet place, and its beaches are clean."
+      ],
+      "check": [
+       "Dấu phẩy sau mệnh đề đầu câu?",
+       "it's = it is; its = của nó?"
+      ]
+     }
+    },
+    {
+     "id": "k3-review",
+     "title": "Ôn tập khoá 6.5",
+     "rule": [
+      "Bài này trộn các điểm của cả khoá: modal, giới từ, mệnh đề danh ngữ, ngữ pháp xu hướng và dấu câu.",
+      "Trước khi nộp bài Writing, dò ba thứ: **mỗi câu có mệnh đề chính · giới từ sau số liệu · modal + V nguyên mẫu**."
+     ],
+     "examples": [
+      {
+       "en": "Sales rose *by* 10% *to* 50 million.",
+       "vi": "Doanh số tăng 10% lên 50 triệu."
+      },
+      {
+       "en": "I *should have checked* my essay.",
+       "vi": "Lẽ ra tôi nên kiểm tra lại bài luận."
+      },
+      {
+       "en": "*What matters most* is accuracy.",
+       "vi": "Điều quan trọng nhất là sự chính xác."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "There was a ___ in the number of visitors.",
+       "opts": [
+        "significant rise",
+        "significantly rise",
+        "significant rose"
+       ],
+       "a": 0,
+       "why": "a + tính từ + danh từ.",
+       "tag": "k3-trendform"
+      },
+      {
+       "t": "mc",
+       "q": "Could you tell me where ___?",
+       "opts": [
+        "the exit is",
+        "is the exit",
+        "does the exit"
+       ],
+       "a": 0,
+       "why": "Câu hỏi gián tiếp: S + V.",
+       "tag": "k3-indirect"
+      },
+      {
+       "t": "tf",
+       "q": "We discussed about the results in the meeting.",
+       "a": false,
+       "why": "discuss không cần giới từ.",
+       "tag": "k3-no-prep",
+       "fix": "We discussed the results in the meeting."
+      },
+      {
+       "t": "tf",
+       "q": "He must have left early; his desk is empty.",
+       "a": true,
+       "why": "Đúng: must have + V3 để suy đoán về quá khứ.",
+       "tag": "k3-modalperf"
+      },
+      {
+       "t": "fix",
+       "q": "The rate fell with 5% in 2019.",
+       "a": [
+        "The rate fell by 5% in 2019."
+       ],
+       "why": "Lượng thay đổi → **by**.",
+       "tag": "k3-trendprep"
+      },
+      {
+       "t": "fix",
+       "q": "She is responsible of training new staff.",
+       "a": [
+        "She is responsible for training new staff.",
+        "She's responsible for training new staff."
+       ],
+       "why": "responsible **for**.",
+       "tag": "k3-prep-adj"
+      },
+      {
+       "t": "fix",
+       "q": "You don't must pay; entry is free.",
+       "a": [
+        "You don't have to pay; entry is free.",
+        "You don't have to pay. Entry is free."
+       ],
+       "why": "Không cần → **don't have to**.",
+       "tag": "k3-modal"
+      },
+      {
+       "t": "fix",
+       "q": "I like the area, it is close to my office.",
+       "a": [
+        "I like the area because it is close to my office.",
+        "I like the area. It is close to my office.",
+        "I like the area; it is close to my office.",
+        "I like the area, and it is close to my office.",
+        "I like the area as it is close to my office."
+       ],
+       "why": "Không nối hai câu chỉ bằng dấu phẩy.",
+       "tag": "k3-splice",
+       "strict": true
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-review-1",
+       "front": "3 thứ cần dò trước khi nộp bài Writing",
+       "pattern": "**Mệnh đề chính** ở mỗi câu · **giới từ** sau số liệu · **modal + V**",
+       "example": "The figure rose *by* 5%*, and* it *may continue* to grow.",
+       "vi": "Số liệu tăng 5% và có thể tiếp tục tăng."
+      }
+     ],
+     "write": {
+      "prompt": "Viết đoạn Task 1 gồm 3 câu mô tả một số liệu tăng rồi giảm, có ít nhất một giới từ số liệu và một câu There was a/an…",
+      "samples": [
+       "The number of visitors rose from 2 million to 3 million between 2010 and 2015. There was then a sharp fall in 2020. The figure is expected to recover by 2026."
+      ],
+      "check": [
+       "by / to / from … to đúng nghĩa?",
+       "Mỗi câu có mệnh đề chính?"
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -3705,7 +3705,8 @@
         "He was ill. Therefore, he stayed at home."
        ],
        "why": "Sau Therefore đầu câu cần dấu phẩy.",
-       "tag": "k2-linkpunct"
+       "tag": "k2-linkpunct",
+       "strict": true
       }
      ],
      "cards": [

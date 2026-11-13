@@ -48,7 +48,7 @@ export function homeView() {
           <button class="btn soft" data-act="seed">Nạp 20 từ mẫu</button>
           <button class="btn ghost" data-act="go" data-to="#/settings">Import CSV / Excel</button>
         </div></div>
-      <button class="listlink" data-act="go" data-to="#/grammar" style="margin-top:12px"><span class="lead">${icon('learn')}</span><span class="body"><b>Học ngữ pháp</b><small>2 khoá: Nền tảng và IELTS Core, bài ngắn 8–12 phút</small></span>${icon('chev')}</button></div>`;
+      <button class="listlink" data-act="go" data-to="#/grammar" style="margin-top:12px"><span class="lead">${icon('learn')}</span><span class="body"><b>Học ngữ pháp</b><small>3 khoá từ A1 đến band 6.5, bài ngắn 8–12 phút</small></span>${icon('chev')}</button></div>`;
   }
 
   const day = dayOf();

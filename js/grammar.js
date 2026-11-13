@@ -11,7 +11,7 @@ const voice = () => ({ lang: S.settings.voice, rate: S.settings.rate, name: S.se
 export const COURSES = [
   { id: 'c1', title: 'Nền tảng', level: 'A1–A2', file: 'content/grammar/course1.json' },
   { id: 'c2', title: 'IELTS Core', level: 'Band 4.5–6.0', file: 'content/grammar/course2.json' },
-  { id: 'c3', title: 'IELTS 6.5 Booster', level: 'Band 6.0–6.5', soon: true },
+  { id: 'c3', title: 'IELTS 6.5 Booster', level: 'Band 6.0–6.5', file: 'content/grammar/course3.json' },
   { id: 'c4', title: 'IELTS 7.0 Advanced', level: 'Band 6.5 → 7.0', soon: true },
 ];
 const BANDS = ['Nền tảng', 'IELTS Core', 'IELTS 6.5', 'IELTS 7.0'];
@@ -121,6 +121,8 @@ function ruleHtml(lines) {
   }
   return out + (list ? '</ul>' : '');
 }
+// So sánh có tính dấu câu: chỉ bỏ qua hoa/thường, khoảng trắng thừa, kiểu dấu nháy và dấu chấm cuối câu.
+const strictNorm = (s) => String(s ?? '').toLowerCase().normalize('NFKC').replace(/[’‘]/g, "'").replace(/\s+/g, ' ').replace(/\s+([.,;:!?])/g, '$1').trim().replace(/[.!?]+$/, '');
 const speakBtn = (text, cls = '') => `<button class="speakbtn ${cls}" data-act="g-speak" data-text="${esc(text)}" aria-label="Nghe">${icon('speaker')}</button>`;
 on('g-speak', (el) => speak(el.dataset.text, voice()));
 
@@ -322,7 +324,11 @@ on('gl-check', () => {
   const value = (input?.value || '').trim();
   if (!value) { toast('Hãy nhập câu trả lời trước'); input?.focus(); return; }
   st.input = value;
-  grade(st.it.a.some((a) => norm(a) === norm(value)));
+  // Câu sửa dấu câu ("strict") được so cả dấu câu; các câu khác bỏ qua hoa/thường, dấu câu, khoảng trắng.
+  const nz = st.it.strict ? strictNorm : norm;
+  // Bài sửa lỗi: để nguyên câu gốc thì luôn tính là chưa sửa.
+  const untouched = st.it.t === 'fix' && strictNorm(value) === strictNorm(st.it.q);
+  grade(!untouched && st.it.a.some((a) => nz(a) === nz(value)));
 });
 on('gl-write', () => {
   const ta = document.querySelector('#gl-write');

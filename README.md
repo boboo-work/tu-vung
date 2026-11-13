@@ -42,9 +42,9 @@ Khi sửa mã và phát hành lại, tăng `VERSION` trong `sw.js`.
 
 ## Ngữ pháp
 
-Tab **Học** có công tắc *Từ vựng | Ngữ pháp*. Hiện có 2 khoá: **Nền tảng** (A1–A2, 9 unit, 33 bài) và **IELTS Core** (band 4.5–6.0, 10 unit, 34 bài); mỗi bài 6 bước: khởi động → quy tắc → ví dụ → luyện tập → sửa lỗi → tự đặt câu. Mỗi bài tạo thẻ mẫu câu ôn bằng cùng thuật toán với từ vựng; câu sai được ghi vào **Sổ lỗi** theo loại lỗi. Có bài kiểm tra đầu vào 30 câu để biết nên bắt đầu từ đâu.
+Tab **Học** có công tắc *Từ vựng | Ngữ pháp*. Hiện có 3 khoá: **Nền tảng** (A1–A2, 9 unit, 33 bài), **IELTS Core** (band 4.5–6.0, 10 unit, 34 bài) và **IELTS 6.5 Booster** (band 6.0–6.5, 5 unit, 14 bài); mỗi bài 6 bước: khởi động → quy tắc → ví dụ → luyện tập → sửa lỗi → tự đặt câu. Mỗi bài tạo thẻ mẫu câu ôn bằng cùng thuật toán với từ vựng; câu sai được ghi vào **Sổ lỗi** theo loại lỗi. Có bài kiểm tra đầu vào 30 câu để biết nên bắt đầu từ đâu.
 
-Nội dung nằm ở `content/grammar/*.json` (dữ liệu, không phải code). Mỗi bài: `rule` (dòng quy tắc, hỗ trợ `**đậm**`, `*nghiêng*`), `examples`, `items` (dạng `mc` chọn đáp án, `fill` điền chỗ trống `___`, `tf` đúng/sai, `fix` sửa câu; mỗi câu có `why` và nhãn lỗi `tag`), `cards` (thẻ mẫu câu), `write` (đề tự đặt câu + câu mẫu). Thêm bài mới hoặc khoá mới chỉ cần thêm dữ liệu; khi phát hành nhớ tăng `VERSION` trong `sw.js`.
+Nội dung nằm ở `content/grammar/*.json` (dữ liệu, không phải code). Mỗi bài: `rule` (dòng quy tắc, hỗ trợ `**đậm**`, `*nghiêng*`), `examples`, `items` (dạng `mc` chọn đáp án, `fill` điền chỗ trống `___`, `tf` đúng/sai, `fix` sửa câu, thêm `"strict": true` nếu đáp án chỉ khác câu gốc ở dấu câu; mỗi câu có `why` và nhãn lỗi `tag`), `cards` (thẻ mẫu câu), `write` (đề tự đặt câu + câu mẫu). Thêm bài mới hoặc khoá mới chỉ cần thêm dữ liệu; khi phát hành nhớ tăng `VERSION` trong `sw.js`.
 
 ## Thuật toán ôn tập
 
