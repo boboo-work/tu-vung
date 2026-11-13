@@ -1,7 +1,7 @@
 // Service worker: lưu sẵn toàn bộ app để chạy offline.
 // Chiến lược: ưu tiên mạng (luôn nhận bản mới khi online), rớt mạng hoặc quá 3 giây thì dùng bản đã lưu.
 // Khi phát hành bản mới, tăng VERSION để dọn cache cũ.
-const VERSION = 'v25';
+const VERSION = 'v26';
 const CACHE = `tu-vung-${VERSION}`;
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './css/app.css',

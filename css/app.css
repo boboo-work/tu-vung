@@ -748,3 +748,23 @@ ul.checks li + li { margin-top: 4px; }
 .wchart .cl { font-size: 11px; fill: var(--text); font-weight: 600; font-family: var(--sans); }
 .chart-legend { margin-top: 6px; }
 .chart-table { margin-top: 4px; }
+
+/* Writing cả bài: đồng hồ, dàn ý, gợi ý từ */
+.w-timer { font-size: 15px; font-weight: 700; min-width: 56px; text-align: right; padding-right: 8px; font-variant-numeric: tabular-nums; color: var(--text-2); }
+.w-timer.low { color: var(--amber); }
+.w-timer.over { color: var(--red); }
+.w-plantime { font-size: 13px; font-weight: 600; color: var(--text-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.w-plantime.over { color: var(--amber); }
+.w-plan { display: block; margin-top: 12px; }
+.w-plan span { display: block; font-size: 13.5px; font-weight: 650; color: var(--text-2); margin: 0 2px 6px; }
+.w-plan textarea { width: 100%; resize: vertical; min-height: 64px; }
+.w-plansum { margin-top: 10px; padding: 12px 14px; }
+.w-plansum summary { font-weight: 650; cursor: pointer; }
+.w-plansum dl { margin: 8px 0 0; }
+.w-plansum dt { font-size: 12.5px; color: var(--text-3); margin-top: 6px; }
+.w-plansum dd { margin: 2px 0 0; overflow-wrap: anywhere; }
+.w-vocab { margin-top: 14px; }
+.w-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.w-chip { border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 14px; cursor: pointer; }
+.w-chip.used { background: var(--green-soft, rgba(52,168,83,.12)); border-color: var(--green); color: var(--green); }
+.w-chip.used::before { content: '✓ '; }

@@ -434,7 +434,8 @@ export function validateBackup(data) {
 // Bài viết trong file sao lưu: giữ đúng kiểu, cắt độ dài, bỏ trường lạ.
 const W_ID = /^[A-Za-z0-9_:-]{1,80}$/;
 function cleanWriting(w) {
-  if (!w || typeof w !== 'object' || !W_ID.test(str(w.id)) || !['part', 'task1'].includes(w.kind)) return null;
+  if (!w || typeof w !== 'object' || !W_ID.test(str(w.id)) || !['part', 'task1', 'essay'].includes(w.kind)) return null;
+  const pl = w.plan && typeof w.plan === 'object' ? w.plan : null;
   const r = w.report && typeof w.report === 'object' ? w.report : {};
   const nums = (o) => Object.fromEntries(Object.entries(o && typeof o === 'object' ? o : {}).filter(([, v]) => Number.isFinite(Number(v))).map(([k, v]) => [str(k).slice(0, 30), Number(v)]).slice(0, 30));
   return {
@@ -448,6 +449,8 @@ function cleanWriting(w) {
       checks: (Array.isArray(r.checks) ? r.checks : []).filter((c) => c && typeof c === 'object').map((c) => ({ ok: c.ok === true ? true : c.ok === false ? false : null, msg: str(c.msg).slice(0, 300) })).slice(0, 60),
     },
     self: Object.fromEntries(Object.entries(w.self && typeof w.self === 'object' ? w.self : {}).map(([k, v]) => [str(k).slice(0, 30), !!v]).slice(0, 30)),
+    plan: pl ? Object.fromEntries(['view', 'p1', 'p2', 'ex'].map((k) => [k, str(pl[k]).slice(0, 1000)])) : null,
+    used: (Array.isArray(w.used) ? w.used : []).map((x) => str(x).slice(0, 80)).slice(0, 20),
   };
 }
 const G_ID = /^(?:[LCE]:[A-Za-z0-9_-]{1,64}|placement)$/;

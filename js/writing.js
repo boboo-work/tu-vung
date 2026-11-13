@@ -1,7 +1,7 @@
 // Luyện Writing: Task 2 theo đoạn và Task 1 với biểu đồ tự sinh.
 // Phản hồi không dùng AI: thống kê (đếm), đối chiếu số liệu (Task 1, app biết số liệu gốc),
 // dò lỗi theo mẫu (luật trong content/writing/rules.json, chỉ là gợi ý), bài mẫu và tự chấm.
-import { S, wPut, wDel, essays, logGrammarDay, dayOf, saveWord, findByText, blankWord } from './store.js';
+import { S, wPut, wDel, essays, logGrammarDay, dayOf, saveWord, findByText, blankWord, recordAnswer } from './store.js';
 import { esc, toast, today, uid } from './util.js';
 import { icon, on, go, back, replace, rerender, navBar, learnSwitch, confirmSheet } from './ui.js';
 import { G as GR, logGrammarError } from './grammar.js';
@@ -114,6 +114,81 @@ function partChecks(prompt, part, text) {
   if (part.id === 'concl') c.push(CONCLUDE.test(text) ? { ok: true, msg: 'Mở đầu bằng cụm kết luận.' } : { ok: false, msg: 'Nên mở đầu bằng In conclusion / To sum up…' });
   return c;
 }
+
+// ================= TASK 2 CẢ BÀI =================
+export const ESSAY = { min: 250, max: 320, ms: 40 * 60e3, planMs: 5 * 60e3 };
+// Câu hỏi tự chấm, xếp theo 4 tiêu chí chấm IELTS.
+const ESSAY_SELF = [
+  ['Task Response', 'Bài trả lời đủ mọi phần của đề, không bỏ sót vế nào?'],
+  ['Task Response', 'Quan điểm rõ ngay mở bài và giữ nhất quán đến kết bài?'],
+  ['Task Response', 'Mỗi ý chính đều có giải thích và ví dụ cụ thể?'],
+  ['Coherence & Cohesion', 'Mỗi đoạn thân bài chỉ có một ý chính, nêu ở câu đầu đoạn?'],
+  ['Coherence & Cohesion', 'Từ nối dùng tự nhiên, không lặp đi lặp lại một từ?'],
+  ['Lexical Resource', 'Diễn đạt lại ý của đề bằng từ của mình, ít lặp từ?'],
+  ['Lexical Resource', 'Dùng được vài từ hoặc cụm từ đúng chủ đề (kể cả từ trong kho)?'],
+  ['Grammatical Range & Accuracy', 'Có cả câu đơn và câu phức, không câu nào quá dài khó hiểu?'],
+  ['Grammatical Range & Accuracy', 'Đã đọc lại để sửa chia động từ, mạo từ, số nhiều?'],
+];
+const essayParas = (t) => paragraphsOf(t);
+
+export function essayChecks(prompt, text, ms) {
+  const c = [];
+  const n = countWords(text);
+  c.push(n < ESSAY.min ? { ok: false, msg: `Chưa đủ ${ESSAY.min} từ (${n} từ). Bài dưới 250 từ bị trừ điểm.` }
+    : n > ESSAY.max ? { ok: null, msg: `${n} từ, hơi dài. Viết dài không được thêm điểm mà dễ thiếu giờ đọc lại.` }
+    : { ok: true, msg: `Độ dài phù hợp (${n} từ).` });
+  const ps = essayParas(text);
+  c.push(ps.length >= 4 && ps.length <= 5 ? { ok: true, msg: `Chia ${ps.length} đoạn rõ ràng.` }
+    : { ok: false, msg: ps.length < 4 ? `Mới có ${ps.length} đoạn. Nên có mở bài, 2 đoạn thân bài, kết bài (xuống dòng giữa các đoạn).` : `${ps.length} đoạn là nhiều. Nên gộp lại thành 4–5 đoạn.` });
+  if (!ps.length) return c;
+  const intro = ps[0], concl = ps.length > 1 ? ps[ps.length - 1] : '', bodies = ps.slice(1, -1);
+  const t = W.types[prompt.type];
+  c.push(new RegExp(t.thesis, 'i').test(intro) ? { ok: true, msg: 'Mở bài có câu trả lời cho dạng đề này.' } : { ok: false, msg: `Mở bài chưa nêu rõ câu trả lời. ${t.hint}.` });
+  const cp = copiedPhrases(intro, prompt.q);
+  c.push(cp.length ? { ok: false, msg: `Mở bài còn chép nguyên cụm của đề: “${cp.slice(0, 2).join('”, “')}”.` } : { ok: true, msg: 'Mở bài không chép nguyên cụm 4 từ nào của đề.' });
+  if (bodies.length) {
+    // Chỉ dò được ví dụ có từ báo hiệu; ví dụ ngầm thì người viết tự đánh giá ở bước tự chấm.
+    const withEx = bodies.filter((b) => EXAMPLE.test(b) || /\b(in countries where|in many (?:countries|cities|places|areas)|a good example)\b/i.test(b)).length;
+    c.push(withEx ? { ok: true, msg: `Có ví dụ rõ ràng ở ${withEx}/${bodies.length} đoạn thân bài.` } : { ok: null, msg: 'Chưa thấy ví dụ có từ báo hiệu (for example, such as…). Mỗi đoạn thân bài nên có một ví dụ cụ thể.' });
+  }
+  const st = textStats(text);
+  c.push(st.linkers >= 3 ? { ok: true, msg: `Dùng ${st.linkers} từ nối khác nhau.` } : { ok: null, msg: `Mới dùng ${st.linkers} từ nối khác nhau; nên có ít nhất 3–4.` });
+  c.push(CONCLUDE.test(concl) ? { ok: true, msg: 'Đoạn cuối mở đầu bằng cụm kết luận.' } : { ok: false, msg: 'Đoạn cuối nên mở đầu bằng In conclusion / To sum up…' });
+  const min = Math.round(ms / 60e3);
+  c.push(ms <= ESSAY.ms ? { ok: true, msg: `Xong trong ${min} phút (giới hạn 40).` } : { ok: null, msg: `Mất ${min} phút, quá giờ ${min - 40} phút. Thi thật sẽ không kịp viết hết.` });
+  return c;
+}
+
+// ================= GỢI Ý TỪ TRONG KHO =================
+const reEsc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+/** Biểu thức bắt cả dạng biến đổi của từ (economy → economic, reduce → reducing). */
+export function wordRe(word) {
+  const toks = String(word).toLowerCase().match(/[a-z]+(?:['’-][a-z]+)*/g) || [];
+  if (!toks.length || toks.length > 4 || !toks.some((x) => x.length >= 4 && !STOP.has(x))) return null;
+  const parts = toks.map((x) => (STOP.has(x) || x.length < 4 ? reEsc(x) : reEsc(x.length > 5 ? x.replace(/(ing|ed|es|e|y|s)$/, '') : x.replace(/e$/, '')) + '[a-z]*'));
+  return new RegExp(`\\b${parts.join('[\\s-]+')}\\b`, 'i');
+}
+/** Từ trong kho hợp với đề: xuất hiện trong bài mẫu (đúng chủ đề) hoặc trong đề; ưu tiên từ đã học. */
+export function suggestWords(prompt, limit = 6) {
+  const model = Object.values(prompt.model).join(' ');
+  const out = [];
+  for (const w of S.words.values()) {
+    const word = String(w.word || '').trim();
+    const re = word && wordRe(word);
+    if (!re) continue;
+    let sc = (re.test(model) ? 3 : 0) + (re.test(prompt.q) ? 1 : 0);
+    if (!sc) continue;
+    if (w.srs && w.srs.state !== 'new') sc += 1;
+    out.push({ id: w.id, word, meaning: String(w.meaning || '').slice(0, 60), re: re.source, sc });
+  }
+  return out.sort((a, b) => b.sc - a.sc || a.word.length - b.word.length).slice(0, limit);
+}
+const usedWords = (list, text) => (list || []).filter((x) => new RegExp(x.re, 'i').test(text));
+function vocabHtml(list, text) {
+  if (!list?.length) return '';
+  return `<div class="w-vocab"><p class="small muted">Từ trong kho hợp với đề, thử dùng (chạm để xem nghĩa):</p><div class="w-chips">${list.map((x) => `<button type="button" class="w-chip ${new RegExp(x.re, 'i').test(text) ? 'used' : ''}" data-re="${esc(x.re)}" data-act="w-chip" data-m="${esc(x.meaning)}">${esc(x.word)}</button>`).join('')}</div></div>`;
+}
+on('w-chip', (el) => toast(el.dataset.m ? `${el.textContent}: ${el.dataset.m}` : el.textContent));
 
 // ================= TASK 1: SINH BIỂU ĐỒ =================
 function rng(seed) {
@@ -364,26 +439,97 @@ export function chartSvg(ch, highlight = -1) {
 // ================= TRẠNG THÁI =================
 const partDone = (pid, part) => essays().find((e) => e.kind === 'part' && e.promptId === pid && e.part === part);
 export const todayWriting = () => (dayOf().wEssays || []).length;
+const essayDone = (pid) => essays().filter((e) => e.kind === 'essay' && e.promptId === pid);
+function interleaved() {
+  const byType = Object.keys(W.types).map((t) => W.order.filter((id) => W.prompts.get(id).type === t));
+  const out = [];
+  for (let i = 0; i < 6; i++) byType.forEach((list) => list[i] && out.push(list[i]));
+  return out;
+}
 /** Gợi ý bài kế tiếp: lần lượt từng đề, từng phần; các dạng đề xen kẽ nhau. */
 export function nextPart() {
   if (W.state !== 'ready') return null;
-  const byType = Object.keys(W.types).map((t) => W.order.filter((id) => W.prompts.get(id).type === t));
-  const interleaved = [];
-  for (let i = 0; i < 6; i++) byType.forEach((list) => list[i] && interleaved.push(list[i]));
-  for (const id of interleaved) for (const p of W.parts) if (!partDone(id, p.id)) return { prompt: W.prompts.get(id), part: p };
+  for (const id of interleaved()) for (const p of W.parts) if (!partDone(id, p.id)) return { prompt: W.prompts.get(id), part: p };
   return null;
+}
+/** Đề kế tiếp để viết cả bài: ưu tiên đề đã luyện đủ 5 phần, rồi tới đề chưa viết cả bài. */
+export function nextEssay() {
+  if (W.state !== 'ready') return null;
+  const ids = interleaved().filter((id) => !essayDone(id).length);
+  const id = ids.find((x) => W.parts.every((p) => partDone(x, p.id))) || ids[0];
+  return id ? W.prompts.get(id) : null;
 }
 
 let ws = null;
 let saveTimer = null;
 
+let saveSnap = null;
+let tick = null;
+
 function startPart(promptId, partId) {
   const prompt = W.prompts.get(promptId), part = W.parts.find((p) => p.id === partId);
   if (!prompt || !part) return toast('Không tìm thấy đề này');
   const key = `draft:${promptId}:${partId}`;
-  ws = { kind: 'part', prompt, part, key, text: S.writing.get(key)?.text || '', stage: 'write', startedAt: Date.now(), self: {} };
+  ws = { kind: 'part', prompt, part, key, text: S.writing.get(key)?.text || '', stage: 'write', startedAt: Date.now(), self: {}, vocab: suggestWords(prompt, 5) };
   go('#/wwrite');
 }
+function startEssay(promptId) {
+  const prompt = W.prompts.get(promptId);
+  if (!prompt) return toast('Không tìm thấy đề này');
+  const key = `draft:${promptId}:essay`;
+  const d = S.writing.get(key);
+  ws = {
+    kind: 'essay', prompt, key, text: d?.text || '', plan: { view: '', p1: '', p2: '', ex: '', ...(d?.plan || {}) },
+    stage: d && ['plan', 'write'].includes(d.stage) ? d.stage : 'plan',
+    // Đồng hồ tính theo mốc thời gian, nên khoá màn hình hay chuyển app vẫn chạy đúng; bản nháp nhớ thời gian đã dùng.
+    startedAt: Date.now() - (Number(d?.spent) || 0), self: {}, vocab: suggestWords(prompt, 8),
+  };
+  if (d) toast(`Viết tiếp bản nháp (đã dùng ${Math.round((Number(d.spent) || 0) / 60e3)} phút)`);
+  go('#/wwrite');
+  startTick();
+}
+
+// ---- Đồng hồ 40 phút ----
+const mmss = (ms) => { const sec = Math.floor(Math.abs(ms) / 1000); return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`; };
+function timerState() {
+  const spent = Date.now() - ws.startedAt, left = ESSAY.ms - spent;
+  return { spent, left, text: left >= 0 ? mmss(left) : '+' + mmss(left), cls: 'w-timer' + (left < 0 ? ' over' : left < 5 * 60e3 ? ' low' : '') };
+}
+const timing = () => ws?.kind === 'essay' && ['plan', 'write'].includes(ws.stage);
+function paintTimer() {
+  if (!timing()) { clearInterval(tick); tick = null; return; }
+  const t = timerState();
+  const el = document.getElementById('w-timer');
+  if (el) { el.textContent = t.text; el.className = t.cls; }
+  const pl = document.getElementById('w-plan-time');
+  if (pl) { pl.textContent = `Dàn ý ${mmss(t.spent)} / 5:00`; pl.classList.toggle('over', t.spent > ESSAY.planMs); }
+  if (t.left < 0 && !ws.timeUp) { ws.timeUp = true; toast('Hết 40 phút. Bạn có thể nộp bài hoặc viết nốt.'); }
+}
+function startTick() { clearInterval(tick); tick = setInterval(paintTimer, 1000); setTimeout(paintTimer); }
+
+// ---- Bản nháp ----
+function draftRec(s) {
+  const rec = { id: s.key, kind: 'draft', text: s.text, at: today() };
+  if (s.kind === 'task1') rec.chart = { tpl: s.chart.tpl.id, seed: s.chart.seed, target: s.chart.target, mode: s.mode.id };
+  if (s.kind === 'essay') Object.assign(rec, { plan: { ...s.plan }, stage: s.stage, spent: Date.now() - s.startedAt });
+  return rec;
+}
+function queueSave() {
+  clearTimeout(saveTimer);
+  saveSnap = { ...ws, plan: ws.plan && { ...ws.plan } };
+  saveTimer = setTimeout(flushSave, 700);
+}
+function flushSave() {
+  clearTimeout(saveTimer);
+  const snap = saveSnap;
+  saveSnap = null;
+  if (snap) return wPut(draftRec(snap)).catch(() => {});
+}
+// Khoá màn hình/chuyển app: lưu ngay; mở lại: vẽ lại đồng hồ theo giờ thật.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') { if (timing()) saveSnap = { ...ws, plan: { ...ws.plan } }; flushSave(); }
+  else paintTimer();
+});
 function startChart(mode, tplId, seed, nav = true) {
   if (!W.charts.length) return toast('Nội dung chưa tải xong');
   const tpl = tplId || W.charts[Math.floor(Math.random() * W.charts.length)].id;
@@ -400,34 +546,42 @@ function startChart(mode, tplId, seed, nav = true) {
 on('w-part', (el) => startPart(el.dataset.p, el.dataset.part));
 on('w-today', () => { const n = nextPart(); if (n) startPart(n.prompt.id, n.part.id); else toast('Bạn đã viết hết các phần của 30 đề'); });
 on('w-chart', (el) => startChart(el.dataset.mode));
+on('w-essay', (el) => startEssay(el.dataset.p));
 // Đề khác: thay biểu đồ ngay tại chỗ, không thêm trang vào lịch sử.
 on('w-newchart', () => { if (ws?.kind === 'task1') startChart(ws.mode.id, undefined, undefined, false); });
 on('w-input', (el) => {
   if (!ws) return;
   ws.text = el.value;
-  const n = countWords(ws.text), p = ws.kind === 'part' ? ws.part : ws.mode;
+  const n = countWords(ws.text), p = limitsOf(ws);
   const out = document.getElementById('w-count');
-  if (out) { out.textContent = `${n} từ · nên ${p.min}–${p.max}`; out.className = 'w-count ' + (n < p.min ? '' : n > p.max ? 'over' : 'ok'); }
-  clearTimeout(saveTimer);
-  const snap = { ...ws };
-  saveTimer = setTimeout(() => {
-    const rec = { id: snap.key, kind: 'draft', text: snap.text, at: today() };
-    if (snap.kind === 'task1') rec.chart = { tpl: snap.chart.tpl.id, seed: snap.chart.seed, target: snap.chart.target, mode: snap.mode.id };
-    wPut(rec).catch(() => {});
-  }, 700);
+  if (out) { out.textContent = countLabel(n, p); out.className = 'w-count ' + (n < p.min ? '' : n > p.max ? 'over' : 'ok'); }
+  document.querySelectorAll('.w-chip[data-re]').forEach((c) => c.classList.toggle('used', new RegExp(c.dataset.re, 'i').test(ws.text)));
+  queueSave();
 });
-on('w-quit', () => { clearTimeout(saveTimer); ws = null; back('#/writing'); });
+on('w-plan', (el) => { if (ws?.kind === 'essay') { ws.plan[el.dataset.k] = el.value; queueSave(); } });
+on('w-quit', async () => {
+  if (ws && ['plan', 'write'].includes(ws.stage) && (saveSnap || (ws.kind === 'essay' && (ws.text || Object.values(ws.plan).some(Boolean))))) {
+    saveSnap = { ...ws, plan: ws.plan && { ...ws.plan } };
+    await flushSave();
+  }
+  clearInterval(tick); tick = null; ws = null; back('#/writing');
+});
+const limitsOf = (s) => (s.kind === 'part' ? s.part : s.kind === 'essay' ? ESSAY : s.mode);
+const countLabel = (n, p) => (p === ESSAY ? `${n} từ · tối thiểu ${p.min}` : `${n} từ · nên ${p.min}–${p.max}`);
 
 on('w-submit', async () => {
   if (!ws || ws.stage !== 'write') return;
   const text = (document.getElementById('w-text')?.value ?? ws.text).trim();
   if (countWords(text) < 3) { toast('Hãy viết ít nhất một câu trước khi nộp'); return; }
-  clearTimeout(saveTimer);
+  clearTimeout(saveTimer); saveSnap = null;
+  clearInterval(tick); tick = null;
   ws.text = text;
+  const ms = Date.now() - ws.startedAt;
   const stats = textStats(text);
   const hits = runRules(text);
   let checks, title;
   if (ws.kind === 'part') { checks = partChecks(ws.prompt, ws.part, text); title = `${ws.part.name} · ${ws.prompt.q.slice(0, 80)}`; }
+  else if (ws.kind === 'essay') { checks = essayChecks(ws.prompt, text, ms); title = `Cả bài · ${ws.prompt.q.slice(0, 80)}`; }
   else {
     const ch = ws.chart;
     checks = ws.mode.id === 'detail' ? [lengthCheck(text, ws.mode), ...detailChecks(ch, text, ch.target)] : ws.mode.id === 'overview' ? [lengthCheck(text, ws.mode), ...overviewChecks(ch, text)] : [lengthCheck(text, ws.mode), ...fullChecks(ch, text)];
@@ -435,18 +589,23 @@ on('w-submit', async () => {
   }
   const id = 'e:' + uid();
   const rec = {
-    id, kind: ws.kind, promptId: ws.kind === 'part' ? ws.prompt.id : '', part: ws.kind === 'part' ? ws.part.id : ws.mode.id, title,
-    text, words: stats.words, ms: Date.now() - ws.startedAt, at: today(),
+    id, kind: ws.kind, promptId: ws.prompt ? ws.prompt.id : '', part: ws.kind === 'part' ? ws.part.id : ws.kind === 'essay' ? 'essay' : ws.mode.id, title,
+    text, words: stats.words, ms, at: today(),
     chart: ws.kind === 'task1' ? { tpl: ws.chart.tpl.id, seed: ws.chart.seed, mode: ws.mode.id, target: ws.chart.target } : null,
     report: { stats: { words: stats.words, sentences: stats.sentences, paragraphs: stats.paragraphs, avgLen: stats.avgLen, complex: stats.complex, linkers: stats.linkers }, hits: hits.map((h) => ({ rule: h.rule, text: h.text })), dismissed: [], checks },
     self: {},
   };
+  if (ws.kind === 'essay') rec.plan = { ...ws.plan };
+  // Từ trong kho đã dùng trong bài: ghi là một lần ôn (đúng hạn thì lịch ôn được cập nhật).
+  const used = usedWords(ws.vocab, text);
+  if (used.length) rec.used = used.map((x) => x.word);
   await wPut(rec);
+  for (const x of used) await recordAnswer(x.id, 'good', 'practice').catch(() => {});
   await wDel(ws.key).catch(() => {});
   await logGrammarDay('wEssays', id);
   // Lỗi bắt được → Sổ lỗi (mỗi nhãn một lần cho mỗi bài).
   for (const tag of new Set(hits.map((h) => ruleOf(h.rule)?.tag).filter(Boolean))) await logGrammarError(tag, false);
-  Object.assign(ws, { stage: 'report', essayId: id, stats, hits, checks });
+  Object.assign(ws, { stage: 'report', essayId: id, stats, hits, checks, used });
   rerender(true);
 });
 const lengthCheck = (text, p) => {
@@ -462,7 +621,12 @@ on('w-dismiss', async (el) => {
   toast('Đã bỏ gợi ý này');
   rerender();
 });
-on('w-stage', (el) => { if (ws) { ws.stage = el.dataset.to; rerender(true); } });
+on('w-stage', (el) => {
+  if (!ws) return;
+  ws.stage = el.dataset.to;
+  if (timing()) { queueSave(); startTick(); }
+  rerender(true);
+});
 on('w-self', async (el) => {
   if (!ws) return;
   ws.self[el.dataset.q] = el.dataset.v === '1';
@@ -516,6 +680,10 @@ export function writingView() {
       ${next ? `<b style="font-size:18px;display:block;margin-top:2px">${esc(next.part.name)}</b><p class="small muted w-clip">${esc(next.prompt.q)}</p>` : '<b>Bạn đã viết hết các phần của 30 đề</b>'}</div>${goal ? ring(done, goal) : ''}</div>
     ${next ? `<button class="btn" style="margin-top:14px" data-act="w-today">Viết phần này · ${next.part.min}–${next.part.max} từ</button>` : ''}
   </div>`;
+  const ne = nextEssay(), fullN = all.filter((e) => e.kind === 'essay').length;
+  const full = `<h2>Task 2 cả bài · 40 phút</h2><div class="card">
+    <p class="small muted">${ne ? 'Đề gợi ý' : 'Bạn đã viết cả bài cho mọi đề; chọn đề bất kỳ để viết lại.'}${fullN ? ` · đã viết ${fullN} bài` : ''}</p>
+    ${ne ? `<p class="w-clip2" style="margin-top:4px">${esc(ne.q)}</p><button class="btn soft" style="margin-top:12px" data-act="w-essay" data-p="${ne.id}">${S.writing.get(`draft:${ne.id}:essay`) ? 'Viết tiếp bản nháp' : 'Lập dàn ý 5 phút rồi viết'}</button>` : ''}</div>`;
   const t1 = `<h2>Task 1 · biểu đồ tự sinh</h2><div class="card">
     <p class="small muted" style="margin-bottom:12px">Mỗi lần là một bộ số liệu mới. App biết số liệu gốc nên kiểm tra được con số, năm, xu hướng và giới từ trong câu bạn viết.</p>
     <div class="stack">${W.modes.map((m, i) => `<button class="btn ${i ? 'ghost' : 'soft'}" data-act="w-chart" data-mode="${m.id}">${esc(m.name)} <span class="small" style="opacity:.75">· ${m.min}–${m.max} từ</span></button>`).join('')}</div></div>`;
@@ -524,7 +692,7 @@ export function writingView() {
     const n = ids.reduce((a, id) => a + W.parts.filter((p) => partDone(id, p.id)).length, 0);
     return `<button class="listlink" data-act="go" data-to="#/wtype/${t}"><span class="lead">${icon('pen')}</span><span class="body"><b>${esc(info.name)}</b><small>${ids.length} đề · đã viết ${n}/${ids.length * W.parts.length} phần</small></span>${icon('chev')}</button>`;
   }).join('');
-  return `<div class="page">${head}${today_}${t1}<h2>Task 2 theo dạng đề</h2>${types}
+  return `<div class="page">${head}${today_}${full}${t1}<h2>Task 2 theo dạng đề</h2>${types}
     <button class="listlink" data-act="go" data-to="#/wessays" style="margin-top:14px"><span class="lead">${icon('list')}</span><span class="body"><b>Bài đã viết</b><small>${all.length} bài</small></span>${icon('chev')}</button>
     <p class="small faint" style="margin:14px 2px 0">App kiểm tra độ dài, số liệu và các lỗi hay gặp theo mẫu; không chấm band và không nhận xét lập luận.</p></div>`;
 }
@@ -546,6 +714,8 @@ export function promptView(id) {
   const p = W.prompts.get(id);
   if (W.state !== 'ready') return `<div class="page">${navBar('Đề Task 2', { fallback: '#/writing' })}${loadingCard()}</div>`;
   if (!p) return `<div class="page">${navBar('Đề Task 2', { fallback: '#/writing' })}<div class="empty"><p>Không tìm thấy đề này.</p></div></div>`;
+  const done = essayDone(id);
+  const fullInfo = done.length ? `Đã viết ${done.length} lần · lần gần nhất ${done.map((e) => e.words).pop()} từ` : '5 phút lập dàn ý, 35 phút viết, tối thiểu 250 từ. Đồng hồ vẫn chạy khi khoá màn hình.';
   const rows = W.parts.map((part, i) => {
     const e = partDone(id, part.id), draft = S.writing.get(`draft:${id}:${part.id}`);
     const sub = e ? `Đã viết · ${e.words} từ` : draft ? 'Có bản nháp' : `${part.min}–${part.max} từ`;
@@ -554,9 +724,17 @@ export function promptView(id) {
   }).join('');
   return `<div class="page">${navBar('Đề Task 2', { fallback: `#/wtype/${p.type}` })}
     <div class="card"><div class="pill-list" style="margin-bottom:10px"><span class="tag">${esc(W.types[p.type].short)}</span><span class="tag">${esc(p.topic)}</span></div><p class="w-prompt">${esc(p.q)}</p></div>
-    <h2>5 phần của bài</h2><div class="wlist" style="margin-top:0">${rows}</div></div>`;
+    <h2>5 phần của bài</h2><div class="wlist" style="margin-top:0">${rows}</div>
+    <h2>Cả bài</h2><div class="card"><p class="small muted">${fullInfo}</p>
+      <button class="btn" style="margin-top:12px" data-act="w-essay" data-p="${id}">${S.writing.get(`draft:${id}:essay`) ? 'Viết tiếp bản nháp' : 'Viết cả bài · 40 phút'}</button></div></div>`;
 }
 
+function usedHtml(vocab, used) {
+  if (!vocab?.length) return '';
+  return `<h3 class="w-h">Từ trong kho</h3>${used?.length
+    ? `<div class="feedback ok"><b class="t">${icon('check', 'sm')} Đã dùng ${used.length}/${vocab.length} từ gợi ý</b><p class="small">${used.map((x) => `<b class="en">${esc(x.word || x)}</b>`).join(', ')} được tính là một lần ôn.</p></div>`
+    : `<p class="small muted" style="margin:0 2px">Chưa dùng từ gợi ý nào (${vocab.map((x) => esc(x.word)).join(', ')}). Lần sau thử lồng một hai từ vào bài.</p>`}`;
+}
 function checksHtml(checks) {
   return `<ul class="w-checks">${checks.map((c) => `<li class="${c.ok === true ? 'ok' : c.ok === false ? 'no' : 'na'}">${icon(c.ok === true ? 'check' : c.ok === false ? 'x' : 'info', 'sm')}<span>${fmt(c.msg)}</span></li>`).join('')}</ul>`;
 }
@@ -578,40 +756,53 @@ function statsHtml(st) {
     ${st.repeated?.length ? `<p class="small muted" style="margin:10px 2px 0">Từ lặp nhiều: ${st.repeated.map((r) => `<b>${esc(r.w)}</b> ×${r.n}`).join(' · ')}. Thử thay bằng từ đồng nghĩa.</p>` : ''}`;
 }
 
+const fullModel = (p) => [`${p.model.para} ${p.model.thesis}`, p.model.body1, p.model.body2, p.model.concl].join('\n\n');
 function modelText() {
   if (ws.kind === 'part') return ws.prompt.model[ws.part.id];
+  if (ws.kind === 'essay') return fullModel(ws.prompt);
   return chartModel(ws.chart, ws.mode.id);
 }
 
 export function writeView() {
   if (!ws) { setTimeout(() => replace('#/writing')); return ''; }
-  const label = ws.kind === 'part' ? `Task 2 · ${ws.part.name}` : `Task 1 · ${ws.mode.name}`;
-  const steps = ['write', 'report', 'model', 'self'];
+  const label = ws.kind === 'part' ? `Task 2 · ${ws.part.name}` : ws.kind === 'essay' ? 'Task 2 · Cả bài' : `Task 1 · ${ws.mode.name}`;
+  const steps = ws.kind === 'essay' ? ['plan', 'write', 'report', 'model', 'self'] : ['write', 'report', 'model', 'self'];
   const pct = Math.round((steps.indexOf(ws.stage) / steps.length) * 100);
-  const top = `<div class="ses-top"><button class="iconbtn" data-act="w-quit" aria-label="Thoát">${icon('x')}</button><div class="progress"><i style="width:${pct}%"></i></div><span class="count">${steps.indexOf(ws.stage) + 1}/4</span></div>
+  const t = timing() ? timerState() : null;
+  const top = `<div class="ses-top"><button class="iconbtn" data-act="w-quit" aria-label="Thoát">${icon('x')}</button><div class="progress"><i style="width:${pct}%"></i></div>${t ? `<span id="w-timer" class="${t.cls}" role="timer" aria-label="Thời gian còn lại">${t.text}</span>` : `<span class="count">${steps.indexOf(ws.stage) + 1}/${steps.length}</span>`}</div>
     <p class="mode-label">${esc(label)}</p>`;
-  const p = ws.kind === 'part' ? ws.part : ws.mode;
-  const promptCard = ws.kind === 'part'
+  const p = limitsOf(ws);
+  const promptCard = ws.kind !== 'task1'
     ? `<div class="card"><p class="w-prompt small">${esc(ws.prompt.q)}</p></div>`
     : `${chartSvg(ws.chart, ws.mode.id === 'detail' ? ws.chart.target : -1)}<p class="small muted w-prompt" style="margin:8px 2px 0">${esc(chartPrompt(ws.chart))}</p>`;
-  let body, actions;
-  if (ws.stage === 'write') {
+  let body, actions, focus = null;
+  if (ws.stage === 'plan') {
+    const box = (k, lab, ph) => `<label class="w-plan"><span>${lab}</span><textarea class="input" rows="2" data-in="w-plan" data-k="${k}" placeholder="${ph}" autocapitalize="sentences" spellcheck="false">${esc(ws.plan[k])}</textarea></label>`;
+    body = `${promptCard}<div class="row-between" style="margin:14px 2px 0;gap:10px"><span class="small muted">Ghi ý ngắn, tiếng Anh hay tiếng Việt đều được.</span><span id="w-plan-time" class="w-plantime ${t.spent > ESSAY.planMs ? 'over' : ''}">Dàn ý ${mmss(t.spent)} / 5:00</span></div>
+      ${box('view', 'Câu trả lời / quan điểm', W.types[ws.prompt.type].hint)}${box('p1', 'Ý chính đoạn thân bài 1', 'Lý do hoặc khía cạnh thứ nhất')}${box('p2', 'Ý chính đoạn thân bài 2', 'Lý do hoặc khía cạnh thứ hai')}${box('ex', 'Ví dụ sẽ dùng', 'Một ví dụ cụ thể cho mỗi đoạn')}
+      ${vocabHtml(ws.vocab, '')}`;
+    actions = `<button class="btn" data-act="w-stage" data-to="write">Bắt đầu viết</button>`;
+    if (!Object.values(ws.plan).some(Boolean)) focus = '.w-plan textarea';
+  } else if (ws.stage === 'write') {
     const n = countWords(ws.text);
-    const task = ws.kind === 'task1' && ws.mode.id === 'detail' ? `${p.task} Đối tượng: <b>${esc(ws.chart.series[ws.chart.target].name)}</b>.` : esc(p.task);
-    body = `${promptCard}<p class="w-task">${task}</p>
-      <textarea id="w-text" class="input w-editor" rows="${p.max > 100 ? 12 : 5}" data-in="w-input" placeholder="Viết bằng tiếng Anh…" autocapitalize="sentences" spellcheck="false">${esc(ws.text)}</textarea>
-      <p id="w-count" class="w-count ${n < p.min ? '' : n > p.max ? 'over' : 'ok'}">${n} từ · nên ${p.min}–${p.max}</p>`;
-    actions = `<div class="btn-row">${ws.kind === 'task1' ? `<button class="btn ghost" data-act="w-newchart" style="flex:.7">Đề khác</button>` : ''}<button class="btn" data-act="w-submit">Nộp bài</button></div>`;
+    const task = ws.kind === 'task1' && ws.mode.id === 'detail' ? `${p.task} Đối tượng: <b>${esc(ws.chart.series[ws.chart.target].name)}</b>.` : ws.kind === 'essay' ? 'Viết 4–5 đoạn, xuống dòng giữa các đoạn.' : esc(p.task);
+    const pl = ws.kind === 'essay' && Object.values(ws.plan).some(Boolean)
+      ? `<details class="card w-plansum"><summary>Dàn ý của bạn</summary><dl>${[['view', 'Quan điểm'], ['p1', 'Thân bài 1'], ['p2', 'Thân bài 2'], ['ex', 'Ví dụ']].filter(([k]) => ws.plan[k]).map(([k, lab]) => `<dt>${lab}</dt><dd>${esc(ws.plan[k])}</dd>`).join('')}</dl></details>` : '';
+    body = `${promptCard}${pl}<p class="w-task">${task}</p>
+      <textarea id="w-text" class="input w-editor" rows="${ws.kind === 'essay' ? 16 : p.max > 100 ? 12 : 5}" data-in="w-input" placeholder="Viết bằng tiếng Anh…" autocapitalize="sentences" spellcheck="false">${esc(ws.text)}</textarea>
+      <p id="w-count" class="w-count ${n < p.min ? '' : n > p.max ? 'over' : 'ok'}">${countLabel(n, p)}</p>${vocabHtml(ws.vocab, ws.text)}`;
+    if (!ws.text) focus = '#w-text';
+    actions = `<div class="btn-row">${ws.kind === 'task1' ? `<button class="btn ghost" data-act="w-newchart" style="flex:.7">Đề khác</button>` : ws.kind === 'essay' ? `<button class="btn ghost" data-act="w-stage" data-to="plan" style="flex:.7">Dàn ý</button>` : ''}<button class="btn" data-act="w-submit">Nộp bài</button></div>`;
   } else if (ws.stage === 'report') {
     const rec = S.writing.get(ws.essayId);
     body = `<h3 class="w-h">Kiểm tra tự động</h3>${checksHtml(ws.checks)}<h3 class="w-h">Thống kê</h3>${statsHtml(ws.stats)}
-      <h3 class="w-h">Gợi ý sửa lỗi</h3>${hitsHtml(rec, ws.hits)}`;
+      <h3 class="w-h">Gợi ý sửa lỗi</h3>${hitsHtml(rec, ws.hits)}${usedHtml(ws.vocab, ws.used)}`;
     actions = `<button class="btn" data-act="w-stage" data-to="model">Xem bài mẫu</button>`;
   } else if (ws.stage === 'model') {
     const model = modelText();
-    const phrases = ws.kind === 'part' ? ws.prompt.phrases : [];
+    const phrases = ws.kind !== 'task1' ? ws.prompt.phrases : [];
     body = `<h3 class="w-h">Bài của bạn</h3><div class="card w-text">${esc(ws.text)}</div>
-      <h3 class="w-h">Bài mẫu${ws.kind === 'part' ? ' band 7' : ' (app tạo từ số liệu)'}</h3><div class="card w-text w-model">${esc(model)}</div>
+      <h3 class="w-h">Bài mẫu${ws.kind !== 'task1' ? ' band 7' : ' (app tạo từ số liệu)'}</h3><div class="card w-text w-model">${esc(model)}</div>
       ${phrases.length ? `<h3 class="w-h">Cụm hay nên lưu</h3>${phrases.map((ph) => {
         const ex = Object.values(ws.prompt.model).join(' ').match(new RegExp(`[^.]*${ph.en.split(' ').slice(0, 2).join(' ').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^.]*\\.`, 'i'))?.[0]?.trim() || '';
         const has = !!findByText(ph.en);
@@ -619,15 +810,16 @@ export function writeView() {
       }).join('')}` : ''}`;
     actions = `<button class="btn" data-act="w-stage" data-to="self">Tự chấm</button>`;
   } else {
-    const qs = p.self || [];
+    const qs = ws.kind === 'essay' ? ESSAY_SELF.map((x) => x[1]) : p.self || [];
+    const head_ = (i) => (ws.kind === 'essay' && (i === 0 || ESSAY_SELF[i - 1][0] !== ESSAY_SELF[i][0]) ? `<h3 class="w-h">${ESSAY_SELF[i][0]}</h3>` : '');
     body = `<p class="muted" style="margin-bottom:10px">So bài của bạn với bài mẫu và trả lời thật lòng. App không quy đổi thành điểm band.</p>
-      ${qs.map((q, i) => `<div class="card w-self"><p>${esc(q)}</p><div class="tf" style="margin-top:10px">
+      ${qs.map((q, i) => `${head_(i)}<div class="card w-self"><p>${esc(q)}</p><div class="tf" style="margin-top:10px">
         <button class="opt ${ws.self[i] === true ? 'right' : ''}" data-act="w-self" data-q="${i}" data-v="1">Có</button>
         <button class="opt ${ws.self[i] === false ? 'wrong' : ''}" data-act="w-self" data-q="${i}" data-v="0">Chưa</button></div></div>`).join('')}
       ${Object.values(ws.self).some((v) => v === false) ? `<div class="banner info" style="margin-top:12px">${icon('info')}<span>Mục nào còn “Chưa”, hãy sửa ở lần viết sau cho đề này.</span></div>` : ''}`;
     actions = `<button class="btn" data-act="w-finish">Hoàn thành</button>`;
   }
-  return { html: `<div class="page session">${top}<div class="ses-body">${body}</div><div class="ses-actions">${actions}</div></div>`, focus: ws.stage === 'write' && !ws.text ? '#w-text' : null };
+  return { html: `<div class="page session">${top}<div class="ses-body">${body}</div><div class="ses-actions">${actions}</div></div>`, focus };
 }
 
 export function essaysView() {
@@ -645,20 +837,23 @@ export function essayView(id) {
   if (!e || e.kind === 'draft') return `<div class="page">${navBar('Bài viết', { fallback: '#/wessays' })}<div class="empty"><p>Không tìm thấy bài này.</p></div></div>`;
   let chart = '';
   if (e.kind === 'task1' && e.chart && W.state === 'ready') { const ch = genChart(e.chart.tpl, e.chart.seed, e.chart.target); chart = chartSvg(ch, e.chart.mode === 'detail' ? ch.target : -1); }
-  const prompt = e.kind === 'part' && W.prompts.get(e.promptId);
+  const prompt = (e.kind === 'part' || e.kind === 'essay') && W.prompts.get(e.promptId);
   const hits = e.report.hits.map((h) => ({ ...h, match: (() => { const r = ruleOf(h.rule); if (!r) return ''; r.rx.lastIndex = 0; const m = r.rx.exec(h.text); return m ? m[0].replace(/^[.!?\n\s]+/, '').trim() : ''; })() }));
   const self = Object.entries(e.self || {});
   return `<div class="page">${navBar('Bài viết', { fallback: '#/wessays' })}
     <p class="small muted" style="margin:0 2px 8px">${esc(e.title)} · ${e.at.split('-').reverse().join('/')}</p>
     ${prompt ? `<div class="card"><p class="w-prompt small">${esc(prompt.q)}</p></div>` : ''}${chart}
+    ${e.plan && Object.values(e.plan).some(Boolean) ? `<details class="card w-plansum"><summary>Dàn ý</summary><dl>${[['view', 'Quan điểm'], ['p1', 'Thân bài 1'], ['p2', 'Thân bài 2'], ['ex', 'Ví dụ']].filter(([k]) => e.plan[k]).map(([k, lab]) => `<dt>${lab}</dt><dd>${esc(e.plan[k])}</dd>`).join('')}</dl></details>` : ''}
     <h3 class="w-h">Bài của bạn</h3><div class="card w-text">${esc(e.text)}</div>
+    ${e.kind === 'essay' && e.ms ? `<p class="small muted" style="margin:6px 2px 0">Thời gian: ${Math.round(e.ms / 60e3)} phút</p>` : ''}
     <h3 class="w-h">Kiểm tra tự động</h3>${checksHtml(e.report.checks)}
     <h3 class="w-h">Thống kê</h3>${statsHtml({ ...e.report.stats, repeated: textStats(e.text).repeated })}
     <h3 class="w-h">Gợi ý sửa lỗi</h3>${W.state === 'ready' ? hitsHtml(e, hits) : ''}
+    ${e.used?.length ? `<h3 class="w-h">Từ trong kho đã dùng</h3><p class="small">${e.used.map((x) => `<b class="en">${esc(x)}</b>`).join(', ')}</p>` : ''}
     ${self.length ? `<h3 class="w-h">Tự chấm</h3><p class="small muted">${self.filter(([, v]) => v).length}/${self.length} mục “Có”</p>` : ''}
-    ${prompt ? `<button class="btn soft" style="margin-top:16px" data-act="w-part" data-p="${e.promptId}" data-part="${e.part}">Viết lại phần này</button>` : ''}
+    ${prompt ? (e.kind === 'essay' ? `<button class="btn soft" style="margin-top:16px" data-act="w-essay" data-p="${e.promptId}">Viết lại cả bài</button>` : `<button class="btn soft" style="margin-top:16px" data-act="w-part" data-p="${e.promptId}" data-part="${e.part}">Viết lại phần này</button>`) : ''}
     <button class="btn danger" style="margin-top:10px" data-act="w-delete" data-id="${e.id}">${icon('trash', 'sm')} Xoá bài</button></div>`;
 }
 
 // Dùng cho kiểm thử tự động (không dùng trong giao diện).
-export const _check = { detailChecks, overviewChecks, fullChecks, chartModel };
+export const _check = { detailChecks, overviewChecks, fullChecks, chartModel, essayChecks, suggestWords, wordRe, fullModel };

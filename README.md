@@ -48,7 +48,7 @@ Nội dung nằm ở `content/grammar/*.json` (dữ liệu, không phải code).
 
 ## Writing
 
-Tab **Học** → *Writing*. Task 2 gồm 30 đề (5 dạng × 6), mỗi đề luyện theo 5 phần (viết lại đề, câu quan điểm, 2 đoạn thân bài, kết luận) có bài mẫu band 7. Task 1 tự sinh biểu đồ đường/cột từ 8 mẫu; vì app biết số liệu gốc nên kiểm tra được con số, năm, xu hướng và giới từ by/to/from. Phản hồi không dùng AI: thống kê, kiểm tra theo phần, bộ dò lỗi theo mẫu (`content/writing/rules.json`, mỗi luật kèm câu kiểm tra) ghi vào Sổ lỗi, rồi bài mẫu và tự chấm. App không chấm band.
+Tab **Học** → *Writing*. Task 2 gồm 30 đề (5 dạng × 6), mỗi đề luyện theo 5 phần (viết lại đề, câu quan điểm, 2 đoạn thân bài, kết luận) có bài mẫu band 7. Task 1 tự sinh biểu đồ đường/cột từ 8 mẫu; vì app biết số liệu gốc nên kiểm tra được con số, năm, xu hướng và giới từ by/to/from. Khi đã quen từng phần, viết cả bài: 5 phút lập dàn ý rồi viết trong 40 phút (đồng hồ tính theo giờ thật nên vẫn đúng khi khoá màn hình; thoát giữa chừng thì bản nháp nhớ cả dàn ý và thời gian đã dùng). Khi viết, app gợi ý vài từ trong kho từ vựng hợp với đề; từ nào được dùng trong bài nộp thì tính là một lần ôn. Phản hồi không dùng AI: thống kê, kiểm tra theo phần hoặc cả bài, bộ dò lỗi theo mẫu (`content/writing/rules.json`, mỗi luật kèm câu kiểm tra) ghi vào Sổ lỗi, rồi bài mẫu và tự chấm. App không chấm band.
 
 ## Thuật toán ôn tập
 
