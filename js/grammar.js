@@ -1,6 +1,6 @@
 // Ngữ pháp: khoá → unit → bài. Bài học 6 bước, thẻ mẫu câu ôn bằng SRS, sổ lỗi, kiểm tra đầu vào.
 // Nội dung nằm ở content/grammar/*.json (dữ liệu, không phải code) — thêm bài mới không cần sửa file này.
-import { S, gPut, logGrammarDay, dayOf } from './store.js';
+import { S, gPut, logGrammarDay, dayOf, saveSettings } from './store.js';
 import { esc, toast, speak, norm, today, addDays, fmtInterval } from './util.js';
 import { schedule, newSrs, preview } from './srs.js';
 import { icon, on, go, replace, rerender, navBar, learnSwitch } from './ui.js';
@@ -10,7 +10,7 @@ const voice = () => ({ lang: S.settings.voice, rate: S.settings.rate, name: S.se
 
 export const COURSES = [
   { id: 'c1', title: 'Nền tảng', level: 'A1–A2', file: 'content/grammar/course1.json' },
-  { id: 'c2', title: 'IELTS Core', level: 'Band 4.5–6.0', soon: true },
+  { id: 'c2', title: 'IELTS Core', level: 'Band 4.5–6.0', file: 'content/grammar/course2.json' },
   { id: 'c3', title: 'IELTS 6.5 Booster', level: 'Band 6.0–6.5', soon: true },
   { id: 'c4', title: 'IELTS 7.0 Advanced', level: 'Band 6.5 → 7.0', soon: true },
 ];
@@ -28,8 +28,9 @@ export async function loadGrammar() {
       if (!r.ok) throw new Error(`${url}: ${r.status}`);
       return r.json();
     };
-    const [c1, pt] = await Promise.all([get(COURSES[0].file), get('content/grammar/placement.json')]);
-    indexCourse(c1);
+    const files = COURSES.filter((c) => c.file);
+    const [pt, ...loaded] = await Promise.all([get('content/grammar/placement.json'), ...files.map((c) => get(c.file))]);
+    loaded.forEach(indexCourse);
     G.placement = pt;
     G.state = 'ready';
   } catch (e) {
@@ -59,7 +60,27 @@ const lessonRec = (id) => ({ ...blankLesson(id), ...(rec('L:' + id) || {}) });
 const isDone = (id) => !!rec('L:' + id)?.done;
 const inProgress = (id) => { const r = rec('L:' + id); return !!r && !r.done && (r.step > 0 || r.pos > 0); };
 
-export const nextLesson = () => G.order.map((id) => G.lessons.get(id)).find((l) => !isDone(l.id)) || null;
+const courseLessons = (cid) => G.order.filter((id) => G.lessons.get(id).courseId === cid);
+const loadedCourses = () => COURSES.filter((c) => G.courses.has(c.id));
+/** Khoá đang học: do người dùng chọn; chưa chọn thì theo kết quả kiểm tra đầu vào; không có thì khoá đầu tiên còn bài chưa học. */
+export function activeCourse() {
+  const list = loadedCourses();
+  const has = (id) => list.some((c) => c.id === id);
+  if (has(S.settings.grammarCourse)) return S.settings.grammarCourse;
+  const placed = S.grammar.get('placement')?.course;
+  if (has(placed)) return placed;
+  return (list.find((c) => courseLessons(c.id).some((id) => !isDone(id))) || list[list.length - 1])?.id || '';
+}
+/** Bài kế tiếp: trong khoá đang học; học hết khoá đó thì sang khoá sau còn bài. */
+export function nextLesson() {
+  const list = loadedCourses();
+  const start = Math.max(0, list.findIndex((c) => c.id === activeCourse()));
+  for (const c of [...list.slice(start), ...list.slice(0, start)]) {
+    const id = courseLessons(c.id).find((x) => !isDone(x));
+    if (id) return G.lessons.get(id);
+  }
+  return null;
+}
 export const todayLessons = () => (dayOf().gLessons || []).length;
 export function gDueCards() {
   const t = today();
@@ -126,10 +147,11 @@ export function grammarView() {
   const placed = rec('placement');
   const nextUnit = next && G.units.get(next.unitId);
   const resume = next && inProgress(next.id) ? lessonRec(next.id) : null;
+  const active = activeCourse();
 
   const todayCard = `<div class="card">
     <div class="row-between"><div style="min-width:0"><p class="small muted">${goal ? `Hôm nay: ${doneToday}/${goal} bài` : `Hôm nay: ${doneToday} bài`}</p>
-      ${next ? `<b style="font-size:19px;display:block;margin-top:2px">${esc(next.title)}</b><p class="small muted">${esc(nextUnit.title)}</p>` : '<b style="font-size:19px">Bạn đã học hết khoá Nền tảng</b>'}</div>
+      ${next ? `<b style="font-size:19px;display:block;margin-top:2px">${esc(next.title)}</b><p class="small muted">${esc(G.courses.get(next.courseId).title)} · Unit ${esc(nextUnit.no)}: ${esc(nextUnit.title)}</p>` : '<b style="font-size:19px">Bạn đã học hết các khoá hiện có</b>'}</div>
       ${goal ? ring(doneToday, goal) : ''}</div>
     ${next ? `<button class="btn" style="margin-top:16px" data-act="g-start" data-id="${next.id}">${resume ? `Tiếp tục · bước ${resume.step + 1}/6` : 'Học bài tiếp theo'}</button>` : ''}
     ${due ? `<button class="btn soft" style="margin-top:10px" data-act="g-cards">${icon('review', 'sm')} Ôn ${due} thẻ mẫu câu</button>` : ''}
@@ -142,14 +164,20 @@ export function grammarView() {
   const courses = COURSES.map((c) => {
     if (c.soon) return `<div class="listlink soon" aria-disabled="true"><span class="lead">${icon('learn')}</span><span class="body"><b>${esc(c.title)}</b><small>${esc(c.level)} · sắp có</small></span></div>`;
     const course = G.courses.get(c.id);
+    const p = progressOf(courseLessons(c.id));
+    // Chỉ khoá đang học mở danh sách unit; khoá khác thu gọn để trang không quá dài.
+    if (c.id !== active) {
+      return `<div class="card"><div class="row-between"><div style="min-width:0"><b style="font-size:18px">${esc(c.title)}</b><p class="small muted">${esc(c.level)} · ${course.units.length} unit · ${p.done}/${p.total} bài</p></div>
+        <button class="btn ghost sm" data-act="g-course" data-id="${c.id}">${p.done ? 'Học tiếp' : 'Học khoá này'}</button></div>
+        <div class="mini-bar"><i style="width:${(p.done / p.total) * 100}%"></i></div></div>`;
+    }
     const units = course.units.map((u) => {
       const p = progressOf(u.lessons.map((l) => l.id));
       return `<div class="wrow" data-act="go" data-to="#/gunit/${u.id}">
         <span class="num ${p.done === p.total ? 'done' : ''}">${p.done === p.total ? icon('check', 'sm') : esc(u.no)}</span>
         <div class="body"><span style="font-weight:600">${esc(u.title)}</span><p>${p.done}/${p.total} bài</p></div>${icon('chev')}</div>`;
     }).join('');
-    const p = progressOf(G.order.filter((id) => G.lessons.get(id).courseId === c.id));
-    return `<div class="card" style="padding-bottom:6px"><div class="row-between"><div><b style="font-size:18px">${esc(c.title)}</b><p class="small muted">${esc(c.level)} · ${p.done}/${p.total} bài</p></div></div>
+    return `<div class="card" style="padding-bottom:6px"><div class="row-between"><div><b style="font-size:18px">${esc(c.title)}</b><p class="small muted">${esc(c.level)} · ${p.done}/${p.total} bài</p></div><span class="tag">Đang học</span></div>
       <div class="mini-bar"><i style="width:${(p.done / p.total) * 100}%"></i></div>
       <div class="wlist flat" style="margin:12px -18px 0">${units}</div></div>`;
   }).join('');
@@ -159,6 +187,12 @@ export function grammarView() {
     ${placed ? `<button class="btn ghost" style="margin-top:14px" data-act="g-test">Làm lại bài kiểm tra đầu vào</button>` : ''}
   </div>`;
 }
+
+on('g-course', async (el) => {
+  await saveSettings({ grammarCourse: el.dataset.id });
+  toast(`Đang học khoá ${G.courses.get(el.dataset.id).title}`);
+  rerender(true);
+});
 
 export function unitView(id) {
   const u = G.units.get(id);
@@ -547,10 +581,15 @@ on('gt-answer', async (el) => {
   const pct = Math.round((pt.answers.filter(Boolean).length / pt.items.length) * 100);
   // Xếp lớp theo từng tầng: chưa vững tầng nào thì bắt đầu từ tầng đó.
   const course = bands[0] < 80 ? 'c1' : bands[1] < 70 ? 'c2' : bands[2] < 70 ? 'c3' : 'c4';
-  const wrong1 = pt.items.findIndex((x, i) => x.lvl === 1 && !pt.answers[i]);
-  const unitId = course === 'c1' ? (pt.items[wrong1]?.unit || G.courses.get('c1').units[0].id) : '';
+  // Unit gợi ý = unit của câu sai đầu tiên ở tầng đó (nếu khoá đã có trong app).
+  const lvl = Number(course[1]);
+  const wrong = pt.items.findIndex((x, i) => x.lvl === lvl && !pt.answers[i]);
+  const unitId = G.courses.has(course) ? (pt.items[wrong]?.unit || G.courses.get(course).units[0].id) : '';
   pt.result = { pct, bands, course, unitId };
   await gPut({ id: 'placement', date: today(), pct, bands, course, unitId });
+  // Đặt khoá đang học theo kết quả; khoá chưa có thì lấy khoá cao nhất đang có.
+  const avail = loadedCourses().map((c) => c.id).filter((id) => id <= course);
+  await saveSettings({ grammarCourse: avail[avail.length - 1] || '' });
   rerender(true);
 });
 on('gt-quit', () => { pt = null; go('#/grammar'); });
@@ -566,7 +605,7 @@ export function testView() {
         <div class="result-big">${pct}%</div><p class="muted" style="margin-top:6px">${pt.answers.filter(Boolean).length}/${pt.items.length} câu đúng</p></div>
       <div class="card">${bands.map((b, i) => `<div class="field"><div class="row-between"><span style="font-weight:600">${BANDS[i]}</span><span class="small muted">${b}%</span></div><div class="mini-bar"><i style="width:${b}%"></i></div></div>`).join('')}</div>
       <div class="card" style="margin-top:12px"><p class="small muted">Nên bắt đầu từ</p><b style="font-size:19px">Khoá ${esc(c.title)}${unit ? ` · Unit ${esc(unit.no)}` : ''}</b>
-        <p class="small muted" style="margin-top:4px">${unit ? esc(unit.title) : c.soon ? 'Khoá này sẽ có ở bản sau. Trong lúc chờ, bạn có thể ôn nhanh khoá Nền tảng.' : ''}</p></div>
+        <p class="small muted" style="margin-top:4px">${unit ? esc(unit.title) : c.soon ? `Khoá này sẽ có ở bản sau. Trong lúc chờ, app đặt bạn vào khoá ${esc(G.courses.get(activeCourse())?.title || '')}.` : ''}</p></div>
     </div>
     <div class="ses-actions stack">
       ${unit ? `<button class="btn" data-act="gt-go-unit" data-id="${unit.id}">Mở Unit ${esc(unit.no)}</button>` : ''}

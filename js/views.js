@@ -37,7 +37,7 @@ export function homeView() {
     <button class="iconbtn tonal" data-act="go" data-to="#/settings" aria-label="Cài đặt">${icon('gear')}</button></header>`;
 
   // Chưa có từ nào và chưa học ngữ pháp → màn hình bắt đầu. Đã học ngữ pháp thì hiện Trang chủ đầy đủ.
-  const learnedGrammar = [...S.grammar.keys()].some((k) => k.startsWith('L:'));
+  const learnedGrammar = S.grammar.size > 0; // đã học bài hoặc đã làm kiểm tra đầu vào
   if (!sum.total && !learnedGrammar) {
     return `<div class="page">${head}
       <div class="card empty"><div class="art">${icon('learn')}</div>
@@ -48,7 +48,7 @@ export function homeView() {
           <button class="btn soft" data-act="seed">Nạp 20 từ mẫu</button>
           <button class="btn ghost" data-act="go" data-to="#/settings">Import CSV / Excel</button>
         </div></div>
-      <button class="listlink" data-act="go" data-to="#/grammar" style="margin-top:12px"><span class="lead">${icon('learn')}</span><span class="body"><b>Học ngữ pháp</b><small>Khoá Nền tảng: 9 unit, 33 bài ngắn</small></span>${icon('chev')}</button></div>`;
+      <button class="listlink" data-act="go" data-to="#/grammar" style="margin-top:12px"><span class="lead">${icon('learn')}</span><span class="body"><b>Học ngữ pháp</b><small>2 khoá: Nền tảng và IELTS Core, bài ngắn 8–12 phút</small></span>${icon('chev')}</button></div>`;
   }
 
   const day = dayOf();

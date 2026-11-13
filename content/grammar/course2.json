@@ -1,0 +1,3973 @@
+{
+ "id": "c2",
+ "title": "IELTS Core",
+ "level": "Band 4.5–6.0",
+ "version": 1,
+ "tags": {
+  "k2-wordform": {
+   "name": "Dùng sai dạng từ (danh/động/tính/trạng)",
+   "lesson": "k2-pos"
+  },
+  "k2-family": {
+   "name": "Họ từ: chọn sai thành viên",
+   "lesson": "k2-family"
+  },
+  "k2-linkadj": {
+   "name": "Tính từ sau look/seem/feel; hardly, lately",
+   "lesson": "k2-adjadv"
+  },
+  "k2-pres": {
+   "name": "Hiện tại đơn hay tiếp diễn",
+   "lesson": "k2-pres"
+  },
+  "k2-s-sound": {
+   "name": "Phát âm đuôi -s/-es",
+   "lesson": "k2-pres"
+  },
+  "k2-pp": {
+   "name": "Hiện tại hoàn thành: for / since / already / yet",
+   "lesson": "k2-pp"
+  },
+  "k2-ppc": {
+   "name": "Hiện tại hoàn thành tiếp diễn",
+   "lesson": "k2-ppc"
+  },
+  "k2-pastcont": {
+   "name": "Quá khứ đơn hay quá khứ tiếp diễn",
+   "lesson": "k2-past"
+  },
+  "k2-ed-sound": {
+   "name": "Phát âm đuôi -ed",
+   "lesson": "k2-past"
+  },
+  "k2-pp-past": {
+   "name": "Hiện tại hoàn thành hay quá khứ đơn",
+   "lesson": "k2-ppvspast"
+  },
+  "k2-pastperf": {
+   "name": "Quá khứ hoàn thành",
+   "lesson": "k2-pastperf"
+  },
+  "k2-future": {
+   "name": "Các cách nói tương lai",
+   "lesson": "k2-future"
+  },
+  "k2-sva": {
+   "name": "Hoà hợp chủ ngữ – động từ",
+   "lesson": "k2-sva1"
+  },
+  "k2-sva-num": {
+   "name": "the number of / a number of, neither…nor",
+   "lesson": "k2-sva2"
+  },
+  "k2-article": {
+   "name": "Mạo từ a / an / the / không mạo từ",
+   "lesson": "k2-art"
+  },
+  "k2-uncount": {
+   "name": "Danh từ không đếm được; few / little",
+   "lesson": "k2-unc"
+  },
+  "k2-if1": {
+   "name": "Điều kiện loại 0, 1 và unless",
+   "lesson": "k2-if01"
+  },
+  "k2-if2": {
+   "name": "Điều kiện loại 2",
+   "lesson": "k2-if2"
+  },
+  "k2-if3": {
+   "name": "Điều kiện loại 3 và hỗn hợp",
+   "lesson": "k2-if3"
+  },
+  "k2-relpron": {
+   "name": "Chọn who / which / that / whose",
+   "lesson": "k2-rel1"
+  },
+  "k2-relcomma": {
+   "name": "Mệnh đề quan hệ có dấu phẩy; where / when",
+   "lesson": "k2-rel2"
+  },
+  "k2-relerr": {
+   "name": "Lỗi trong mệnh đề quan hệ",
+   "lesson": "k2-rel3"
+  },
+  "k2-passive": {
+   "name": "Câu bị động",
+   "lesson": "k2-pass1"
+  },
+  "k2-passive2": {
+   "name": "Bị động với modal, It is said, have sth done",
+   "lesson": "k2-pass2"
+  },
+  "k2-reduce": {
+   "name": "Rút gọn mệnh đề quan hệ",
+   "lesson": "k2-reduce"
+  },
+  "k2-asas": {
+   "name": "So sánh bằng, bội số, mức độ",
+   "lesson": "k2-comp"
+  },
+  "k2-double": {
+   "name": "So sánh kép",
+   "lesson": "k2-double"
+  },
+  "k2-usedto": {
+   "name": "used to / be used to / It takes / spend",
+   "lesson": "k2-struct1"
+  },
+  "k2-toenough": {
+   "name": "too…to / enough / so…that / such…that / wish",
+   "lesson": "k2-struct2"
+  },
+  "k2-toving": {
+   "name": "to V hay V-ing (nâng cao)",
+   "lesson": "k2-toving"
+  },
+  "k2-vmeaning": {
+   "name": "stop / remember / try + to V hay V-ing",
+   "lesson": "k2-meaning"
+  },
+  "k2-report": {
+   "name": "Câu tường thuật",
+   "lesson": "k2-report"
+  },
+  "k2-link": {
+   "name": "because / because of, although / despite",
+   "lesson": "k2-link1"
+  },
+  "k2-linkpunct": {
+   "name": "However, Therefore… và dấu câu",
+   "lesson": "k2-link2"
+  },
+  "k2-timeclause": {
+   "name": "Mệnh đề thời gian không dùng will",
+   "lesson": "k2-time"
+  }
+ },
+ "units": [
+  {
+   "id": "k2u1",
+   "no": "1",
+   "title": "Loại từ và họ từ",
+   "goal": "Dùng đúng dạng từ; đoán loại từ cần điền trong Listening/Reading",
+   "lessons": [
+    {
+     "id": "k2-pos",
+     "title": "Nhận diện loại từ qua vị trí và hậu tố",
+     "rule": [
+      "**Danh từ**: sau a/an/the, my/this, sau tính từ, sau giới từ. Hậu tố: -tion, -ment, -ness, -ity, -ance/-ence.",
+      "**Tính từ**: trước danh từ; sau be, look, seem, feel, become. Hậu tố: -ful, -less, -ous, -ive, -able, -al.",
+      "**Trạng từ**: bổ nghĩa cho động từ, tính từ, cả câu. Thường có **-ly**.",
+      "**Động từ**: sau chủ ngữ, sau trợ động từ / modal. Hậu tố: -ize, -ify, -en, -ate.",
+      "Trật tự trạng từ cuối câu: **cách thức → nơi chốn → thời gian**: *She worked carefully at home last night.*"
+     ],
+     "examples": [
+      {
+       "en": "The *development* of the city was very fast.",
+       "vi": "Sự phát triển của thành phố rất nhanh."
+      },
+      {
+       "en": "This is a *useful* tool.",
+       "vi": "Đây là một công cụ hữu ích."
+      },
+      {
+       "en": "He explained the idea *clearly*.",
+       "vi": "Anh ấy giải thích ý tưởng rõ ràng."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The government made an important ___.",
+       "opts": [
+        "decision",
+        "decide",
+        "decisive"
+       ],
+       "a": 0,
+       "why": "Sau a/an + tính từ cần **danh từ**: decision.",
+       "tag": "k2-wordform"
+      },
+      {
+       "t": "mc",
+       "q": "Public transport is very ___ in this city.",
+       "opts": [
+        "efficient",
+        "efficiency",
+        "efficiently"
+       ],
+       "a": 0,
+       "why": "Sau be (+ very) cần **tính từ**.",
+       "tag": "k2-wordform"
+      },
+      {
+       "t": "fill",
+       "q": "Prices have risen ___ this year.",
+       "a": [
+        "significantly"
+       ],
+       "why": "Bổ nghĩa cho động từ (have risen) → **trạng từ**.",
+       "tag": "k2-wordform",
+       "hint": "significant"
+      },
+      {
+       "t": "tf",
+       "q": "She gave me a very use advice.",
+       "a": false,
+       "why": "Trước danh từ cần tính từ: *useful*; advice không đếm được nên không dùng a.",
+       "tag": "k2-wordform",
+       "fix": "She gave me very useful advice."
+      },
+      {
+       "t": "fix",
+       "q": "The economy growth was slow last year.",
+       "a": [
+        "The economic growth was slow last year.",
+        "Economic growth was slow last year."
+       ],
+       "why": "Trước danh từ growth cần tính từ **economic**.",
+       "tag": "k2-wordform"
+      },
+      {
+       "t": "fix",
+       "q": "He spoke very confident in the interview.",
+       "a": [
+        "He spoke very confidently in the interview."
+       ],
+       "why": "Bổ nghĩa cho spoke → trạng từ **confidently**.",
+       "tag": "k2-wordform"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-pos-1",
+       "front": "Chỗ trống đứng sau a/an + tính từ: cần loại từ gì?",
+       "pattern": "a/an + adj + **danh từ** · be + **tính từ** · V + **trạng từ**",
+       "example": "It was *a difficult decision*.",
+       "vi": "Đó là một quyết định khó khăn."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu có đủ danh từ, tính từ và trạng từ cùng gốc hoặc khác gốc (gạch chân trong đầu từng loại).",
+      "samples": [
+       "The new manager made a careful decision very quickly.",
+       "Tourism has grown rapidly because of cheap flights."
+      ],
+      "check": [
+       "Sau a/an/the là danh từ?",
+       "Trạng từ bổ nghĩa cho động từ?"
+      ]
+     }
+    },
+    {
+     "id": "k2-family",
+     "title": "Họ từ hay gặp trong IELTS",
+     "rule": [
+      "Học từ theo họ: **decide – decision – decisive – decisively**; **succeed – success – successful – successfully**.",
+      "**economic** = thuộc về kinh tế (*economic growth*); **economical** = tiết kiệm (*an economical car*).",
+      "**developed** country = nước đã phát triển; **developing** country = nước đang phát triển.",
+      "**depend** (v) – **dependence** (n) – **dependent / independent** (adj) – **independently** (adv)."
+     ],
+     "examples": [
+      {
+       "en": "Hard work is the key to *success*.",
+       "vi": "Chăm chỉ là chìa khoá của thành công."
+      },
+      {
+       "en": "The project was very *successful*.",
+       "vi": "Dự án rất thành công."
+      },
+      {
+       "en": "Many *developing* countries rely on tourism.",
+       "vi": "Nhiều nước đang phát triển dựa vào du lịch."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "She finally ___ in passing the exam.",
+       "opts": [
+        "succeeded",
+        "success",
+        "successful"
+       ],
+       "a": 0,
+       "why": "Sau chủ ngữ cần **động từ**: succeeded.",
+       "tag": "k2-family"
+      },
+      {
+       "t": "mc",
+       "q": "Smaller cars are more ___ because they use less fuel.",
+       "opts": [
+        "economical",
+        "economic",
+        "economy"
+       ],
+       "a": 0,
+       "why": "Tiết kiệm → **economical**.",
+       "tag": "k2-family"
+      },
+      {
+       "t": "fill",
+       "q": "Pollution is a serious ___ problem.",
+       "a": [
+        "environmental"
+       ],
+       "why": "Trước danh từ problem cần tính từ: **environmental**.",
+       "tag": "k2-family",
+       "hint": "environment"
+      },
+      {
+       "t": "tf",
+       "q": "The meeting was a big successful.",
+       "a": false,
+       "why": "Sau a + big cần danh từ: **success**.",
+       "tag": "k2-family",
+       "fix": "The meeting was a big success."
+      },
+      {
+       "t": "fix",
+       "q": "Young people want to live independent.",
+       "a": [
+        "Young people want to live independently."
+       ],
+       "why": "Bổ nghĩa cho live → trạng từ **independently**.",
+       "tag": "k2-family"
+      },
+      {
+       "t": "fix",
+       "q": "The important of education is clear.",
+       "a": [
+        "The importance of education is clear."
+       ],
+       "why": "Sau the cần danh từ: **importance**.",
+       "tag": "k2-family"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-family-1",
+       "front": "Bốn dạng của success",
+       "pattern": "**succeed** (v) · **success** (n) · **successful** (adj) · **successfully** (adv)",
+       "example": "She *succeeded* because she planned *successfully*.",
+       "vi": "Cô ấy thành công vì đã lên kế hoạch tốt."
+      }
+     ],
+     "write": {
+      "prompt": "Chọn một họ từ (decide, succeed, develop, depend…) và viết một câu dùng hai dạng khác nhau.",
+      "samples": [
+       "His decision was quick because he is a decisive person.",
+       "The company developed fast, and its development surprised everyone."
+      ],
+      "check": [
+       "Mỗi dạng đứng đúng vị trí của loại từ đó?"
+      ]
+     }
+    },
+    {
+     "id": "k2-adjadv",
+     "title": "Tính từ sau động từ nối; trạng từ đặc biệt",
+     "rule": [
+      "Sau **look, seem, feel, sound, taste, smell, become** dùng **tính từ**: *You look tired.* (không phải *tiredly*)",
+      "**good → well**; **hard, fast, late, early** giữ nguyên khi làm trạng từ.",
+      "**hardly** = hầu như không; **lately** = gần đây. Nghĩa khác hẳn hard và late.",
+      "Nhiều tính từ: ý kiến → kích cỡ → tuổi → hình dạng → màu → nguồn gốc → chất liệu: *a nice small old wooden table*."
+     ],
+     "examples": [
+      {
+       "en": "This soup *tastes delicious*.",
+       "vi": "Món súp này ngon."
+      },
+      {
+       "en": "I can *hardly* hear you.",
+       "vi": "Tôi hầu như không nghe thấy bạn."
+      },
+      {
+       "en": "She bought *a beautiful red silk* scarf.",
+       "vi": "Cô ấy mua một chiếc khăn lụa đỏ rất đẹp."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The plan sounds ___.",
+       "opts": [
+        "interesting",
+        "interestingly",
+        "interest"
+       ],
+       "a": 0,
+       "why": "Sau sound dùng **tính từ**.",
+       "tag": "k2-linkadj"
+      },
+      {
+       "t": "mc",
+       "q": "I've been very busy ___.",
+       "opts": [
+        "lately",
+        "late",
+        "latest"
+       ],
+       "a": 0,
+       "why": "Gần đây → **lately**.",
+       "tag": "k2-linkadj"
+      },
+      {
+       "t": "fill",
+       "q": "He was so tired that he could ___ walk.",
+       "a": [
+        "hardly",
+        "barely"
+       ],
+       "why": "Hầu như không → **hardly**.",
+       "tag": "k2-linkadj",
+       "hint": "hầu như không"
+      },
+      {
+       "t": "tf",
+       "q": "She looked angrily when she heard the news.",
+       "a": false,
+       "why": "Sau look (trông có vẻ) dùng tính từ.",
+       "tag": "k2-linkadj",
+       "fix": "She looked angry when she heard the news."
+      },
+      {
+       "t": "fix",
+       "q": "They live in an old big house.",
+       "a": [
+        "They live in a big old house."
+       ],
+       "why": "Kích cỡ đứng trước tuổi: **big old**.",
+       "tag": "k2-linkadj"
+      },
+      {
+       "t": "fix",
+       "q": "He works hardly to support his family.",
+       "a": [
+        "He works hard to support his family."
+       ],
+       "why": "Chăm chỉ = **hard**; hardly = hầu như không.",
+       "tag": "k2-linkadj"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-adjadv-1",
+       "front": "Khen một món ăn trông và có vị thế nào",
+       "pattern": "look / taste / smell / feel / seem + **tính từ**",
+       "example": "It *looks great* and *tastes amazing*.",
+       "vi": "Nó trông tuyệt và ăn rất ngon."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu với look / seem / feel + tính từ và một câu có hardly.",
+      "samples": [
+       "My neighbour seems friendly, but I hardly know him.",
+       "The task looked easy at first."
+      ],
+      "check": [
+       "Sau look/seem/feel là tính từ, không phải trạng từ?"
+      ],
+      "must": [
+       "\\b(look|looks|looked|seem|seems|seemed|feel|feels|felt|sound|sounds|sounded|taste|tastes|tasted|smell|smells)\\b"
+      ],
+      "hint": "Câu cần có look / seem / feel / sound / taste"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k2u2",
+   "no": "2",
+   "title": "Nhóm thì hiện tại",
+   "goal": "Speaking Part 1: nói về thói quen, việc tạm thời, kinh nghiệm",
+   "lessons": [
+    {
+     "id": "k2-pres",
+     "title": "Hiện tại đơn, hiện tại tiếp diễn và đuôi -s",
+     "rule": [
+      "**Hiện tại đơn**: thói quen, sự thật, việc lâu dài: *I work in an office.*",
+      "**Hiện tại tiếp diễn**: đang xảy ra, **tạm thời**, hoặc kế hoạch gần đã sắp xếp: *I'm working from home this week.* · *I'm meeting her tomorrow.*",
+      "Động từ trạng thái (know, like, want, need, believe, understand, own) không chia tiếp diễn.",
+      "Đọc đuôi **-s/-es**: **/ɪz/** sau âm xì, rít (buses, watches, changes); **/s/** sau /p, t, k, f, θ/ (stops, books); còn lại **/z/** (plays, goes)."
+     ],
+     "examples": [
+      {
+       "en": "She usually *cycles* to work, but this week she *is taking* the bus.",
+       "vi": "Cô ấy thường đạp xe đi làm, nhưng tuần này đi xe buýt."
+      },
+      {
+       "en": "More people *are shopping* online these days.",
+       "vi": "Dạo này nhiều người mua sắm trên mạng hơn."
+      },
+      {
+       "en": "I *am seeing* the dentist on Friday.",
+       "vi": "Thứ Sáu tôi có hẹn nha sĩ."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I ___ with my cousin until I find a flat.",
+       "opts": [
+        "am staying",
+        "stay",
+        "stays"
+       ],
+       "a": 0,
+       "why": "Việc tạm thời → hiện tại tiếp diễn.",
+       "tag": "k2-pres"
+      },
+      {
+       "t": "mc",
+       "q": "Đuôi -es trong *watches* đọc là:",
+       "opts": [
+        "/ɪz/",
+        "/s/",
+        "/z/"
+       ],
+       "a": 0,
+       "why": "watch tận cùng âm /tʃ/ (âm rít) → **/ɪz/**.",
+       "tag": "k2-s-sound"
+      },
+      {
+       "t": "mc",
+       "q": "Đuôi -s trong *books* đọc là:",
+       "opts": [
+        "/s/",
+        "/z/",
+        "/ɪz/"
+       ],
+       "a": 0,
+       "why": "book tận cùng âm vô thanh /k/ → **/s/**.",
+       "tag": "k2-s-sound"
+      },
+      {
+       "t": "fill",
+       "q": "The number of online courses ___ quickly these days.",
+       "a": [
+        "is growing",
+        "is increasing",
+        "is rising"
+       ],
+       "why": "these days + xu hướng đang diễn ra → hiện tại tiếp diễn.",
+       "tag": "k2-pres",
+       "hint": "grow"
+      },
+      {
+       "t": "tf",
+       "q": "I am believing that education is important.",
+       "a": false,
+       "why": "believe là động từ trạng thái → hiện tại đơn.",
+       "tag": "k2-pres",
+       "fix": "I believe that education is important."
+      },
+      {
+       "t": "fix",
+       "q": "Water is boiling at 100 degrees.",
+       "a": [
+        "Water boils at 100 degrees."
+       ],
+       "why": "Sự thật khoa học → hiện tại đơn.",
+       "tag": "k2-pres"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-pres-1",
+       "front": "Nói một việc tạm thời khác với thói quen",
+       "pattern": "S + usually + V(s), but **this week / these days** S + am/is/are + V-ing",
+       "example": "I usually drive, but this month *I'm walking* to work.",
+       "vi": "Tôi thường lái xe, nhưng tháng này tôi đi bộ đi làm."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2 câu Speaking Part 1 về công việc hoặc việc học: một câu thói quen, một câu việc tạm thời.",
+      "samples": [
+       "I work as an accountant. At the moment I'm preparing the annual report.",
+       "I usually study in the evening, but this week I'm studying in the morning."
+      ],
+      "check": [
+       "Thói quen dùng hiện tại đơn?",
+       "Việc tạm thời dùng am/is/are + V-ing?"
+      ]
+     }
+    },
+    {
+     "id": "k2-pp",
+     "title": "Hiện tại hoàn thành",
+     "rule": [
+      "**have/has + V3**. Ba cách dùng: kinh nghiệm (*I've been to Hue*), việc kéo dài đến nay (*I've lived here for 5 years*), kết quả còn ở hiện tại (*I've lost my keys*).",
+      "**for** + khoảng thời gian · **since** + mốc thời gian.",
+      "**already** (đã rồi, câu khẳng định) · **yet** (chưa, cuối câu phủ định / câu hỏi) · **just** (vừa mới) · **ever / never** (kinh nghiệm).",
+      "Dùng cho xu hướng trong Writing Task 2: *Technology has changed the way we work.*"
+     ],
+     "examples": [
+      {
+       "en": "I *have worked* here *since* 2021.",
+       "vi": "Tôi làm ở đây từ năm 2021."
+      },
+      {
+       "en": "She *has just finished* her degree.",
+       "vi": "Cô ấy vừa học xong đại học."
+      },
+      {
+       "en": "*Have* you *finished* yet?",
+       "vi": "Bạn xong chưa?"
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "They have been married ___ ten years.",
+       "opts": [
+        "for",
+        "since",
+        "from"
+       ],
+       "a": 0,
+       "why": "Khoảng thời gian → **for**.",
+       "tag": "k2-pp"
+      },
+      {
+       "t": "mc",
+       "q": "I haven't replied to the email ___.",
+       "opts": [
+        "yet",
+        "already",
+        "just"
+       ],
+       "a": 0,
+       "why": "Câu phủ định, cuối câu → **yet**.",
+       "tag": "k2-pp"
+      },
+      {
+       "t": "fill",
+       "q": "Online shopping ___ more popular in recent years.",
+       "a": [
+        "has become"
+       ],
+       "why": "in recent years → hiện tại hoàn thành.",
+       "tag": "k2-pp",
+       "hint": "become"
+      },
+      {
+       "t": "tf",
+       "q": "I have never saw such a beautiful beach.",
+       "a": false,
+       "why": "Sau have dùng V3: **seen**.",
+       "tag": "k2-pp",
+       "fix": "I have never seen such a beautiful beach."
+      },
+      {
+       "t": "fix",
+       "q": "She has lived here since three years.",
+       "a": [
+        "She has lived here for three years."
+       ],
+       "why": "three years là khoảng thời gian → **for**.",
+       "tag": "k2-pp"
+      },
+      {
+       "t": "fix",
+       "q": "He already has finished the report.",
+       "a": [
+        "He has already finished the report."
+       ],
+       "why": "already đứng giữa have và V3.",
+       "tag": "k2-pp"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-pp-1",
+       "front": "Nói bạn đã làm công việc hiện tại bao lâu",
+       "pattern": "S + **have/has + V3 + for** (khoảng) / **since** (mốc)",
+       "example": "I *have taught* English *for* six years.",
+       "vi": "Tôi đã dạy tiếng Anh sáu năm."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu về kinh nghiệm (ever/never) và một câu về việc kéo dài đến nay (for/since).",
+      "samples": [
+       "I have never been abroad, but I have lived in three cities since 2015.",
+       "My sister has worked as a nurse for ten years."
+      ],
+      "check": [
+       "have/has + V3?",
+       "for + khoảng, since + mốc?"
+      ],
+      "must": [
+       "\\b(have|has)\\b|'ve\\b|'s\\b"
+      ],
+      "hint": "Câu cần có have/has + V3"
+     }
+    },
+    {
+     "id": "k2-ppc",
+     "title": "Hiện tại hoàn thành tiếp diễn",
+     "rule": [
+      "**have/has been + V-ing**: nhấn mạnh **quá trình** kéo dài đến nay, thường còn tiếp tục: *I've been studying English for six months.*",
+      "So với hiện tại hoàn thành: *I've read the book* (đã xong) / *I've been reading the book* (đang đọc dở).",
+      "Dấu hiệu: for, since, all day, lately, recently, How long…?",
+      "Động từ trạng thái không dùng dạng này: ✗ *I've been knowing* → ✓ *I've known*."
+     ],
+     "examples": [
+      {
+       "en": "It *has been raining* all morning.",
+       "vi": "Trời mưa suốt cả sáng."
+      },
+      {
+       "en": "How long *have* you *been waiting*?",
+       "vi": "Bạn đợi bao lâu rồi?"
+      },
+      {
+       "en": "She *has been learning* to drive since May.",
+       "vi": "Cô ấy học lái xe từ tháng 5."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I'm tired because I ___ all day.",
+       "opts": [
+        "have been working",
+        "works",
+        "am work"
+       ],
+       "a": 0,
+       "why": "Nhấn mạnh quá trình cả ngày → **have been working**.",
+       "tag": "k2-ppc"
+      },
+      {
+       "t": "mc",
+       "q": "We ___ each other since childhood.",
+       "opts": [
+        "have known",
+        "have been knowing",
+        "are knowing"
+       ],
+       "a": 0,
+       "why": "know là động từ trạng thái → **have known**.",
+       "tag": "k2-ppc"
+      },
+      {
+       "t": "fill",
+       "q": "How long ___ you been learning English?",
+       "a": [
+        "have"
+       ],
+       "why": "How long + **have** + S + been V-ing?",
+       "tag": "k2-ppc"
+      },
+      {
+       "t": "tf",
+       "q": "She has been write emails all morning.",
+       "a": false,
+       "why": "have been + **V-ing**.",
+       "tag": "k2-ppc",
+       "fix": "She has been writing emails all morning."
+      },
+      {
+       "t": "fix",
+       "q": "I have been wanting a new phone for months.",
+       "a": [
+        "I have wanted a new phone for months.",
+        "I've wanted a new phone for months."
+       ],
+       "why": "want là động từ trạng thái → have wanted.",
+       "tag": "k2-ppc"
+      },
+      {
+       "t": "fix",
+       "q": "He is studying here since 2022.",
+       "a": [
+        "He has been studying here since 2022.",
+        "He has studied here since 2022."
+       ],
+       "why": "since + mốc → hiện tại hoàn thành (tiếp diễn).",
+       "tag": "k2-ppc"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-ppc-1",
+       "front": "Nói bạn đã học tiếng Anh được bao lâu (vẫn đang học)",
+       "pattern": "S + **have/has been + V-ing** + for / since",
+       "example": "*I've been learning* English *for* two years.",
+       "vi": "Tôi học tiếng Anh được hai năm rồi."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu về việc bạn đang làm kéo dài đến nay với have been + V-ing.",
+      "samples": [
+       "I have been saving money for a trip since January.",
+       "My brother has been looking for a job for three months."
+      ],
+      "check": [
+       "have/has been + V-ing?",
+       "Động từ có phải động từ trạng thái không?"
+      ],
+      "must": [
+       "\\b(been)\\s+\\w+ing\\b"
+      ],
+      "hint": "Câu cần có have/has been + V-ing"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k2u3",
+   "no": "3",
+   "title": "Quá khứ, tương lai và các cặp hay nhầm",
+   "goal": "Speaking Part 2: kể chuyện; nói kế hoạch và dự đoán",
+   "lessons": [
+    {
+     "id": "k2-past",
+     "title": "Quá khứ đơn, quá khứ tiếp diễn và đuôi -ed",
+     "rule": [
+      "**Quá khứ đơn**: việc đã xong, có thời điểm xác định.",
+      "**Quá khứ tiếp diễn (was/were + V-ing)**: việc đang diễn ra tại một thời điểm quá khứ, làm nền cho việc khác.",
+      "Việc dài bị việc ngắn cắt ngang: *I **was cooking** when the phone **rang**.* · **while** + tiếp diễn, **when** + quá khứ đơn.",
+      "Đọc đuôi **-ed**: **/ɪd/** sau /t, d/ (wanted, needed); **/t/** sau âm vô thanh (worked, stopped, watched); còn lại **/d/** (played, called)."
+     ],
+     "examples": [
+      {
+       "en": "I *was walking* home when it *started* to rain.",
+       "vi": "Tôi đang đi bộ về nhà thì trời bắt đầu mưa."
+      },
+      {
+       "en": "While she *was studying*, her brother *was watching* TV.",
+       "vi": "Trong khi cô ấy học, em trai xem TV."
+      },
+      {
+       "en": "At 9 p.m. yesterday we *were having* dinner.",
+       "vi": "9 giờ tối qua chúng tôi đang ăn tối."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "While I ___ a book, the lights went out.",
+       "opts": [
+        "was reading",
+        "read",
+        "am reading"
+       ],
+       "a": 0,
+       "why": "Việc đang diễn ra bị cắt ngang → quá khứ tiếp diễn.",
+       "tag": "k2-pastcont"
+      },
+      {
+       "t": "mc",
+       "q": "Đuôi -ed trong *decided* đọc là:",
+       "opts": [
+        "/ɪd/",
+        "/t/",
+        "/d/"
+       ],
+       "a": 0,
+       "why": "decide tận cùng âm /d/ → **/ɪd/**.",
+       "tag": "k2-ed-sound"
+      },
+      {
+       "t": "mc",
+       "q": "Đuôi -ed trong *watched* đọc là:",
+       "opts": [
+        "/t/",
+        "/d/",
+        "/ɪd/"
+       ],
+       "a": 0,
+       "why": "watch tận cùng âm vô thanh /tʃ/ → **/t/**.",
+       "tag": "k2-ed-sound"
+      },
+      {
+       "t": "fill",
+       "q": "They ___ football when it began to rain.",
+       "a": [
+        "were playing"
+       ],
+       "why": "Đang diễn ra thì bị cắt ngang → **were playing**.",
+       "tag": "k2-pastcont",
+       "hint": "play"
+      },
+      {
+       "t": "tf",
+       "q": "When I arrived, they were having lunch.",
+       "a": true,
+       "why": "Đúng: việc đang diễn ra (were having) tại thời điểm tôi đến.",
+       "tag": "k2-pastcont"
+      },
+      {
+       "t": "fix",
+       "q": "I was breaking my phone yesterday.",
+       "a": [
+        "I broke my phone yesterday."
+       ],
+       "why": "Việc xảy ra một lần, đã xong → quá khứ đơn.",
+       "tag": "k2-pastcont"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-past-1",
+       "front": "Kể một việc đang làm thì bị cắt ngang",
+       "pattern": "S + **was/were + V-ing** when S + **V2**",
+       "example": "I *was sleeping* when the alarm *went off*.",
+       "vi": "Tôi đang ngủ thì chuông báo thức kêu."
+      }
+     ],
+     "write": {
+      "prompt": "Kể một chuyện ngắn (2 câu) có một việc đang diễn ra bị việc khác cắt ngang.",
+      "samples": [
+       "I was waiting for a friend when I saw an old classmate. We talked for an hour.",
+       "While we were having dinner, the power went out."
+      ],
+      "check": [
+       "Việc dài dùng was/were + V-ing?",
+       "Việc ngắn dùng quá khứ đơn?"
+      ],
+      "must": [
+       "\\b(was|were)\\s+\\w+ing\\b"
+      ],
+      "hint": "Câu cần có was/were + V-ing"
+     }
+    },
+    {
+     "id": "k2-ppvspast",
+     "title": "Hiện tại hoàn thành hay quá khứ đơn?",
+     "rule": [
+      "Có **thời điểm cụ thể đã qua** (yesterday, last year, in 2020, two days ago, when I was a child) → **quá khứ đơn**.",
+      "Không nói lúc nào, hoặc còn liên quan đến hiện tại (ever, never, already, yet, so far, recently, for/since đến nay) → **hiện tại hoàn thành**.",
+      "Hỏi kinh nghiệm bằng hiện tại hoàn thành, hỏi chi tiết bằng quá khứ đơn: *Have you been to Hue? — Yes. — When **did** you **go**?*"
+     ],
+     "examples": [
+      {
+       "en": "I *have visited* Da Lat twice.",
+       "vi": "Tôi đã đến Đà Lạt hai lần."
+      },
+      {
+       "en": "I *visited* Da Lat last summer.",
+       "vi": "Hè năm ngoái tôi đã đến Đà Lạt."
+      },
+      {
+       "en": "She *has worked* here since 2020; before that she *worked* in a bank.",
+       "vi": "Cô ấy làm ở đây từ 2020; trước đó làm ở ngân hàng."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I ___ my first job in 2018.",
+       "opts": [
+        "got",
+        "have got",
+        "have gotten"
+       ],
+       "a": 0,
+       "why": "in 2018 là thời điểm cụ thể → quá khứ đơn.",
+       "tag": "k2-pp-past"
+      },
+      {
+       "t": "mc",
+       "q": "The cost of living ___ sharply over the last five years.",
+       "opts": [
+        "has risen",
+        "rose",
+        "rises"
+       ],
+       "a": 0,
+       "why": "over the last five years (đến nay) → hiện tại hoàn thành.",
+       "tag": "k2-pp-past"
+      },
+      {
+       "t": "fill",
+       "q": "When ___ you move to this city?",
+       "a": [
+        "did"
+       ],
+       "why": "Hỏi thời điểm trong quá khứ → **did**.",
+       "tag": "k2-pp-past"
+      },
+      {
+       "t": "tf",
+       "q": "I have graduated from university in 2019.",
+       "a": false,
+       "why": "in 2019 → quá khứ đơn.",
+       "tag": "k2-pp-past",
+       "fix": "I graduated from university in 2019."
+      },
+      {
+       "t": "fix",
+       "q": "I live in this city since 2019.",
+       "a": [
+        "I have lived in this city since 2019.",
+        "I've lived in this city since 2019.",
+        "I have been living in this city since 2019."
+       ],
+       "why": "since + mốc, kéo dài đến nay → hiện tại hoàn thành.",
+       "tag": "k2-pp-past"
+      },
+      {
+       "t": "fix",
+       "q": "She has called me two hours ago.",
+       "a": [
+        "She called me two hours ago."
+       ],
+       "why": "ago → quá khứ đơn.",
+       "tag": "k2-pp-past"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-ppvspast-1",
+       "front": "Khi nào KHÔNG dùng hiện tại hoàn thành?",
+       "pattern": "Có **yesterday / last… / in + năm / …ago** → **quá khứ đơn**",
+       "example": "I *went* there *last year*. (không: I have gone)",
+       "vi": "Năm ngoái tôi đã đến đó."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu kinh nghiệm (hiện tại hoàn thành) rồi một câu chi tiết có thời điểm (quá khứ đơn).",
+      "samples": [
+       "I have been to Singapore once. I went there in 2022 with my family.",
+       "I have tried surfing. I tried it two years ago in Mui Ne."
+      ],
+      "check": [
+       "Câu có thời điểm cụ thể dùng quá khứ đơn?"
+      ]
+     }
+    },
+    {
+     "id": "k2-pastperf",
+     "title": "Quá khứ hoàn thành",
+     "rule": [
+      "**had + V3**: việc xảy ra **trước** một việc khác trong quá khứ.",
+      "Việc xảy ra trước dùng had + V3, việc xảy ra sau dùng quá khứ đơn: *The train **had left** by the time we **arrived**.*",
+      "Dấu hiệu: before, after, by the time, already, when.",
+      "Chỉ dùng khi cần làm rõ thứ tự; kể tuần tự thì dùng quá khứ đơn."
+     ],
+     "examples": [
+      {
+       "en": "When I got home, everyone *had gone* to bed.",
+       "vi": "Khi tôi về đến nhà, mọi người đã đi ngủ."
+      },
+      {
+       "en": "She *had never flown* before that trip.",
+       "vi": "Trước chuyến đó cô ấy chưa từng đi máy bay."
+      },
+      {
+       "en": "After he *had finished* work, he went to the gym.",
+       "vi": "Sau khi xong việc, anh ấy đi tập gym."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "By the time the police arrived, the thief ___.",
+       "opts": [
+        "had escaped",
+        "has escaped",
+        "escapes"
+       ],
+       "a": 0,
+       "why": "Xảy ra trước việc quá khứ khác → **had + V3**.",
+       "tag": "k2-pastperf"
+      },
+      {
+       "t": "mc",
+       "q": "I didn't recognise her because she ___ her hair.",
+       "opts": [
+        "had cut",
+        "has cut",
+        "cuts"
+       ],
+       "a": 0,
+       "why": "Cắt tóc xảy ra trước lúc gặp → **had cut**.",
+       "tag": "k2-pastperf"
+      },
+      {
+       "t": "fill",
+       "q": "The film ___ already started when we arrived.",
+       "a": [
+        "had"
+       ],
+       "why": "Xảy ra trước → **had** + V3.",
+       "tag": "k2-pastperf"
+      },
+      {
+       "t": "tf",
+       "q": "After I had eaten, I went for a walk.",
+       "a": true,
+       "why": "Đúng: ăn xong (had eaten) rồi mới đi dạo.",
+       "tag": "k2-pastperf"
+      },
+      {
+       "t": "fix",
+       "q": "When we arrived, the shop has closed.",
+       "a": [
+        "When we arrived, the shop had closed.",
+        "When we arrived, the shop had already closed."
+       ],
+       "why": "Trước một việc quá khứ → **had closed**.",
+       "tag": "k2-pastperf"
+      },
+      {
+       "t": "fix",
+       "q": "I had went to bed before he called.",
+       "a": [
+        "I had gone to bed before he called."
+       ],
+       "why": "had + V3: **gone**.",
+       "tag": "k2-pastperf"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-pastperf-1",
+       "front": "Kể việc đã xảy ra trước khi bạn đến nơi",
+       "pattern": "By the time / When S + V2, S + **had + V3**",
+       "example": "When I arrived, the meeting *had already started*.",
+       "vi": "Khi tôi đến, cuộc họp đã bắt đầu rồi."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu có hai việc trong quá khứ, việc xảy ra trước dùng had + V3.",
+      "samples": [
+       "By the time I got to the station, the last bus had left.",
+       "She was nervous because she had never spoken in public before."
+      ],
+      "check": [
+       "Việc xảy ra trước dùng had + V3?"
+      ],
+      "must": [
+       "\\bhad\\b"
+      ],
+      "hint": "Câu cần có had + V3"
+     }
+    },
+    {
+     "id": "k2-future",
+     "title": "Các cách nói tương lai",
+     "rule": [
+      "**will + V**: quyết định tức thì, dự đoán theo ý kiến (I think, probably), lời hứa.",
+      "**be going to + V**: dự định đã có; dự đoán có căn cứ trước mắt.",
+      "**Hiện tại tiếp diễn**: việc đã sắp xếp cụ thể: *I'm flying to Hue on Monday.*",
+      "**will be + V-ing**: đang diễn ra tại một thời điểm tương lai: *This time tomorrow I'll be sitting the exam.*",
+      "**will have + V3**: xong trước một mốc tương lai, với **by**: *By June I will have finished the course.*"
+     ],
+     "examples": [
+      {
+       "en": "I think robots *will do* most housework in the future.",
+       "vi": "Tôi nghĩ tương lai robot sẽ làm hầu hết việc nhà."
+      },
+      {
+       "en": "*We're going to renovate* the kitchen next month.",
+       "vi": "Tháng sau chúng tôi sẽ sửa bếp."
+      },
+      {
+       "en": "*By 2030* the city *will have built* two new metro lines.",
+       "vi": "Đến 2030 thành phố sẽ xây xong hai tuyến metro mới."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "By next year, I ___ here for a decade.",
+       "opts": [
+        "will have worked",
+        "will work",
+        "am working"
+       ],
+       "a": 0,
+       "why": "by + mốc tương lai → **will have + V3**.",
+       "tag": "k2-future"
+      },
+      {
+       "t": "mc",
+       "q": "This time next week we ___ on the beach.",
+       "opts": [
+        "will be lying",
+        "lied",
+        "have lain"
+       ],
+       "a": 0,
+       "why": "Đang diễn ra tại thời điểm tương lai → **will be + V-ing**.",
+       "tag": "k2-future"
+      },
+      {
+       "t": "fill",
+       "q": "I've already bought the tickets. We ___ going to see the show on Friday.",
+       "a": [
+        "are",
+        "'re"
+       ],
+       "why": "Dự định đã có → **are going to**.",
+       "tag": "k2-future"
+      },
+      {
+       "t": "tf",
+       "q": "I think people will working from home more in the future.",
+       "a": false,
+       "why": "will + V nguyên mẫu.",
+       "tag": "k2-future",
+       "fix": "I think people will work from home more in the future."
+      },
+      {
+       "t": "fix",
+       "q": "By 2030, the population reaches 110 million.",
+       "a": [
+        "By 2030, the population will have reached 110 million.",
+        "By 2030, the population will reach 110 million."
+       ],
+       "why": "by + mốc tương lai → **will have reached**.",
+       "tag": "k2-future"
+      },
+      {
+       "t": "fix",
+       "q": "I will meeting my manager at 3 p.m. tomorrow.",
+       "a": [
+        "I am meeting my manager at 3 p.m. tomorrow.",
+        "I'm meeting my manager at 3 p.m. tomorrow.",
+        "I will meet my manager at 3 p.m. tomorrow.",
+        "I will be meeting my manager at 3 p.m. tomorrow."
+       ],
+       "why": "Lịch đã sắp xếp → **am meeting** (hoặc will meet).",
+       "tag": "k2-future"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-future-1",
+       "front": "Nói việc sẽ hoàn thành trước một mốc tương lai",
+       "pattern": "**By** + mốc, S + **will have + V3**",
+       "example": "*By December* I *will have saved* enough money.",
+       "vi": "Đến tháng 12 tôi sẽ tiết kiệm đủ tiền."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một dự đoán (will) về tương lai và một câu với By + mốc thời gian + will have + V3.",
+      "samples": [
+       "I think electric cars will become cheaper. By 2035, most people will have switched to them.",
+       "By the end of this year, I will have read twenty books."
+      ],
+      "check": [
+       "Dự đoán theo ý kiến dùng will?",
+       "By + mốc dùng will have + V3?"
+      ],
+      "must": [
+       "\\bwill\\b|'ll\\b"
+      ],
+      "hint": "Câu cần có will"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k2u4",
+   "no": "4",
+   "title": "Hoà hợp chủ ngữ – động từ và mạo từ",
+   "goal": "Tự sửa lỗi cơ bản trong bài Writing",
+   "lessons": [
+    {
+     "id": "k2-sva1",
+     "title": "Động từ chia theo danh từ chính",
+     "rule": [
+      "Động từ chia theo **danh từ chính** của chủ ngữ, không theo danh từ đứng gần nhất: *The quality of public services **is** improving.*",
+      "**V-ing / to V** làm chủ ngữ → động từ số ít: *Learning languages **takes** time.*",
+      "**each, every, everyone, nobody, something** → số ít: *Everyone **is** here.*",
+      "**one of the + N số nhiều** → số ít: *One of my friends **lives** abroad.*",
+      "**people, police, children** → số nhiều. **news, maths, economics** → số ít."
+     ],
+     "examples": [
+      {
+       "en": "The price of vegetables *has* gone up.",
+       "vi": "Giá rau đã tăng."
+      },
+      {
+       "en": "Eating too much sugar *is* bad for you.",
+       "vi": "Ăn quá nhiều đường không tốt cho bạn."
+      },
+      {
+       "en": "One of the main reasons *is* cost.",
+       "vi": "Một trong những lý do chính là chi phí."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The cost of houses in big cities ___ very high.",
+       "opts": [
+        "is",
+        "are",
+        "be"
+       ],
+       "a": 0,
+       "why": "Danh từ chính là **cost** (số ít).",
+       "tag": "k2-sva"
+      },
+      {
+       "t": "mc",
+       "q": "Everyone in my family ___ spicy food.",
+       "opts": [
+        "likes",
+        "like",
+        "are liking"
+       ],
+       "a": 0,
+       "why": "everyone → động từ số ít.",
+       "tag": "k2-sva"
+      },
+      {
+       "t": "fill",
+       "q": "One of the biggest problems ___ traffic.",
+       "a": [
+        "is"
+       ],
+       "why": "one of the + N số nhiều → động từ **số ít**.",
+       "tag": "k2-sva",
+       "hint": "be"
+      },
+      {
+       "t": "tf",
+       "q": "People in my hometown is very friendly.",
+       "a": false,
+       "why": "people là số nhiều → **are**.",
+       "tag": "k2-sva",
+       "fix": "People in my hometown are very friendly."
+      },
+      {
+       "t": "fix",
+       "q": "Watching films help me relax.",
+       "a": [
+        "Watching films helps me relax."
+       ],
+       "why": "V-ing làm chủ ngữ → động từ số ít: **helps**.",
+       "tag": "k2-sva"
+      },
+      {
+       "t": "fix",
+       "q": "The news are on at seven.",
+       "a": [
+        "The news is on at seven."
+       ],
+       "why": "news là danh từ số ít.",
+       "tag": "k2-sva"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-sva1-1",
+       "front": "Chủ ngữ dài có of: chia động từ theo từ nào?",
+       "pattern": "**Danh từ chính** (trước of) + of … + V chia theo danh từ chính",
+       "example": "The *number* of visitors *has* increased.",
+       "vi": "Số lượng khách đã tăng."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu có chủ ngữ là V-ing và một câu có chủ ngữ dạng 'The … of …'.",
+      "samples": [
+       "Living in a big city has many advantages.",
+       "The quality of local restaurants is getting better."
+      ],
+      "check": [
+       "Động từ chia theo danh từ chính / V-ing (số ít)?"
+      ]
+     }
+    },
+    {
+     "id": "k2-sva2",
+     "title": "the number of, a number of, neither … nor, there is/are",
+     "rule": [
+      "**The number of** + N số nhiều → động từ **số ít**: *The number of cars **has** increased.* (rất hay gặp ở Task 1)",
+      "**A number of** + N số nhiều (= nhiều) → động từ **số nhiều**: *A number of people **use** the bus.*",
+      "**the percentage / proportion of** + N → số ít.",
+      "**either A or B / neither A nor B** → chia theo **B**. **A as well as B** → chia theo **A**.",
+      "**There is / are** chia theo danh từ phía sau. Khoảng thời gian, tiền, khoảng cách → số ít: *Two hours **is** too long.*"
+     ],
+     "examples": [
+      {
+       "en": "The number of students *has* doubled.",
+       "vi": "Số sinh viên đã tăng gấp đôi."
+      },
+      {
+       "en": "A number of shops *have* closed.",
+       "vi": "Nhiều cửa hàng đã đóng cửa."
+      },
+      {
+       "en": "There *are* several reasons for this.",
+       "vi": "Có vài lý do cho việc này."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The number of people working from home ___ risen.",
+       "opts": [
+        "has",
+        "have",
+        "are"
+       ],
+       "a": 0,
+       "why": "**The number of** → số ít.",
+       "tag": "k2-sva-num"
+      },
+      {
+       "t": "mc",
+       "q": "A number of studies ___ that sleep improves memory.",
+       "opts": [
+        "show",
+        "shows",
+        "is showing"
+       ],
+       "a": 0,
+       "why": "**A number of** = nhiều → số nhiều.",
+       "tag": "k2-sva-num"
+      },
+      {
+       "t": "fill",
+       "q": "There ___ many reasons why people move to cities.",
+       "a": [
+        "are"
+       ],
+       "why": "many reasons số nhiều → **are**.",
+       "tag": "k2-sva-num",
+       "hint": "be"
+      },
+      {
+       "t": "tf",
+       "q": "Neither my parents nor my brother live here.",
+       "a": false,
+       "why": "neither A nor B → chia theo B (my brother): **lives**.",
+       "tag": "k2-sva-num",
+       "fix": "Neither my parents nor my brother lives here."
+      },
+      {
+       "t": "fix",
+       "q": "The percentage of women in the workforce were 45%.",
+       "a": [
+        "The percentage of women in the workforce was 45%."
+       ],
+       "why": "the percentage of → số ít: **was**.",
+       "tag": "k2-sva-num"
+      },
+      {
+       "t": "fix",
+       "q": "Ten kilometres are a long way to walk.",
+       "a": [
+        "Ten kilometres is a long way to walk."
+       ],
+       "why": "Khoảng cách coi như một khối → số ít.",
+       "tag": "k2-sva-num"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-sva2-1",
+       "front": "the number of khác a number of thế nào?",
+       "pattern": "**The number of** + Ns + V **số ít** · **A number of** + Ns + V **số nhiều**",
+       "example": "*The number of* tourists *is* rising. *A number of* tourists *are* waiting.",
+       "vi": "Số du khách đang tăng. Nhiều du khách đang đợi."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu Task 1 với The number of … và một câu với There are …",
+      "samples": [
+       "The number of cyclists in the city has increased since 2020.",
+       "There are three main reasons for this trend."
+      ],
+      "check": [
+       "The number of → động từ số ít?"
+      ],
+      "must": [
+       "\\bthe number of\\b|\\bthere (is|are|was|were)\\b"
+      ],
+      "hint": "Câu cần có The number of hoặc There is/are"
+     }
+    },
+    {
+     "id": "k2-art",
+     "title": "Mạo từ: a / an / the / không mạo từ",
+     "rule": [
+      "**a / an**: danh từ đếm được số ít, nhắc lần đầu, nghề nghiệp. *an* trước **âm** nguyên âm: *an hour*, *a university*.",
+      "**the**: đã xác định, duy nhất, so sánh nhất, nhắc lần hai: *the sun*, *the best way*, *the book I bought*.",
+      "**Không mạo từ**: số nhiều / không đếm được nói chung (*People need sleep*), bữa ăn (*have lunch*), môn học, *by + phương tiện* (*by bus*).",
+      "Danh từ đếm được số ít **không đứng một mình**: ✗ *I bought car* → ✓ *I bought a car*."
+     ],
+     "examples": [
+      {
+       "en": "She works as *a* lawyer.",
+       "vi": "Cô ấy làm luật sư."
+      },
+      {
+       "en": "*The* internet has changed our lives.",
+       "vi": "Internet đã thay đổi cuộc sống của chúng ta."
+      },
+      {
+       "en": "I go to work *by* bike.",
+       "vi": "Tôi đi làm bằng xe đạp."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Chọn câu đúng:",
+       "opts": [
+        "Education is important for everyone.",
+        "The education is important for everyone.",
+        "Educations are important for everyone."
+       ],
+       "a": 0,
+       "why": "Nói chung về danh từ không đếm được → không mạo từ, không có -s.",
+       "tag": "k2-article"
+      },
+      {
+       "t": "mc",
+       "q": "This is ___ best restaurant in town.",
+       "opts": [
+        "the",
+        "a",
+        "one"
+       ],
+       "a": 0,
+       "why": "So sánh nhất → **the**.",
+       "tag": "k2-article"
+      },
+      {
+       "t": "fill",
+       "q": "My father is ___ engineer.",
+       "a": [
+        "an"
+       ],
+       "why": "Nghề nghiệp, âm nguyên âm → **an**.",
+       "tag": "k2-article"
+      },
+      {
+       "t": "tf",
+       "q": "I usually have the breakfast at seven.",
+       "a": false,
+       "why": "Bữa ăn không dùng mạo từ.",
+       "tag": "k2-article",
+       "fix": "I usually have breakfast at seven."
+      },
+      {
+       "t": "fix",
+       "q": "She goes to school by the bus.",
+       "a": [
+        "She goes to school by bus."
+       ],
+       "why": "by + phương tiện: không mạo từ.",
+       "tag": "k2-article"
+      },
+      {
+       "t": "fix",
+       "q": "I want to buy new laptop.",
+       "a": [
+        "I want to buy a new laptop."
+       ],
+       "why": "Danh từ đếm được số ít cần **a**.",
+       "tag": "k2-article"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-art-1",
+       "front": "Ba trường hợp không dùng mạo từ",
+       "pattern": "Nói **chung** (số nhiều / không đếm được) · **bữa ăn** · **by + phương tiện**",
+       "example": "*Children* need *sleep*. We have *dinner* at 7 and go *by car*.",
+       "vi": "Trẻ em cần ngủ. Chúng tôi ăn tối lúc 7 giờ và đi bằng ô tô."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2 câu về thói quen đi lại và ăn uống của bạn; kiểm tra từng danh từ có cần mạo từ không.",
+      "samples": [
+       "I go to work by motorbike and have lunch in a small café near the office.",
+       "The café serves the best coffee in the area."
+      ],
+      "check": [
+       "Danh từ đếm được số ít có a/an/the?",
+       "Bữa ăn và by + phương tiện không có mạo từ?"
+      ]
+     }
+    },
+    {
+     "id": "k2-unc",
+     "title": "Danh từ không đếm được; few và little",
+     "rule": [
+      "Không đếm được, hay sai: **information, advice, news, equipment, furniture, homework, research, traffic, knowledge, feedback, software, luggage**.",
+      "Không thêm -s, không dùng a/an; dùng *much, a little, a lot of, a piece of*.",
+      "**many / a few** + đếm được · **much / a little** + không đếm được.",
+      "**a few / a little** = một ít (đủ dùng, tích cực) · **few / little** = rất ít (gần như không, tiêu cực)."
+     ],
+     "examples": [
+      {
+       "en": "The teacher gave us useful *feedback*.",
+       "vi": "Giáo viên cho chúng tôi nhận xét hữu ích."
+      },
+      {
+       "en": "I have *a few* close friends.",
+       "vi": "Tôi có vài người bạn thân."
+      },
+      {
+       "en": "There is *little* hope of finding it.",
+       "vi": "Hầu như không còn hy vọng tìm thấy nó."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "We need more ___ before we decide.",
+       "opts": [
+        "research",
+        "researches",
+        "a research"
+       ],
+       "a": 0,
+       "why": "research không đếm được.",
+       "tag": "k2-uncount"
+      },
+      {
+       "t": "mc",
+       "q": "I have ___ time, so we can talk now.",
+       "opts": [
+        "a little",
+        "little",
+        "a few"
+       ],
+       "a": 0,
+       "why": "Có một ít (đủ) + không đếm được → **a little**.",
+       "tag": "k2-uncount"
+      },
+      {
+       "t": "fill",
+       "q": "Very ___ people came, so the event was cancelled.",
+       "a": [
+        "few"
+       ],
+       "why": "Rất ít (tiêu cực) + đếm được → **few**.",
+       "tag": "k2-uncount",
+       "hint": "rất ít"
+      },
+      {
+       "t": "tf",
+       "q": "The hotel has modern equipments.",
+       "a": false,
+       "why": "equipment không đếm được.",
+       "tag": "k2-uncount",
+       "fix": "The hotel has modern equipment."
+      },
+      {
+       "t": "fix",
+       "q": "There are too many traffic in the morning.",
+       "a": [
+        "There is too much traffic in the morning."
+       ],
+       "why": "traffic không đếm được → **is too much**.",
+       "tag": "k2-uncount"
+      },
+      {
+       "t": "fix",
+       "q": "Can you give me an advice?",
+       "a": [
+        "Can you give me some advice?",
+        "Can you give me a piece of advice?",
+        "Can you give me advice?"
+       ],
+       "why": "advice không đếm được: some / a piece of advice.",
+       "tag": "k2-uncount"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-unc-1",
+       "front": "a few khác few thế nào?",
+       "pattern": "**a few / a little** = một ít, đủ · **few / little** = rất ít, gần như không",
+       "example": "I have *a few* ideas. / He has *few* friends.",
+       "vi": "Tôi có vài ý tưởng. / Anh ấy có rất ít bạn."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu với một danh từ không đếm được (information, advice, traffic…) và một câu với a few hoặc a little.",
+      "samples": [
+       "There is a lot of useful information on this website.",
+       "I need a little help with my homework."
+      ],
+      "check": [
+       "Danh từ không đếm được không có -s và a/an?"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "k2u5",
+   "no": "5",
+   "title": "Câu điều kiện",
+   "goal": "Speaking Part 3 và Writing Task 2: nêu hệ quả, giả định",
+   "lessons": [
+    {
+     "id": "k2-if01",
+     "title": "Điều kiện loại 0, loại 1 và unless",
+     "rule": [
+      "**Loại 0**: If + hiện tại đơn, hiện tại đơn — sự thật, quy luật: *If you heat ice, it melts.*",
+      "**Loại 1**: If + hiện tại đơn, **will / can / may + V** — có thể xảy ra.",
+      "Quy tắc vàng: **mệnh đề if không dùng will**.",
+      "**Unless** = if … not; sau unless dùng dạng khẳng định: *Unless you practise, you won't improve.*",
+      "**As long as / Provided that** = miễn là."
+     ],
+     "examples": [
+      {
+       "en": "If people *exercise* regularly, they *feel* better.",
+       "vi": "Nếu tập thể dục đều, người ta thấy khoẻ hơn."
+      },
+      {
+       "en": "If the government *raises* taxes, prices *will go* up.",
+       "vi": "Nếu chính phủ tăng thuế, giá cả sẽ tăng."
+      },
+      {
+       "en": "*Unless* we *act* now, the problem *will get* worse.",
+       "vi": "Trừ khi hành động ngay, vấn đề sẽ tệ hơn."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "If employees ___ overtime regularly, their health will suffer.",
+       "opts": [
+        "work",
+        "will work",
+        "worked"
+       ],
+       "a": 0,
+       "why": "Mệnh đề if loại 1 dùng hiện tại đơn.",
+       "tag": "k2-if1"
+      },
+      {
+       "t": "mc",
+       "q": "___ you book early, you won't get a seat.",
+       "opts": [
+        "Unless",
+        "If",
+        "As long as"
+       ],
+       "a": 0,
+       "why": "Trừ khi = **Unless**.",
+       "tag": "k2-if1"
+      },
+      {
+       "t": "fill",
+       "q": "You can borrow my car as ___ as you drive carefully.",
+       "a": [
+        "long"
+       ],
+       "why": "Miễn là = **as long as**.",
+       "tag": "k2-if1"
+      },
+      {
+       "t": "tf",
+       "q": "Unless you don't study, you will fail.",
+       "a": false,
+       "why": "Sau unless dùng khẳng định.",
+       "tag": "k2-if1",
+       "fix": "Unless you study, you will fail."
+      },
+      {
+       "t": "fix",
+       "q": "If it will rain tomorrow, we will cancel the trip.",
+       "a": [
+        "If it rains tomorrow, we will cancel the trip.",
+        "If it rains tomorrow, we'll cancel the trip."
+       ],
+       "why": "Mệnh đề if không dùng will.",
+       "tag": "k2-if1"
+      },
+      {
+       "t": "fix",
+       "q": "If you mix red and yellow, you will got orange.",
+       "a": [
+        "If you mix red and yellow, you get orange.",
+        "If you mix red and yellow, you will get orange."
+       ],
+       "why": "Sự thật → loại 0: **you get**.",
+       "tag": "k2-if1"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-if01-1",
+       "front": "Nêu hệ quả có thể xảy ra của một chính sách",
+       "pattern": "**If + S + V(s), S + will + V**",
+       "example": "*If* the city *builds* more parks, people *will be* healthier.",
+       "vi": "Nếu thành phố xây thêm công viên, người dân sẽ khoẻ hơn."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu Writing Task 2 nêu hệ quả với If (loại 1) và một câu với Unless.",
+      "samples": [
+       "If children spend too much time on screens, their eyesight will suffer.",
+       "Unless governments invest in public transport, traffic will get worse."
+      ],
+      "check": [
+       "Vế if / unless dùng hiện tại đơn?",
+       "Sau unless là khẳng định?"
+      ],
+      "must": [
+       "\\b(if|unless)\\b"
+      ],
+      "hint": "Câu cần có if hoặc unless"
+     }
+    },
+    {
+     "id": "k2-if2",
+     "title": "Điều kiện loại 2: giả định ở hiện tại",
+     "rule": [
+      "**If + quá khứ đơn, would / could / might + V**: điều **không có thật** ở hiện tại, hoặc khó xảy ra.",
+      "Động từ to be dùng **were** cho mọi ngôi: *If I **were** rich…*",
+      "Khuyên ai đó: **If I were you, I would…**",
+      "Rất hợp với câu hỏi giả định ở Speaking Part 3: *If the government **invested** more in buses, fewer people **would** drive.*"
+     ],
+     "examples": [
+      {
+       "en": "If I *had* more free time, I *would learn* the piano.",
+       "vi": "Nếu có nhiều thời gian rảnh hơn, tôi sẽ học piano."
+      },
+      {
+       "en": "If I *were* you, I *would apply* for the job.",
+       "vi": "Nếu tôi là bạn, tôi sẽ ứng tuyển công việc đó."
+      },
+      {
+       "en": "People *would be* healthier if they *walked* more.",
+       "vi": "Mọi người sẽ khoẻ hơn nếu đi bộ nhiều hơn."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "If I ___ in the countryside, I would grow my own vegetables.",
+       "opts": [
+        "lived",
+        "live",
+        "would live"
+       ],
+       "a": 0,
+       "why": "Giả định không có thật ở hiện tại → quá khứ đơn.",
+       "tag": "k2-if2"
+      },
+      {
+       "t": "mc",
+       "q": "If she were the manager, she ___ the rules.",
+       "opts": [
+        "would change",
+        "will change",
+        "changed"
+       ],
+       "a": 0,
+       "why": "Vế chính loại 2: **would + V**.",
+       "tag": "k2-if2"
+      },
+      {
+       "t": "fill",
+       "q": "If I ___ you, I would talk to the teacher.",
+       "a": [
+        "were"
+       ],
+       "why": "If I **were** you.",
+       "tag": "k2-if2",
+       "hint": "be"
+      },
+      {
+       "t": "tf",
+       "q": "If I would have a car, I would drive to work.",
+       "a": false,
+       "why": "Mệnh đề if không dùng would.",
+       "tag": "k2-if2",
+       "fix": "If I had a car, I would drive to work."
+      },
+      {
+       "t": "fix",
+       "q": "If people use public transport more, the air would be cleaner.",
+       "a": [
+        "If people used public transport more, the air would be cleaner."
+       ],
+       "why": "Vế chính dùng would → vế if dùng quá khứ đơn: **used**.",
+       "tag": "k2-if2"
+      },
+      {
+       "t": "fix",
+       "q": "If he was taller, he will play basketball.",
+       "a": [
+        "If he were taller, he would play basketball.",
+        "If he was taller, he would play basketball."
+       ],
+       "why": "Loại 2: were + **would**.",
+       "tag": "k2-if2"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-if2-1",
+       "front": "Trả lời câu hỏi giả định: nếu bạn là thị trưởng…",
+       "pattern": "**If I were** …, I **would** + V · If + S + V2, S + would + V",
+       "example": "*If I were* the mayor, I *would build* more cycle lanes.",
+       "vi": "Nếu là thị trưởng, tôi sẽ xây thêm làn xe đạp."
+      }
+     ],
+     "write": {
+      "prompt": "Trả lời: What would you do if you had one free month? (1–2 câu loại 2)",
+      "samples": [
+       "If I had one free month, I would travel across the country by train.",
+       "If I were richer, I would work less and read more."
+      ],
+      "check": [
+       "Vế if dùng quá khứ đơn (were)?",
+       "Vế chính dùng would + V?"
+      ],
+      "must": [
+       "\\bwould\\b|'d\\b"
+      ],
+      "hint": "Câu cần có would"
+     }
+    },
+    {
+     "id": "k2-if3",
+     "title": "Điều kiện loại 3 và hỗn hợp",
+     "rule": [
+      "**Loại 3**: If + **had + V3**, **would / could have + V3** — không có thật trong **quá khứ**, thường diễn tả tiếc nuối.",
+      "**Hỗn hợp**: If + had + V3, **would + V** — quá khứ khác đi thì **hiện tại** khác đi: *If I had studied harder, I would have a better job now.*",
+      "Mẹo: nhìn vế kết quả. Kết quả ở quá khứ → would have + V3; kết quả ở hiện tại (now) → would + V."
+     ],
+     "examples": [
+      {
+       "en": "If I *had left* earlier, I *wouldn't have missed* the train.",
+       "vi": "Nếu đi sớm hơn, tôi đã không lỡ tàu."
+      },
+      {
+       "en": "If she *had taken* the job, she *would be* in London now.",
+       "vi": "Nếu nhận công việc đó, giờ cô ấy đang ở London."
+      },
+      {
+       "en": "We *could have won* if we *had practised* more.",
+       "vi": "Chúng tôi có thể đã thắng nếu luyện tập nhiều hơn."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "If I had known about the party, I ___.",
+       "opts": [
+        "would have come",
+        "would come",
+        "will come"
+       ],
+       "a": 0,
+       "why": "Kết quả ở quá khứ → **would have + V3**.",
+       "tag": "k2-if3"
+      },
+      {
+       "t": "mc",
+       "q": "If he ___ the map, we wouldn't be lost now.",
+       "opts": [
+        "had brought",
+        "brought",
+        "would bring"
+       ],
+       "a": 0,
+       "why": "Hỗn hợp: quá khứ (had brought) → hiện tại (now).",
+       "tag": "k2-if3"
+      },
+      {
+       "t": "fill",
+       "q": "If they had saved more money, they could ___ bought a house.",
+       "a": [
+        "have"
+       ],
+       "why": "could **have** + V3.",
+       "tag": "k2-if3"
+      },
+      {
+       "t": "tf",
+       "q": "If I had studied medicine, I would be a doctor now.",
+       "a": true,
+       "why": "Đúng: câu hỗn hợp, kết quả ở hiện tại.",
+       "tag": "k2-if3"
+      },
+      {
+       "t": "fix",
+       "q": "If I would have seen you, I would have said hello.",
+       "a": [
+        "If I had seen you, I would have said hello."
+       ],
+       "why": "Vế if loại 3: **had + V3**, không dùng would.",
+       "tag": "k2-if3"
+      },
+      {
+       "t": "fix",
+       "q": "If she had asked me, I would help her yesterday.",
+       "a": [
+        "If she had asked me, I would have helped her yesterday."
+       ],
+       "why": "Kết quả ở quá khứ → **would have helped**.",
+       "tag": "k2-if3"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-if3-1",
+       "front": "Nói một điều bạn tiếc đã không làm",
+       "pattern": "**If + S + had + V3, S + would have + V3**",
+       "example": "*If I had started* earlier, I *would have finished* on time.",
+       "vi": "Nếu bắt đầu sớm hơn, tôi đã xong đúng hạn."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu về điều bạn tiếc trong quá khứ (loại 3 hoặc hỗn hợp).",
+      "samples": [
+       "If I had learned English earlier, I would have more job options now.",
+       "If we had booked in advance, we would have got cheaper tickets."
+      ],
+      "check": [
+       "Vế if dùng had + V3?",
+       "Kết quả quá khứ: would have + V3; hiện tại: would + V?"
+      ],
+      "must": [
+       "\\bhad\\b.*\\bwould\\b|\\bwould\\b.*\\bhad\\b"
+      ],
+      "hint": "Câu cần có had + V3 và would"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k2u6",
+   "no": "6",
+   "title": "Mệnh đề quan hệ",
+   "goal": "Ghép hai câu đơn thành câu phức",
+   "lessons": [
+    {
+     "id": "k2-rel1",
+     "title": "who, which, that, whose",
+     "rule": [
+      "**who**: người · **which**: vật, sự việc · **that**: người hoặc vật (mệnh đề xác định) · **whose** + danh từ: sở hữu.",
+      "Ghép câu: *I have a colleague. She speaks four languages.* → *I have a colleague **who** speaks four languages.*",
+      "Bắt buộc dùng **that** sau so sánh nhất, the first/last/only, all, everything, nothing: *Everything **that** he said was true.*",
+      "Khi từ quan hệ là **tân ngữ** thì bỏ được: *The book (that) I bought is useful.*"
+     ],
+     "examples": [
+      {
+       "en": "The teacher *who* taught me was very patient.",
+       "vi": "Giáo viên dạy tôi rất kiên nhẫn."
+      },
+      {
+       "en": "This is the phone *which* I bought last week.",
+       "vi": "Đây là chiếc điện thoại tôi mua tuần trước."
+      },
+      {
+       "en": "I have a friend *whose* father is a pilot.",
+       "vi": "Tôi có người bạn có bố là phi công."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "People ___ live in cities often have less free time.",
+       "opts": [
+        "who",
+        "which",
+        "whose"
+       ],
+       "a": 0,
+       "why": "Thay cho người, làm chủ ngữ → **who**.",
+       "tag": "k2-relpron"
+      },
+      {
+       "t": "mc",
+       "q": "She is the student ___ essay won the prize.",
+       "opts": [
+        "whose",
+        "who",
+        "which"
+       ],
+       "a": 0,
+       "why": "Sở hữu + danh từ (essay) → **whose**.",
+       "tag": "k2-relpron"
+      },
+      {
+       "t": "fill",
+       "q": "It was the best film ___ I have ever seen.",
+       "a": [
+        "that"
+       ],
+       "why": "Sau so sánh nhất dùng **that**.",
+       "tag": "k2-relpron"
+      },
+      {
+       "t": "tf",
+       "q": "The laptop who I use is very old.",
+       "a": false,
+       "why": "Vật → **which / that**.",
+       "tag": "k2-relpron",
+       "fix": "The laptop which I use is very old."
+      },
+      {
+       "t": "fix",
+       "q": "I know a man which can speak six languages.",
+       "a": [
+        "I know a man who can speak six languages.",
+        "I know a man that can speak six languages."
+       ],
+       "why": "Người → **who**.",
+       "tag": "k2-relpron"
+      },
+      {
+       "t": "fix",
+       "q": "Everything what she said was useful.",
+       "a": [
+        "Everything that she said was useful.",
+        "Everything she said was useful."
+       ],
+       "why": "Sau everything dùng **that** (hoặc bỏ).",
+       "tag": "k2-relpron"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-rel1-1",
+       "front": "Ghép hai câu về một người bằng mệnh đề quan hệ",
+       "pattern": "N (người) + **who** + V · N (vật) + **which/that** + V · N + **whose** + N",
+       "example": "I have a neighbour *who* grows vegetables on the roof.",
+       "vi": "Tôi có người hàng xóm trồng rau trên mái nhà."
+      }
+     ],
+     "write": {
+      "prompt": "Ghép thành một câu: 'I have a friend. / His (her) job is very unusual.' rồi viết thêm một câu của riêng bạn với who hoặc which.",
+      "samples": [
+       "I have a friend whose job is very unusual.",
+       "The city which I like most is Hoi An."
+      ],
+      "check": [
+       "who cho người, which cho vật, whose + danh từ?"
+      ],
+      "must": [
+       "\\b(who|which|that|whose)\\b"
+      ],
+      "hint": "Câu cần có who / which / that / whose"
+     }
+    },
+    {
+     "id": "k2-rel2",
+     "title": "where, when, why; có và không có dấu phẩy",
+     "rule": [
+      "**where** (nơi chốn) · **when** (thời gian) · **why** (sau *the reason*).",
+      "**Mệnh đề xác định** (không dấu phẩy): cần để biết ai / cái nào: *People **who** smoke should stop.*",
+      "**Mệnh đề không xác định** (có dấu phẩy): chỉ thêm thông tin, bỏ đi câu vẫn đủ nghĩa. **Không dùng that**, không bỏ được từ quan hệ.",
+      "**, which** có thể thay cho cả mệnh đề phía trước: *I passed the test, **which** made me happy.*"
+     ],
+     "examples": [
+      {
+       "en": "The café *where* I study is very quiet.",
+       "vi": "Quán cà phê nơi tôi học rất yên tĩnh."
+      },
+      {
+       "en": "My hometown, *which* is near the sea, is peaceful.",
+       "vi": "Quê tôi, nơi gần biển, rất yên bình."
+      },
+      {
+       "en": "He arrived late, *which* annoyed everyone.",
+       "vi": "Anh ấy đến muộn, điều đó làm mọi người bực."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "My mother, ___ is a nurse, works at night.",
+       "opts": [
+        "who",
+        "that",
+        "which"
+       ],
+       "a": 0,
+       "why": "Mệnh đề có dấu phẩy không dùng that; người → **who**.",
+       "tag": "k2-relcomma"
+      },
+      {
+       "t": "mc",
+       "q": "That's the reason ___ I moved here.",
+       "opts": [
+        "why",
+        "which",
+        "where"
+       ],
+       "a": 0,
+       "why": "Sau the reason → **why**.",
+       "tag": "k2-relcomma"
+      },
+      {
+       "t": "fill",
+       "q": "I still remember the day ___ I started my first job.",
+       "a": [
+        "when"
+       ],
+       "why": "Thời gian → **when**.",
+       "tag": "k2-relcomma"
+      },
+      {
+       "t": "tf",
+       "q": "Da Nang, that is on the coast, has beautiful beaches.",
+       "a": false,
+       "why": "Sau dấu phẩy không dùng that.",
+       "tag": "k2-relcomma",
+       "fix": "Da Nang, which is on the coast, has beautiful beaches."
+      },
+      {
+       "t": "fix",
+       "q": "The flight was cancelled, that was very annoying.",
+       "a": [
+        "The flight was cancelled, which was very annoying."
+       ],
+       "why": "Thay cho cả mệnh đề trước, sau dấu phẩy → **which**.",
+       "tag": "k2-relcomma"
+      },
+      {
+       "t": "fix",
+       "q": "This is the school which I studied for five years.",
+       "a": [
+        "This is the school where I studied for five years.",
+        "This is the school in which I studied for five years.",
+        "This is the school which I studied at for five years."
+       ],
+       "why": "Nơi chốn (học ở đó) → **where**.",
+       "tag": "k2-relcomma"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-rel2-1",
+       "front": "Thêm thông tin về quê bạn bằng mệnh đề có dấu phẩy",
+       "pattern": "N riêng**, which / who** + V…**,** + V chính",
+       "example": "My hometown, *which is famous for its food*, attracts many visitors.",
+       "vi": "Quê tôi, nơi nổi tiếng về ẩm thực, thu hút nhiều du khách."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu về quê hoặc người thân của bạn, có mệnh đề quan hệ nằm giữa hai dấu phẩy.",
+      "samples": [
+       "My grandfather, who is over eighty, still cycles every day.",
+       "Hue, where I was born, is a quiet city."
+      ],
+      "check": [
+       "Có hai dấu phẩy bao mệnh đề?",
+       "Không dùng that sau dấu phẩy?"
+      ],
+      "must": [
+       ",\\s*(who|which|where|whose|when)\\b"
+      ],
+      "hint": "Câu cần có dấu phẩy + who / which / where"
+     }
+    },
+    {
+     "id": "k2-rel3",
+     "title": "Lỗi hay gặp trong mệnh đề quan hệ",
+     "rule": [
+      "Không lặp chủ ngữ / tân ngữ: ✗ *The man who **he** lives next door* · ✗ *The book which I bought **it***.",
+      "**where** hay **which**? Động từ cần tân ngữ (visit, like, build) → **which/that**: *the city **which** I visited*. Chỉ nơi xảy ra hành động → **where**: *the city **where** I live*.",
+      "Động từ trong mệnh đề chia theo danh từ đứng trước: *people who **work** here* · *a person who **works** here*.",
+      "Sau giới từ dùng **whom / which**, không dùng who/that: *the person **to whom** I spoke*."
+     ],
+     "examples": [
+      {
+       "en": "The man *who lives* next door is a chef.",
+       "vi": "Người đàn ông sống cạnh nhà là đầu bếp."
+      },
+      {
+       "en": "The museum *which we visited* was free.",
+       "vi": "Bảo tàng chúng tôi tham quan miễn phí."
+      },
+      {
+       "en": "Students *who study* abroad learn independence.",
+       "vi": "Sinh viên du học học được tính tự lập."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The country ___ I want to visit most is Japan.",
+       "opts": [
+        "which",
+        "where",
+        "who"
+       ],
+       "a": 0,
+       "why": "visit cần tân ngữ → **which**.",
+       "tag": "k2-relerr"
+      },
+      {
+       "t": "mc",
+       "q": "People who ___ near airports suffer from noise.",
+       "opts": [
+        "live",
+        "lives",
+        "living"
+       ],
+       "a": 0,
+       "why": "people số nhiều → **live**.",
+       "tag": "k2-relerr"
+      },
+      {
+       "t": "fill",
+       "q": "The town ___ I grew up is very small.",
+       "a": [
+        "where"
+       ],
+       "why": "Nơi xảy ra hành động (grew up ở đó) → **where**.",
+       "tag": "k2-relerr"
+      },
+      {
+       "t": "tf",
+       "q": "The woman who she called me is my aunt.",
+       "a": false,
+       "why": "Không lặp chủ ngữ (she).",
+       "tag": "k2-relerr",
+       "fix": "The woman who called me is my aunt."
+      },
+      {
+       "t": "fix",
+       "q": "The film which I watched it last night was boring.",
+       "a": [
+        "The film which I watched last night was boring.",
+        "The film that I watched last night was boring.",
+        "The film I watched last night was boring."
+       ],
+       "why": "Không lặp tân ngữ (it).",
+       "tag": "k2-relerr"
+      },
+      {
+       "t": "fix",
+       "q": "A person who work hard usually succeeds.",
+       "a": [
+        "A person who works hard usually succeeds."
+       ],
+       "why": "a person số ít → **works**.",
+       "tag": "k2-relerr"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-rel3-1",
+       "front": "where hay which sau danh từ chỉ nơi chốn?",
+       "pattern": "N + **which** + S + visit/like/build · N + **where** + S + live/work/study",
+       "example": "the city *which* I visited / the city *where* I live",
+       "vi": "thành phố tôi đã thăm / thành phố nơi tôi sống"
+      }
+     ],
+     "write": {
+      "prompt": "Viết hai câu về một nơi: một câu dùng which (visited / like), một câu dùng where (live / work / study).",
+      "samples": [
+       "The place which I like most is the old library. It is the place where I study every weekend.",
+       "The town where I work is small."
+      ],
+      "check": [
+       "Không lặp he/she/it trong mệnh đề?",
+       "Động từ chia theo danh từ đứng trước?"
+      ],
+      "must": [
+       "\\b(which|where|that)\\b"
+      ],
+      "hint": "Câu cần có which hoặc where"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k2u7",
+   "no": "7",
+   "title": "Câu bị động và rút gọn mệnh đề quan hệ",
+   "goal": "Writing Task 1: quy trình, giọng khách quan",
+   "lessons": [
+    {
+     "id": "k2-pass1",
+     "title": "Câu bị động qua các thì",
+     "rule": [
+      "Công thức chung: **S + be (chia theo thì) + V3 (+ by O)**. Dùng khi người làm không quan trọng hoặc cần giọng khách quan.",
+      "Hiện tại đơn: **am/is/are + V3** · Quá khứ đơn: **was/were + V3**.",
+      "Hiện tại tiếp diễn: **am/is/are being + V3** · Hiện tại hoàn thành: **have/has been + V3** · Tương lai: **will be + V3**.",
+      "Task 1 dạng quy trình: *First, the leaves **are picked**. Then they **are dried** in the sun.*"
+     ],
+     "examples": [
+      {
+       "en": "English *is spoken* in many countries.",
+       "vi": "Tiếng Anh được nói ở nhiều nước."
+      },
+      {
+       "en": "The bridge *was built* in 1990.",
+       "vi": "Cây cầu được xây năm 1990."
+      },
+      {
+       "en": "A new hospital *is being built* near my house.",
+       "vi": "Một bệnh viện mới đang được xây gần nhà tôi."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Rice ___ in many parts of Asia.",
+       "opts": [
+        "is grown",
+        "grows by",
+        "is grow"
+       ],
+       "a": 0,
+       "why": "Bị động hiện tại đơn: **is + V3**.",
+       "tag": "k2-passive"
+      },
+      {
+       "t": "mc",
+       "q": "The results ___ next week.",
+       "opts": [
+        "will be announced",
+        "will announce",
+        "are announce"
+       ],
+       "a": 0,
+       "why": "Bị động tương lai: **will be + V3**.",
+       "tag": "k2-passive"
+      },
+      {
+       "t": "fill",
+       "q": "The road has ___ repaired recently.",
+       "a": [
+        "been"
+       ],
+       "why": "Bị động hiện tại hoàn thành: has **been** + V3.",
+       "tag": "k2-passive"
+      },
+      {
+       "t": "tf",
+       "q": "The letter was wrote by my grandfather.",
+       "a": false,
+       "why": "be + V3: **written**.",
+       "tag": "k2-passive",
+       "fix": "The letter was written by my grandfather."
+      },
+      {
+       "t": "fix",
+       "q": "The museum built in 1920.",
+       "a": [
+        "The museum was built in 1920."
+       ],
+       "why": "Thiếu be: **was** built.",
+       "tag": "k2-passive"
+      },
+      {
+       "t": "fix",
+       "q": "First, the bottles is collected and sorted.",
+       "a": [
+        "First, the bottles are collected and sorted."
+       ],
+       "why": "bottles số nhiều → **are**.",
+       "tag": "k2-passive"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-pass1-1",
+       "front": "Mô tả một bước trong quy trình (Task 1)",
+       "pattern": "First / Then / After that, + N + **is/are + V3**",
+       "example": "First, the fruit *is washed*. Then it *is cut* into pieces.",
+       "vi": "Đầu tiên, trái cây được rửa. Sau đó được cắt thành miếng."
+      }
+     ],
+     "write": {
+      "prompt": "Mô tả 2 bước của một quy trình đơn giản (pha trà, tái chế giấy…) bằng câu bị động.",
+      "samples": [
+       "First, the water is boiled. Then the tea leaves are added and left for three minutes.",
+       "The paper is collected and then it is taken to a factory."
+      ],
+      "check": [
+       "be chia đúng số ít / số nhiều?",
+       "Động từ ở dạng V3?"
+      ],
+      "must": [
+       "\\b(is|are|was|were|been|be)\\b"
+      ],
+      "hint": "Câu cần có be + V3"
+     }
+    },
+    {
+     "id": "k2-pass2",
+     "title": "Bị động với modal, It is said that, have something done",
+     "rule": [
+      "Modal: **can / should / must / may + be + V3**: *This problem **should be solved** soon.*",
+      "Bị động khách quan: **It is said / believed / thought that** + mệnh đề: *It is believed that exercise reduces stress.*",
+      "Hoặc: **S + is said / believed + to V**: *Coffee **is said to improve** concentration.*",
+      "**have / get + vật + V3**: nhờ / thuê người khác làm: *I **had my hair cut** yesterday.*"
+     ],
+     "examples": [
+      {
+       "en": "More trees *should be planted* in cities.",
+       "vi": "Nên trồng thêm cây trong thành phố."
+      },
+      {
+       "en": "*It is said that* reading improves memory.",
+       "vi": "Người ta nói đọc sách cải thiện trí nhớ."
+      },
+      {
+       "en": "We *had the house painted* last month.",
+       "vi": "Tháng trước chúng tôi thuê người sơn nhà."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Plastic bags ___ in supermarkets.",
+       "opts": [
+        "should be banned",
+        "should ban",
+        "should be ban"
+       ],
+       "a": 0,
+       "why": "modal + **be + V3**.",
+       "tag": "k2-passive2"
+      },
+      {
+       "t": "mc",
+       "q": "Green tea ___ good for your health.",
+       "opts": [
+        "is said to be",
+        "is said be",
+        "says to be"
+       ],
+       "a": 0,
+       "why": "S + **is said to + V**.",
+       "tag": "k2-passive2"
+      },
+      {
+       "t": "fill",
+       "q": "It is ___ that the climate is getting warmer.",
+       "a": [
+        "believed",
+        "said",
+        "thought",
+        "known"
+       ],
+       "why": "It is **believed / said** that…",
+       "tag": "k2-passive2",
+       "hint": "believe"
+      },
+      {
+       "t": "tf",
+       "q": "I had my hair cutted at the salon yesterday.",
+       "a": false,
+       "why": "have + vật + V3; V3 của cut là **cut**.",
+       "tag": "k2-passive2",
+       "fix": "I had my hair cut at the salon yesterday."
+      },
+      {
+       "t": "fix",
+       "q": "The rules must followed by everyone.",
+       "a": [
+        "The rules must be followed by everyone."
+       ],
+       "why": "must + **be** + V3.",
+       "tag": "k2-passive2"
+      },
+      {
+       "t": "fix",
+       "q": "It is say that money cannot buy happiness.",
+       "a": [
+        "It is said that money cannot buy happiness."
+       ],
+       "why": "It is **said** that…",
+       "tag": "k2-passive2"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-pass2-1",
+       "front": "Nêu một quan điểm chung mà không nói 'I think'",
+       "pattern": "**It is said / believed that** + S + V · S + **is said to** + V",
+       "example": "*It is widely believed that* education reduces poverty.",
+       "vi": "Nhiều người tin rằng giáo dục làm giảm nghèo đói."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu đề xuất với should be + V3 và một câu với It is said / believed that…",
+      "samples": [
+       "More cycle lanes should be built in the city centre.",
+       "It is believed that children learn languages faster than adults."
+      ],
+      "check": [
+       "modal + be + V3?"
+      ],
+      "must": [
+       "\\b(should|must|can|could|may|might) be\\b|\\bit is (said|believed|thought|known)\\b"
+      ],
+      "hint": "Câu cần có should be + V3 hoặc It is said that"
+     }
+    },
+    {
+     "id": "k2-reduce",
+     "title": "Rút gọn mệnh đề quan hệ",
+     "rule": [
+      "Mệnh đề **chủ động** → **V-ing**: *People **who live** in cities…* → *People **living** in cities…*",
+      "Mệnh đề **bị động** → **V3**: *The goods **which were made** in Vietnam…* → *The goods **made** in Vietnam…*",
+      "Sau the first / last / only, so sánh nhất → **to V**: *He was the first person **to arrive**.*",
+      "Bỏ *who/which + be* trước cụm danh từ: *Hanoi, **the capital of Vietnam**, is…*"
+     ],
+     "examples": [
+      {
+       "en": "Students *studying* abroad often feel homesick.",
+       "vi": "Sinh viên du học thường nhớ nhà."
+      },
+      {
+       "en": "The books *written* by this author are popular.",
+       "vi": "Sách do tác giả này viết rất được ưa chuộng."
+      },
+      {
+       "en": "She was the only one *to pass* the test.",
+       "vi": "Cô ấy là người duy nhất qua bài kiểm tra."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The people ___ for the bus looked tired.",
+       "opts": [
+        "waiting",
+        "waited",
+        "wait"
+       ],
+       "a": 0,
+       "why": "Chủ động (who were waiting) → **V-ing**.",
+       "tag": "k2-reduce"
+      },
+      {
+       "t": "mc",
+       "q": "Cars ___ in Japan are known for their quality.",
+       "opts": [
+        "made",
+        "making",
+        "make"
+       ],
+       "a": 0,
+       "why": "Bị động (which are made) → **V3**.",
+       "tag": "k2-reduce"
+      },
+      {
+       "t": "fill",
+       "q": "Neil Armstrong was the first person ___ on the moon.",
+       "a": [
+        "to walk"
+       ],
+       "why": "Sau the first → **to V**.",
+       "tag": "k2-reduce",
+       "hint": "walk"
+      },
+      {
+       "t": "tf",
+       "q": "The man stood at the door is my uncle.",
+       "a": false,
+       "why": "Chủ động → V-ing: **standing**.",
+       "tag": "k2-reduce",
+       "fix": "The man standing at the door is my uncle."
+      },
+      {
+       "t": "fix",
+       "q": "The food serving in this restaurant is excellent.",
+       "a": [
+        "The food served in this restaurant is excellent."
+       ],
+       "why": "Thức ăn được phục vụ (bị động) → **served**.",
+       "tag": "k2-reduce"
+      },
+      {
+       "t": "fix",
+       "q": "Anyone want to join should sign up today.",
+       "a": [
+        "Anyone wanting to join should sign up today.",
+        "Anyone who wants to join should sign up today."
+       ],
+       "why": "Chủ động → **wanting** (hoặc who wants).",
+       "tag": "k2-reduce"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-reduce-1",
+       "front": "Rút gọn: 'people who live in big cities'",
+       "pattern": "Chủ động → N + **V-ing** · Bị động → N + **V3**",
+       "example": "People *living* in big cities / products *made* in Vietnam",
+       "vi": "Những người sống ở thành phố lớn / sản phẩm sản xuất tại Việt Nam"
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu có mệnh đề rút gọn bằng V-ing và một câu rút gọn bằng V3.",
+      "samples": [
+       "People working from home save a lot of travel time.",
+       "The vegetables sold at this market are very fresh."
+      ],
+      "check": [
+       "Chủ động dùng V-ing, bị động dùng V3?"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "k2u8",
+   "no": "8",
+   "title": "So sánh và các cấu trúc ăn điểm",
+   "goal": "Writing Task 1: so sánh số liệu; câu nói tự nhiên hơn",
+   "lessons": [
+    {
+     "id": "k2-comp",
+     "title": "So sánh bằng, bội số và mức độ",
+     "rule": [
+      "So sánh bằng: **as + adj/adv + as** · phủ định: **not as … as**.",
+      "Bội số: **twice / three times + as … as**: *Sales in 2020 were **twice as high as** in 2010.*",
+      "Mức độ + so sánh hơn: **slightly / a little** (hơi) · **much / far / significantly / considerably** (nhiều): *significantly higher than*.",
+      "Không dùng *very* trước so sánh hơn: ✗ *very better* → ✓ *much better*."
+     ],
+     "examples": [
+      {
+       "en": "The bus is *not as fast as* the train.",
+       "vi": "Xe buýt không nhanh bằng tàu."
+      },
+      {
+       "en": "This flat is *twice as expensive as* mine.",
+       "vi": "Căn hộ này đắt gấp đôi căn của tôi."
+      },
+      {
+       "en": "The figure for 2020 was *significantly higher than* that for 2010.",
+       "vi": "Số liệu năm 2020 cao hơn đáng kể so với 2010."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "My new phone is ___ better than the old one.",
+       "opts": [
+        "much",
+        "very",
+        "more"
+       ],
+       "a": 0,
+       "why": "Trước so sánh hơn dùng **much**, không dùng very.",
+       "tag": "k2-asas"
+      },
+      {
+       "t": "mc",
+       "q": "The number of cars was three times ___ in 2000.",
+       "opts": [
+        "as high as",
+        "higher as",
+        "as higher than"
+       ],
+       "a": 0,
+       "why": "Bội số + **as … as**.",
+       "tag": "k2-asas"
+      },
+      {
+       "t": "fill",
+       "q": "Living in the countryside is not as expensive ___ living in the city.",
+       "a": [
+        "as"
+       ],
+       "why": "not as … **as**.",
+       "tag": "k2-asas"
+      },
+      {
+       "t": "tf",
+       "q": "Her English is as good than mine.",
+       "a": false,
+       "why": "as … **as**.",
+       "tag": "k2-asas",
+       "fix": "Her English is as good as mine."
+      },
+      {
+       "t": "fix",
+       "q": "Sales in May were slightly more high than in April.",
+       "a": [
+        "Sales in May were slightly higher than in April."
+       ],
+       "why": "high là tính từ ngắn → **higher**.",
+       "tag": "k2-asas"
+      },
+      {
+       "t": "fix",
+       "q": "This year's results are very better than last year's.",
+       "a": [
+        "This year's results are much better than last year's.",
+        "This year's results are far better than last year's."
+       ],
+       "why": "Dùng **much / far** trước so sánh hơn.",
+       "tag": "k2-asas"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-comp-1",
+       "front": "So sánh hai số liệu chênh nhau gấp đôi",
+       "pattern": "A + be + **twice / three times as + adj + as** + B",
+       "example": "Car sales were *twice as high as* bike sales.",
+       "vi": "Doanh số ô tô cao gấp đôi doanh số xe đạp."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2 câu Task 1 so sánh hai số liệu: một câu với (not) as … as, một câu với slightly / significantly + so sánh hơn.",
+      "samples": [
+       "The price of tea was not as high as the price of coffee.",
+       "Spending on food was significantly higher than spending on clothes."
+      ],
+      "check": [
+       "as … as có đủ hai chữ as?",
+       "Trước so sánh hơn dùng much/slightly, không dùng very?"
+      ],
+      "must": [
+       "\\bas\\b.*\\bas\\b|\\bthan\\b"
+      ],
+      "hint": "Câu cần có as … as hoặc than"
+     }
+    },
+    {
+     "id": "k2-double",
+     "title": "So sánh kép",
+     "rule": [
+      "**The + so sánh hơn + S + V, the + so sánh hơn + S + V**: càng … càng …: *The more I practise, the more confident I feel.*",
+      "**-er and -er / more and more + adj**: ngày càng: *Traffic is getting worse and worse.* · *more and more expensive*.",
+      "Lưu ý trật tự: sau *the more / the harder* là **chủ ngữ + động từ**, không đảo."
+     ],
+     "examples": [
+      {
+       "en": "*The earlier* you start, *the better* the result.",
+       "vi": "Bắt đầu càng sớm, kết quả càng tốt."
+      },
+      {
+       "en": "Houses are becoming *more and more expensive*.",
+       "vi": "Nhà ngày càng đắt."
+      },
+      {
+       "en": "*The more* people drive, *the worse* the pollution gets.",
+       "vi": "Càng nhiều người lái xe, ô nhiễm càng tệ."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The harder you work, ___ you will earn.",
+       "opts": [
+        "the more",
+        "more",
+        "the most"
+       ],
+       "a": 0,
+       "why": "Càng … càng: **the more**.",
+       "tag": "k2-double"
+      },
+      {
+       "t": "mc",
+       "q": "The weather is getting ___.",
+       "opts": [
+        "hotter and hotter",
+        "more and more hot",
+        "hot and hot"
+       ],
+       "a": 0,
+       "why": "hot ngắn → **hotter and hotter**.",
+       "tag": "k2-double"
+      },
+      {
+       "t": "fill",
+       "q": "The more you read, the ___ your vocabulary becomes.",
+       "a": [
+        "bigger",
+        "larger",
+        "wider",
+        "richer",
+        "better"
+       ],
+       "why": "the + so sánh hơn: **bigger / wider**.",
+       "tag": "k2-double",
+       "hint": "big"
+      },
+      {
+       "t": "tf",
+       "q": "The more you practise, more you improve.",
+       "a": false,
+       "why": "Vế sau cũng cần the.",
+       "tag": "k2-double",
+       "fix": "The more you practise, the more you improve."
+      },
+      {
+       "t": "fix",
+       "q": "Life in cities is becoming more and more fast.",
+       "a": [
+        "Life in cities is becoming faster and faster."
+       ],
+       "why": "fast ngắn → **faster and faster**.",
+       "tag": "k2-double"
+      },
+      {
+       "t": "fix",
+       "q": "The older do people get, the wiser they become.",
+       "a": [
+        "The older people get, the wiser they become."
+       ],
+       "why": "Không đảo: the older + S + V.",
+       "tag": "k2-double"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-double-1",
+       "front": "Nói: càng luyện nói nhiều, càng tự tin",
+       "pattern": "**The + so sánh hơn + S + V, the + so sánh hơn + S + V**",
+       "example": "*The more* I speak, *the more confident* I feel.",
+       "vi": "Tôi càng nói nhiều, tôi càng tự tin."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu 'càng … càng …' về việc học hoặc sức khoẻ, và một câu 'ngày càng' với more and more / -er and -er.",
+      "samples": [
+       "The more I exercise, the better I sleep.",
+       "Online learning is becoming more and more popular."
+      ],
+      "check": [
+       "Cả hai vế đều có the + so sánh hơn?"
+      ],
+      "must": [
+       "\\bthe (more|less|\\w+er)\\b.*\\bthe (more|less|\\w+er|better|worse)\\b|\\b(more and more|\\w+er and \\w+er)\\b"
+      ],
+      "hint": "Câu cần có the more…, the more… hoặc more and more"
+     }
+    },
+    {
+     "id": "k2-struct1",
+     "title": "used to, be used to, It takes, spend",
+     "rule": [
+      "**used to + V**: thói quen quá khứ, nay không còn: *I **used to walk** to school.*",
+      "**be / get used to + V-ing**: đã / dần quen với: *I'm **used to getting up** early.*",
+      "**It takes (+ người) + thời gian + to V**: *It takes me an hour **to get** to work.*",
+      "**spend + thời gian / tiền + V-ing**: *I spend two hours **studying** every evening.*"
+     ],
+     "examples": [
+      {
+       "en": "She *used to live* in a village.",
+       "vi": "Cô ấy từng sống ở một ngôi làng."
+      },
+      {
+       "en": "I'm getting *used to working* at night.",
+       "vi": "Tôi đang dần quen với việc làm đêm."
+      },
+      {
+       "en": "*It took* us three days *to finish* the project.",
+       "vi": "Chúng tôi mất ba ngày để xong dự án."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "When I was a child, I ___ play outside every day.",
+       "opts": [
+        "used to",
+        "was used to",
+        "use to"
+       ],
+       "a": 0,
+       "why": "Thói quen quá khứ → **used to + V**.",
+       "tag": "k2-usedto"
+      },
+      {
+       "t": "mc",
+       "q": "He isn't used to ___ on the left.",
+       "opts": [
+        "driving",
+        "drive",
+        "drove"
+       ],
+       "a": 0,
+       "why": "be used to + **V-ing**.",
+       "tag": "k2-usedto"
+      },
+      {
+       "t": "fill",
+       "q": "It ___ me twenty minutes to walk to the station.",
+       "a": [
+        "takes",
+        "took"
+       ],
+       "why": "**It takes** + người + thời gian + to V.",
+       "tag": "k2-usedto",
+       "hint": "take"
+      },
+      {
+       "t": "tf",
+       "q": "I spend a lot of time to read news online.",
+       "a": false,
+       "why": "spend + thời gian + **V-ing**.",
+       "tag": "k2-usedto",
+       "fix": "I spend a lot of time reading news online."
+      },
+      {
+       "t": "fix",
+       "q": "I am used to get up at five.",
+       "a": [
+        "I am used to getting up at five.",
+        "I'm used to getting up at five."
+       ],
+       "why": "be used to + **V-ing**.",
+       "tag": "k2-usedto"
+      },
+      {
+       "t": "fix",
+       "q": "She used to living in Hanoi, but now she lives in Hue.",
+       "a": [
+        "She used to live in Hanoi, but now she lives in Hue."
+       ],
+       "why": "used to + **V nguyên mẫu**.",
+       "tag": "k2-usedto"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-struct1-1",
+       "front": "used to khác be used to thế nào?",
+       "pattern": "**used to + V** = trước đây thường · **be used to + V-ing** = đã quen với",
+       "example": "I *used to hate* mornings, but now I'm *used to getting* up early.",
+       "vi": "Trước tôi ghét buổi sáng, nhưng giờ đã quen dậy sớm."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu với used to (thói quen cũ) và một câu với It takes … to V hoặc spend … V-ing.",
+      "samples": [
+       "I used to play football every weekend. Now I spend my weekends reading.",
+       "It takes me forty minutes to get to work."
+      ],
+      "check": [
+       "used to + V nguyên mẫu?",
+       "spend + V-ing; It takes + to V?"
+      ],
+      "must": [
+       "\\bused to\\b|\\bit (takes|took)\\b|\\bspend|spent\\b"
+      ],
+      "hint": "Câu cần có used to, It takes hoặc spend"
+     }
+    },
+    {
+     "id": "k2-struct2",
+     "title": "too … to, enough, so … that, such … that, wish",
+     "rule": [
+      "**too + adj + to V**: quá … nên không thể · **adj + enough + to V** / **enough + N**: đủ … để.",
+      "**so + adj/adv + that** · **such + (a/an) + adj + N + that**: quá … đến nỗi.",
+      "**wish + quá khứ đơn**: ước điều trái với hiện tại · **wish + had + V3**: tiếc về quá khứ.",
+      "**would rather + V (than + V)** · **prefer + V-ing + to + V-ing**: thích hơn."
+     ],
+     "examples": [
+      {
+       "en": "The box is *too heavy to carry*.",
+       "vi": "Cái hộp quá nặng không mang nổi."
+      },
+      {
+       "en": "It was *such a long film that* I fell asleep.",
+       "vi": "Bộ phim dài đến nỗi tôi ngủ quên."
+      },
+      {
+       "en": "I *wish I had* more free time.",
+       "vi": "Ước gì tôi có nhiều thời gian rảnh hơn."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "He isn't ___ to drive a car.",
+       "opts": [
+        "old enough",
+        "enough old",
+        "too old enough"
+       ],
+       "a": 0,
+       "why": "adj + **enough**.",
+       "tag": "k2-toenough"
+      },
+      {
+       "t": "mc",
+       "q": "It was ___ a busy day that I forgot to eat.",
+       "opts": [
+        "such",
+        "so",
+        "too"
+       ],
+       "a": 0,
+       "why": "such + a + adj + N + that.",
+       "tag": "k2-toenough"
+      },
+      {
+       "t": "fill",
+       "q": "The coffee was ___ hot that I couldn't drink it.",
+       "a": [
+        "so"
+       ],
+       "why": "**so** + adj + that.",
+       "tag": "k2-toenough"
+      },
+      {
+       "t": "tf",
+       "q": "I wish I can speak French.",
+       "a": false,
+       "why": "wish + quá khứ đơn: **could**.",
+       "tag": "k2-toenough",
+       "fix": "I wish I could speak French."
+      },
+      {
+       "t": "fix",
+       "q": "She is too tired for going out tonight.",
+       "a": [
+        "She is too tired to go out tonight.",
+        "She's too tired to go out tonight."
+       ],
+       "why": "too + adj + **to V**.",
+       "tag": "k2-toenough"
+      },
+      {
+       "t": "fix",
+       "q": "I would rather to stay at home tonight.",
+       "a": [
+        "I would rather stay at home tonight.",
+        "I'd rather stay at home tonight."
+       ],
+       "why": "would rather + **V** (không có to).",
+       "tag": "k2-toenough"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-struct2-1",
+       "front": "Nói một điều bạn ước khác đi ở hiện tại",
+       "pattern": "S + **wish** + S + **V2 / could + V**",
+       "example": "I *wish I lived* closer to my office.",
+       "vi": "Ước gì tôi sống gần văn phòng hơn."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu với so … that hoặc such … that, và một câu với I wish…",
+      "samples": [
+       "The city was so crowded that we could hardly move.",
+       "I wish I had more time to exercise."
+      ],
+      "check": [
+       "so + tính từ; such + (a) + tính từ + danh từ?",
+       "wish + quá khứ đơn?"
+      ],
+      "must": [
+       "\\b(so|such|too|enough|wish|rather)\\b"
+      ],
+      "hint": "Câu cần có so/such … that, too, enough hoặc wish"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k2u9",
+   "no": "9",
+   "title": "To V, V-ing và câu tường thuật",
+   "goal": "Tránh lỗi dạng động từ; thuật lại lời người khác",
+   "lessons": [
+    {
+     "id": "k2-toving",
+     "title": "To V hay V-ing (mở rộng)",
+     "rule": [
+      "**to V** sau: want, decide, plan, hope, agree, refuse, manage, afford, expect, promise, learn, would like.",
+      "**V-ing** sau: enjoy, avoid, finish, mind, suggest, consider, keep, practise, admit, deny, can't stand, **look forward to**.",
+      "Sau **mọi giới từ** là V-ing: *interested in learning*, *good at cooking*, *before leaving*.",
+      "**make / let + người + V nguyên mẫu**: *My boss let me leave early.*"
+     ],
+     "examples": [
+      {
+       "en": "We can't *afford to buy* a house.",
+       "vi": "Chúng tôi không đủ tiền mua nhà."
+      },
+      {
+       "en": "She *suggested taking* a taxi.",
+       "vi": "Cô ấy gợi ý đi taxi."
+      },
+      {
+       "en": "I'm *looking forward to seeing* you.",
+       "vi": "Tôi mong được gặp bạn."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "He refused ___ the question.",
+       "opts": [
+        "to answer",
+        "answering",
+        "answer"
+       ],
+       "a": 0,
+       "why": "refuse + **to V**.",
+       "tag": "k2-toving"
+      },
+      {
+       "t": "mc",
+       "q": "I'm looking forward to ___ from you.",
+       "opts": [
+        "hearing",
+        "hear",
+        "heard"
+       ],
+       "a": 0,
+       "why": "look forward to + **V-ing** (to là giới từ).",
+       "tag": "k2-toving"
+      },
+      {
+       "t": "fill",
+       "q": "Would you mind ___ the window?",
+       "a": [
+        "opening",
+        "closing",
+        "shutting"
+       ],
+       "why": "mind + **V-ing**.",
+       "tag": "k2-toving",
+       "hint": "open"
+      },
+      {
+       "t": "tf",
+       "q": "My parents let me to stay out late.",
+       "a": false,
+       "why": "let + người + **V nguyên mẫu**.",
+       "tag": "k2-toving",
+       "fix": "My parents let me stay out late."
+      },
+      {
+       "t": "fix",
+       "q": "She suggested to go to the cinema.",
+       "a": [
+        "She suggested going to the cinema."
+       ],
+       "why": "suggest + **V-ing**.",
+       "tag": "k2-toving"
+      },
+      {
+       "t": "fix",
+       "q": "I managed finishing the report on time.",
+       "a": [
+        "I managed to finish the report on time."
+       ],
+       "why": "manage + **to V**.",
+       "tag": "k2-toving"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-toving-1",
+       "front": "Kết thúc email: mong được gặp / nhận tin",
+       "pattern": "I **look forward to + V-ing**",
+       "example": "*I look forward to hearing* from you.",
+       "vi": "Tôi mong nhận được hồi âm của bạn."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu với một động từ + to V (decide, manage, afford…) và một câu với động từ + V-ing (avoid, consider, suggest…).",
+      "samples": [
+       "I decided to change my job last year.",
+       "My doctor suggested eating less sugar."
+      ],
+      "check": [
+       "Động từ đầu thuộc nhóm to V hay V-ing?"
+      ]
+     }
+    },
+    {
+     "id": "k2-meaning",
+     "title": "stop, remember, forget, try: đổi nghĩa",
+     "rule": [
+      "**stop + to V**: dừng lại **để** làm · **stop + V-ing**: **bỏ hẳn** việc đang làm.",
+      "**remember / forget + to V**: nhớ / quên **phải** làm (việc chưa làm) · **+ V-ing**: nhớ / quên **đã** làm.",
+      "**try + to V**: cố gắng · **try + V-ing**: thử làm xem sao."
+     ],
+     "examples": [
+      {
+       "en": "I *stopped to buy* some water.",
+       "vi": "Tôi dừng lại để mua nước."
+      },
+      {
+       "en": "He *stopped smoking* last year.",
+       "vi": "Anh ấy bỏ thuốc năm ngoái."
+      },
+      {
+       "en": "*Remember to lock* the door.",
+       "vi": "Nhớ khoá cửa nhé."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Don't forget ___ the lights before you leave.",
+       "opts": [
+        "to turn off",
+        "turning off",
+        "turn off"
+       ],
+       "a": 0,
+       "why": "Việc cần làm (chưa làm) → **to V**.",
+       "tag": "k2-vmeaning"
+      },
+      {
+       "t": "mc",
+       "q": "I remember ___ this place when I was a child.",
+       "opts": [
+        "visiting",
+        "to visit",
+        "visit"
+       ],
+       "a": 0,
+       "why": "Nhớ việc đã làm → **V-ing**.",
+       "tag": "k2-vmeaning"
+      },
+      {
+       "t": "fill",
+       "q": "If you can't sleep, try ___ a warm bath.",
+       "a": [
+        "taking",
+        "having"
+       ],
+       "why": "Thử làm xem → try + **V-ing**.",
+       "tag": "k2-vmeaning",
+       "hint": "take"
+      },
+      {
+       "t": "tf",
+       "q": "She stopped to eat meat two years ago and is now vegetarian.",
+       "a": false,
+       "why": "Bỏ hẳn → stop + V-ing.",
+       "tag": "k2-vmeaning",
+       "fix": "She stopped eating meat two years ago and is now vegetarian."
+      },
+      {
+       "t": "fix",
+       "q": "He stopped to smoke because it was bad for his health.",
+       "a": [
+        "He stopped smoking because it was bad for his health."
+       ],
+       "why": "Bỏ hẳn một thói quen → stop + **V-ing**.",
+       "tag": "k2-vmeaning"
+      },
+      {
+       "t": "fix",
+       "q": "Please remember calling me when you arrive.",
+       "a": [
+        "Please remember to call me when you arrive."
+       ],
+       "why": "Việc phải làm sau này → **to call**.",
+       "tag": "k2-vmeaning"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-meaning-1",
+       "front": "stop to V khác stop V-ing thế nào?",
+       "pattern": "**stop to V** = dừng để làm · **stop V-ing** = bỏ hẳn",
+       "example": "I *stopped to rest*. / I *stopped drinking* coffee.",
+       "vi": "Tôi dừng lại để nghỉ. / Tôi bỏ uống cà phê."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu với remember / forget + to V và một câu với stop + V-ing.",
+      "samples": [
+       "I always remember to take my umbrella in the rainy season.",
+       "My father stopped working at night after his illness."
+      ],
+      "check": [
+       "to V cho việc phải làm, V-ing cho việc đã / đang làm?"
+      ],
+      "must": [
+       "\\b(stop|stops|stopped|remember|remembers|remembered|forget|forgets|forgot|try|tries|tried)\\b"
+      ],
+      "hint": "Câu cần có stop / remember / forget / try"
+     }
+    },
+    {
+     "id": "k2-report",
+     "title": "Câu tường thuật",
+     "rule": [
+      "**Lùi một thì**: hiện tại đơn → quá khứ đơn · hiện tại tiếp diễn → quá khứ tiếp diễn · quá khứ đơn / hiện tại hoàn thành → quá khứ hoàn thành · will → would · can → could.",
+      "Đổi từ: now → then · today → that day · tomorrow → the next day · yesterday → the day before · here → there.",
+      "Câu hỏi: **không đảo** trợ động từ: *She asked me where I **lived**.* Câu Yes/No dùng **if / whether**.",
+      "Mệnh lệnh: **told / asked + người + (not) to V**: *He told me to wait.*",
+      "**say** (+ that) · **tell + người** (+ that): ✗ *He said me* → ✓ *He told me*."
+     ],
+     "examples": [
+      {
+       "en": "She said (that) she *was* tired.",
+       "vi": "Cô ấy nói cô ấy mệt."
+      },
+      {
+       "en": "He asked me *where I worked*.",
+       "vi": "Anh ấy hỏi tôi làm ở đâu."
+      },
+      {
+       "en": "The teacher *told us not to be* late.",
+       "vi": "Giáo viên bảo chúng tôi đừng đến muộn."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "'I will call you.' → He said he ___ call me.",
+       "opts": [
+        "would",
+        "will",
+        "can"
+       ],
+       "a": 0,
+       "why": "will → **would**.",
+       "tag": "k2-report"
+      },
+      {
+       "t": "mc",
+       "q": "She asked me ___ I liked my job.",
+       "opts": [
+        "if",
+        "that",
+        "what"
+       ],
+       "a": 0,
+       "why": "Câu hỏi Yes/No → **if / whether**.",
+       "tag": "k2-report"
+      },
+      {
+       "t": "fill",
+       "q": "'Don't touch it.' → She told me ___ to touch it.",
+       "a": [
+        "not"
+       ],
+       "why": "told + người + **not to V**.",
+       "tag": "k2-report"
+      },
+      {
+       "t": "tf",
+       "q": "He asked me where did I live.",
+       "a": false,
+       "why": "Câu hỏi tường thuật không đảo trợ động từ.",
+       "tag": "k2-report",
+       "fix": "He asked me where I lived."
+      },
+      {
+       "t": "fix",
+       "q": "She said me that she was busy.",
+       "a": [
+        "She told me that she was busy.",
+        "She said that she was busy.",
+        "She told me she was busy.",
+        "She said she was busy."
+       ],
+       "why": "say không đi với người trực tiếp → **told me**.",
+       "tag": "k2-report"
+      },
+      {
+       "t": "fix",
+       "q": "He said that he is leaving tomorrow.",
+       "a": [
+        "He said that he was leaving the next day.",
+        "He said he was leaving the next day."
+       ],
+       "why": "Lùi thì (was leaving) và đổi tomorrow → the next day.",
+       "tag": "k2-report"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-report-1",
+       "front": "Thuật lại câu hỏi 'Where do you live?'",
+       "pattern": "S + asked (+ O) + **wh- + S + V lùi thì** (không đảo)",
+       "example": "She *asked me where I lived*.",
+       "vi": "Cô ấy hỏi tôi sống ở đâu."
+      }
+     ],
+     "write": {
+      "prompt": "Thuật lại hai điều người khác nói với bạn hôm qua: một câu kể (said / told me that…), một câu hỏi (asked me…).",
+      "samples": [
+       "My manager told me that the meeting was cancelled. She asked me if I could work on Saturday.",
+       "My friend said he would visit me the next day."
+      ],
+      "check": [
+       "Động từ đã lùi một thì?",
+       "Câu hỏi không đảo trợ động từ?"
+      ],
+      "must": [
+       "\\b(said|told|asked)\\b"
+      ],
+      "hint": "Câu cần có said, told hoặc asked"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k2u10",
+   "no": "10",
+   "title": "Từ nối và ôn lỗi hay gặp",
+   "goal": "Nối ý mạch lạc trong Writing; tự dò lỗi",
+   "lessons": [
+    {
+     "id": "k2-link1",
+     "title": "because / because of, although / despite",
+     "rule": [
+      "**because / since / as + mệnh đề (S + V)** · **because of / due to + danh từ / V-ing**.",
+      "**although / though / even though + mệnh đề** · **despite / in spite of + danh từ / V-ing**.",
+      "Không viết ✗ *despite of* · ✗ *because of + mệnh đề* · ✗ *Although …, but …*",
+      "Mẹo: sau từ nối có **chủ ngữ + động từ** không? Có → because / although. Không → because of / despite."
+     ],
+     "examples": [
+      {
+       "en": "The match was cancelled *because of* the rain.",
+       "vi": "Trận đấu bị huỷ vì mưa."
+      },
+      {
+       "en": "*Although* she was tired, she kept working.",
+       "vi": "Dù mệt, cô ấy vẫn tiếp tục làm."
+      },
+      {
+       "en": "*Despite* the high price, the phone sold well.",
+       "vi": "Dù giá cao, điện thoại vẫn bán chạy."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "We arrived late ___ the heavy traffic.",
+       "opts": [
+        "because of",
+        "because",
+        "although"
+       ],
+       "a": 0,
+       "why": "Sau là cụm danh từ → **because of**.",
+       "tag": "k2-link"
+      },
+      {
+       "t": "mc",
+       "q": "___ it was expensive, we decided to buy it.",
+       "opts": [
+        "Although",
+        "Despite",
+        "Because of"
+       ],
+       "a": 0,
+       "why": "Sau là mệnh đề (it was) → **Although**.",
+       "tag": "k2-link"
+      },
+      {
+       "t": "fill",
+       "q": "___ spite of his age, he runs every morning.",
+       "a": [
+        "In"
+       ],
+       "why": "**In spite of** + danh từ.",
+       "tag": "k2-link"
+      },
+      {
+       "t": "tf",
+       "q": "Despite of the rain, we went out.",
+       "a": false,
+       "why": "despite không đi với of.",
+       "tag": "k2-link",
+       "fix": "Despite the rain, we went out."
+      },
+      {
+       "t": "fix",
+       "q": "Because of the weather was bad, the flight was delayed.",
+       "a": [
+        "Because the weather was bad, the flight was delayed.",
+        "Because of the bad weather, the flight was delayed."
+       ],
+       "why": "Sau là mệnh đề → **because**; hoặc because of + cụm danh từ.",
+       "tag": "k2-link"
+      },
+      {
+       "t": "fix",
+       "q": "Although he studied hard, but he failed the exam.",
+       "a": [
+        "Although he studied hard, he failed the exam.",
+        "He studied hard, but he failed the exam."
+       ],
+       "why": "Although và but không đi cùng nhau.",
+       "tag": "k2-link"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-link1-1",
+       "front": "because khác because of; although khác despite",
+       "pattern": "**because / although + S + V** · **because of / despite + N / V-ing**",
+       "example": "*Although* it rained… / *Despite* the rain…",
+       "vi": "Mặc dù trời mưa… / Bất chấp cơn mưa…"
+      }
+     ],
+     "write": {
+      "prompt": "Viết cùng một ý theo hai cách: một câu với although + mệnh đề, một câu với despite + danh từ / V-ing.",
+      "samples": [
+       "Although the job is stressful, I enjoy it. Despite the stress, I enjoy my job.",
+       "Despite living far away, she visits her parents every month."
+      ],
+      "check": [
+       "although + S + V?",
+       "despite + danh từ / V-ing, không có of?"
+      ],
+      "must": [
+       "\\b(although|though|despite|in spite of|because)\\b"
+      ],
+      "hint": "Câu cần có although, despite hoặc because"
+     }
+    },
+    {
+     "id": "k2-link2",
+     "title": "However, Therefore, Moreover và dấu câu",
+     "rule": [
+      "Trạng từ nối đứng **đầu câu mới**, sau nó có **dấu phẩy**: *However, … / Therefore, … / Moreover, … / For example, …*",
+      "Không nối hai câu chỉ bằng dấu phẩy + however: ✗ *It was late, however we stayed.* → ✓ *It was late. However, we stayed.*",
+      "**while / whereas + mệnh đề**: đối lập hai đối tượng trong một câu: *Men prefer tea, **whereas** women prefer coffee.*",
+      "Mục đích: **to V / in order to V** · **so that + S + can/could + V**.",
+      "Ví dụ: **such as + danh từ** (giữa câu) · **For example,** (đầu câu)."
+     ],
+     "examples": [
+      {
+       "en": "The plan is expensive. *However,* it will save money in the long run.",
+       "vi": "Kế hoạch tốn kém. Tuy nhiên, về lâu dài nó sẽ tiết kiệm tiền."
+      },
+      {
+       "en": "Sales fell in May, *whereas* they rose in June.",
+       "vi": "Doanh số giảm vào tháng 5, trong khi tăng vào tháng 6."
+      },
+      {
+       "en": "I get up early *so that* I can avoid the traffic.",
+       "vi": "Tôi dậy sớm để tránh tắc đường."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The rent is high. ___, the flat is very small.",
+       "opts": [
+        "Moreover",
+        "Whereas",
+        "Although"
+       ],
+       "a": 0,
+       "why": "Thêm ý, đầu câu mới + dấu phẩy → **Moreover**.",
+       "tag": "k2-linkpunct"
+      },
+      {
+       "t": "mc",
+       "q": "City life is exciting, ___ village life is peaceful.",
+       "opts": [
+        "whereas",
+        "however",
+        "therefore"
+       ],
+       "a": 0,
+       "why": "Đối lập trong một câu + mệnh đề → **whereas**.",
+       "tag": "k2-linkpunct"
+      },
+      {
+       "t": "fill",
+       "q": "She saved money so ___ she could study abroad.",
+       "a": [
+        "that"
+       ],
+       "why": "Mục đích: **so that** + S + could + V.",
+       "tag": "k2-linkpunct"
+      },
+      {
+       "t": "tf",
+       "q": "The test was hard, however I passed.",
+       "a": false,
+       "why": "however mở đầu câu mới và có dấu phẩy sau.",
+       "tag": "k2-linkpunct",
+       "fix": "The test was hard. However, I passed."
+      },
+      {
+       "t": "fix",
+       "q": "Many fruits, for example mangoes and bananas, grows well here.",
+       "a": [
+        "Many fruits, such as mangoes and bananas, grow well here.",
+        "Many fruits, for example mangoes and bananas, grow well here."
+       ],
+       "why": "Chủ ngữ là fruits (số nhiều) → **grow**; giữa câu thường dùng such as.",
+       "tag": "k2-linkpunct"
+      },
+      {
+       "t": "fix",
+       "q": "He was ill. Therefore he stayed at home.",
+       "a": [
+        "He was ill. Therefore, he stayed at home."
+       ],
+       "why": "Sau Therefore đầu câu cần dấu phẩy.",
+       "tag": "k2-linkpunct"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-link2-1",
+       "front": "Nối hai câu trái ngược bằng However",
+       "pattern": "Câu 1**.** **However,** câu 2.",
+       "example": "Online classes are convenient*. However,* they require self-discipline.",
+       "vi": "Lớp học trực tuyến tiện lợi. Tuy nhiên, chúng đòi hỏi tính tự giác."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2–3 câu về ưu và nhược điểm của một thứ (làm việc ở nhà, mạng xã hội…), dùng However và một từ nối khác.",
+      "samples": [
+       "Working from home saves time. However, it can be lonely. Therefore, many people prefer a mix of both.",
+       "Social media is useful, whereas it can also waste a lot of time."
+      ],
+      "check": [
+       "However / Therefore mở đầu câu mới và có dấu phẩy?"
+      ],
+      "must": [
+       "\\b(however|therefore|moreover|whereas|while|in addition|for example|so that)\\b"
+      ],
+      "hint": "Câu cần có However, Therefore, Moreover hoặc whereas"
+     }
+    },
+    {
+     "id": "k2-time",
+     "title": "Mệnh đề thời gian: không dùng will",
+     "rule": [
+      "Sau **when, as soon as, before, after, until, once** nói về tương lai → dùng **hiện tại đơn**, không dùng will.",
+      "Vế chính vẫn dùng will: *I **will call** you when I **arrive**.*",
+      "Giống mệnh đề if loại 1: ✗ *when I will finish* → ✓ *when I finish*.",
+      "Muốn nhấn mạnh việc xong trước: dùng hiện tại hoàn thành: *I'll call you after I **have finished**.*"
+     ],
+     "examples": [
+      {
+       "en": "*As soon as* I *get* home, I'll send you the file.",
+       "vi": "Ngay khi về nhà, tôi sẽ gửi file cho bạn."
+      },
+      {
+       "en": "We'll wait *until* the rain *stops*.",
+       "vi": "Chúng tôi sẽ đợi đến khi tạnh mưa."
+      },
+      {
+       "en": "*Before* you *leave*, please turn off the lights.",
+       "vi": "Trước khi về, hãy tắt đèn."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I'll tell her the news when she ___.",
+       "opts": [
+        "arrives",
+        "will arrive",
+        "arrived"
+       ],
+       "a": 0,
+       "why": "Sau when (tương lai) dùng hiện tại đơn.",
+       "tag": "k2-timeclause"
+      },
+      {
+       "t": "mc",
+       "q": "We won't start until everyone ___ here.",
+       "opts": [
+        "is",
+        "will be",
+        "would be"
+       ],
+       "a": 0,
+       "why": "Sau until dùng hiện tại đơn.",
+       "tag": "k2-timeclause"
+      },
+      {
+       "t": "fill",
+       "q": "As soon as I ___ the results, I will let you know.",
+       "a": [
+        "get",
+        "receive",
+        "have",
+        "know"
+       ],
+       "why": "Sau as soon as dùng hiện tại đơn.",
+       "tag": "k2-timeclause",
+       "hint": "get"
+      },
+      {
+       "t": "tf",
+       "q": "After I will graduate, I will look for a job.",
+       "a": false,
+       "why": "Sau after không dùng will.",
+       "tag": "k2-timeclause",
+       "fix": "After I graduate, I will look for a job."
+      },
+      {
+       "t": "fix",
+       "q": "I will call you when I will finish work.",
+       "a": [
+        "I will call you when I finish work.",
+        "I'll call you when I finish work."
+       ],
+       "why": "Sau when không dùng will.",
+       "tag": "k2-timeclause"
+      },
+      {
+       "t": "fix",
+       "q": "Before she will leave, she will check her email.",
+       "a": [
+        "Before she leaves, she will check her email."
+       ],
+       "why": "Sau before dùng hiện tại đơn.",
+       "tag": "k2-timeclause"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-time-1",
+       "front": "Hứa sẽ làm gì ngay khi về đến nhà",
+       "pattern": "**As soon as / When + S + V(s), S + will + V**",
+       "example": "*As soon as I get* home, *I'll call* you.",
+       "vi": "Ngay khi về đến nhà, tôi sẽ gọi cho bạn."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2 câu về kế hoạch tương lai của bạn, dùng when / as soon as / after / until.",
+      "samples": [
+       "When I finish this course, I will take the IELTS test.",
+       "I will keep practising until I feel confident."
+      ],
+      "check": [
+       "Sau when / until / as soon as là hiện tại đơn?"
+      ],
+      "must": [
+       "\\b(when|as soon as|before|after|until|once)\\b"
+      ],
+      "hint": "Câu cần có when, as soon as, before, after hoặc until"
+     }
+    },
+    {
+     "id": "k2-review",
+     "title": "Ôn tập: 15 lỗi hay gặp ở band 4.0–4.5",
+     "rule": [
+      "Bài này gom các lỗi làm mất điểm nhiều nhất. Câu nào sai sẽ vào **Sổ lỗi** kèm bài cần học lại.",
+      "Dùng danh sách này khi tự sửa bài Writing hoặc nghe lại bản ghi Speaking: **chia động từ – mạo từ – số ít/nhiều – dạng từ – từ nối**."
+     ],
+     "examples": [
+      {
+       "en": "People in my city *are* friendly.",
+       "vi": "Người ở thành phố tôi thân thiện."
+      },
+      {
+       "en": "I'm *interested* in history.",
+       "vi": "Tôi thích lịch sử."
+      },
+      {
+       "en": "I *really like* it.",
+       "vi": "Tôi rất thích nó."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Chọn câu đúng:",
+       "opts": [
+        "I really like this city.",
+        "I very like this city.",
+        "I like very this city."
+       ],
+       "a": 0,
+       "why": "very không đứng trước động từ; dùng **really**.",
+       "tag": "k2-wordform"
+      },
+      {
+       "t": "mc",
+       "q": "Chọn câu đúng:",
+       "opts": [
+        "We discussed the problem.",
+        "We discussed about the problem.",
+        "We discussed for the problem."
+       ],
+       "a": 0,
+       "why": "discuss + tân ngữ, không có about.",
+       "tag": "k2-toving"
+      },
+      {
+       "t": "tf",
+       "q": "I have been to Da Nang last year.",
+       "a": false,
+       "why": "last year → quá khứ đơn.",
+       "tag": "k2-pp-past",
+       "fix": "I went to Da Nang last year."
+      },
+      {
+       "t": "tf",
+       "q": "Although it was late, we kept working.",
+       "a": true,
+       "why": "Đúng: chỉ một liên từ.",
+       "tag": "k2-link"
+      },
+      {
+       "t": "fix",
+       "q": "Many informations are available online.",
+       "a": [
+        "Much information is available online.",
+        "A lot of information is available online."
+       ],
+       "why": "information không đếm được.",
+       "tag": "k2-uncount"
+      },
+      {
+       "t": "fix",
+       "q": "I'm very interesting in learning languages.",
+       "a": [
+        "I'm very interested in learning languages.",
+        "I am very interested in learning languages."
+       ],
+       "why": "Cảm xúc của người → **-ed**.",
+       "tag": "k2-wordform"
+      },
+      {
+       "t": "fix",
+       "q": "The number of students have increased.",
+       "a": [
+        "The number of students has increased."
+       ],
+       "why": "The number of → số ít.",
+       "tag": "k2-sva-num"
+      },
+      {
+       "t": "fix",
+       "q": "If I will have time, I will visit you.",
+       "a": [
+        "If I have time, I will visit you.",
+        "If I have time, I'll visit you."
+       ],
+       "why": "Mệnh đề if không dùng will.",
+       "tag": "k2-if1"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-review-1",
+       "front": "5 thứ cần dò khi tự sửa bài viết",
+       "pattern": "**Chia động từ · mạo từ · số ít/nhiều · dạng từ · từ nối**",
+       "example": "*The number* of users *has* grown *significantly*.",
+       "vi": "Số lượng người dùng đã tăng đáng kể."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một đoạn 4–5 câu về một thay đổi ở nơi bạn sống, rồi dò lại theo 5 mục: chia động từ, mạo từ, số ít/nhiều, dạng từ, từ nối.",
+      "samples": [
+       "My neighbourhood has changed a lot in the last ten years. The number of shops has increased, and the streets are much busier. Although it is noisier now, life is more convenient. However, the traffic is getting worse and worse."
+      ],
+      "check": [
+       "Động từ chia đúng thì và đúng số?",
+       "Danh từ đếm được số ít có mạo từ?",
+       "Mỗi cặp ý chỉ một liên từ?"
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "items": [
   {
    "q": "My sister ___ a nurse.",
@@ -163,7 +163,8 @@
     "starts"
    ],
    "a": 0,
-   "lvl": 2
+   "lvl": 2,
+   "unit": "k2u3"
   },
   {
    "q": "If I ___ more free time, I would learn Spanish.",
@@ -173,7 +174,8 @@
     "will have"
    ],
    "a": 0,
-   "lvl": 2
+   "lvl": 2,
+   "unit": "k2u5"
   },
   {
    "q": "The bridge ___ in 2015.",
@@ -183,7 +185,8 @@
     "is building"
    ],
    "a": 0,
-   "lvl": 2
+   "lvl": 2,
+   "unit": "k2u7"
   },
   {
    "q": "The woman ___ lives next door is a doctor.",
@@ -193,7 +196,8 @@
     "whose"
    ],
    "a": 0,
-   "lvl": 2
+   "lvl": 2,
+   "unit": "k2u6"
   },
   {
    "q": "She suggested ___ a taxi.",
@@ -203,7 +207,8 @@
     "take"
    ],
    "a": 0,
-   "lvl": 2
+   "lvl": 2,
+   "unit": "k2u9"
   },
   {
    "q": "___ it was raining, we went out.",
@@ -213,7 +218,8 @@
     "Because of"
    ],
    "a": 0,
-   "lvl": 2
+   "lvl": 2,
+   "unit": "k2u10"
   },
   {
    "q": "The number of tourists ___ increased.",
@@ -223,7 +229,8 @@
     "are"
    ],
    "a": 0,
-   "lvl": 2
+   "lvl": 2,
+   "unit": "k2u4"
   },
   {
    "q": "Prices have risen steadily ___ the last decade.",
@@ -233,7 +240,8 @@
     "at"
    ],
    "a": 0,
-   "lvl": 2
+   "lvl": 2,
+   "unit": "k2u2"
   },
   {
    "q": "You ___ have told me earlier; I could have helped.",

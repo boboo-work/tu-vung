@@ -68,6 +68,7 @@ const DEFAULT_SETTINGS = {
   voice: 'en-US', // en-US | en-GB
   rate: 0.95,
   grammarPerDay: 1, // số bài ngữ pháp mỗi ngày (0 = tắt mục tiêu)
+  grammarCourse: '', // khoá ngữ pháp đang học ('' = tự chọn theo kiểm tra đầu vào / tiến độ)
   grammarReviewPerDay: 10, // số thẻ mẫu câu tối đa mỗi lượt ôn
   voiceName: '', // '' = tự chọn giọng tốt nhất trên máy
   autoSpeak: true, // tự phát âm khi lật thẻ sang mặt đáp án
@@ -494,6 +495,7 @@ function cleanBackup(data) {
     autoFill: st.autoFill !== false,
     lastBackup: DATE_RE.test(str(st.lastBackup)) ? st.lastBackup : null,
     grammarPerDay: int(st.grammarPerDay, 0, 2, DEFAULT_SETTINGS.grammarPerDay),
+    grammarCourse: /^c[1-9]$/.test(str(st.grammarCourse)) ? st.grammarCourse : '',
     grammarReviewPerDay: int(st.grammarReviewPerDay, 5, 50, DEFAULT_SETTINGS.grammarReviewPerDay),
   };
   return { decks, words, days, settings, game: cleanGame(data.game), grammar };
