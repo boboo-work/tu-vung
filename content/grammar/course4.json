@@ -1,0 +1,2031 @@
+{
+ "id": "c4",
+ "title": "IELTS 7.0 Advanced",
+ "level": "Band 6.5 → 7.0",
+ "version": 1,
+ "tags": {
+  "k4-ofwhom": {
+   "name": "Lượng từ + of whom / of which; giới từ + which",
+   "lesson": "k4-rel"
+  },
+  "k4-whereby": {
+   "name": "whereby, in which case, whatever",
+   "lesson": "k4-rel"
+  },
+  "k4-cohesion": {
+   "name": "Liên kết: this + danh từ, such, the former / the latter, do so",
+   "lesson": "k4-cohesion"
+  },
+  "k4-linker": {
+   "name": "Từ nối nâng cao: given that, in that, in turn, that said",
+   "lesson": "k4-linkers"
+  },
+  "k4-participle": {
+   "name": "Mệnh đề phân từ: V-ing / Having V3 / V3",
+   "lesson": "k4-part1"
+  },
+  "k4-dangling": {
+   "name": "Phân từ: chủ ngữ không khớp",
+   "lesson": "k4-part2"
+  },
+  "k4-result": {
+   "name": "…, V-ing chỉ kết quả; With + N + V-ing",
+   "lesson": "k4-part2"
+  },
+  "k4-nominal": {
+   "name": "Danh từ hoá: động từ → danh từ + giới từ",
+   "lesson": "k4-nom1"
+  },
+  "k4-cause": {
+   "name": "lead to / result in / stem from; danh từ chính",
+   "lesson": "k4-nom2"
+  },
+  "k4-hedge": {
+   "name": "Rào đón: tend to, likely to, may, arguably",
+   "lesson": "k4-hedge1"
+  },
+  "k4-overclaim": {
+   "name": "Khẳng định tuyệt đối (all, always, never)",
+   "lesson": "k4-hedge2"
+  },
+  "k4-reportpass": {
+   "name": "Bị động tường thuật: is said to / to have V3",
+   "lesson": "k4-reportpass"
+  },
+  "k4-perfinf": {
+   "name": "to have V3, to be V3, being V3; was going to",
+   "lesson": "k4-perfinf"
+  },
+  "k4-inversion": {
+   "name": "Đảo ngữ: trợ động từ sau từ phủ định",
+   "lesson": "k4-inv"
+  },
+  "k4-cleft": {
+   "name": "Câu nhấn mạnh: It is … that, What … is",
+   "lesson": "k4-cleft"
+  },
+  "k4-subjunctive": {
+   "name": "Câu giả định: It is essential that + V nguyên mẫu; suggest that",
+   "lesson": "k4-subj"
+  },
+  "k4-unreal": {
+   "name": "It's time + quá khứ, would rather, as if, If only, But for",
+   "lesson": "k4-unreal"
+  },
+  "k4-upgrade": {
+   "name": "Nâng câu 6.5 → 7.0",
+   "lesson": "k4-upgrade"
+  }
+ },
+ "units": [
+  {
+   "id": "k4u1",
+   "no": "1",
+   "title": "Mệnh đề quan hệ nâng cao và liên kết câu",
+   "goal": "Nối ý bằng ngữ pháp, cộng điểm Grammar và Coherence",
+   "lessons": [
+    {
+     "id": "k4-rel",
+     "title": "of whom, of which, giới từ + which, whereby",
+     "rule": [
+      "**Lượng từ + of whom / of which** (all, most, some, many, none, both, one): *I have five colleagues, **most of whom** speak French.*",
+      "Không viết ✗ *most of them* sau dấu phẩy: đó là hai câu nối bằng dấu phẩy.",
+      "**Giới từ + which / whom**: *the extent **to which** technology affects us* · *the way **in which** people communicate* · *the speed **at which** cities grow*.",
+      "**whereby** = theo đó: *a policy **whereby** staff can work from home* · **, in which case** = trong trường hợp đó.",
+      "**whatever / whoever / wherever** = bất cứ cái gì / ai / đâu: ***Whatever** job you choose, English will help.*"
+     ],
+     "examples": [
+      {
+       "en": "The city has three universities, *two of which* are private.",
+       "vi": "Thành phố có ba trường đại học, hai trong số đó là tư thục."
+      },
+      {
+       "en": "This shows *the extent to which* prices have risen.",
+       "vi": "Điều này cho thấy giá đã tăng đến mức nào."
+      },
+      {
+       "en": "The train may be late, *in which case* we will take a taxi.",
+       "vi": "Tàu có thể trễ, trong trường hợp đó chúng ta sẽ đi taxi."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I invited ten friends, ___ came to the party.",
+       "opts": [
+        "most of whom",
+        "most of them",
+        "most of who"
+       ],
+       "a": 0,
+       "why": "Sau dấu phẩy, lượng từ + **of whom** (người).",
+       "tag": "k4-ofwhom"
+      },
+      {
+       "t": "mc",
+       "q": "We must consider the speed ___ the population is growing.",
+       "opts": [
+        "at which",
+        "which",
+        "in that"
+       ],
+       "a": 0,
+       "why": "grow **at** a speed → **at which**.",
+       "tag": "k4-ofwhom"
+      },
+      {
+       "t": "fill",
+       "q": "The company introduced a system ___ employees can choose their hours.",
+       "a": [
+        "whereby"
+       ],
+       "why": "Theo đó → **whereby**.",
+       "tag": "k4-whereby",
+       "hint": "theo đó"
+      },
+      {
+       "t": "tf",
+       "q": "She bought three books, none of which were cheap.",
+       "a": true,
+       "why": "Đúng: none **of which** (vật).",
+       "tag": "k4-ofwhom"
+      },
+      {
+       "t": "fix",
+       "q": "I have two brothers, both of them live abroad.",
+       "a": [
+        "I have two brothers, both of whom live abroad."
+       ],
+       "why": "Dùng **both of whom** để nối, không dùng them.",
+       "tag": "k4-ofwhom"
+      },
+      {
+       "t": "fix",
+       "q": "The flight might be cancelled, in that case we will stay overnight.",
+       "a": [
+        "The flight might be cancelled, in which case we will stay overnight."
+       ],
+       "why": "Nối bằng **in which case**.",
+       "tag": "k4-whereby"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-rel-1",
+       "front": "Nói về một nhóm người, rồi thêm thông tin về phần lớn trong số họ",
+       "pattern": "N số nhiều**, most / some / all of whom** + V",
+       "example": "I have many neighbours, *most of whom* are retired.",
+       "vi": "Tôi có nhiều hàng xóm, phần lớn trong số họ đã nghỉ hưu."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu với most / some / none of whom (hoặc of which) và một câu với the extent to which / the way in which.",
+      "samples": [
+       "The survey asked 500 students, most of whom said they worked part-time.",
+       "It is unclear the extent to which social media affects mental health."
+      ],
+      "check": [
+       "of whom cho người, of which cho vật?",
+       "Không viết of them sau dấu phẩy?"
+      ],
+      "must": [
+       "\\bof (whom|which)\\b|\\b(to|in|at|by) which\\b|\\bwhereby\\b"
+      ],
+      "hint": "Câu cần có of whom / of which / to which / whereby"
+     }
+    },
+    {
+     "id": "k4-cohesion",
+     "title": "Liên kết câu: this + danh từ, such, the former / the latter",
+     "rule": [
+      "**this / these + danh từ tóm tắt** nối với ý câu trước: *Many young people move to cities. **This trend** puts pressure on housing.* (this problem, this approach, these measures)",
+      "**such + danh từ**: ***Such policies** would reduce traffic.*",
+      "**the former / the latter**: cái thứ nhất / cái thứ hai trong hai thứ vừa nhắc.",
+      "**do so** thay cho cả cụm động từ đã nói: *If governments **do so**, pollution will fall.*",
+      "**one / ones** thay cho danh từ đếm được: *Old buses should be replaced with new **ones**.*"
+     ],
+     "examples": [
+      {
+       "en": "Fewer people are having children. *This trend* may slow economic growth.",
+       "vi": "Ít người sinh con hơn. Xu hướng này có thể làm chậm tăng trưởng kinh tế."
+      },
+      {
+       "en": "Some prefer trains, others planes; *the former* is cheaper, *the latter* faster.",
+       "vi": "Người thích tàu, người thích máy bay; tàu rẻ hơn, máy bay nhanh hơn."
+      },
+      {
+       "en": "Cities should invest in cycling. If they *do so*, air quality will improve.",
+       "vi": "Thành phố nên đầu tư cho xe đạp. Nếu làm vậy, chất lượng không khí sẽ tốt hơn."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Prices have risen sharply. ___ has made life difficult for students.",
+       "opts": [
+        "This increase",
+        "It's increase",
+        "Such increase"
+       ],
+       "a": 0,
+       "why": "Tóm tắt ý câu trước: **This increase**.",
+       "tag": "k4-cohesion"
+      },
+      {
+       "t": "mc",
+       "q": "Laptops and tablets are popular; ___ are better for typing, while tablets are lighter.",
+       "opts": [
+        "the former",
+        "the latter",
+        "the first one"
+       ],
+       "a": 0,
+       "why": "Laptop nhắc trước → **the former**.",
+       "tag": "k4-cohesion"
+      },
+      {
+       "t": "fill",
+       "q": "Governments should tax sugary drinks. If they do ___, consumption may fall.",
+       "a": [
+        "so"
+       ],
+       "why": "**do so** thay cho cụm động từ.",
+       "tag": "k4-cohesion"
+      },
+      {
+       "t": "tf",
+       "q": "My old phone broke, so I bought a new one.",
+       "a": true,
+       "why": "Đúng: one thay cho phone.",
+       "tag": "k4-cohesion"
+      },
+      {
+       "t": "fix",
+       "q": "Many shops have closed. This make the town centre look empty.",
+       "a": [
+        "Many shops have closed. This makes the town centre look empty.",
+        "Many shops have closed. This trend makes the town centre look empty."
+       ],
+       "why": "This (số ít) → **makes**; tốt hơn: This trend makes.",
+       "tag": "k4-cohesion"
+      },
+      {
+       "t": "fix",
+       "q": "Such a policies could reduce crime.",
+       "a": [
+        "Such policies could reduce crime."
+       ],
+       "why": "such + danh từ số nhiều, không có a.",
+       "tag": "k4-cohesion"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-cohesion-1",
+       "front": "Nối câu sau với ý câu trước mà không lặp lại",
+       "pattern": "**This / These + danh từ tóm tắt** (trend, problem, approach, measures)",
+       "example": "Rents keep rising. *This problem* affects young workers most.",
+       "vi": "Tiền thuê nhà tiếp tục tăng. Vấn đề này ảnh hưởng nhất tới người lao động trẻ."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2 câu: câu đầu nêu một thay đổi xã hội, câu sau bắt đầu bằng This + danh từ tóm tắt.",
+      "samples": [
+       "More people are working from home. This shift has reduced traffic in city centres.",
+       "Many villages are losing young people. This trend threatens local schools."
+      ],
+      "check": [
+       "This + danh từ (không chỉ This đứng một mình)?"
+      ],
+      "must": [
+       "\\b(this|these|such)\\s+\\w+"
+      ],
+      "hint": "Câu cần có This / These / Such + danh từ"
+     }
+    },
+    {
+     "id": "k4-linkers",
+     "title": "Từ nối nâng cao",
+     "rule": [
+      "**Given that** + mệnh đề = xét rằng: ***Given that** most people drive, better buses are needed.*",
+      "**in that** + mệnh đề = ở chỗ: *Remote work is useful **in that** it saves travel time.*",
+      "**in turn** = rồi đến lượt nó: *Stress reduces sleep, which **in turn** affects performance.*",
+      "**That said,** = tuy vậy (nhượng bộ nhẹ) · **By contrast,** = ngược lại.",
+      "**not to mention** + danh từ / V-ing = chưa kể đến."
+     ],
+     "examples": [
+      {
+       "en": "*Given that* fuel prices are rising, electric cars make sense.",
+       "vi": "Xét rằng giá xăng đang tăng, xe điện là hợp lý."
+      },
+      {
+       "en": "Cities are noisy. *That said,* they offer many opportunities.",
+       "vi": "Thành phố ồn ào. Tuy vậy, nó mang lại nhiều cơ hội."
+      },
+      {
+       "en": "Driving is expensive, *not to mention* stressful.",
+       "vi": "Lái xe tốn kém, chưa kể căng thẳng."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Online courses are valuable ___ they allow people to study at their own pace.",
+       "opts": [
+        "in that",
+        "given",
+        "not to mention"
+       ],
+       "a": 0,
+       "why": "Ở chỗ + mệnh đề → **in that**.",
+       "tag": "k4-linker"
+      },
+      {
+       "t": "mc",
+       "q": "Poor diet causes illness, which ___ increases healthcare costs.",
+       "opts": [
+        "in turn",
+        "that said",
+        "by contrast"
+       ],
+       "a": 0,
+       "why": "Rồi đến lượt nó → **in turn**.",
+       "tag": "k4-linker"
+      },
+      {
+       "t": "fill",
+       "q": "___ that the city is growing fast, more schools will be needed.",
+       "a": [
+        "Given"
+       ],
+       "why": "Xét rằng → **Given** that.",
+       "tag": "k4-linker"
+      },
+      {
+       "t": "tf",
+       "q": "Living abroad is exciting. That said, it can be lonely.",
+       "a": true,
+       "why": "Đúng: That said, + nhượng bộ.",
+       "tag": "k4-linker"
+      },
+      {
+       "t": "fix",
+       "q": "Flying is fast, not to mention it is convenient.",
+       "a": [
+        "Flying is fast, not to mention convenient."
+       ],
+       "why": "not to mention + tính từ / danh từ, không + mệnh đề.",
+       "tag": "k4-linker"
+      },
+      {
+       "t": "fix",
+       "q": "Given most people work long hours, they have little time to exercise.",
+       "a": [
+        "Given that most people work long hours, they have little time to exercise."
+       ],
+       "why": "Given **that** + mệnh đề.",
+       "tag": "k4-linker"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-linkers-1",
+       "front": "Nêu một lợi ích kèm lý do cụ thể",
+       "pattern": "S + is beneficial **in that** + S + V",
+       "example": "Cycling is beneficial *in that* it improves fitness and costs nothing.",
+       "vi": "Đạp xe có lợi ở chỗ nó cải thiện sức khoẻ và không tốn tiền."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2 câu Task 2 về một chính sách: một câu với in that hoặc given that, một câu với That said,",
+      "samples": [
+       "Free public transport is attractive in that it reduces car use. That said, it may be expensive for the government.",
+       "Given that cities are crowded, remote work could ease traffic."
+      ],
+      "check": [
+       "in that / given that + mệnh đề đầy đủ?",
+       "That said có dấu phẩy?"
+      ],
+      "must": [
+       "\\b(in that|given that|in turn|that said|by contrast|not to mention)\\b"
+      ],
+      "hint": "Câu cần có in that / given that / That said"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k4u2",
+   "no": "2",
+   "title": "Mệnh đề phân từ",
+   "goal": "Câu ngắn gọn, giọng học thuật",
+   "lessons": [
+    {
+     "id": "k4-part1",
+     "title": "V-ing, Having V3, V3",
+     "rule": [
+      "Khi hai vế **cùng chủ ngữ**, bỏ chủ ngữ và liên từ ở một vế, đổi động từ thành:",
+      "- **V-ing**: chủ động, nguyên nhân hoặc cùng lúc: *Living far from work, I take the bus.*",
+      "- **Having + V3**: việc này xong rồi mới đến việc kia: *Having finished work, I went to the gym.*",
+      "- **V3**: bị động: *Designed for older users, the app has large buttons.*",
+      "- **Liên từ + V-ing** cho nghĩa rõ (when, while, after, before): *While waiting for the bus, I listen to podcasts.* · Phủ định: **Not knowing** the answer, I guessed."
+     ],
+     "examples": [
+      {
+       "en": "*Feeling* tired, she went to bed early.",
+       "vi": "Thấy mệt, cô ấy đi ngủ sớm."
+      },
+      {
+       "en": "*Having lived* abroad, he speaks three languages.",
+       "vi": "Từng sống ở nước ngoài, anh ấy nói được ba thứ tiếng."
+      },
+      {
+       "en": "*Built* in 1900, the bridge is still in use.",
+       "vi": "Được xây năm 1900, cây cầu vẫn còn được dùng."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "___ the email, she replied immediately.",
+       "opts": [
+        "Having read",
+        "Read",
+        "Having reading"
+       ],
+       "a": 0,
+       "why": "Đọc xong rồi mới trả lời → **Having + V3**.",
+       "tag": "k4-participle"
+      },
+      {
+       "t": "mc",
+       "q": "___ in 1850, the building is now a museum.",
+       "opts": [
+        "Built",
+        "Building",
+        "Having building"
+       ],
+       "a": 0,
+       "why": "Toà nhà được xây (bị động) → **V3**.",
+       "tag": "k4-participle"
+      },
+      {
+       "t": "fill",
+       "q": "___ knowing the way, we used a map.",
+       "a": [
+        "Not"
+       ],
+       "why": "Phủ định: **Not** + V-ing.",
+       "tag": "k4-participle"
+      },
+      {
+       "t": "tf",
+       "q": "Living in the countryside, she enjoys fresh air every day.",
+       "a": true,
+       "why": "Đúng: chủ ngữ she cũng là người sống ở nông thôn.",
+       "tag": "k4-participle"
+      },
+      {
+       "t": "fix",
+       "q": "Having finish the project, the team celebrated.",
+       "a": [
+        "Having finished the project, the team celebrated."
+       ],
+       "why": "Having + **V3**: finished.",
+       "tag": "k4-participle"
+      },
+      {
+       "t": "fix",
+       "q": "While wait for the train, I read the news.",
+       "a": [
+        "While waiting for the train, I read the news."
+       ],
+       "why": "Liên từ + **V-ing**.",
+       "tag": "k4-participle"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-part1-1",
+       "front": "Rút gọn: 'Because I live far from the office, I take the bus.'",
+       "pattern": "**V-ing** (chủ động) · **Having V3** (xong trước) · **V3** (bị động) + , S + V",
+       "example": "*Living* far from the office, I take the bus.",
+       "vi": "Vì sống xa văn phòng, tôi đi xe buýt."
+      }
+     ],
+     "write": {
+      "prompt": "Viết lại câu sau bằng mệnh đề phân từ: 'After I had finished my degree, I moved to Da Nang.' Rồi viết thêm một câu của riêng bạn.",
+      "samples": [
+       "Having finished my degree, I moved to Da Nang.",
+       "Working in a hospital, my sister sees many emergencies."
+      ],
+      "check": [
+       "Chủ ngữ của vế chính là người/vật làm hành động phân từ?"
+      ],
+      "must": [
+       "^\\s*(having|not|\\w+ing|\\w+ed|built|written|made|known|given|while|when|after|before)\\b"
+      ],
+      "hint": "Câu bắt đầu bằng V-ing / Having V3 / V3"
+     }
+    },
+    {
+     "id": "k4-part2",
+     "title": "Phân từ chỉ kết quả, With + N + V-ing, lỗi chủ ngữ không khớp",
+     "rule": [
+      "**…, V-ing** ở cuối câu chỉ **kết quả** của cả vế trước: *Many people moved to cities, **causing** housing shortages.*",
+      "Rất hợp Task 1: *Car sales rose to 5 million, **accounting for** 40% of the total.*",
+      "**With + N + V-ing / V3** chỉ hoàn cảnh: ***With more people working** from home, traffic has decreased.*",
+      "Lỗi hay gặp nhất: **chủ ngữ không khớp**. Chủ ngữ của vế chính phải là người/vật làm hành động phân từ: ✗ *Walking to work, the rain started.* → ✓ *Walking to work, I got caught in the rain.*",
+      "Không chắc thì giữ mệnh đề đầy đủ: *As I was walking to work, it started to rain.*"
+     ],
+     "examples": [
+      {
+       "en": "Prices rose by 20%, *making* housing unaffordable.",
+       "vi": "Giá tăng 20%, khiến nhà ở vượt khả năng chi trả."
+      },
+      {
+       "en": "*With* prices *rising*, many families are cutting back.",
+       "vi": "Khi giá cả tăng, nhiều gia đình đang chi tiêu ít lại."
+      },
+      {
+       "en": "*Arriving* late, I missed the introduction.",
+       "vi": "Đến muộn, tôi lỡ phần giới thiệu."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Sales fell sharply, ___ the company to close two stores.",
+       "opts": [
+        "forcing",
+        "forced",
+        "to force"
+       ],
+       "a": 0,
+       "why": "Kết quả của cả vế trước → **…, V-ing**.",
+       "tag": "k4-result"
+      },
+      {
+       "t": "mc",
+       "q": "Chọn câu đúng:",
+       "opts": [
+        "Having finished the report, I sent it to my manager.",
+        "Having finished the report, the computer crashed.",
+        "Having finished the report, it was sent to my manager."
+       ],
+       "a": 0,
+       "why": "Người làm xong báo cáo phải là chủ ngữ (I).",
+       "tag": "k4-dangling"
+      },
+      {
+       "t": "fill",
+       "q": "___ more students studying online, campuses are quieter.",
+       "a": [
+        "With"
+       ],
+       "why": "**With** + N + V-ing.",
+       "tag": "k4-result"
+      },
+      {
+       "t": "tf",
+       "q": "Walking along the beach, the sunset looked beautiful.",
+       "a": false,
+       "why": "Hoàng hôn không đi bộ: chủ ngữ không khớp.",
+       "tag": "k4-dangling",
+       "fix": "Walking along the beach, we watched a beautiful sunset."
+      },
+      {
+       "t": "fix",
+       "q": "Car sales rose to 3 million, accounted for 30% of the market.",
+       "a": [
+        "Car sales rose to 3 million, accounting for 30% of the market."
+       ],
+       "why": "Kết quả, chủ động → **accounting**.",
+       "tag": "k4-result"
+      },
+      {
+       "t": "fix",
+       "q": "Looking out of the window, the mountains were covered in snow.",
+       "a": [
+        "Looking out of the window, I saw that the mountains were covered in snow.",
+        "Looking out of the window, I saw the mountains covered in snow.",
+        "When I looked out of the window, the mountains were covered in snow."
+       ],
+       "why": "Núi không nhìn ra cửa sổ: cần chủ ngữ là người nhìn (I).",
+       "tag": "k4-dangling"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-part2-1",
+       "front": "Nêu hệ quả của một xu hướng trong cùng một câu (Task 1/Task 2)",
+       "pattern": "Mệnh đề**, V-ing** + kết quả",
+       "example": "Fuel prices doubled, *pushing* up the cost of food.",
+       "vi": "Giá nhiên liệu tăng gấp đôi, đẩy giá thực phẩm tăng theo."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu Task 1 với …, accounting for / making / leading to … và một câu với With + N + V-ing.",
+      "samples": [
+       "Online sales reached 2 billion dollars, accounting for a quarter of all retail sales.",
+       "With more families owning cars, traffic congestion has worsened."
+      ],
+      "check": [
+       "Vế phân từ chỉ kết quả của cả câu trước?",
+       "Chủ ngữ khớp với hành động?"
+      ],
+      "must": [
+       ",\\s*\\w+ing\\b|\\bwith\\b.*\\b\\w+ing\\b"
+      ],
+      "hint": "Câu cần có …, V-ing hoặc With + N + V-ing"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k4u3",
+   "no": "3",
+   "title": "Danh từ hoá và cụm danh từ phức",
+   "goal": "Công cụ chính của Writing Task 2 band 7",
+   "lessons": [
+    {
+     "id": "k4-nom1",
+     "title": "Động từ → danh từ + giới từ",
+     "rule": [
+      "Văn học thuật biến **hành động** (động từ) thành **sự việc** (danh từ): câu khách quan, gọn, có chỗ thêm tính từ chính xác.",
+      "*People use cars more and more* → ***The increasing use of** cars*.",
+      "Cặp hay dùng: increase → an increase **in** · reduce → a reduction **in** · improve → an improvement **in** · develop → the development **of** · consume → the consumption **of** · depend → dependence **on** · spend → spending **on** · access → access **to** · decide → a decision **to V** · fail → failure **to V**.",
+      "Trong Speaking chỉ dùng vừa phải; nói bằng động từ nghe tự nhiên hơn."
+     ],
+     "examples": [
+      {
+       "en": "*Investment in* public transport would ease congestion.",
+       "vi": "Đầu tư vào giao thông công cộng sẽ giảm ùn tắc."
+      },
+      {
+       "en": "*Youth unemployment* is a serious problem.",
+       "vi": "Thất nghiệp ở người trẻ là vấn đề nghiêm trọng."
+      },
+      {
+       "en": "*Over-dependence on* smartphones is a growing concern.",
+       "vi": "Phụ thuộc quá mức vào điện thoại là mối lo ngày càng tăng."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "There has been a significant ___ air quality.",
+       "opts": [
+        "improvement in",
+        "improve in",
+        "improvement of in"
+       ],
+       "a": 0,
+       "why": "improve → **an improvement in**.",
+       "tag": "k4-nominal"
+      },
+      {
+       "t": "mc",
+       "q": "Câu nào là danh từ hoá của 'People consume too much sugar'?",
+       "opts": [
+        "Excessive sugar consumption",
+        "People consuming sugar too much",
+        "Sugar is consumed by people too much"
+       ],
+       "a": 0,
+       "why": "consume → **consumption**, thêm tính từ excessive.",
+       "tag": "k4-nominal"
+      },
+      {
+       "t": "fill",
+       "q": "The government's ___ to raise taxes was unpopular.",
+       "a": [
+        "decision"
+       ],
+       "why": "decide → **a decision to V**.",
+       "tag": "k4-nominal",
+       "hint": "decide"
+      },
+      {
+       "t": "tf",
+       "q": "Our dependence of imported fuel is risky.",
+       "a": false,
+       "why": "dependence **on**.",
+       "tag": "k4-nominal",
+       "fix": "Our dependence on imported fuel is risky."
+      },
+      {
+       "t": "fix",
+       "q": "The develop of tourism has created jobs.",
+       "a": [
+        "The development of tourism has created jobs."
+       ],
+       "why": "Sau the cần danh từ: **development**.",
+       "tag": "k4-nominal"
+      },
+      {
+       "t": "fix",
+       "q": "There was a reduce of crime last year.",
+       "a": [
+        "There was a reduction in crime last year."
+       ],
+       "why": "reduce → **a reduction in**.",
+       "tag": "k4-nominal"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-nom1-1",
+       "front": "Viết lại 'People spend more on healthcare' bằng danh từ",
+       "pattern": "verb → **noun + giới từ**: spend → spending **on**, increase → an increase **in**",
+       "example": "*Increased spending on* healthcare is necessary.",
+       "vi": "Tăng chi tiêu cho y tế là cần thiết."
+      }
+     ],
+     "write": {
+      "prompt": "Viết lại bằng danh từ hoá: 'Cities are growing quickly, so people need more housing.' (gợi ý: rapid growth / demand for)",
+      "samples": [
+       "The rapid growth of cities has increased the demand for housing.",
+       "Rapid urban growth has created a greater demand for housing."
+      ],
+      "check": [
+       "Động từ đã đổi thành danh từ + giới từ?"
+      ],
+      "must": [
+       "\\b(growth|increase|demand|development|expansion)\\b"
+      ],
+      "hint": "Câu cần có danh từ như growth / demand / increase"
+     }
+    },
+    {
+     "id": "k4-nom2",
+     "title": "Động từ nguyên nhân – kết quả và cụm danh từ phức",
+     "rule": [
+      "Nối hai cụm danh từ: **nguyên nhân → kết quả**: lead to, result in, contribute to, give rise to.",
+      "**Kết quả ← nguyên nhân**: result from, stem from, be attributed to.",
+      "Cụm danh từ phức: từ hạn định + (trạng từ) + tính từ + **DANH TỪ CHÍNH** + bổ ngữ: *a significant **increase** in the number of people working remotely*.",
+      "Động từ chia theo **danh từ chính**: *The demand for skilled workers **is** growing.*"
+     ],
+     "examples": [
+      {
+       "en": "Long working hours *contribute to* poor mental health.",
+       "vi": "Làm việc nhiều giờ góp phần gây sức khoẻ tinh thần kém."
+      },
+      {
+       "en": "Traffic congestion *stems from* rapid urbanisation.",
+       "vi": "Ùn tắc giao thông bắt nguồn từ đô thị hoá nhanh."
+      },
+      {
+       "en": "The rapidly growing *demand* for nurses *is* a challenge.",
+       "vi": "Nhu cầu y tá tăng nhanh là một thách thức."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Deforestation has ___ serious flooding in the region.",
+       "opts": [
+        "led to",
+        "resulted from",
+        "stemmed from"
+       ],
+       "a": 0,
+       "why": "Nguyên nhân → kết quả: **led to**.",
+       "tag": "k4-cause"
+      },
+      {
+       "t": "mc",
+       "q": "Many health problems ___ a lack of exercise.",
+       "opts": [
+        "result from",
+        "result in",
+        "lead to"
+       ],
+       "a": 0,
+       "why": "Kết quả ← nguyên nhân: **result from**.",
+       "tag": "k4-cause"
+      },
+      {
+       "t": "fill",
+       "q": "The rise in obesity can be attributed ___ poor diet.",
+       "a": [
+        "to"
+       ],
+       "why": "be attributed **to**.",
+       "tag": "k4-cause"
+      },
+      {
+       "t": "tf",
+       "q": "The number of cars on the roads are rising.",
+       "a": false,
+       "why": "Danh từ chính là number → **is**.",
+       "tag": "k4-cause",
+       "fix": "The number of cars on the roads is rising."
+      },
+      {
+       "t": "fix",
+       "q": "The lack of affordable homes lead to overcrowding.",
+       "a": [
+        "The lack of affordable homes leads to overcrowding.",
+        "The lack of affordable homes has led to overcrowding."
+       ],
+       "why": "Danh từ chính lack (số ít) → **leads**.",
+       "tag": "k4-cause"
+      },
+      {
+       "t": "fix",
+       "q": "Pollution is resulted in health problems.",
+       "a": [
+        "Pollution results in health problems.",
+        "Pollution has resulted in health problems."
+       ],
+       "why": "result in là chủ động, không dùng is.",
+       "tag": "k4-cause"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-nom2-1",
+       "front": "Nêu nguyên nhân – kết quả bằng hai cụm danh từ",
+       "pattern": "Cụm danh từ 1 + **leads to / results in / contributes to** + cụm danh từ 2",
+       "example": "*Excessive screen time* can *lead to* sleep problems.",
+       "vi": "Thời gian dùng màn hình quá nhiều có thể dẫn đến vấn đề giấc ngủ."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2 câu nối hai cụm danh từ: một câu với lead to / result in, một câu với stem from / result from.",
+      "samples": [
+       "The rapid expansion of cities has led to a loss of farmland.",
+       "Many traffic accidents stem from driver fatigue."
+      ],
+      "check": [
+       "Động từ chia theo danh từ chính?",
+       "result in (gây ra) khác result from (do)?"
+      ],
+      "must": [
+       "\\b(lead|leads|led|result|results|resulted|contribute|contributes|contributed|stem|stems|stemmed|give rise|attributed)\\b"
+      ],
+      "hint": "Câu cần có lead to / result in / stem from"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k4u4",
+   "no": "4",
+   "title": "Ngôn ngữ rào đón",
+   "goal": "Nêu ý kiến có chừng mực, khó bị bắt bẻ",
+   "lessons": [
+    {
+     "id": "k4-hedge1",
+     "title": "Công cụ rào đón",
+     "rule": [
+      "**Modal**: may, might, could, can: *Social media **can** harm sleep.*",
+      "**tend to / appear to / seem to + V**: *People in cities **tend to** work longer hours.*",
+      "**be likely / unlikely to + V**: *Remote work **is likely to** become more common.*",
+      "**Trạng từ**: arguably, generally, largely, probably · **Cụm**: to some extent, in most cases.",
+      "**Mở câu khách quan**: *It could be argued that… · It is widely believed that… · There is evidence that…*"
+     ],
+     "examples": [
+      {
+       "en": "Older people *tend to* prefer cash.",
+       "vi": "Người lớn tuổi thường thích tiền mặt."
+      },
+      {
+       "en": "This is *largely* due to rising costs.",
+       "vi": "Điều này phần lớn là do chi phí tăng."
+      },
+      {
+       "en": "*It could be argued that* exams cause too much stress.",
+       "vi": "Có thể lập luận rằng thi cử gây quá nhiều căng thẳng."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Young people ___ spend more time online than older generations.",
+       "opts": [
+        "tend to",
+        "are tend to",
+        "tend"
+       ],
+       "a": 0,
+       "why": "**tend to + V**.",
+       "tag": "k4-hedge"
+      },
+      {
+       "t": "mc",
+       "q": "Prices are ___ to rise further next year.",
+       "opts": [
+        "likely",
+        "probably",
+        "arguably"
+       ],
+       "a": 0,
+       "why": "**be likely to + V**.",
+       "tag": "k4-hedge"
+      },
+      {
+       "t": "fill",
+       "q": "It ___ be argued that homework is unnecessary for young children.",
+       "a": [
+        "could",
+        "can",
+        "might",
+        "may"
+       ],
+       "why": "It **could** be argued that…",
+       "tag": "k4-hedge"
+      },
+      {
+       "t": "tf",
+       "q": "Technology has, to some extent, made people less patient.",
+       "a": true,
+       "why": "Đúng: to some extent làm mềm khẳng định.",
+       "tag": "k4-hedge"
+      },
+      {
+       "t": "fix",
+       "q": "Children who read a lot tend having larger vocabularies.",
+       "a": [
+        "Children who read a lot tend to have larger vocabularies."
+       ],
+       "why": "tend **to + V**.",
+       "tag": "k4-hedge"
+      },
+      {
+       "t": "fix",
+       "q": "Online learning is likely become more popular.",
+       "a": [
+        "Online learning is likely to become more popular."
+       ],
+       "why": "likely **to** + V.",
+       "tag": "k4-hedge"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-hedge1-1",
+       "front": "Nói một xu hướng chung mà không khẳng định tuyệt đối",
+       "pattern": "S + **tend to / is likely to** + V · **It could be argued that** …",
+       "example": "City dwellers *tend to* have less free time.",
+       "vi": "Người sống ở thành phố thường có ít thời gian rảnh hơn."
+      }
+     ],
+     "write": {
+      "prompt": "Viết 2 câu Task 2 về mạng xã hội, mỗi câu dùng một công cụ rào đón khác nhau.",
+      "samples": [
+       "Social media may make some teenagers feel anxious. It is also likely to reduce the time they spend outdoors.",
+       "It could be argued that social media has, to some extent, improved communication."
+      ],
+      "check": [
+       "Không dùng all / always / never khi không có bằng chứng?"
+      ],
+      "must": [
+       "\\b(may|might|could|tend|tends|likely|arguably|generally|largely|to some extent|in most cases)\\b"
+      ],
+      "hint": "Câu cần có may / tend to / likely to / arguably"
+     }
+    },
+    {
+     "id": "k4-hedge2",
+     "title": "Từ tuyệt đối sang có chừng mực",
+     "rule": [
+      "Tránh **all, everyone, always, never, definitely** khi không có bằng chứng.",
+      "Thay bằng lượng từ: **many, most, a large proportion of, some, the vast majority of**.",
+      "*Video games make children violent.* → *Violent video games **may** make **some** children more aggressive.*",
+      "*Fast food causes obesity.* → *Fast food **is likely to contribute to** obesity.*",
+      "**Đừng rào đón mọi câu**: câu nêu quan điểm và câu chủ đề nói thẳng; câu giải thích, ví dụ mới rào đón."
+     ],
+     "examples": [
+      {
+       "en": "*The vast majority of* students own a smartphone.",
+       "vi": "Đại đa số sinh viên có điện thoại thông minh."
+      },
+      {
+       "en": "Working from home is *arguably* better for *many* employees.",
+       "vi": "Làm việc ở nhà có thể nói là tốt hơn cho nhiều nhân viên."
+      },
+      {
+       "en": "I firmly believe that education should be free.",
+       "vi": "Tôi tin chắc rằng giáo dục nên miễn phí."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Câu nào có chừng mực hơn?",
+       "opts": [
+        "Most teenagers use social media every day.",
+        "All teenagers use social media every day.",
+        "Teenagers always use social media."
+       ],
+       "a": 0,
+       "why": "Thay all / always bằng **most**.",
+       "tag": "k4-overclaim"
+      },
+      {
+       "t": "mc",
+       "q": "Câu nào phù hợp làm câu nêu quan điểm (thesis) trong Task 2?",
+       "opts": [
+        "I strongly believe that public transport should be free.",
+        "It might perhaps be possibly argued that transport could be free.",
+        "Everyone knows transport must always be free."
+       ],
+       "a": 0,
+       "why": "Câu nêu quan điểm nói thẳng; không rào đón chồng chất, không tuyệt đối.",
+       "tag": "k4-overclaim"
+      },
+      {
+       "t": "fill",
+       "q": "___ vast majority of people support the new law.",
+       "a": [
+        "The"
+       ],
+       "why": "**The** vast majority of…",
+       "tag": "k4-overclaim"
+      },
+      {
+       "t": "tf",
+       "q": "Smoking definitely causes cancer in every smoker.",
+       "a": false,
+       "why": "Khẳng định tuyệt đối không đúng thực tế.",
+       "tag": "k4-overclaim",
+       "fix": "Smoking greatly increases the risk of cancer."
+      },
+      {
+       "t": "fix",
+       "q": "Everyone in cities owns a car.",
+       "a": [
+        "Many people in cities own a car.",
+        "Most people in cities own a car.",
+        "A large proportion of people in cities own a car."
+       ],
+       "why": "Thay everyone bằng **many / most** (chú ý động từ số nhiều).",
+       "tag": "k4-overclaim"
+      },
+      {
+       "t": "fix",
+       "q": "Exams always cause stress for students.",
+       "a": [
+        "Exams can cause stress for students.",
+        "Exams often cause stress for students.",
+        "Exams may cause stress for students.",
+        "Exams can cause stress for many students."
+       ],
+       "why": "Bỏ always, dùng **can / often / may**.",
+       "tag": "k4-overclaim"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-hedge2-1",
+       "front": "Sửa câu tuyệt đối 'X causes Y'",
+       "pattern": "X **is likely to contribute to** Y · X **may** cause Y in **some** cases",
+       "example": "Fast food *is likely to contribute to* obesity.",
+       "vi": "Thức ăn nhanh nhiều khả năng góp phần gây béo phì."
+      }
+     ],
+     "write": {
+      "prompt": "Viết lại cho có chừng mực: 'Video games make all children violent.' Rồi viết một câu nêu quan điểm thẳng của bạn về chủ đề này.",
+      "samples": [
+       "Violent video games may make some children more aggressive. However, I believe parents, not games, are mainly responsible.",
+       "Some violent games might increase aggression in a small number of children."
+      ],
+      "check": [
+       "Bỏ all / always / never?",
+       "Câu quan điểm vẫn rõ ràng?"
+      ],
+      "must": [
+       "\\b(may|might|could|some|many|most|likely|tend)\\b"
+      ],
+      "hint": "Câu cần có may / some / most / likely"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k4u5",
+   "no": "5",
+   "title": "Thì và thể nâng cao",
+   "goal": "Bị động tường thuật và nguyên mẫu hoàn thành",
+   "lessons": [
+    {
+     "id": "k4-reportpass",
+     "title": "Bị động với động từ tường thuật",
+     "rule": [
+      "Dùng với say, believe, think, consider, expect, report, estimate.",
+      "Cách 1: **It is + V3 + that** + mệnh đề: *It is believed that remote work improves productivity.*",
+      "Cách 2 (hiện tại): **S + is + V3 + to + V**: *Remote work **is believed to improve** productivity.*",
+      "Cách 2 (quá khứ): **S + is + V3 + to have + V3**: *The fire **is thought to have started** in the kitchen.*",
+      "Cách 2 (đang diễn ra): **S + is + V3 + to be + V-ing**: *Many people **are thought to be working** longer hours.*"
+     ],
+     "examples": [
+      {
+       "en": "The painting *is said to be* worth millions.",
+       "vi": "Bức tranh được cho là trị giá hàng triệu."
+      },
+      {
+       "en": "The city *is estimated to have lost* 10% of its trees.",
+       "vi": "Thành phố được ước tính đã mất 10% cây xanh."
+      },
+      {
+       "en": "*It is expected that* prices will fall.",
+       "vi": "Người ta dự đoán giá sẽ giảm."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The bridge is thought ___ in the 12th century.",
+       "opts": [
+        "to have been built",
+        "to build",
+        "to be building"
+       ],
+       "a": 0,
+       "why": "Việc trong quá khứ, bị động → **to have been built**.",
+       "tag": "k4-reportpass"
+      },
+      {
+       "t": "mc",
+       "q": "Green tea ___ to reduce stress.",
+       "opts": [
+        "is believed",
+        "believes",
+        "is believing"
+       ],
+       "a": 0,
+       "why": "S + **is believed** + to V.",
+       "tag": "k4-reportpass"
+      },
+      {
+       "t": "fill",
+       "q": "The thieves are believed to ___ escaped by car.",
+       "a": [
+        "have"
+       ],
+       "why": "Quá khứ → to **have** + V3.",
+       "tag": "k4-reportpass"
+      },
+      {
+       "t": "tf",
+       "q": "It is reported that the company will close two factories.",
+       "a": true,
+       "why": "Đúng: It is + V3 + that.",
+       "tag": "k4-reportpass"
+      },
+      {
+       "t": "fix",
+       "q": "The suspect is said to leave the country last week.",
+       "a": [
+        "The suspect is said to have left the country last week."
+       ],
+       "why": "Việc đã xảy ra → **to have left**.",
+       "tag": "k4-reportpass"
+      },
+      {
+       "t": "fix",
+       "q": "Coffee is say to improve concentration.",
+       "a": [
+        "Coffee is said to improve concentration."
+       ],
+       "why": "is **said** (V3).",
+       "tag": "k4-reportpass"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-reportpass-1",
+       "front": "Nêu một nhận định chung mà không nói 'people say'",
+       "pattern": "S + **is said / believed / thought to** + V (hiện tại) / **to have + V3** (quá khứ)",
+       "example": "The castle *is thought to have been built* in 1400.",
+       "vi": "Lâu đài được cho là xây năm 1400."
+      }
+     ],
+     "write": {
+      "prompt": "Viết lại: 'People believe that the virus started in animals.' theo cách 2, rồi viết một câu It is expected that…",
+      "samples": [
+       "The virus is believed to have started in animals.",
+       "It is expected that the population will reach 100 million by 2030."
+      ],
+      "check": [
+       "Quá khứ dùng to have + V3?"
+      ],
+      "must": [
+       "\\bis (said|believed|thought|expected|reported|estimated|considered)\\b|\\bit is (said|believed|thought|expected|reported|estimated)\\b"
+      ],
+      "hint": "Câu cần có is said / believed / thought to…"
+     }
+    },
+    {
+     "id": "k4-perfinf",
+     "title": "to have V3, to be V3, being V3; was going to",
+     "rule": [
+      "**seem / appear / be likely + to have + V3**: có vẻ đã: *The problem **seems to have been solved**.*",
+      "**need / should / must + be + V3**: cần được: *The rules **need to be updated**.*",
+      "**being + V3** sau giới từ hoặc động từ + V-ing: *I don't like **being interrupted**.*",
+      "**get + sb + to V** / **have + sb + V**: nhờ ai làm: *I **got** my friend **to check** my essay.*",
+      "**was / were going to + V**: định làm nhưng đã không làm · **would + V**: tương lai nhìn từ quá khứ: *I never thought I **would** live abroad.*"
+     ],
+     "examples": [
+      {
+       "en": "He *appears to have forgotten* the meeting.",
+       "vi": "Anh ấy có vẻ đã quên cuộc họp."
+      },
+      {
+       "en": "Nobody likes *being criticised* in public.",
+       "vi": "Không ai thích bị chỉ trích trước mặt người khác."
+      },
+      {
+       "en": "I *was going to* call you, but I ran out of battery.",
+       "vi": "Tôi định gọi cho bạn, nhưng điện thoại hết pin."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "The documents need ___ before Friday.",
+       "opts": [
+        "to be signed",
+        "to sign",
+        "signing be"
+       ],
+       "a": 0,
+       "why": "Cần **được** ký → **to be signed**.",
+       "tag": "k4-perfinf"
+      },
+      {
+       "t": "mc",
+       "q": "She seems ___ a lot of weight since last year.",
+       "opts": [
+        "to have lost",
+        "to lose",
+        "losing"
+       ],
+       "a": 0,
+       "why": "Có vẻ đã (từ năm ngoái đến nay) → **to have lost**.",
+       "tag": "k4-perfinf"
+      },
+      {
+       "t": "fill",
+       "q": "I hate ___ told what to do.",
+       "a": [
+        "being"
+       ],
+       "why": "Bị động sau hate → **being** + V3.",
+       "tag": "k4-perfinf"
+      },
+      {
+       "t": "tf",
+       "q": "I got my brother fix my bike.",
+       "a": false,
+       "why": "get + sb + **to V**.",
+       "tag": "k4-perfinf",
+       "fix": "I got my brother to fix my bike."
+      },
+      {
+       "t": "fix",
+       "q": "I was going to visiting you, but I was ill.",
+       "a": [
+        "I was going to visit you, but I was ill."
+       ],
+       "why": "was going to + **V nguyên mẫu**.",
+       "tag": "k4-perfinf"
+      },
+      {
+       "t": "fix",
+       "q": "The old bridge must replace soon.",
+       "a": [
+        "The old bridge must be replaced soon."
+       ],
+       "why": "Cầu được thay → **must be replaced**.",
+       "tag": "k4-perfinf"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-perfinf-1",
+       "front": "Nói một việc bạn định làm nhưng đã không làm",
+       "pattern": "S + **was / were going to** + V, but …",
+       "example": "I *was going to* join the gym, but it was too expensive.",
+       "vi": "Tôi định đăng ký phòng gym, nhưng đắt quá."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu với was going to … but …, và một câu với need / must + be + V3.",
+      "samples": [
+       "I was going to study abroad, but the course was cancelled.",
+       "The school's computers need to be replaced."
+      ],
+      "check": [
+       "was going to + V nguyên mẫu?",
+       "Cần được làm: be + V3?"
+      ],
+      "must": [
+       "\\b(was|were) going to\\b|\\b(need to|needs to|must|should) be\\b"
+      ],
+      "hint": "Câu cần có was going to hoặc need to be + V3"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k4u6",
+   "no": "6",
+   "title": "Đảo ngữ và câu nhấn mạnh",
+   "goal": "Dùng điểm xuyết, mỗi bài một lần",
+   "lessons": [
+    {
+     "id": "k4-inv",
+     "title": "Đảo ngữ",
+     "rule": [
+      "Ba bước: (1) đưa từ phủ định / hạn chế lên đầu; (2) thêm **trợ động từ** theo thì (do/does/did, have/had, can, should…); (3) S + động từ chính.",
+      "**Never / Rarely / Seldom**: *Rarely **do I take** a taxi.*",
+      "**Not only … but (also)**: *Not only **does** public transport **reduce** traffic, but it also cuts pollution.*",
+      "**Only when / Only by / Not until**: đảo ở **vế sau**: *Only when I started working **did I realise** how important English is.*",
+      "**No sooner had … than** · **Little did I know** · **Under no circumstances should** … · **So + adj + was + S + that**.",
+      "Đảo ngữ sai bị trừ điểm nặng hơn không dùng."
+     ],
+     "examples": [
+      {
+       "en": "*Never have I seen* such a crowded street.",
+       "vi": "Chưa bao giờ tôi thấy con phố nào đông như vậy."
+      },
+      {
+       "en": "*Not only did* she win, *but* she also broke the record.",
+       "vi": "Cô ấy không chỉ thắng mà còn phá kỷ lục."
+      },
+      {
+       "en": "*Under no circumstances should* you share your password.",
+       "vi": "Trong bất kỳ trường hợp nào bạn cũng không được chia sẻ mật khẩu."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Rarely ___ such a talented student.",
+       "opts": [
+        "have I met",
+        "I have met",
+        "I met"
+       ],
+       "a": 0,
+       "why": "Sau Rarely: trợ động từ + S.",
+       "tag": "k4-inversion"
+      },
+      {
+       "t": "mc",
+       "q": "Only after the meeting ___ the truth.",
+       "opts": [
+        "did I learn",
+        "I learned",
+        "I did learn"
+       ],
+       "a": 0,
+       "why": "Only after …: đảo ở vế sau → **did I learn**.",
+       "tag": "k4-inversion"
+      },
+      {
+       "t": "fill",
+       "q": "No sooner ___ I sat down than the phone rang.",
+       "a": [
+        "had"
+       ],
+       "why": "No sooner **had** + S + V3 … than.",
+       "tag": "k4-inversion"
+      },
+      {
+       "t": "tf",
+       "q": "Not only he speaks French, but he also speaks Arabic.",
+       "a": false,
+       "why": "Not only + trợ động từ + S.",
+       "tag": "k4-inversion",
+       "fix": "Not only does he speak French, but he also speaks Arabic."
+      },
+      {
+       "t": "fix",
+       "q": "Little I knew that the job would change my life.",
+       "a": [
+        "Little did I know that the job would change my life."
+       ],
+       "why": "Little + **did I know**.",
+       "tag": "k4-inversion"
+      },
+      {
+       "t": "fix",
+       "q": "Seldom we eat out during the week.",
+       "a": [
+        "Seldom do we eat out during the week."
+       ],
+       "why": "Seldom + **do we**.",
+       "tag": "k4-inversion"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-inv-1",
+       "front": "Mở bài Speaking Part 2 ấn tượng bằng đảo ngữ",
+       "pattern": "**Never have I** + V3 · **Little did I know** that …",
+       "example": "*Never have I felt* so proud as on that day.",
+       "vi": "Chưa bao giờ tôi thấy tự hào như ngày hôm đó."
+      }
+     ],
+     "write": {
+      "prompt": "Viết lại: 'I rarely go to the cinema.' và 'I realised its value only when I lost it.' bằng đảo ngữ.",
+      "samples": [
+       "Rarely do I go to the cinema.",
+       "Only when I lost it did I realise its value."
+      ],
+      "check": [
+       "Có trợ động từ đứng trước chủ ngữ?",
+       "Only when: đảo ở vế sau?"
+      ],
+      "must": [
+       "^\\s*(never|rarely|seldom|not only|only|not until|no sooner|little|under no|hardly|so)\\b"
+      ],
+      "hint": "Câu bắt đầu bằng Rarely / Never / Only when / Not only…"
+     }
+    },
+    {
+     "id": "k4-cleft",
+     "title": "Câu nhấn mạnh",
+     "rule": [
+      "**It is / was + X + that / who …**: nhấn mạnh X: *It is **the lack of time** that prevents many workers from studying.*",
+      "**What + S + V + is / was …**: *What worries me most **is** the cost of housing.*",
+      "**All + S + V + is …**: *All I want **is** a stable job.*",
+      "**The reason why … is that …**: *The reason why I moved is that rent was cheaper.* (không: *is because*)",
+      "**do / does / did + V** nhấn mạnh: *I **do** believe that exercise helps.*"
+     ],
+     "examples": [
+      {
+       "en": "*It was* my grandmother *who* taught me to cook.",
+       "vi": "Chính bà tôi là người dạy tôi nấu ăn."
+      },
+      {
+       "en": "*What the city needs is* more green space.",
+       "vi": "Điều thành phố cần là thêm không gian xanh."
+      },
+      {
+       "en": "*All* she wanted *was* a quiet weekend.",
+       "vi": "Tất cả những gì cô ấy muốn là một cuối tuần yên tĩnh."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "___ was the noise that kept me awake.",
+       "opts": [
+        "It",
+        "What",
+        "There"
+       ],
+       "a": 0,
+       "why": "**It was** + X + that…",
+       "tag": "k4-cleft"
+      },
+      {
+       "t": "mc",
+       "q": "What I need ___ a long holiday.",
+       "opts": [
+        "is",
+        "are",
+        "that"
+       ],
+       "a": 0,
+       "why": "What … + **is** (số ít).",
+       "tag": "k4-cleft"
+      },
+      {
+       "t": "fill",
+       "q": "The reason why I chose this job is ___ it allows me to travel.",
+       "a": [
+        "that"
+       ],
+       "why": "The reason why … is **that** …",
+       "tag": "k4-cleft"
+      },
+      {
+       "t": "tf",
+       "q": "I did try my best, but I failed.",
+       "a": true,
+       "why": "Đúng: did + V nhấn mạnh.",
+       "tag": "k4-cleft"
+      },
+      {
+       "t": "fix",
+       "q": "The reason why prices rose is because demand increased.",
+       "a": [
+        "The reason why prices rose is that demand increased."
+       ],
+       "why": "The reason why … is **that**, không dùng because.",
+       "tag": "k4-cleft"
+      },
+      {
+       "t": "fix",
+       "q": "What I like most are the friendly people.",
+       "a": [
+        "What I like most is the friendly people."
+       ],
+       "why": "Mệnh đề What… làm chủ ngữ → **is**.",
+       "tag": "k4-cleft"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-cleft-1",
+       "front": "Nhấn mạnh điều quan trọng nhất trong câu trả lời Part 3",
+       "pattern": "**What + S + V + is** … · **It is + X + that** …",
+       "example": "*What the government should do is* invest in public transport.",
+       "vi": "Điều chính phủ nên làm là đầu tư vào giao thông công cộng."
+      }
+     ],
+     "write": {
+      "prompt": "Trả lời: 'What is the biggest problem in your city?' bằng một câu What … is … và một câu It is … that …",
+      "samples": [
+       "What worries me most is the air pollution. It is the number of motorbikes that makes the air so dirty.",
+       "What my city needs is more parks."
+      ],
+      "check": [
+       "What … + is (số ít)?",
+       "It is + X + that?"
+      ],
+      "must": [
+       "^\\s*(what|it (is|was)|all|the reason)\\b"
+      ],
+      "hint": "Câu bắt đầu bằng What … is / It is … that"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k4u7",
+   "no": "7",
+   "title": "Câu giả định",
+   "goal": "Đề xuất giải pháp trong Writing Task 2",
+   "lessons": [
+    {
+     "id": "k4-subj",
+     "title": "It is essential that + V nguyên mẫu; suggest that",
+     "rule": [
+      "**It is essential / vital / crucial / important + that + S + V nguyên mẫu** (mọi ngôi, không thêm -s): *It is crucial that the government **take** action.*",
+      "**suggest / recommend / insist / demand + that + S + V nguyên mẫu**: *The doctor recommended that he **rest**.*",
+      "Cách Anh–Anh: **should + V**: *It is vital that every child **should** be vaccinated.*",
+      "✗ *suggested me to take* → ✓ *suggested that I take* / *suggested taking*.",
+      "Mẫu kết luận Task 2: *In conclusion, it is essential that governments **invest** in public transport.*"
+     ],
+     "examples": [
+      {
+       "en": "It is vital that every student *be* given the same opportunities.",
+       "vi": "Điều thiết yếu là mọi học sinh đều được trao cơ hội như nhau."
+      },
+      {
+       "en": "My teacher suggested that I *read* more news.",
+       "vi": "Giáo viên gợi ý tôi đọc báo nhiều hơn."
+      },
+      {
+       "en": "They insisted that he *pay* the full price.",
+       "vi": "Họ khăng khăng đòi anh ấy trả đủ giá."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "It is essential that the government ___ more in education.",
+       "opts": [
+        "invest",
+        "invests",
+        "invested"
+       ],
+       "a": 0,
+       "why": "Sau It is essential that: **V nguyên mẫu**.",
+       "tag": "k4-subjunctive"
+      },
+      {
+       "t": "mc",
+       "q": "The manager recommended that she ___ a few days off.",
+       "opts": [
+        "take",
+        "takes",
+        "to take"
+       ],
+       "a": 0,
+       "why": "recommend that + S + **V nguyên mẫu**.",
+       "tag": "k4-subjunctive"
+      },
+      {
+       "t": "fill",
+       "q": "It is crucial that every driver ___ a seatbelt.",
+       "a": [
+        "wear"
+       ],
+       "why": "V nguyên mẫu: **wear**.",
+       "tag": "k4-subjunctive",
+       "hint": "wear"
+      },
+      {
+       "t": "tf",
+       "q": "My friend suggested me to apply for the job.",
+       "a": false,
+       "why": "suggest không đi với sb + to V.",
+       "tag": "k4-subjunctive",
+       "fix": "My friend suggested that I apply for the job."
+      },
+      {
+       "t": "fix",
+       "q": "It is important that each child has access to clean water.",
+       "a": [
+        "It is important that each child have access to clean water.",
+        "It is important that each child should have access to clean water."
+       ],
+       "why": "Câu giả định: **have** (không thêm -s).",
+       "tag": "k4-subjunctive"
+      },
+      {
+       "t": "fix",
+       "q": "The doctor insisted that he stops smoking.",
+       "a": [
+        "The doctor insisted that he stop smoking.",
+        "The doctor insisted that he should stop smoking."
+       ],
+       "why": "insist that + S + **V nguyên mẫu**.",
+       "tag": "k4-subjunctive"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-subj-1",
+       "front": "Câu kết luận Task 2 đề xuất giải pháp",
+       "pattern": "**It is essential / vital that** + S + **V nguyên mẫu**",
+       "example": "In conclusion, *it is vital that* local authorities *provide* more affordable housing.",
+       "vi": "Tóm lại, chính quyền địa phương cần cung cấp thêm nhà ở giá rẻ."
+      }
+     ],
+     "write": {
+      "prompt": "Viết câu kết luận Task 2 đề xuất hai giải pháp bằng It is essential that … and that …",
+      "samples": [
+       "In conclusion, it is essential that governments invest in public transport and that employers allow flexible hours.",
+       "It is crucial that schools teach financial skills and that parents support this."
+      ],
+      "check": [
+       "Động từ sau that ở dạng nguyên mẫu (không -s)?"
+      ],
+      "must": [
+       "\\b(essential|vital|crucial|important|necessary|suggest|suggested|recommend|recommended|insist|insisted)\\b.*\\bthat\\b"
+      ],
+      "hint": "Câu cần có It is essential that / recommend that"
+     }
+    },
+    {
+     "id": "k4-unreal",
+     "title": "It's time, would rather, as if, If only, But for",
+     "rule": [
+      "**It's (high / about) time + S + quá khứ đơn**: *It's high time the city **improved** its bus network.*",
+      "**would rather + S + quá khứ đơn**: *I'd rather you **didn't** call after 10 p.m.*",
+      "**as if / as though + quá khứ đơn**: *He talks as if he **knew** everything.*",
+      "**If it weren't for / But for / Without + N**: *But for your help, I would have failed.*",
+      "**If only + quá khứ đơn / had + V3** · **wish + S + would + V** (phàn nàn hành vi người khác) · **Suppose / Imagine + quá khứ đơn**."
+     ],
+     "examples": [
+      {
+       "en": "It's time we *left*.",
+       "vi": "Đến lúc chúng ta đi rồi."
+      },
+      {
+       "en": "*If only* I *had* more time!",
+       "vi": "Giá mà tôi có nhiều thời gian hơn!"
+      },
+      {
+       "en": "*Without* the internet, many businesses *would* close.",
+       "vi": "Không có internet, nhiều doanh nghiệp sẽ phải đóng cửa."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "It's high time the government ___ something about pollution.",
+       "opts": [
+        "did",
+        "do",
+        "does"
+       ],
+       "a": 0,
+       "why": "It's high time + **quá khứ đơn**.",
+       "tag": "k4-unreal"
+      },
+      {
+       "t": "mc",
+       "q": "I'd rather you ___ smoke in the house.",
+       "opts": [
+        "didn't",
+        "don't",
+        "won't"
+       ],
+       "a": 0,
+       "why": "would rather + S + **quá khứ đơn**.",
+       "tag": "k4-unreal"
+      },
+      {
+       "t": "fill",
+       "q": "___ for the rain, we would have had a picnic.",
+       "a": [
+        "But"
+       ],
+       "why": "**But for** + N = nếu không có.",
+       "tag": "k4-unreal"
+      },
+      {
+       "t": "tf",
+       "q": "She looks as if she has seen a ghost.",
+       "a": true,
+       "why": "Đúng: as if + hiện tại hoàn thành khi có khả năng thật; as if she had seen cũng được.",
+       "tag": "k4-unreal"
+      },
+      {
+       "t": "fix",
+       "q": "I wish my neighbours will stop making noise at night.",
+       "a": [
+        "I wish my neighbours would stop making noise at night."
+       ],
+       "why": "Phàn nàn: wish + S + **would** + V.",
+       "tag": "k4-unreal"
+      },
+      {
+       "t": "fix",
+       "q": "It's time we go home.",
+       "a": [
+        "It's time we went home.",
+        "It is time we went home."
+       ],
+       "why": "It's time + **quá khứ đơn**.",
+       "tag": "k4-unreal"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-unreal-1",
+       "front": "Nói một việc đáng lẽ phải làm từ lâu",
+       "pattern": "**It's high time** + S + **V2**",
+       "example": "*It's high time* the city *built* a metro.",
+       "vi": "Đã đến lúc thành phố phải xây tàu điện ngầm."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu It's high time … về thành phố của bạn và một câu If only … hoặc But for …",
+      "samples": [
+       "It's high time the city planted more trees. If only people used public transport more!",
+       "But for my teachers, I would never have gone to university."
+      ],
+      "check": [
+       "It's time / If only + quá khứ đơn?"
+      ],
+      "must": [
+       "\\b(it'?s (high |about )?time|it is (high |about )?time|if only|but for|would rather|'d rather|as if|as though|wish)\\b"
+      ],
+      "hint": "Câu cần có It's time / If only / But for"
+     }
+    }
+   ]
+  },
+  {
+   "id": "k4u8",
+   "no": "8",
+   "title": "Luyện nâng câu 6.5 → 7.0",
+   "goal": "Đổi cấu trúc cùng một ý; tránh lỗi khi dùng ngữ pháp khó",
+   "lessons": [
+    {
+     "id": "k4-upgrade",
+     "title": "Nâng câu: cùng ý, khác cấu trúc",
+     "rule": [
+      "Mỗi bài Writing chèn **2–3** cấu trúc nâng cao; mỗi câu trả lời Part 3 dùng **1** là đủ. Nhồi nhiều làm câu gượng và dễ sai.",
+      "Bảng nâng câu: phân từ (*Living on the outskirts, I rely on the bus*) · danh từ hoá + rào đón (*Excessive smartphone use can lead to fatigue*) · đảo ngữ · giả định · *most of whom* · bị động tường thuật.",
+      "**Một câu phức đúng có giá trị hơn ba câu phức sai.**"
+     ],
+     "examples": [
+      {
+       "en": "I live far away, so I take the bus. → *Living far away,* I take the bus.",
+       "vi": "Phân từ."
+      },
+      {
+       "en": "People use phones too much and get tired. → *Excessive phone use can lead to* fatigue.",
+       "vi": "Danh từ hoá + rào đón."
+      },
+      {
+       "en": "I have many friends. Most of them are teachers. → I have many friends, *most of whom* are teachers.",
+       "vi": "of whom."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Câu nào là bản nâng cấp đúng của 'Many people moved to cities, and this caused housing shortages'?",
+       "opts": [
+        "Many people moved to cities, causing housing shortages.",
+        "Many people moved to cities, caused housing shortages.",
+        "Moving to cities, housing shortages were caused."
+       ],
+       "a": 0,
+       "why": "…, V-ing chỉ kết quả, chủ ngữ khớp.",
+       "tag": "k4-upgrade"
+      },
+      {
+       "t": "mc",
+       "q": "Câu nào là bản nâng cấp đúng của 'The government should improve buses'?",
+       "opts": [
+        "It is essential that the government improve the bus network.",
+        "It is essential that the government improves the bus network.",
+        "It is essential the government to improve buses."
+       ],
+       "a": 0,
+       "why": "Giả định: that + S + **V nguyên mẫu**.",
+       "tag": "k4-upgrade"
+      },
+      {
+       "t": "mc",
+       "q": "Câu nào là bản nâng cấp đúng của 'People say skincare products are getting more expensive'?",
+       "opts": [
+        "Skincare products are said to be getting more expensive.",
+        "Skincare products are said getting more expensive.",
+        "Skincare products say to be more expensive."
+       ],
+       "a": 0,
+       "why": "is said **to be + V-ing** (đang diễn ra).",
+       "tag": "k4-upgrade"
+      },
+      {
+       "t": "fill",
+       "q": "When I started working, I realised English was important. → Only when I started working ___ I realise how important English was.",
+       "a": [
+        "did"
+       ],
+       "why": "Only when … + **did** + S + V.",
+       "tag": "k4-upgrade"
+      },
+      {
+       "t": "tf",
+       "q": "Social media is arguably harmful to teenagers, in that it disrupts their sleep.",
+       "a": true,
+       "why": "Đúng: rào đón (arguably) + in that.",
+       "tag": "k4-upgrade"
+      },
+      {
+       "t": "fix",
+       "q": "I have many colleagues, most of them work remotely.",
+       "a": [
+        "I have many colleagues, most of whom work remotely."
+       ],
+       "why": "Nối bằng **most of whom**.",
+       "tag": "k4-upgrade"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-upgrade-1",
+       "front": "Quy tắc vàng khi nâng câu",
+       "pattern": "Mỗi bài **2–3** cấu trúc khó · **một câu phức đúng** hơn ba câu phức sai",
+       "example": "*Having moved* to the city, I now spend less time commuting.",
+       "vi": "Từ khi chuyển lên thành phố, tôi đi lại ít thời gian hơn."
+      }
+     ],
+     "write": {
+      "prompt": "Lấy một câu đơn giản bạn hay viết (ví dụ 'I think social media is bad for teenagers') và nâng cấp bằng một cấu trúc trong khoá.",
+      "samples": [
+       "Social media is arguably harmful to teenagers in that it disrupts their sleep.",
+       "It could be argued that excessive use of social media harms teenagers' sleep."
+      ],
+      "check": [
+       "Câu mới vẫn giữ đúng ý?",
+       "Có lỗi nào khi dùng cấu trúc khó không?"
+      ]
+     }
+    },
+    {
+     "id": "k4-review",
+     "title": "Lỗi hay gặp khi cố dùng ngữ pháp khó",
+     "rule": [
+      "Đảo ngữ thiếu trợ động từ: ✗ *Rarely I take a taxi.*",
+      "✗ *suggested me to take* · ✗ *an increase of sales* (đúng: *in* sales) · ✗ *most of them* sau dấu phẩy.",
+      "Phân từ có chủ ngữ không khớp: ✗ *Walking to work, the rain started.*",
+      "Câu 40–50 từ nhiều mệnh đề lồng nhau: **tách thành 2 câu**, mỗi câu một ý chính.",
+      "Câu mẫu học thuộc không hợp đề: giám khảo nhận ra và không cộng điểm."
+     ],
+     "examples": [
+      {
+       "en": "*Rarely do I* take a taxi.",
+       "vi": "Tôi hiếm khi đi taxi."
+      },
+      {
+       "en": "There was *an increase in* sales.",
+       "vi": "Doanh số tăng."
+      },
+      {
+       "en": "*Walking* to work, *I* got caught in the rain.",
+       "vi": "Đang đi bộ đi làm, tôi bị mắc mưa."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Chọn câu đúng:",
+       "opts": [
+        "Rarely do I eat breakfast.",
+        "Rarely I eat breakfast.",
+        "Rarely I do eat breakfast."
+       ],
+       "a": 0,
+       "why": "Đảo ngữ cần trợ động từ trước chủ ngữ.",
+       "tag": "k4-inversion"
+      },
+      {
+       "t": "mc",
+       "q": "Chọn câu đúng:",
+       "opts": [
+        "There was an increase in unemployment.",
+        "There was an increase of unemployment.",
+        "There was an increase at unemployment."
+       ],
+       "a": 0,
+       "why": "increase **in** + đối tượng.",
+       "tag": "k4-nominal"
+      },
+      {
+       "t": "tf",
+       "q": "My manager suggested me to take a course.",
+       "a": false,
+       "why": "suggest không đi với sb + to V.",
+       "tag": "k4-subjunctive",
+       "fix": "My manager suggested that I take a course."
+      },
+      {
+       "t": "tf",
+       "q": "Having lived in Japan, she understands the culture well.",
+       "a": true,
+       "why": "Đúng: chủ ngữ she khớp với hành động.",
+       "tag": "k4-participle"
+      },
+      {
+       "t": "fix",
+       "q": "Arriving at the station, the train had already left.",
+       "a": [
+        "Arriving at the station, I found that the train had already left.",
+        "Arriving at the station, we found that the train had already left.",
+        "When I arrived at the station, the train had already left."
+       ],
+       "why": "Tàu không đến ga: cần chủ ngữ là người đến (I).",
+       "tag": "k4-dangling"
+      },
+      {
+       "t": "fix",
+       "q": "Not only she sings, but she also plays the piano.",
+       "a": [
+        "Not only does she sing, but she also plays the piano.",
+        "Not only does she sing but she also plays the piano."
+       ],
+       "why": "Not only + **does she sing**.",
+       "tag": "k4-inversion"
+      },
+      {
+       "t": "fix",
+       "q": "The number of people who working from home have increased.",
+       "a": [
+        "The number of people working from home has increased.",
+        "The number of people who work from home has increased."
+       ],
+       "why": "Rút gọn đúng (working) và động từ chia theo number → **has**.",
+       "tag": "k4-cause"
+      },
+      {
+       "t": "fix",
+       "q": "All the children are love the new playground.",
+       "a": [
+        "All the children love the new playground."
+       ],
+       "why": "Bỏ are thừa trước động từ thường.",
+       "tag": "k4-overclaim"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k4-review-1",
+       "front": "3 câu hỏi trước khi giữ một câu khó trong bài",
+       "pattern": "Đảo ngữ có **trợ động từ**? Phân từ có **chủ ngữ khớp**? Câu có **quá dài** (> 35 từ)?",
+       "example": "*Not only does* the plan *save* money, but it also reduces waste.",
+       "vi": "Kế hoạch không chỉ tiết kiệm tiền mà còn giảm rác thải."
+      }
+     ],
+     "write": {
+      "prompt": "Viết đoạn kết luận Task 2 (2–3 câu) dùng một câu giả định và một cấu trúc nâng cao khác, rồi dò theo 3 câu hỏi trước khi giữ.",
+      "samples": [
+       "In conclusion, it is essential that governments invest in public transport. Not only would this reduce traffic, but it would also cut pollution."
+      ],
+      "check": [
+       "Trợ động từ trong đảo ngữ?",
+       "V nguyên mẫu sau It is essential that?",
+       "Mỗi câu một ý chính?"
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

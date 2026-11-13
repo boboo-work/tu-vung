@@ -12,7 +12,7 @@ export const COURSES = [
   { id: 'c1', title: 'Nền tảng', level: 'A1–A2', file: 'content/grammar/course1.json' },
   { id: 'c2', title: 'IELTS Core', level: 'Band 4.5–6.0', file: 'content/grammar/course2.json' },
   { id: 'c3', title: 'IELTS 6.5 Booster', level: 'Band 6.0–6.5', file: 'content/grammar/course3.json' },
-  { id: 'c4', title: 'IELTS 7.0 Advanced', level: 'Band 6.5 → 7.0', soon: true },
+  { id: 'c4', title: 'IELTS 7.0 Advanced', level: 'Band 6.5 → 7.0', file: 'content/grammar/course4.json' },
 ];
 const BANDS = ['Nền tảng', 'IELTS Core', 'IELTS 6.5', 'IELTS 7.0'];
 
