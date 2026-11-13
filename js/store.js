@@ -4,7 +4,7 @@ import { uid, today, addDays, dayDiff, parseDate, dateStr } from './util.js';
 import { newSrs, schedule, isNew, isDue, isMastered } from './srs.js';
 
 const DB_NAME = 'vocab-app';
-const DB_VERSION = 2; // v2: thêm kho 'grammar' (tiến độ bài, thẻ mẫu câu, sổ lỗi)
+const DB_VERSION = 3; // v2: kho 'grammar' (tiến độ bài, thẻ mẫu câu, sổ lỗi) · v3: kho 'writing' (bài viết, bản nháp)
 let db;
 
 function openDB() {
@@ -17,6 +17,7 @@ function openDB() {
       if (!d.objectStoreNames.contains('days')) d.createObjectStore('days', { keyPath: 'date' });
       if (!d.objectStoreNames.contains('kv')) d.createObjectStore('kv', { keyPath: 'key' });
       if (!d.objectStoreNames.contains('grammar')) d.createObjectStore('grammar', { keyPath: 'id' });
+      if (!d.objectStoreNames.contains('writing')) d.createObjectStore('writing', { keyPath: 'id' });
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
@@ -68,6 +69,7 @@ const DEFAULT_SETTINGS = {
   voice: 'en-US', // en-US | en-GB
   rate: 0.95,
   grammarPerDay: 1, // số bài ngữ pháp mỗi ngày (0 = tắt mục tiêu)
+  writingPerDay: 1, // số bài Writing mỗi ngày (0 = tắt mục tiêu)
   grammarCourse: '', // khoá ngữ pháp đang học ('' = tự chọn theo kiểm tra đầu vào / tiến độ)
   grammarReviewPerDay: 10, // số thẻ mẫu câu tối đa mỗi lượt ôn
   voiceName: '', // '' = tự chọn giọng tốt nhất trên máy
@@ -82,6 +84,7 @@ export const S = {
   words: new Map(),
   decks: [],
   days: new Map(),
+  writing: new Map(), // id → bài viết (kind: part | task1) hoặc bản nháp (kind: draft)
   grammar: new Map(), // id → bản ghi: L:<bài> tiến độ · C:<thẻ> lịch ôn · E:<nhãn lỗi> sổ lỗi · placement
   settings: structuredClone(DEFAULT_SETTINGS),
   game: null, // dữ liệu mini game (vòng chơi, thống kê, kỷ lục) — tách riêng, không tính vào tiến độ học
@@ -90,7 +93,8 @@ export const S = {
 
 export async function init() {
   db = await openDB();
-  const [words, decks, days, kv, grammar] = await Promise.all([getAll('words'), getAll('decks'), getAll('days'), getAll('kv'), getAll('grammar')]);
+  const [words, decks, days, kv, grammar, writing] = await Promise.all([getAll('words'), getAll('decks'), getAll('days'), getAll('kv'), getAll('grammar'), getAll('writing')]);
+  S.writing = new Map(writing.map((w) => [w.id, w]));
   S.grammar = new Map(grammar.map((g) => [g.id, g]));
   S.words = new Map(words.map((w) => [w.id, w]));
   S.days = new Map(days.map((d) => [d.date, d]));
@@ -182,9 +186,20 @@ export async function deleteDeck(id) {
 }
 
 // ---- Nhật ký theo ngày ----
-const blankDay = (date) => ({ date, newIds: [], reviewIds: [], correct: 0, wrong: 0, gLessons: [], gReviews: [] });
+const blankDay = (date) => ({ date, newIds: [], reviewIds: [], correct: 0, wrong: 0, gLessons: [], gReviews: [], wEssays: [] });
 /** Ngày có học gì không (từ vựng hoặc ngữ pháp). */
-export const dayActive = (x) => !!x && (x.newIds.length + x.reviewIds.length + x.correct + x.wrong + (x.gLessons?.length || 0) + (x.gReviews?.length || 0)) > 0;
+export const dayActive = (x) => !!x && (x.newIds.length + x.reviewIds.length + x.correct + x.wrong + (x.gLessons?.length || 0) + (x.gReviews?.length || 0) + (x.wEssays?.length || 0)) > 0;
+
+// ---- Writing ----
+export async function wPut(...recs) {
+  await tx(['writing'], 'readwrite', (t) => recs.forEach((r) => t.objectStore('writing').put(r)));
+  recs.forEach((r) => S.writing.set(r.id, r));
+}
+export async function wDel(id) {
+  S.writing.delete(id);
+  await del('writing', id);
+}
+export const essays = () => [...S.writing.values()].filter((w) => w.kind !== 'draft');
 
 // ---- Ngữ pháp ----
 export async function gPut(...recs) {
@@ -387,11 +402,13 @@ export async function recordGame(wordId, ok) {
 }
 
 // ---- Sao lưu / khôi phục ----
-export function exportData() {
+/** withWriting = false → bỏ bài viết khỏi file (file nhẹ hơn); khi khôi phục, bài viết đang có trên máy được giữ nguyên. */
+export function exportData({ withWriting = true } = {}) {
   const { ai, ...settings } = S.settings; // không đưa API key vào file sao lưu
   return {
     app: 'vocab-app', version: 1, exportedAt: new Date().toISOString(),
     settings, decks: S.decks, words: allWords(), days: [...S.days.values()], game: S.game, grammar: [...S.grammar.values()],
+    ...(withWriting ? { writing: essays() } : {}),
   };
 }
 
@@ -414,6 +431,25 @@ export function validateBackup(data) {
   return true;
 }
 
+// Bài viết trong file sao lưu: giữ đúng kiểu, cắt độ dài, bỏ trường lạ.
+const W_ID = /^[A-Za-z0-9_:-]{1,80}$/;
+function cleanWriting(w) {
+  if (!w || typeof w !== 'object' || !W_ID.test(str(w.id)) || !['part', 'task1'].includes(w.kind)) return null;
+  const r = w.report && typeof w.report === 'object' ? w.report : {};
+  const nums = (o) => Object.fromEntries(Object.entries(o && typeof o === 'object' ? o : {}).filter(([, v]) => Number.isFinite(Number(v))).map(([k, v]) => [str(k).slice(0, 30), Number(v)]).slice(0, 30));
+  return {
+    id: w.id, kind: w.kind, promptId: str(w.promptId).slice(0, 64), part: str(w.part).slice(0, 30), title: str(w.title).slice(0, 300),
+    text: str(w.text).slice(0, 20000), words: int(w.words, 0, 5000, 0), ms: int(w.ms, 0, 864e5, 0),
+    at: DATE_RE.test(str(w.at)) ? w.at : today(), chart: w.chart && typeof w.chart === 'object' ? { tpl: str(w.chart.tpl).slice(0, 40), seed: int(w.chart.seed, 0, 2 ** 31, 0), mode: str(w.chart.mode).slice(0, 20), target: int(w.chart.target, 0, 9, 0) } : null,
+    report: {
+      stats: nums(r.stats),
+      hits: (Array.isArray(r.hits) ? r.hits : []).filter((h) => h && typeof h === 'object').map((h) => ({ rule: str(h.rule).slice(0, 40), text: str(h.text).slice(0, 200) })).slice(0, 200),
+      dismissed: (Array.isArray(r.dismissed) ? r.dismissed : []).map((x) => str(x).slice(0, 40)).slice(0, 200),
+      checks: (Array.isArray(r.checks) ? r.checks : []).filter((c) => c && typeof c === 'object').map((c) => ({ ok: c.ok === true ? true : c.ok === false ? false : null, msg: str(c.msg).slice(0, 300) })).slice(0, 60),
+    },
+    self: Object.fromEntries(Object.entries(w.self && typeof w.self === 'object' ? w.self : {}).map(([k, v]) => [str(k).slice(0, 30), !!v]).slice(0, 30)),
+  };
+}
 const G_ID = /^(?:[LCE]:[A-Za-z0-9_-]{1,64}|placement)$/;
 const cleanSrs = (s) => {
   s = s && typeof s === 'object' ? s : {};
@@ -479,7 +515,9 @@ function cleanBackup(data) {
     correct: int(d.correct, 0, 1e6, 0), wrong: int(d.wrong, 0, 1e6, 0),
     gLessons: Array.isArray(d.gLessons) ? d.gLessons.filter((x) => typeof x === 'string') : [],
     gReviews: Array.isArray(d.gReviews) ? d.gReviews.filter((x) => typeof x === 'string') : [],
+    wEssays: Array.isArray(d.wEssays) ? d.wEssays.filter((x) => typeof x === 'string') : [],
   }));
+  const writing = Array.isArray(data.writing) ? data.writing.map(cleanWriting).filter(Boolean) : null;
   const grammar = (Array.isArray(data.grammar) ? data.grammar : []).map(cleanGrammar).filter(Boolean);
   const st = data.settings && typeof data.settings === 'object' ? data.settings : {};
   const settings = {
@@ -496,17 +534,23 @@ function cleanBackup(data) {
     lastBackup: DATE_RE.test(str(st.lastBackup)) ? st.lastBackup : null,
     grammarPerDay: int(st.grammarPerDay, 0, 2, DEFAULT_SETTINGS.grammarPerDay),
     grammarCourse: /^c[1-9]$/.test(str(st.grammarCourse)) ? st.grammarCourse : '',
+    writingPerDay: int(st.writingPerDay, 0, 2, DEFAULT_SETTINGS.writingPerDay),
     grammarReviewPerDay: int(st.grammarReviewPerDay, 5, 50, DEFAULT_SETTINGS.grammarReviewPerDay),
   };
-  return { decks, words, days, settings, game: cleanGame(data.game), grammar };
+  return { decks, words, days, settings, game: cleanGame(data.game), grammar, writing };
 }
 
 export async function restoreData(data) {
   validateBackup(data);
   const clean = cleanBackup(data);
   const ai = S.settings.ai;
-  await tx(['words', 'decks', 'days', 'kv', 'grammar'], 'readwrite', (t) => {
+  await tx(['words', 'decks', 'days', 'kv', 'grammar', 'writing'], 'readwrite', (t) => {
     for (const s of ['words', 'decks', 'days', 'grammar']) t.objectStore(s).clear();
+    // File sao lưu không kèm bài viết → giữ nguyên bài viết đang có trên máy.
+    if (clean.writing) {
+      t.objectStore('writing').clear();
+      clean.writing.forEach((w) => t.objectStore('writing').put(w));
+    }
     clean.grammar.forEach((g) => t.objectStore('grammar').put(g));
     clean.words.forEach((w) => t.objectStore('words').put(w));
     clean.decks.forEach((d) => t.objectStore('decks').put(d));
@@ -519,8 +563,8 @@ export async function restoreData(data) {
 }
 
 export async function wipeAll() {
-  await tx(['words', 'decks', 'days', 'kv', 'grammar'], 'readwrite', (t) => {
-    for (const s of ['words', 'decks', 'days', 'kv', 'grammar']) t.objectStore(s).clear();
+  await tx(['words', 'decks', 'days', 'kv', 'grammar', 'writing'], 'readwrite', (t) => {
+    for (const s of ['words', 'decks', 'days', 'kv', 'grammar', 'writing']) t.objectStore(s).clear();
   });
   S.settings = structuredClone(DEFAULT_SETTINGS);
   await init();

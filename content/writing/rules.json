@@ -1,0 +1,841 @@
+{
+ "version": 1,
+ "rules": [
+  {
+   "id": "discuss-about",
+   "re": "\\bdiscuss(?:es|ed|ing)?\\s+about\\b",
+   "flags": "i",
+   "why": "discuss không đi với about.",
+   "fix": "discuss + tân ngữ: *discuss the problem*",
+   "tag": "k3-no-prep",
+   "tests": {
+    "bad": [
+     "We discussed about the plan.",
+     "They will discuss about it."
+    ],
+    "good": [
+     "We discussed the plan.",
+     "There was a discussion about it."
+    ]
+   }
+  },
+  {
+   "id": "emphasise-on",
+   "re": "\\bemphasi[sz](?:e|es|ed|ing)\\s+on\\b",
+   "flags": "i",
+   "why": "Động từ emphasise không cần on (danh từ emphasis mới đi với on).",
+   "fix": "*emphasise the importance* · *place emphasis on*",
+   "tag": "k3-no-prep",
+   "tests": {
+    "bad": [
+     "Teachers emphasise on grammar.",
+     "He emphasized on safety."
+    ],
+    "good": [
+     "Teachers emphasise grammar.",
+     "There is an emphasis on safety."
+    ]
+   }
+  },
+  {
+   "id": "lack-of-verb",
+   "re": "\\b(?:they|we|i|you|people|students|children|schools?|cities|it|he|she|often|still|may|might|can|could|will|would|to|does|do|did)\\s+lack(?:s|ed)?\\s+of\\b",
+   "flags": "i",
+   "why": "Động từ lack không cần of (danh từ a lack of mới có of).",
+   "fix": "*Many schools lack teachers* · *a lack of teachers*",
+   "tag": "k3-no-prep",
+   "tests": {
+    "bad": [
+     "Many schools lack of teachers.",
+     "Rural areas still lack of doctors."
+    ],
+    "good": [
+     "Many schools lack teachers.",
+     "There is a lack of doctors."
+    ]
+   }
+  },
+  {
+   "id": "reach-to",
+   "re": "\\breach(?:es|ed)?\\s+to\\b",
+   "flags": "i",
+   "why": "reach không đi với to.",
+   "fix": "*reach 50%* · *reach the city*",
+   "tag": "k3-no-prep",
+   "tests": {
+    "bad": [
+     "Sales reached to 50%.",
+     "The figure reaches to a peak."
+    ],
+    "good": [
+     "Sales reached 50%.",
+     "We need to reach out to them."
+    ]
+   }
+  },
+  {
+   "id": "increase-of-noun",
+   "re": "\\b(?:an?|the)\\s+(?:increase|decrease|reduction|drop)\\s+of\\s+(?:the\\s+)?(?:number|amount|price|prices|sales|use|cost|level|rate|population|demand)\\b",
+   "flags": "i",
+   "why": "Danh từ xu hướng + **in** + đối tượng (of chỉ đi với con số).",
+   "fix": "*an increase in sales* · *an increase of 10%*",
+   "tag": "k3-trendprep",
+   "tests": {
+    "bad": [
+     "There was an increase of sales.",
+     "A decrease of the number of cars."
+    ],
+    "good": [
+     "There was an increase in sales.",
+     "An increase of 10% in sales."
+    ]
+   }
+  },
+  {
+   "id": "although-but",
+   "re": "\\b(?:although|though|even though)\\b[^.!?]*,\\s*but\\b",
+   "flags": "i",
+   "why": "Although và but không dùng cùng nhau.",
+   "fix": "Giữ một: *Although it was late, we stayed.*",
+   "tag": "k2-link",
+   "tests": {
+    "bad": [
+     "Although it was cheap, but nobody bought it."
+    ],
+    "good": [
+     "Although it was cheap, nobody bought it.",
+     "It was cheap, but nobody bought it."
+    ]
+   }
+  },
+  {
+   "id": "because-so",
+   "re": "\\bbecause\\b[^.!?]*,\\s*so\\b",
+   "flags": "i",
+   "why": "Because và so không dùng cùng nhau.",
+   "fix": "Giữ một: *Because it rained, we stayed home.*",
+   "tag": "k2-link",
+   "tests": {
+    "bad": [
+     "Because prices rose, so people bought less."
+    ],
+    "good": [
+     "Because prices rose, people bought less.",
+     "Prices rose, so people bought less."
+    ]
+   }
+  },
+  {
+   "id": "despite-of",
+   "re": "\\bdespite\\s+of\\b",
+   "flags": "i",
+   "why": "despite không đi với of (in spite of mới có of).",
+   "fix": "*despite the cost* · *in spite of the cost*",
+   "tag": "k2-link",
+   "tests": {
+    "bad": [
+     "Despite of the rain, we went out."
+    ],
+    "good": [
+     "Despite the rain, we went out.",
+     "In spite of the rain, we went out."
+    ]
+   }
+  },
+  {
+   "id": "despite-clause",
+   "re": "\\bdespite\\s+(?:i|we|you|they|he|she|it|people)\\s+(?:am|is|are|was|were|have|has|had|do|does|did|will|can)\\b",
+   "flags": "i",
+   "why": "despite + danh từ / V-ing, không + mệnh đề.",
+   "fix": "*Although they were tired…* · *Despite being tired…*",
+   "tag": "k2-link",
+   "tests": {
+    "bad": [
+     "Despite they were tired, they continued."
+    ],
+    "good": [
+     "Despite being tired, they continued.",
+     "Despite the fact that they were tired, they continued."
+    ]
+   }
+  },
+  {
+   "id": "because-of-clause",
+   "re": "\\bbecause of\\s+(?:i|we|you|they|he|she|it|people)\\s+(?:am|is|are|was|were|have|has|had|do|does|did|will|can)\\b",
+   "flags": "i",
+   "why": "because of + danh từ, không + mệnh đề.",
+   "fix": "*because they were late* · *because of the delay*",
+   "tag": "k2-link",
+   "tests": {
+    "bad": [
+     "Because of people are busy, they eat fast food."
+    ],
+    "good": [
+     "Because people are busy, they eat fast food.",
+     "Because of busy lifestyles, people eat fast food."
+    ]
+   }
+  },
+  {
+   "id": "uncount-plural",
+   "re": "\\b(?:informations|advices|equipments|furnitures|evidences|homeworks|feedbacks|softwares|luggages|traffics|pollutions|knowledges)\\b",
+   "flags": "i",
+   "why": "Danh từ không đếm được, không thêm -s.",
+   "fix": "*information, advice, equipment…*",
+   "tag": "k2-uncount",
+   "tests": {
+    "bad": [
+     "They need more informations.",
+     "Doctors gave advices."
+    ],
+    "good": [
+     "They need more information.",
+     "Doctors gave advice."
+    ]
+   }
+  },
+  {
+   "id": "uncount-a",
+   "re": "\\b(?:a|an)\\s+(?:advice|information|equipment|furniture|evidence|homework|feedback|news)\\b",
+   "flags": "i",
+   "why": "Danh từ không đếm được không đi với a/an.",
+   "fix": "*some advice / a piece of advice*",
+   "tag": "k2-uncount",
+   "tests": {
+    "bad": [
+     "She gave me an advice.",
+     "This is an information about the course."
+    ],
+    "good": [
+     "She gave me some advice.",
+     "This is useful information.",
+     "It was a newsletter."
+    ]
+   }
+  },
+  {
+   "id": "many-uncount",
+   "re": "\\bmany\\s+(?:information|advice|equipment|furniture|evidence|homework|traffic|pollution|money)\\b",
+   "flags": "i",
+   "why": "many chỉ đi với danh từ đếm được.",
+   "fix": "*much / a lot of + danh từ không đếm được*",
+   "tag": "k2-uncount",
+   "tests": {
+    "bad": [
+     "There is too many traffic.",
+     "Many information is wrong."
+    ],
+    "good": [
+     "There is too much traffic.",
+     "Many cars cause pollution."
+    ]
+   }
+  },
+  {
+   "id": "number-of-are",
+   "re": "\\bthe number of\\s+\\w+\\s+(?:are|have|were)\\b",
+   "flags": "i",
+   "why": "The number of … → động từ số ít.",
+   "fix": "*The number of cars **is / has** increased.*",
+   "tag": "k2-sva-num",
+   "tests": {
+    "bad": [
+     "The number of cars are rising.",
+     "The number of students have doubled."
+    ],
+    "good": [
+     "The number of cars is rising.",
+     "A number of students have left."
+    ]
+   }
+  },
+  {
+   "id": "people-is",
+   "re": "(?:^|[.!?]\\s+)(?:many |most |some |these |those |the )?(?:\\w+ )?people\\s+(?:is|was|has)\\b",
+   "flags": "i",
+   "why": "people là số nhiều.",
+   "fix": "*people **are / were / have***",
+   "tag": "k2-sva",
+   "tests": {
+    "bad": [
+     "Many people is unhappy.",
+     "Young people has less time."
+    ],
+    "good": [
+     "Many people are unhappy.",
+     "Loneliness among older people is common."
+    ]
+   }
+  },
+  {
+   "id": "everyone-are",
+   "re": "\\b(?:everyone|everybody|nobody|no one|each person|every person)\\s+(?:are|have|were)\\b",
+   "flags": "i",
+   "why": "everyone / each … → động từ số ít.",
+   "fix": "*Everyone **is**…*",
+   "tag": "k2-sva",
+   "tests": {
+    "bad": [
+     "Everyone are welcome.",
+     "Each person have a vote."
+    ],
+    "good": [
+     "Everyone is welcome.",
+     "Each person has a vote."
+    ]
+   }
+  },
+  {
+   "id": "one-of-plural-are",
+   "re": "\\bone of the\\s+\\w+s\\s+(?:are|have|were)\\b",
+   "flags": "i",
+   "why": "One of the + N số nhiều → động từ số ít.",
+   "fix": "*One of the reasons **is**…*",
+   "tag": "k2-sva",
+   "tests": {
+    "bad": [
+     "One of the reasons are cost."
+    ],
+    "good": [
+     "One of the reasons is cost.",
+     "Some of the reasons are complex."
+    ]
+   }
+  },
+  {
+   "id": "more-er",
+   "re": "\\bmore\\s+(?:bigger|smaller|higher|lower|better|worse|cheaper|easier|harder|faster|larger|older|younger|longer|shorter|healthier|happier|richer|poorer|stronger|safer|busier|greater)\\b",
+   "flags": "i",
+   "why": "Không dùng more cùng tính từ đuôi -er.",
+   "fix": "*higher* (không phải *more higher*)",
+   "tag": "k2-asas",
+   "tests": {
+    "bad": [
+     "Prices are more higher now."
+    ],
+    "good": [
+     "Prices are higher now.",
+     "There are more cars."
+    ]
+   }
+  },
+  {
+   "id": "very-comparative",
+   "re": "\\bvery\\s+(?:more|less|better|worse|bigger|smaller|higher|lower|cheaper|easier|harder|faster|larger)\\b",
+   "flags": "i",
+   "why": "Không dùng very trước so sánh hơn.",
+   "fix": "*much / far / significantly + so sánh hơn*",
+   "tag": "k2-asas",
+   "tests": {
+    "bad": [
+     "It is very better now.",
+     "Sales were very higher."
+    ],
+    "good": [
+     "It is much better now.",
+     "Sales were very high."
+    ]
+   }
+  },
+  {
+   "id": "most-est",
+   "re": "\\bthe most\\s+(?:biggest|best|highest|largest|smallest|lowest|worst|cheapest|easiest|greatest)\\b",
+   "flags": "i",
+   "why": "Không dùng the most cùng -est.",
+   "fix": "*the highest* (không phải *the most highest*)",
+   "tag": "superlative",
+   "tests": {
+    "bad": [
+     "It was the most biggest city."
+    ],
+    "good": [
+     "It was the biggest city.",
+     "It was the most beautiful city."
+    ]
+   }
+  },
+  {
+   "id": "comma-however",
+   "re": ",\\s*however\\s+[a-z]",
+   "flags": "i",
+   "why": "However không nối hai câu bằng dấu phẩy.",
+   "fix": "*… . However, …* hoặc *…; however, …*",
+   "tag": "k3-splice",
+   "tests": {
+    "bad": [
+     "The plan is cheap, however it is slow."
+    ],
+    "good": [
+     "The plan is cheap. However, it is slow.",
+     "This, however, is rare."
+    ]
+   }
+  },
+  {
+   "id": "its-own",
+   "re": "\\bit['’]s\\s+own\\b|\\bits['’]",
+   "flags": "i",
+   "why": "Sở hữu dùng **its** (không có dấu nháy).",
+   "fix": "*its own*",
+   "tag": "k3-comma",
+   "tests": {
+    "bad": [
+     "The city has it's own airport.",
+     "The company changed its' logo."
+    ],
+    "good": [
+     "The city has its own airport.",
+     "It's a good idea."
+    ]
+   }
+  },
+  {
+   "id": "linker-comma",
+   "re": "(?:^|[.!?\\n]\\s*)(?:However|Moreover|Furthermore|Therefore|In addition|Nevertheless|Consequently|In conclusion|For example|On the other hand)\\s+[A-Za-z]",
+   "flags": "",
+   "why": "Thiếu dấu phẩy sau từ nối đầu câu.",
+   "fix": "*However, …* · *In conclusion, …*",
+   "tag": "k3-comma",
+   "tests": {
+    "bad": [
+     "However it is expensive.",
+     "Cars are fast. Moreover they are comfortable."
+    ],
+    "good": [
+     "However, it is expensive.",
+     "Cars are fast. Moreover, they are comfortable."
+    ]
+   }
+  },
+  {
+   "id": "contraction",
+   "re": "\\b(?:don|doesn|didn|can|won|isn|aren|wasn|weren|shouldn|wouldn|couldn|haven|hasn)['’]t\\b|\\b(?:I['’]m|they['’]re|we['’]re|you['’]re|it['’]s|that['’]s|there['’]s)\\b",
+   "flags": "i",
+   "why": "Bài Writing học thuật nên viết đầy đủ, không rút gọn.",
+   "fix": "*do not, cannot, it is…*",
+   "tag": "w-style",
+   "tests": {
+    "bad": [
+     "People don't read books.",
+     "It's a serious problem."
+    ],
+    "good": [
+     "People do not read books.",
+     "It is a serious problem."
+    ]
+   }
+  },
+  {
+   "id": "informal-words",
+   "re": "\\b(?:gonna|wanna|gotta|kids|stuff|lots of|ok|okay)\\b",
+   "flags": "i",
+   "why": "Từ thân mật, không hợp văn viết học thuật.",
+   "fix": "*children, things/items, many/a large number of*",
+   "tag": "w-style",
+   "tests": {
+    "bad": [
+     "Kids need more exercise.",
+     "There are lots of reasons."
+    ],
+    "good": [
+     "Children need more exercise.",
+     "There are many reasons."
+    ]
+   }
+  },
+  {
+   "id": "opinion-redundant",
+   "re": "\\bin my (?:opinion|view),?\\s+i\\s+(?:think|believe)\\b",
+   "flags": "i",
+   "why": "Lặp ý: In my opinion đã có nghĩa là I think.",
+   "fix": "Giữ một: *In my opinion, …* hoặc *I believe …*",
+   "tag": "w-style",
+   "tests": {
+    "bad": [
+     "In my opinion, I think it is good."
+    ],
+    "good": [
+     "In my opinion, it is good.",
+     "I believe it is good."
+    ]
+   }
+  },
+  {
+   "id": "be-agree",
+   "re": "\\b(?:i|we|they|you|he|she|people)\\s+(?:am|are|is)\\s+(?:agree|disagree)\\b",
+   "flags": "i",
+   "why": "agree là động từ, không dùng thêm am/is/are.",
+   "fix": "*I agree* (không phải *I am agree*)",
+   "tag": "be-verb",
+   "tests": {
+    "bad": [
+     "I am agree with this view."
+    ],
+    "good": [
+     "I agree with this view.",
+     "They are in agreement."
+    ]
+   }
+  },
+  {
+   "id": "be-depend",
+   "re": "\\b(?:is|are|was|were)\\s+depend\\s+on\\b",
+   "flags": "i",
+   "why": "depend là động từ: *depends on* hoặc *is dependent on*.",
+   "fix": "*It depends on…* · *It is dependent on…*",
+   "tag": "k2-wordform",
+   "tests": {
+    "bad": [
+     "Success is depend on effort."
+    ],
+    "good": [
+     "Success depends on effort.",
+     "Success is dependent on effort."
+    ]
+   }
+  },
+  {
+   "id": "suggest-sb-to",
+   "re": "\\bsuggest(?:s|ed)?\\s+(?:me|him|her|them|us|you)\\s+to\\b",
+   "flags": "i",
+   "why": "suggest không đi với người + to V.",
+   "fix": "*suggested that I take…* · *suggested taking…*",
+   "tag": "k4-subjunctive",
+   "tests": {
+    "bad": [
+     "My teacher suggested me to read more."
+    ],
+    "good": [
+     "My teacher suggested that I read more.",
+     "My teacher suggested reading more."
+    ]
+   }
+  },
+  {
+   "id": "explain-me",
+   "re": "\\bexplain(?:s|ed)?\\s+(?:me|him|her|them|us)\\b",
+   "flags": "i",
+   "why": "explain + điều gì + **to** + người.",
+   "fix": "*explain the rule to me*",
+   "tag": "k3-prep-verb",
+   "tests": {
+    "bad": [
+     "Please explain me the rule."
+    ],
+    "good": [
+     "Please explain the rule to me."
+    ]
+   }
+  },
+  {
+   "id": "look-forward-v",
+   "re": "\\blook(?:ing)? forward to\\s+(?:see|hear|meet|work|receive|visit)\\b",
+   "flags": "i",
+   "why": "look forward to + **V-ing**.",
+   "fix": "*look forward to hearing*",
+   "tag": "k2-toving",
+   "tests": {
+    "bad": [
+     "I look forward to hear from you."
+    ],
+    "good": [
+     "I look forward to hearing from you."
+    ]
+   }
+  },
+  {
+   "id": "ving-verb-to",
+   "re": "\\b(?:avoid|enjoy|finish|consider|mind|deny|suggest)(?:s|ed|ing)?\\s+to\\s+(?:be|go|do|have|make|take|buy|use|work|study|eat|live|move|travel|play|read|watch|spend|drive|pay|change|leave)\\b",
+   "flags": "i",
+   "why": "Động từ này đi với **V-ing**, không đi với to V.",
+   "fix": "*avoid using* · *enjoy reading* · *consider moving*",
+   "tag": "k2-toving",
+   "tests": {
+    "bad": [
+     "People avoid to use buses.",
+     "They considered to move abroad."
+    ],
+    "good": [
+     "People avoid using buses.",
+     "They considered moving abroad."
+    ]
+   }
+  },
+  {
+   "id": "to-verb-ing",
+   "re": "\\b(?:want|wants|wanted|decide|decides|decided|plan|plans|planned|hope|hopes|hoped|refuse|refuses|refused|manage|manages|managed|afford|agreed)\\s+(?!\\w*thing\\b)\\w+ing\\b",
+   "flags": "i",
+   "why": "Động từ này đi với **to V**, không đi với V-ing.",
+   "fix": "*want to buy* · *decided to move*",
+   "tag": "k2-toving",
+   "tests": {
+    "bad": [
+     "Many people want buying a house.",
+     "They decided moving abroad."
+    ],
+    "good": [
+     "Many people want to buy a house.",
+     "They wanted everything.",
+     "They planned nothing."
+    ]
+   }
+  },
+  {
+   "id": "modal-to",
+   "re": "\\b(?:can|could|must|should|will|may|might)\\s+to\\s+[a-z]",
+   "flags": "i",
+   "why": "Sau modal không có to.",
+   "fix": "*should improve* (không phải *should to improve*)",
+   "tag": "k3-modal",
+   "tests": {
+    "bad": [
+     "Governments should to invest more."
+    ],
+    "good": [
+     "Governments should invest more.",
+     "They will have to pay."
+    ]
+   }
+  },
+  {
+   "id": "modal-s",
+   "re": "\\b(?:can|could|must|should|will|would|may|might)\\s+(?:not\\s+)?(?:is|are|was|were|has|does|goes|makes|takes|gets|causes|helps|leads)\\b",
+   "flags": "i",
+   "why": "Sau modal dùng V nguyên mẫu.",
+   "fix": "*may cause* (không phải *may causes*)",
+   "tag": "k3-modal",
+   "tests": {
+    "bad": [
+     "This may causes problems.",
+     "It will helps people."
+    ],
+    "good": [
+     "This may cause problems.",
+     "It will help people."
+    ]
+   }
+  },
+  {
+   "id": "if-will",
+   "re": "\\bif\\s+[^,.!?]{1,40}\\bwill\\b[^,.!?]*,",
+   "flags": "i",
+   "why": "Mệnh đề if (loại 1) không dùng will.",
+   "fix": "*If prices rise, people will…*",
+   "tag": "k2-if1",
+   "tests": {
+    "bad": [
+     "If prices will rise, people will buy less."
+    ],
+    "good": [
+     "If prices rise, people will buy less.",
+     "People will buy less if prices rise."
+    ]
+   }
+  },
+  {
+   "id": "time-will",
+   "re": "\\b(?:when|as soon as|before|until|once)\\s+[^,.!?]{1,40}\\bwill\\b[^,.!?]*,",
+   "flags": "i",
+   "why": "Mệnh đề thời gian không dùng will.",
+   "fix": "*When people retire, they will…*",
+   "tag": "k2-timeclause",
+   "tests": {
+    "bad": [
+     "When people will retire, they will need help."
+    ],
+    "good": [
+     "When people retire, they will need help."
+    ]
+   }
+  },
+  {
+   "id": "most-of-the",
+   "re": "\\bthe most of\\b",
+   "flags": "i",
+   "why": "Phần lớn = **most of** (không có the).",
+   "fix": "*most of the students*",
+   "tag": "k2-article",
+   "tests": {
+    "bad": [
+     "The most of people use phones."
+    ],
+    "good": [
+     "Most of the people use phones.",
+     "The most important point."
+    ]
+   }
+  },
+  {
+   "id": "almost-noun",
+   "re": "\\balmost\\s+(?:people|students|children|countries|families|workers|companies)\\b",
+   "flags": "i",
+   "why": "almost không đứng trực tiếp trước danh từ.",
+   "fix": "*most people* · *almost all people*",
+   "tag": "k2-wordform",
+   "tests": {
+    "bad": [
+     "Almost people have a phone."
+    ],
+    "good": [
+     "Most people have a phone.",
+     "Almost all people have a phone.",
+     "Almost everyone has a phone."
+    ]
+   }
+  },
+  {
+   "id": "there-have",
+   "re": "\\bthere\\s+(?:have|has)\\s+(?!been\\b)\\w+",
+   "flags": "i",
+   "why": "\"Có\" = there is / there are.",
+   "fix": "*There are many reasons*",
+   "tag": "there-be",
+   "tests": {
+    "bad": [
+     "There have many reasons."
+    ],
+    "good": [
+     "There are many reasons.",
+     "There have been many changes."
+    ]
+   }
+  },
+  {
+   "id": "feel-ing",
+   "re": "\\b(?:am|is|are|was|were|feel|feels|felt|get|gets|got)\\s+(?:very\\s+)?(?:interesting|boring|exciting|surprising|tiring)\\s+(?:in|about|with)\\b",
+   "flags": "i",
+   "why": "Người cảm thấy → tính từ **-ed**.",
+   "fix": "*interested in* · *bored with*",
+   "tag": "k2-wordform",
+   "tests": {
+    "bad": [
+     "Students are interesting in science."
+    ],
+    "good": [
+     "Students are interested in science.",
+     "Science is interesting."
+    ]
+   }
+  },
+  {
+   "id": "make-let-to",
+   "re": "\\b(?:make|makes|made|let|lets)\\s+(?:me|him|her|them|us|people|children|students|workers)\\s+to\\s+[a-z]+",
+   "flags": "i",
+   "why": "make / let + người + **V nguyên mẫu**.",
+   "fix": "*made them work* · *let children play*",
+   "tag": "k2-toving",
+   "tests": {
+    "bad": [
+     "Parents should let children to play outside."
+    ],
+    "good": [
+     "Parents should let children play outside.",
+     "They were made to work."
+    ]
+   }
+  },
+  {
+   "id": "nowadays-in",
+   "re": "\\bin nowadays\\b",
+   "flags": "i",
+   "why": "Không dùng in trước nowadays.",
+   "fix": "*Nowadays, …*",
+   "tag": "k3-prep-time",
+   "tests": {
+    "bad": [
+     "In nowadays, people work longer."
+    ],
+    "good": [
+     "Nowadays, people work longer."
+    ]
+   }
+  },
+  {
+   "id": "every-plural",
+   "re": "\\bevery\\s+(?:people|students|children|countries|days|years|citizens)\\b",
+   "flags": "i",
+   "why": "every + danh từ **số ít**.",
+   "fix": "*every student* · *every day*",
+   "tag": "plural",
+   "tests": {
+    "bad": [
+     "Every students need support."
+    ],
+    "good": [
+     "Every student needs support.",
+     "All students need support."
+    ]
+   }
+  },
+  {
+   "id": "between-to",
+   "re": "\\bbetween\\s+(?:19|20)\\d\\d\\s+to\\s+(?:19|20)\\d\\d\\b|\\bfrom\\s+(?:19|20)\\d\\d\\s+and\\s+(?:19|20)\\d\\d\\b",
+   "flags": "i",
+   "why": "between … **and** … · from … **to** …",
+   "fix": "*between 2010 and 2020* · *from 2010 to 2020*",
+   "tag": "k3-trendprep",
+   "tests": {
+    "bad": [
+     "Sales rose between 2010 to 2020.",
+     "from 2000 and 2010"
+    ],
+    "good": [
+     "Sales rose between 2010 and 2020.",
+     "from 2000 to 2010"
+    ]
+   }
+  },
+  {
+   "id": "rise-with",
+   "re": "\\b(?:increased|rose|grew|fell|decreased|dropped|declined)\\s+(?:with|for)\\s+\\d",
+   "flags": "i",
+   "why": "Lượng thay đổi dùng **by**.",
+   "fix": "*rose by 10%*",
+   "tag": "k3-trendprep",
+   "tests": {
+    "bad": [
+     "Sales rose with 10%."
+    ],
+    "good": [
+     "Sales rose by 10%.",
+     "Sales rose for the third year."
+    ]
+   }
+  },
+  {
+   "id": "and-but-start",
+   "re": "(?:^|[.!?]\\s+)(?:And|But)\\s",
+   "flags": "",
+   "why": "Bài học thuật không nên mở câu bằng And/But.",
+   "fix": "*Moreover, …* · *However, …*",
+   "tag": "w-style",
+   "tests": {
+    "bad": [
+     "Cars are fast. But they pollute."
+    ],
+    "good": [
+     "Cars are fast, but they pollute.",
+     "Cars are fast. However, they pollute."
+    ]
+   }
+  },
+  {
+   "id": "absolute",
+   "re": "\\b(?:all people|everyone knows|definitely|it is obvious that|without any doubt)\\b",
+   "flags": "i",
+   "why": "Khẳng định tuyệt đối: chỉ dùng khi thật chắc chắn.",
+   "fix": "*many people, often, rarely, it could be argued that…*",
+   "tag": "k4-overclaim",
+   "tests": {
+    "bad": [
+     "All people love music.",
+     "It is obvious that cars are bad."
+    ],
+    "good": [
+     "Many people love music.",
+     "It is clear that cars pollute."
+    ]
+   }
+  }
+ ]
+}

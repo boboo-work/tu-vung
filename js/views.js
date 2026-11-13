@@ -9,6 +9,7 @@ import { loadSeed } from './io.js';
 import { aiReady } from './ai.js';
 import { lookupWord, buildFill, POS_LIST } from './lookup.js';
 import { G, nextLesson, todayLessons, gDueCount, grammarReviewCard } from './grammar.js';
+import { W, nextPart, todayWriting } from './writing.js';
 import { learnSwitch } from './ui.js';
 
 const ui = { learnDeck: '', vocab: { q: '', filter: 'all', limit: 60 }, form: null };
@@ -70,23 +71,29 @@ export function homeView() {
   const gToday = todayLessons();
   const gDue = gDueCount();
   const gNext = gReady && gToday < gGoal ? nextLesson() : null;
+  const wGoal = W.state === 'ready' ? S.settings.writingPerDay : 0;
+  const wToday = todayWriting();
+  const wNext = wGoal && wToday < wGoal ? nextPart() : null;
+  const ringCount = 2 + (gGoal ? 1 : 0) + (wGoal ? 1 : 0);
 
   return `<div class="page">${head}
     <div class="hero">
       <div class="row-between"><div><div class="big" data-count="${sum.streak}">${sum.streak}</div><div class="lbl">ngày học liên tiếp</div></div>${icon('flame')}</div>
       <div class="week">${week}</div>
     </div>
-    <div class="goals ${gGoal ? 'three' : ''}">
+    <div class="goals ${ringCount === 3 ? 'three' : ringCount === 4 ? 'four' : ''}">
       <div class="goal">${ring(day.newIds.length, S.settings.newPerDay)}<div><b>${day.newIds.length}/${S.settings.newPerDay}</b><span>Từ mới</span></div></div>
       <div class="goal">${ring(day.reviewIds.length, S.settings.reviewPerDay)}<div><b>${day.reviewIds.length}/${S.settings.reviewPerDay}</b><span>Ôn tập</span></div></div>
       ${gGoal ? `<div class="goal" data-act="go" data-to="#/grammar" role="button">${ring(gToday, gGoal)}<div><b>${gToday}/${gGoal}</b><span>Ngữ pháp</span></div></div>` : ''}
+      ${wGoal ? `<div class="goal" data-act="go" data-to="#/writing" role="button">${ring(wToday, wGoal)}<div><b>${wToday}/${wGoal}</b><span>Writing</span></div></div>` : ''}
     </div>
     <div class="cta-stack">
       ${due ? `<button class="btn" data-act="start-review">${icon('review', 'sm')} Ôn tập ${due} từ đến hạn</button>` : ''}
       ${canLearn ? `<button class="btn ${due ? 'ghost' : ''}" data-act="start-learn" data-all="1">${icon('learn', 'sm')} Học ${canLearn} từ mới</button>` : ''}
       ${gDue ? `<button class="btn ${due || canLearn ? 'ghost' : ''}" data-act="g-cards">${icon('review', 'sm')} Ôn ${gDue} thẻ ngữ pháp</button>` : ''}
       ${gNext ? `<button class="btn ${due || canLearn || gDue ? 'ghost' : ''}" data-act="g-start" data-id="${gNext.id}">${icon('learn', 'sm')} Ngữ pháp: ${esc(gNext.title)}</button>` : ''}
-      ${!due && !canLearn && !gDue && !gNext ? `<div class="banner info">${icon('check')}<span>${fresh ? 'Bạn đã hoàn thành mục tiêu hôm nay. Muốn học thêm, mở tab <b>Học</b>.' : 'Không còn từ nào cần học hôm nay. Hãy thêm từ mới hoặc luyện tập tự do ở tab <b>Học</b>.'}</span></div>` : ''}
+      ${wNext ? `<button class="btn ${due || canLearn || gDue || gNext ? 'ghost' : ''}" data-act="w-today">${icon('pen', 'sm')} Writing: ${esc(wNext.part.name)}</button>` : ''}
+      ${!due && !canLearn && !gDue && !gNext && !wNext ? `<div class="banner info">${icon('check')}<span>${fresh ? 'Bạn đã hoàn thành mục tiêu hôm nay. Muốn học thêm, mở tab <b>Học</b>.' : 'Không còn từ nào cần học hôm nay. Hãy thêm từ mới hoặc luyện tập tự do ở tab <b>Học</b>.'}</span></div>` : ''}
     </div>
     <h2>Tổng quan</h2>
     <div class="tiles">

@@ -46,6 +46,10 @@ Tab **Học** có công tắc *Từ vựng | Ngữ pháp*. Có 4 khoá: **Nền 
 
 Nội dung nằm ở `content/grammar/*.json` (dữ liệu, không phải code). Mỗi bài: `rule` (dòng quy tắc, hỗ trợ `**đậm**`, `*nghiêng*`), `examples`, `items` (dạng `mc` chọn đáp án, `fill` điền chỗ trống `___`, `tf` đúng/sai, `fix` sửa câu, thêm `"strict": true` nếu đáp án chỉ khác câu gốc ở dấu câu; mỗi câu có `why` và nhãn lỗi `tag`), `cards` (thẻ mẫu câu), `write` (đề tự đặt câu + câu mẫu). Thêm bài mới hoặc khoá mới chỉ cần thêm dữ liệu; khi phát hành nhớ tăng `VERSION` trong `sw.js`.
 
+## Writing
+
+Tab **Học** → *Writing*. Task 2 gồm 30 đề (5 dạng × 6), mỗi đề luyện theo 5 phần (viết lại đề, câu quan điểm, 2 đoạn thân bài, kết luận) có bài mẫu band 7. Task 1 tự sinh biểu đồ đường/cột từ 8 mẫu; vì app biết số liệu gốc nên kiểm tra được con số, năm, xu hướng và giới từ by/to/from. Phản hồi không dùng AI: thống kê, kiểm tra theo phần, bộ dò lỗi theo mẫu (`content/writing/rules.json`, mỗi luật kèm câu kiểm tra) ghi vào Sổ lỗi, rồi bài mẫu và tự chấm. App không chấm band.
+
 ## Thuật toán ôn tập
 
 - Quên → ôn lại ngay trong phiên, hệ số dễ −0.2, chu kỳ về đầu.

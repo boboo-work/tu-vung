@@ -1,8 +1,8 @@
 // Các màn hình: Statistics, Cài đặt (mục tiêu, giao diện, dữ liệu, AI), Trợ lý AI.
-import { S, allWords, summary, series, saveSettings, deckName, wipeAll } from './store.js';
+import { S, allWords, summary, series, saveSettings, deckName, wipeAll, essays } from './store.js';
 import { esc, toast, pickFile, fmtDate, speak, canSpeak, fold, englishVoices, onVoices, today, addDays } from './util.js';
 import { isNew, isMastered } from './srs.js';
-import { icon, on, go, rerender, navBar, confirmSheet, promptSheet, richText } from './ui.js';
+import { icon, on, go, rerender, navBar, confirmSheet, promptSheet, chooseSheet, richText } from './ui.js';
 import { importFile, exportCSV, exportBackup, restoreBackup, downloadTemplate, loadSeed } from './io.js';
 import { roundInfo, bestRun } from './game.js';
 import { bestDrop, DROP_ROUND } from './drop.js';
@@ -162,6 +162,7 @@ export function settingsView() {
       <div class="setrow"><div><b>Từ ôn tập</b><small>Số từ mỗi lượt ôn</small></div>${stepper('reviewPerDay', s.reviewPerDay)}</div>
       <div class="setrow"><div><b>Bài ngữ pháp</b><small>Số bài mỗi ngày · 0 = tắt mục tiêu</small></div>${seg('grammarPerDay', s.grammarPerDay, [[0, '0'], [1, '1'], [2, '2']])}</div>
       <div class="setrow"><div><b>Thẻ ngữ pháp</b><small>Số thẻ mẫu câu mỗi lượt ôn</small></div>${stepper('grammarReviewPerDay', s.grammarReviewPerDay)}</div>
+      <div class="setrow"><div><b>Bài Writing</b><small>Số bài mỗi ngày · 0 = tắt mục tiêu</small></div>${seg('writingPerDay', s.writingPerDay, [[0, '0'], [1, '1'], [2, '2']])}</div>
     </div>
     <h2>Giao diện & phát âm</h2>
     <div class="card">
@@ -209,7 +210,7 @@ on('step', async (el) => {
 });
 on('set', async (el) => {
   const key = el.dataset.key;
-  const v = key === 'rate' || key === 'grammarPerDay' ? Number(el.dataset.value) : (key === 'autoSpeak' || key === 'autoFill') ? el.dataset.value === 'true' : el.dataset.value;
+  const v = key === 'rate' || key === 'grammarPerDay' || key === 'writingPerDay' ? Number(el.dataset.value) : (key === 'autoSpeak' || key === 'autoFill') ? el.dataset.value === 'true' : el.dataset.value;
   await saveSettings(key === 'voice' ? { voice: v, voiceName: '' } : { [key]: v });
   if (key === 'theme' || key === 'accent') applyTheme();
   rerender();
@@ -218,7 +219,21 @@ on('test-voice', () => speak('Practice makes perfect. This is how your words wil
 on('voice-name', async (el) => { await saveSettings({ voiceName: el.value }); speak('Practice makes perfect.', { lang: S.settings.voice, rate: S.settings.rate, name: el.value }); });
 // Danh sách giọng thường về trễ sau khi mở app → vẽ lại trang Cài đặt khi có.
 onVoices(() => { if (location.hash === '#/settings' && !document.activeElement?.matches('input, select, textarea')) rerender(); });
-on('backup', async () => { if (await exportBackup()) { toast('Đã tạo file sao lưu'); rerender(); } });
+on('backup', async () => {
+  // Có bài viết → hỏi trước có kèm không (bài viết làm file nặng hơn).
+  const list = essays();
+  let withWriting = true;
+  if (list.length) {
+    const kb = Math.max(1, Math.round(JSON.stringify(list).length / 1024));
+    const v = await chooseSheet({ title: 'Kèm bài viết vào file sao lưu?', current: 'yes', options: [
+      { value: 'yes', label: `Kèm ${list.length} bài viết`, sub: `File nặng thêm khoảng ${kb} KB` },
+      { value: 'no', label: 'Không kèm bài viết', sub: 'Khi khôi phục, bài viết đang có trên máy được giữ nguyên' },
+    ] });
+    if (!v) return;
+    withWriting = v === 'yes';
+  }
+  if (await exportBackup({ withWriting })) { toast('Đã tạo file sao lưu'); rerender(); }
+});
 on('restore', async () => {
   const file = await pickFile('.json,application/json');
   if (!file) return;

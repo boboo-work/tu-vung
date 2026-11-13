@@ -97,8 +97,8 @@ export function downloadTemplate() {
   return download('mau-import-tu-vung.csv', toCSV([CSV_COLUMNS, sample]), 'text/csv;charset=utf-8');
 }
 
-export async function exportBackup() {
-  const saved = await download(`sao-luu-tu-vung-${today()}.json`, JSON.stringify(exportData(), null, 2), 'application/json');
+export async function exportBackup({ withWriting = true } = {}) {
+  const saved = await download(`sao-luu-tu-vung-${today()}.json`, JSON.stringify(exportData({ withWriting }), null, 2), 'application/json');
   if (saved) await saveSettings({ lastBackup: today() });
   return saved;
 }

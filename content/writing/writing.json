@@ -1,0 +1,1213 @@
+{
+ "version": 1,
+ "types": {
+  "opinion": {
+   "name": "Quan điểm (agree / disagree)",
+   "short": "Quan điểm",
+   "thesis": "\\b(agree|disagree|believe|opinion|view|argue|convinced|support|oppose|in favour)\\b",
+   "hint": "Nói rõ bạn đồng ý, không đồng ý hay đồng ý một phần"
+  },
+  "discussion": {
+   "name": "Thảo luận hai quan điểm",
+   "short": "Thảo luận",
+   "thesis": "\\b(both|while|whereas|although|believe|opinion|view|argue|agree)\\b",
+   "hint": "Nhắc tới cả hai quan điểm và nói bạn nghiêng về bên nào"
+  },
+  "advdis": {
+   "name": "Ưu điểm và nhược điểm",
+   "short": "Ưu / nhược",
+   "thesis": "\\b(advantages?|disadvantages?|benefits?|drawbacks?|outweigh|positive|negative)\\b",
+   "hint": "Nói rõ ưu điểm hay nhược điểm lớn hơn (nếu đề hỏi outweigh)"
+  },
+  "problem": {
+   "name": "Vấn đề / nguyên nhân – giải pháp",
+   "short": "Vấn đề – giải pháp",
+   "thesis": "\\b(problems?|causes?|reasons?|solutions?|solve|tackle|address|measures?|steps?)\\b",
+   "hint": "Nêu ngắn gọn bài sẽ bàn nguyên nhân/vấn đề và giải pháp"
+  },
+  "twopart": {
+   "name": "Hai câu hỏi",
+   "short": "Hai câu hỏi",
+   "thesis": "\\b(because|due to|believe|think|view|reasons?|positive|negative|mainly|largely)\\b",
+   "hint": "Trả lời ngắn gọn cả hai câu hỏi của đề"
+  }
+ },
+ "parts": [
+  {
+   "id": "para",
+   "name": "Viết lại đề",
+   "task": "Viết 1 câu nói lại đề bằng cách diễn đạt khác (không chép nguyên cụm từ của đề).",
+   "min": 15,
+   "max": 35,
+   "self": [
+    "Câu của bạn giữ đúng ý đề, không thêm ý mới?",
+    "Bạn đã đổi ít nhất 2 cụm từ của đề sang cách nói khác?"
+   ]
+  },
+  {
+   "id": "thesis",
+   "name": "Câu nêu quan điểm",
+   "task": "Viết 1 câu trả lời thẳng câu hỏi của đề (câu thesis).",
+   "min": 15,
+   "max": 40,
+   "self": [
+    "Câu của bạn trả lời thẳng câu hỏi của đề?",
+    "Người đọc đoán được hai đoạn thân bài sẽ bàn gì?"
+   ]
+  },
+  {
+   "id": "body1",
+   "name": "Đoạn thân bài 1",
+   "task": "Viết đoạn thân bài thứ nhất: câu chủ đề → giải thích → ví dụ.",
+   "min": 70,
+   "max": 130,
+   "self": [
+    "Câu đầu đoạn nêu ý chính của cả đoạn?",
+    "Có giải thích vì sao ý đó đúng?",
+    "Có ví dụ cụ thể?",
+    "Mọi câu trong đoạn đều phục vụ ý chính?"
+   ]
+  },
+  {
+   "id": "body2",
+   "name": "Đoạn thân bài 2",
+   "task": "Viết đoạn thân bài thứ hai (mặt còn lại, hoặc giải pháp/câu hỏi thứ hai).",
+   "min": 70,
+   "max": 130,
+   "self": [
+    "Câu đầu đoạn nêu ý chính của cả đoạn?",
+    "Đoạn này khác hẳn ý của đoạn 1?",
+    "Có ví dụ cụ thể?",
+    "Có từ nối với đoạn trước (However, On the other hand…)?"
+   ]
+  },
+  {
+   "id": "concl",
+   "name": "Kết luận",
+   "task": "Viết đoạn kết luận: tóm ý chính và nhắc lại quan điểm, không đưa ý mới.",
+   "min": 30,
+   "max": 60,
+   "self": [
+    "Quan điểm được nhắc lại bằng cách nói khác với mở bài?",
+    "Không có ý mới?"
+   ]
+  }
+ ],
+ "prompts": [
+  {
+   "id": "o1",
+   "type": "opinion",
+   "topic": "Giáo dục",
+   "q": "Some people believe that university education should be free for all students. To what extent do you agree or disagree?",
+   "model": {
+    "para": "It is sometimes argued that higher education should be provided at no cost to every student.",
+    "thesis": "Although free tuition would widen access, I only partly agree, because a fully free system is difficult to fund fairly.",
+    "body1": "On the one hand, removing tuition fees would allow talented students from low-income families to study. At present, many capable young people choose to work straight after school because they cannot afford several years of fees and living costs. If universities were free, the choice would depend on ability rather than on family wealth. This, in turn, would benefit the economy, since more skilled graduates would enter the workforce, for example in fields such as nursing and engineering where there are shortages. It would also send a clear message that society values learning for its own sake.",
+    "body2": "On the other hand, making every course free would place a heavy burden on public budgets. The money would have to come from taxes, which means that people who never attend university would pay for those who do, even though graduates usually earn more over their lifetimes. A fairer approach would be to offer free places in subjects that society urgently needs, together with generous grants for poorer students, while other students pay fees that they repay only once they earn a reasonable salary. Such a system would protect public finances while still opening the door to anyone with the necessary ability.",
+    "concl": "In conclusion, although free university education would improve access, I believe a targeted system of grants and income-based repayment is more sustainable than abolishing fees for everyone."
+   },
+   "phrases": [
+    {
+     "en": "widen access to higher education",
+     "vi": "mở rộng cơ hội học đại học"
+    },
+    {
+     "en": "place a heavy burden on public budgets",
+     "vi": "gây gánh nặng lớn cho ngân sách công"
+    },
+    {
+     "en": "income-based repayment",
+     "vi": "trả nợ theo thu nhập"
+    }
+   ]
+  },
+  {
+   "id": "o2",
+   "type": "opinion",
+   "topic": "Công nghệ",
+   "q": "Children today spend too much time on smartphones and tablets, and this has a negative effect on their development. To what extent do you agree or disagree?",
+   "model": {
+    "para": "Many people claim that young people now use mobile devices excessively and that this harms the way they grow up.",
+    "thesis": "I largely agree with this view, although I accept that some screen time can be educational.",
+    "body1": "The main problem with heavy device use is that it replaces activities that children need. Time spent scrolling through videos is time not spent playing outdoors, reading or talking face to face, all of which build physical health, concentration and social skills. Many teachers report that pupils now find it harder to focus on a single task for long periods. In addition, using screens late in the evening can disrupt sleep, which in turn affects memory and mood at school. Some studies also suggest that heavy screen use at a young age is linked to delays in language development, as children hear fewer real conversations.",
+    "body2": "That said, not all screen time is harmful. Well-designed learning apps can help children practise reading or mathematics, and video calls allow them to stay in touch with relatives who live far away. The key factor is how devices are used rather than whether they are used at all. Parents who set clear limits and choose suitable content can turn tablets into a useful tool instead of a distraction. Schools can also help by teaching pupils how to use technology responsibly, for instance by explaining how apps are designed to keep users scrolling for as long as possible.",
+    "concl": "In conclusion, I agree that excessive device use damages children's development, but with sensible rules and good content, technology can still play a positive role."
+   },
+   "phrases": [
+    {
+     "en": "replace activities that children need",
+     "vi": "thay thế những hoạt động trẻ cần"
+    },
+    {
+     "en": "disrupt sleep",
+     "vi": "làm gián đoạn giấc ngủ"
+    },
+    {
+     "en": "set clear limits",
+     "vi": "đặt giới hạn rõ ràng"
+    }
+   ]
+  },
+  {
+   "id": "o3",
+   "type": "opinion",
+   "topic": "Môi trường",
+   "q": "The best way to reduce pollution is to raise the price of fuel. To what extent do you agree or disagree?",
+   "model": {
+    "para": "Some people argue that making petrol and diesel more expensive is the most effective method of cutting pollution.",
+    "thesis": "In my view, higher fuel prices can help, but they are not the best solution on their own.",
+    "body1": "There is some logic behind the idea of raising fuel prices. When driving becomes more expensive, people tend to make fewer unnecessary trips, share cars or switch to public transport. The extra revenue could also be invested in cleaner alternatives, such as electric buses. Several European countries have used fuel taxes in this way, and their cities have seen a gradual reduction in traffic. In the long term, higher prices may also persuade manufacturers to produce more fuel-efficient vehicles, because customers would look for cars that cost less to run.",
+    "body2": "However, price increases alone have serious limitations. Many people, especially in rural areas, have no realistic alternative to driving, so they would simply pay more without polluting less. Higher fuel costs also raise the price of goods, which hurts low-income households most. Moreover, much pollution comes from factories and power stations rather than private cars. A more effective approach would combine fair pricing with better public transport, stricter emission standards for industry and support for renewable energy. Without these complementary measures, fuel taxes risk becoming unpopular with voters while achieving only a modest improvement in air quality, which could make future environmental policies harder to introduce.",
+    "concl": "In conclusion, while raising fuel prices may reduce some pollution, I believe a broader set of policies is needed to tackle the problem effectively."
+   },
+   "phrases": [
+    {
+     "en": "have no realistic alternative",
+     "vi": "không có lựa chọn thay thế thực tế"
+    },
+    {
+     "en": "stricter emission standards",
+     "vi": "tiêu chuẩn khí thải nghiêm ngặt hơn"
+    },
+    {
+     "en": "tackle the problem effectively",
+     "vi": "giải quyết vấn đề hiệu quả"
+    }
+   ]
+  },
+  {
+   "id": "o4",
+   "type": "opinion",
+   "topic": "Công việc",
+   "q": "A four-day working week would benefit both employees and employers. To what extent do you agree or disagree?",
+   "model": {
+    "para": "It has been suggested that reducing the working week to four days would be good for workers and companies alike.",
+    "thesis": "I agree with this idea for many office-based jobs, although it would be harder to apply in some industries.",
+    "body1": "For employees, the advantages are clear. An extra day off gives people more time to rest, look after their families and pursue hobbies, which can reduce stress and burnout. Workers who feel refreshed are usually more motivated, and several trials in countries such as the United Kingdom found that staff reported better health and lower levels of exhaustion after switching to a shorter week. Shorter weeks may also reduce traffic at peak times, as fewer people commute on the same day, which brings wider benefits for cities and the environment.",
+    "body2": "Employers can also gain from this change. Trials have shown that productivity often remains the same, or even rises, because staff waste less time in long meetings and work more efficiently. Companies may also find it easier to attract and keep talented staff, which reduces the cost of recruitment. Admittedly, in sectors such as healthcare or retail, where someone must be present every day, a four-day week would require more staff and careful planning. However, these challenges are not impossible to overcome, since staff can work different days on a rotating schedule, as some hospitals already do with flexible shift patterns.",
+    "concl": "In conclusion, I believe a four-day week would benefit both sides in many workplaces, provided that it is introduced flexibly in industries that need continuous cover."
+   },
+   "phrases": [
+    {
+     "en": "reduce stress and burnout",
+     "vi": "giảm căng thẳng và kiệt sức"
+    },
+    {
+     "en": "attract and keep talented staff",
+     "vi": "thu hút và giữ chân nhân tài"
+    },
+    {
+     "en": "continuous cover",
+     "vi": "có người trực liên tục"
+    }
+   ]
+  },
+  {
+   "id": "o5",
+   "type": "opinion",
+   "topic": "Xã hội",
+   "q": "Prison is not the best way to reduce crime. Education and job training would be more effective. To what extent do you agree or disagree?",
+   "model": {
+    "para": "Some people believe that teaching offenders skills is a better way to cut crime than sending them to prison.",
+    "thesis": "I mostly agree, although prison remains necessary for people who are a danger to the public.",
+    "body1": "One reason why education and training are effective is that many crimes are linked to poverty and a lack of opportunities. When former prisoners leave with no qualifications, they often struggle to find work and may return to crime. By contrast, those who gain practical skills, such as carpentry or computer literacy, have a realistic chance of earning a legal income. Programmes of this kind have been shown to reduce reoffending rates in a number of countries. Education also gives prisoners a sense of purpose and self-respect, which can change the way they see themselves and their future.",
+    "body2": "Nevertheless, prison still has an important role. Violent offenders must be kept away from society to protect potential victims, and the threat of prison may deter some people from committing serious crimes. The most sensible approach, therefore, is not to choose between the two but to combine them: prisons should offer education and job training, so that the time inmates spend inside prepares them for a law-abiding life. In this way, society would still be protected from dangerous individuals, while the majority of offenders, who will eventually be released, would return to their communities with genuine skills.",
+    "concl": "In conclusion, I believe education and training are more effective than imprisonment alone, but the best results come from making them a central part of the prison system."
+   },
+   "phrases": [
+    {
+     "en": "reduce reoffending rates",
+     "vi": "giảm tỉ lệ tái phạm"
+    },
+    {
+     "en": "a law-abiding life",
+     "vi": "cuộc sống tuân thủ pháp luật"
+    },
+    {
+     "en": "deter people from committing crimes",
+     "vi": "răn đe người ta không phạm tội"
+    }
+   ]
+  },
+  {
+   "id": "o6",
+   "type": "opinion",
+   "topic": "Sức khoẻ",
+   "q": "Governments should ban all advertising of unhealthy food and drinks. To what extent do you agree or disagree?",
+   "model": {
+    "para": "It is often suggested that the authorities should prohibit every advertisement for food and drinks that are bad for health.",
+    "thesis": "I agree that such advertising should be strictly limited, but I believe a total ban would go too far.",
+    "body1": "There are strong reasons to restrict this kind of advertising. Adverts for sugary drinks and fast food are designed to be attractive, especially to children, who cannot easily judge what is good for them. Constant exposure to these messages encourages unhealthy habits, which contribute to rising rates of obesity and diabetes. Banning such adverts during children's television programmes and near schools would therefore protect the most vulnerable group. Several countries have already restricted such adverts during children's programmes, and early evidence suggests that children ask their parents for these products less often.",
+    "body2": "However, banning all adverts for unhealthy products would be difficult to enforce and could be unfair. It is not always clear which foods should count as unhealthy, since a chocolate bar eaten occasionally causes little harm. Adults also have the right to make informed choices. Instead of a complete ban, governments could require clear health warnings, limit when and where these adverts appear, and spend more on campaigns that promote healthy eating. Such measures would respect personal freedom while still sending a strong public health message, and they would be far easier for regulators to monitor than an outright ban on every advert.",
+    "concl": "In conclusion, while advertising of unhealthy food should be tightly controlled, especially when it targets children, a complete ban is neither practical nor necessary."
+   },
+   "phrases": [
+    {
+     "en": "constant exposure to",
+     "vi": "việc tiếp xúc liên tục với"
+    },
+    {
+     "en": "the most vulnerable group",
+     "vi": "nhóm dễ bị tổn thương nhất"
+    },
+    {
+     "en": "make informed choices",
+     "vi": "đưa ra lựa chọn có hiểu biết"
+    }
+   ]
+  },
+  {
+   "id": "d1",
+   "type": "discussion",
+   "topic": "Giáo dục",
+   "q": "Some people think children should start learning a foreign language at primary school, while others believe it is better to start in secondary school. Discuss both views and give your own opinion.",
+   "model": {
+    "para": "There is disagreement about whether foreign languages should be introduced to children in primary or secondary school.",
+    "thesis": "While both views have merit, I believe that starting at primary school is more beneficial.",
+    "body1": "Those who prefer a later start argue that younger children should first master their own language. They worry that a second language might confuse pupils or take time away from basic subjects such as reading and mathematics. In addition, secondary school students are more mature and can understand grammar rules more easily, so they may make faster progress in a shorter time. They also point out that primary schools may not have enough qualified language teachers, so lessons could be of poor quality and give children a negative first experience of the language.",
+    "body2": "On the other hand, there are strong arguments for beginning early. Young children are usually less afraid of making mistakes and are good at imitating sounds, which helps them develop more natural pronunciation. Starting early also means that learners have many more years of practice before they leave school. In countries where English is taught from the age of six, many young adults speak it confidently. As long as lessons are short and based on games and songs, an early start need not interfere with other subjects. Furthermore, early learners often develop a positive attitude towards other cultures, which can motivate them to continue studying languages later in life.",
+    "concl": "In conclusion, although older learners can grasp grammar more quickly, I believe the advantages of an early start, particularly for pronunciation and confidence, make primary school the better time to begin."
+   },
+   "phrases": [
+    {
+     "en": "master their own language",
+     "vi": "thông thạo tiếng mẹ đẻ"
+    },
+    {
+     "en": "make faster progress",
+     "vi": "tiến bộ nhanh hơn"
+    },
+    {
+     "en": "interfere with other subjects",
+     "vi": "ảnh hưởng đến các môn khác"
+    }
+   ]
+  },
+  {
+   "id": "d2",
+   "type": "discussion",
+   "topic": "Văn hoá",
+   "q": "Some people believe that the main purpose of museums is to educate, while others think they should entertain. Discuss both views and give your own opinion.",
+   "model": {
+    "para": "Opinions differ on whether museums should mainly teach visitors or simply provide enjoyment.",
+    "thesis": "In my view, the best museums combine both aims, although education should remain their primary role.",
+    "body1": "Supporters of the educational role argue that museums exist to preserve and explain history, science and art. They hold objects that cannot be seen anywhere else, and expert labels and guided tours help visitors understand their importance. If museums focus too much on fun, there is a risk that serious information will be simplified or replaced by attractions that have little to do with learning. Critics also argue that an emphasis on entertainment can make museums look like theme parks, which may reduce public respect for the objects and the history they represent.",
+    "body2": "Others believe that museums must entertain in order to attract visitors, especially young people. Interactive displays, short films and hands-on activities make a visit more enjoyable, and people who enjoy themselves are more likely to return and to remember what they saw. For example, many science museums now let children carry out simple experiments, which turns a lesson into an experience. Entertainment, in this sense, can be a powerful tool for learning rather than its opposite. This approach also helps museums to attract families and school groups, which in turn brings in the funding they need to protect their collections for future generations.",
+    "concl": "In conclusion, while education is the core purpose of museums, I believe they should use entertaining methods to make that education reach a wider audience."
+   },
+   "phrases": [
+    {
+     "en": "preserve and explain history",
+     "vi": "lưu giữ và giải thích lịch sử"
+    },
+    {
+     "en": "hands-on activities",
+     "vi": "hoạt động thực hành"
+    },
+    {
+     "en": "reach a wider audience",
+     "vi": "tiếp cận nhiều người hơn"
+    }
+   ]
+  },
+  {
+   "id": "d3",
+   "type": "discussion",
+   "topic": "Giáo dục",
+   "q": "Some people say that online learning is as effective as learning in a classroom, while others disagree. Discuss both views and give your own opinion.",
+   "model": {
+    "para": "There is ongoing debate about whether studying online can be as effective as attending lessons in person.",
+    "thesis": "Although online courses work well for some learners, I believe classroom learning is still more effective for most people.",
+    "body1": "Those who favour online learning point to its flexibility. Students can study at their own pace, replay recorded lectures and fit lessons around work or family duties. Online courses also give people in remote areas access to teachers and subjects that are not available locally. For highly motivated adults, such as professionals taking a short course, this independence can lead to excellent results. In addition, online courses are usually cheaper than traditional programmes, since students save on travel and accommodation, and universities can teach far larger numbers at the same time.",
+    "body2": "However, many people believe that classrooms offer advantages that are hard to replace. Teachers can notice immediately when a student is confused and adjust their explanation, while learners benefit from discussing ideas with classmates. A classroom also provides a routine, which helps students who find it difficult to stay focused at home. During periods of school closures, for instance, many teachers reported that pupils fell behind, particularly younger children and those without a quiet place to study. Moreover, practical subjects such as science or nursing require hands-on experience in laboratories and hospitals, which cannot be fully reproduced through a computer screen.",
+    "concl": "In conclusion, while online learning is valuable for independent and motivated learners, I believe face-to-face teaching remains more effective for the majority of students."
+   },
+   "phrases": [
+    {
+     "en": "study at their own pace",
+     "vi": "học theo tốc độ của mình"
+    },
+    {
+     "en": "fall behind",
+     "vi": "bị tụt lại"
+    },
+    {
+     "en": "face-to-face teaching",
+     "vi": "dạy trực tiếp"
+    }
+   ]
+  },
+  {
+   "id": "d4",
+   "type": "discussion",
+   "topic": "Giao thông",
+   "q": "Some people think the government should pay for public transport, while others believe passengers should pay the full cost. Discuss both views and give your own opinion.",
+   "model": {
+    "para": "People disagree about whether buses and trains should be funded by the state or paid for entirely by the people who use them.",
+    "thesis": "In my opinion, public transport should be largely funded by the government, with passengers paying a small, affordable fare.",
+    "body1": "Those who believe passengers should pay argue that it is fair for users to cover the cost of a service they choose to use. People who never travel by bus, they say, should not have to pay for it through taxes. Charging the full cost may also encourage transport companies to run their services efficiently, since they would depend on ticket sales rather than public money. In addition, they argue that when public transport is heavily subsidised, governments may have less money for other essential services, such as schools and hospitals, which also need funding.",
+    "body2": "However, there are strong reasons for public funding. Affordable transport allows low-income workers, students and elderly people to reach jobs, schools and hospitals. It also benefits people who do not use it, because every passenger on a bus is one less car on the road, which means less congestion and cleaner air for everyone. Cities that have kept fares low, such as Vienna, have seen high levels of public transport use and fewer cars in their centres. Low fares also help to reduce inequality, since the poorest households tend to spend a larger share of their income on travel than richer ones.",
+    "concl": "In conclusion, although asking users to pay has some logic, I believe the wider benefits of public transport justify substantial government funding, combined with modest fares."
+   },
+   "phrases": [
+    {
+     "en": "cover the cost of a service",
+     "vi": "chi trả chi phí của một dịch vụ"
+    },
+    {
+     "en": "reach jobs, schools and hospitals",
+     "vi": "đến được nơi làm việc, trường học và bệnh viện"
+    },
+    {
+     "en": "justify substantial government funding",
+     "vi": "biện minh cho việc nhà nước tài trợ nhiều"
+    }
+   ]
+  },
+  {
+   "id": "d5",
+   "type": "discussion",
+   "topic": "Xã hội",
+   "q": "Some people believe that success comes mainly from hard work, while others think that luck and personal connections are more important. Discuss both views and give your own opinion.",
+   "model": {
+    "para": "There are different opinions on whether people succeed mainly through effort or through good fortune and the people they know.",
+    "thesis": "Although luck and connections play a part, I believe hard work is the most important factor in long-term success.",
+    "body1": "Some people argue that success depends largely on circumstances beyond our control. A person born into a wealthy family can attend better schools and receive help from relatives who know influential people. Similarly, being in the right place at the right time, such as joining a small company just before it grows rapidly, can transform someone's career. From this point of view, effort alone is rarely enough. Some studies of successful entrepreneurs also show that many received early financial support from their families, which allowed them to take risks that others could not afford.",
+    "body2": "Nevertheless, hard work remains essential. Opportunities only lead to success if people are prepared to take advantage of them, and connections cannot replace real skills. Many well-known entrepreneurs and scientists faced repeated failures before achieving anything, and it was their persistence that made the difference. Moreover, hard work tends to create its own luck, because people who keep improving their skills are more likely to be noticed and offered new chances. In other words, while luck may provide the first chance, it is usually hard work that turns that chance into lasting achievement, and few people succeed for long without it.",
+    "concl": "In conclusion, while fortune and connections can open doors, I believe sustained effort is what allows people to succeed and to keep succeeding over time."
+   },
+   "phrases": [
+    {
+     "en": "circumstances beyond our control",
+     "vi": "hoàn cảnh ngoài tầm kiểm soát"
+    },
+    {
+     "en": "take advantage of opportunities",
+     "vi": "tận dụng cơ hội"
+    },
+    {
+     "en": "open doors",
+     "vi": "mở ra cơ hội"
+    }
+   ]
+  },
+  {
+   "id": "d6",
+   "type": "discussion",
+   "topic": "Đô thị",
+   "q": "Some people prefer to live in a big city, while others prefer to live in the countryside. Discuss both views and give your own opinion.",
+   "model": {
+    "para": "People have different preferences when it comes to living in a large city or in a rural area.",
+    "thesis": "While the countryside offers a calmer life, I believe that cities suit most people better, especially when they are young.",
+    "body1": "People who prefer the countryside value its peaceful environment. Rural areas usually have cleaner air, less noise and more green space, which can improve both physical and mental health. Housing is also cheaper, so families can afford larger homes with gardens. In addition, close-knit rural communities often provide a strong sense of belonging that is harder to find in a crowded city. Many people also believe that the slower pace of life in the countryside allows them to spend more time with family and to enjoy nature at weekends.",
+    "body2": "On the other hand, cities offer opportunities that the countryside cannot match. Most well-paid jobs, universities and specialist hospitals are located in urban areas, and public transport makes it easy to get around without a car. Cities also provide a wide range of cultural activities, from concerts to international restaurants. For young adults who want to build a career and meet new people, these advantages usually outweigh the stress and higher costs of urban life. In addition, cities tend to be more open to different lifestyles and ideas, which many young people find exciting and liberating after growing up in smaller communities.",
+    "concl": "In conclusion, although rural life is healthier and more relaxed, I believe the opportunities available in cities make them the better choice for most people, at least during the early stages of their lives."
+   },
+   "phrases": [
+    {
+     "en": "a strong sense of belonging",
+     "vi": "cảm giác gắn bó mạnh mẽ"
+    },
+    {
+     "en": "close-knit communities",
+     "vi": "cộng đồng gắn bó"
+    },
+    {
+     "en": "get around without a car",
+     "vi": "đi lại không cần ô tô"
+    }
+   ]
+  },
+  {
+   "id": "a1",
+   "type": "advdis",
+   "topic": "Công việc",
+   "q": "More and more people are working from home. Do the advantages of this trend outweigh the disadvantages?",
+   "model": {
+    "para": "An increasing number of employees now do their jobs from home rather than in an office.",
+    "thesis": "In my view, the benefits of this trend outweigh its drawbacks, provided that companies manage it well.",
+    "body1": "The most obvious advantage of working from home is the time and money it saves. Without a daily commute, employees can spend more time with their families or on exercise, and they no longer need to pay for transport or expensive lunches. Many workers also find that they concentrate better in a quiet home environment than in a noisy open-plan office. For employers, fewer people in the office means lower costs for rent and electricity. In addition, companies can recruit staff from a much wider area, since employees no longer need to live within commuting distance of the office.",
+    "body2": "There are, however, some disadvantages. Working alone can be isolating, and some employees miss the informal conversations that help them learn from colleagues and feel part of a team. It can also be difficult to separate work from private life when the office is at home, which may lead to longer working hours. These problems can be reduced if companies combine home working with regular days in the office and set clear expectations about working hours. Managers also need to trust their employees and judge them by their results rather than by the number of hours they appear to be online.",
+    "concl": "In conclusion, although working from home can cause isolation and blur the line between work and home life, I believe its advantages for both employees and employers are greater."
+   },
+   "phrases": [
+    {
+     "en": "a daily commute",
+     "vi": "việc đi lại hằng ngày"
+    },
+    {
+     "en": "blur the line between work and home life",
+     "vi": "làm mờ ranh giới giữa công việc và đời sống"
+    },
+    {
+     "en": "set clear expectations",
+     "vi": "đặt kỳ vọng rõ ràng"
+    }
+   ]
+  },
+  {
+   "id": "a2",
+   "type": "advdis",
+   "topic": "Giáo dục",
+   "q": "Many young people take a gap year between finishing school and starting university. What are the advantages and disadvantages of this?",
+   "model": {
+    "para": "It has become common for school leavers to take a year off before they begin higher education.",
+    "thesis": "This essay will argue that a gap year has clear benefits, although it also carries some risks.",
+    "body1": "One major advantage of a gap year is that it gives young people time to mature and to think carefully about their future. Students who have spent a year working or volunteering often have a clearer idea of what they want to study, so they are less likely to drop out of university. A gap year can also provide valuable experience, such as working in a shop or teaching abroad, which develops independence and communication skills that employers value. In addition, many students use their gap year to earn money, which reduces the amount they need to borrow for their studies.",
+    "body2": "On the other hand, a gap year has potential drawbacks. Some young people find it difficult to return to studying after a long break, and they may lose the habit of reading and revising. A year spent without a clear plan can easily be wasted. In addition, travelling abroad can be expensive, which means that gap years are more accessible to students from wealthier families. Furthermore, a gap year delays the start of a career by a year, which may mean lower lifetime earnings for those who take one.",
+    "concl": "In conclusion, a gap year can help young people become more mature and focused, but it works best when it is carefully planned and used productively."
+   },
+   "phrases": [
+    {
+     "en": "drop out of university",
+     "vi": "bỏ học đại học"
+    },
+    {
+     "en": "develop independence",
+     "vi": "phát triển tính tự lập"
+    },
+    {
+     "en": "used productively",
+     "vi": "được sử dụng hiệu quả"
+    }
+   ]
+  },
+  {
+   "id": "a3",
+   "type": "advdis",
+   "topic": "Du lịch",
+   "q": "International tourism has grown rapidly in recent decades. Do the benefits of this outweigh the drawbacks for local communities?",
+   "model": {
+    "para": "The number of people travelling abroad for holidays has increased sharply over the past few decades.",
+    "thesis": "I believe that the benefits of tourism for local communities generally outweigh its drawbacks, as long as it is properly managed.",
+    "body1": "The main benefit of tourism is economic. Visitors spend money on hotels, restaurants, transport and souvenirs, which creates jobs for local people and supports small businesses. In many coastal and rural areas, tourism provides income where there are few other industries. Governments can also use tourist taxes to improve roads, airports and public services that local residents use as well. Tourism also encourages local people to preserve traditional crafts, music and festivals, because visitors are interested in experiencing local culture, and this can strengthen a community's pride in its own heritage.",
+    "body2": "Nevertheless, mass tourism can cause serious problems. Popular destinations often become overcrowded, and rising property prices can force local residents out of their own neighbourhoods. Large numbers of visitors may also damage natural sites and increase waste and pollution. Some cities, such as Venice, have responded by limiting the number of cruise ships and charging entry fees, which shows that these drawbacks can be reduced through careful planning. Furthermore, many jobs in tourism are seasonal and poorly paid, which means that some local workers have little security during the quieter months of the year, and they may struggle to support their families.",
+    "concl": "In conclusion, although tourism can lead to overcrowding and environmental damage, I believe its economic benefits for local communities are greater, provided that governments manage visitor numbers responsibly."
+   },
+   "phrases": [
+    {
+     "en": "creates jobs for local people",
+     "vi": "tạo việc làm cho người dân địa phương"
+    },
+    {
+     "en": "force residents out of their neighbourhoods",
+     "vi": "đẩy cư dân ra khỏi khu phố của họ"
+    },
+    {
+     "en": "manage visitor numbers",
+     "vi": "kiểm soát lượng khách"
+    }
+   ]
+  },
+  {
+   "id": "a4",
+   "type": "advdis",
+   "topic": "Công nghệ",
+   "q": "Many supermarkets now use self-service checkouts instead of cashiers. Do the advantages of this development outweigh the disadvantages?",
+   "model": {
+    "para": "Self-service tills are increasingly replacing staffed checkouts in supermarkets.",
+    "thesis": "In my opinion, the drawbacks of this development slightly outweigh its advantages.",
+    "body1": "Self-service checkouts certainly have some benefits. Customers with only a few items can pay quickly without waiting in a long queue, and supermarkets can serve more people at busy times with the same number of staff. For shops, the machines reduce labour costs, which may help to keep prices lower for customers. Some customers also prefer to scan and pack their own shopping because it gives them more control and allows them to avoid unnecessary conversation when they are in a hurry, especially late at night.",
+    "body2": "However, the disadvantages are significant. The most serious is the loss of jobs, as cashier positions have traditionally provided work for students, parents and older people who need flexible hours. Many elderly customers also find the machines confusing, and the technical problems that often occur mean that staff must still be called to help. Moreover, the brief conversations people have with cashiers can be an important social contact for those who live alone. These human costs are easy to overlook when the focus is only on speed. When supermarkets reduce staff to save money, the experience often becomes slower and more stressful for exactly the people who most need assistance, which can damage customer loyalty in the long run.",
+    "concl": "In conclusion, although self-service checkouts are convenient and efficient, I believe their impact on employment and on vulnerable customers means that their disadvantages are greater."
+   },
+   "phrases": [
+    {
+     "en": "reduce labour costs",
+     "vi": "giảm chi phí nhân công"
+    },
+    {
+     "en": "flexible hours",
+     "vi": "giờ làm linh hoạt"
+    },
+    {
+     "en": "easy to overlook",
+     "vi": "dễ bị bỏ qua"
+    }
+   ]
+  },
+  {
+   "id": "a5",
+   "type": "advdis",
+   "topic": "Đô thị",
+   "q": "Some cities have banned private cars from their centres. What are the advantages and disadvantages of this policy?",
+   "model": {
+    "para": "A number of cities have decided to prohibit private vehicles in their central areas.",
+    "thesis": "This essay will discuss the benefits and drawbacks of such a policy and argue that the benefits are greater.",
+    "body1": "The most important advantage of a car-free centre is cleaner and safer streets. Without heavy traffic, air pollution and noise fall significantly, and pedestrians and cyclists can move around without fear of accidents. Space that was used for roads and parking can be turned into squares, trees and outdoor cafés, which makes the centre more attractive to residents and visitors. In cities such as Oslo, shops in car-free areas have reported more customers on foot. A car-free centre can also help to reduce carbon emissions, which supports a city's wider efforts to tackle climate change.",
+    "body2": "There are, however, some disadvantages. People who live outside the centre, especially those with disabilities or young children, may find it harder to reach shops and services. Businesses that depend on deliveries may face higher costs if vehicle access is restricted. If public transport is not reliable, the policy can simply push traffic onto nearby streets. For these reasons, a ban needs to be supported by frequent buses, park-and-ride car parks and exceptions for disabled drivers. There is also a risk that some shoppers will simply drive to out-of-town shopping centres instead, which could harm the very businesses the policy was meant to support.",
+    "concl": "In conclusion, although banning cars from city centres causes difficulties for some groups, I believe the improvements in health, safety and quality of life make it a worthwhile policy."
+   },
+   "phrases": [
+    {
+     "en": "move around without fear of accidents",
+     "vi": "đi lại không sợ tai nạn"
+    },
+    {
+     "en": "push traffic onto nearby streets",
+     "vi": "đẩy xe cộ sang các phố lân cận"
+    },
+    {
+     "en": "a worthwhile policy",
+     "vi": "chính sách đáng làm"
+    }
+   ]
+  },
+  {
+   "id": "a6",
+   "type": "advdis",
+   "topic": "Mua sắm",
+   "q": "More and more people now shop online rather than in physical stores. Do the advantages of this trend outweigh the disadvantages?",
+   "model": {
+    "para": "A growing number of consumers now buy goods on the internet instead of visiting shops.",
+    "thesis": "I believe the advantages of online shopping outweigh its disadvantages for most consumers.",
+    "body1": "Online shopping offers great convenience. Customers can compare prices and read reviews from many sellers in a few minutes, and goods are delivered directly to their homes. This is particularly helpful for people who live far from large shops, have limited mobility or work long hours. Online stores also tend to offer a wider range of products than local shops, and prices are often lower because sellers do not have to pay rent for large stores. Online shopping also allows people to buy at any time of day or night, which is ideal for those whose working hours make it difficult to visit shops.",
+    "body2": "On the other hand, the growth of online shopping has some negative effects. Many small local shops have closed, which can make town centres feel empty and reduce local employment. Customers cannot touch or try on products before buying, so they may be disappointed and need to return items. In addition, frequent deliveries increase packaging waste and traffic from delivery vans. These problems are real, but many of them could be reduced through better recycling and support for local businesses. There are also concerns about the working conditions of some delivery drivers and warehouse staff, who often face long hours and intense pressure to meet targets.",
+    "concl": "In conclusion, although online shopping harms some local shops and creates waste, I believe its convenience, choice and lower prices make it beneficial overall."
+   },
+   "phrases": [
+    {
+     "en": "compare prices and read reviews",
+     "vi": "so sánh giá và đọc đánh giá"
+    },
+    {
+     "en": "limited mobility",
+     "vi": "khả năng đi lại hạn chế"
+    },
+    {
+     "en": "packaging waste",
+     "vi": "rác thải bao bì"
+    }
+   ]
+  },
+  {
+   "id": "p1",
+   "type": "problem",
+   "topic": "Sức khoẻ",
+   "q": "Obesity among children is increasing in many countries. What are the causes of this, and what can be done to solve the problem?",
+   "model": {
+    "para": "The number of overweight children has been rising in many parts of the world.",
+    "thesis": "This essay will examine the main causes of this problem and suggest some measures to address it.",
+    "body1": "The two main causes of childhood obesity are poor diet and a lack of physical activity. Processed food and sugary drinks are cheap, widely advertised and easy to buy, so many families rely on them, especially when parents are busy. At the same time, children now spend much of their free time indoors using screens instead of playing outside. In many cities, a lack of safe parks and heavy traffic also discourage parents from letting children walk or cycle. Furthermore, portion sizes in restaurants and packaged foods have grown over the years, so children often consume more calories than they need without realising it.",
+    "body2": "Several measures could help to tackle this problem. Schools could provide healthy meals and include at least one hour of physical activity every day. Governments could introduce taxes on sugary drinks, as some countries have done successfully, and use the revenue to build playgrounds and sports facilities. Parents also have an important role: by cooking simple meals at home and limiting screen time, they can help their children develop healthier habits from an early age. Doctors and nurses could also play a part by checking children's weight regularly and offering families practical advice before problems become serious.",
+    "concl": "In conclusion, childhood obesity is mainly caused by unhealthy food and inactive lifestyles, and it can be reduced through action by schools, governments and families."
+   },
+   "phrases": [
+    {
+     "en": "a lack of physical activity",
+     "vi": "thiếu vận động"
+    },
+    {
+     "en": "discourage parents from",
+     "vi": "khiến cha mẹ ngại"
+    },
+    {
+     "en": "develop healthier habits",
+     "vi": "hình thành thói quen lành mạnh hơn"
+    }
+   ]
+  },
+  {
+   "id": "p2",
+   "type": "problem",
+   "topic": "Giao thông",
+   "q": "Traffic congestion is a serious problem in many major cities. What are the causes, and what solutions can you suggest?",
+   "model": {
+    "para": "Heavy traffic has become a major issue in large cities around the world.",
+    "thesis": "This essay will discuss why congestion occurs and propose some practical solutions.",
+    "body1": "The main cause of congestion is the rapid growth in the number of private vehicles. As incomes rise, more people can afford cars or motorbikes, and many prefer them to public transport because they are faster and more comfortable. In many cities, roads were designed for far fewer vehicles, so they quickly become overloaded during rush hour. Poor urban planning also plays a part: when homes, offices and schools are far apart, people have to travel longer distances every day. In addition, the rapid growth of online shopping has increased the number of delivery vehicles on city streets, adding to congestion throughout the day.",
+    "body2": "There are several ways to reduce congestion. The most effective is to invest in fast, reliable public transport, such as metro lines and bus lanes, so that people have an attractive alternative to driving. Some cities, including Singapore, also charge drivers to enter busy areas at peak times, which encourages people to travel at different times or by other means. Finally, allowing flexible working hours and working from home can spread journeys more evenly across the day. Better urban planning, which places housing, schools and workplaces closer together, would also reduce the need for long daily journeys in the future.",
+    "concl": "In conclusion, traffic congestion results mainly from rising car ownership and poor planning, and it can be eased through better public transport, road pricing and flexible working."
+   },
+   "phrases": [
+    {
+     "en": "rise in car ownership",
+     "vi": "sự gia tăng sở hữu ô tô"
+    },
+    {
+     "en": "an attractive alternative to driving",
+     "vi": "lựa chọn hấp dẫn thay cho việc lái xe"
+    },
+    {
+     "en": "peak times",
+     "vi": "giờ cao điểm"
+    }
+   ]
+  },
+  {
+   "id": "p3",
+   "type": "problem",
+   "topic": "Nhà ở",
+   "q": "In many countries, young people find it increasingly difficult to buy their first home. Why is this, and what can be done?",
+   "model": {
+    "para": "Buying a first home has become a growing challenge for young adults in many countries.",
+    "thesis": "This essay will explain the main reasons for this situation and suggest some possible solutions.",
+    "body1": "The main reason is that house prices have risen much faster than wages. In popular cities, demand for housing is high because jobs and services are concentrated there, but the supply of new homes has not kept up. As a result, prices are often ten times higher than the average annual salary. At the same time, many young people are paying high rents, which makes it very difficult to save for a deposit, and banks have become stricter about who can borrow. Furthermore, in some cities a large number of homes are bought by investors or used as holiday rentals, which reduces the number available for local families.",
+    "body2": "Governments can take several steps to address this problem. The most important is to increase the supply of affordable housing, for example by building more homes near public transport and releasing unused public land. Schemes that help first-time buyers with their deposit can also be effective, as long as they do not simply push prices higher. In addition, controlling rent increases would allow young tenants to save more money each month. Taxing empty properties and limiting short-term holiday rentals in high-demand areas could also return more homes to the market for people who actually need to live there.",
+    "concl": "In conclusion, young people struggle to buy homes mainly because prices have outpaced incomes, and the problem can be eased by building more affordable housing and supporting first-time buyers."
+   },
+   "phrases": [
+    {
+     "en": "the supply of new homes",
+     "vi": "nguồn cung nhà mới"
+    },
+    {
+     "en": "save for a deposit",
+     "vi": "tiết kiệm tiền trả trước"
+    },
+    {
+     "en": "first-time buyers",
+     "vi": "người mua nhà lần đầu"
+    }
+   ]
+  },
+  {
+   "id": "p4",
+   "type": "problem",
+   "topic": "Môi trường",
+   "q": "Plastic waste is polluting the world's oceans. What problems does this cause, and how can they be solved?",
+   "model": {
+    "para": "Large amounts of plastic rubbish are ending up in the seas and oceans.",
+    "thesis": "This essay will outline the main problems caused by ocean plastic and suggest some solutions.",
+    "body1": "Plastic pollution causes serious harm to marine life. Sea animals such as turtles and birds often mistake plastic bags for food or become trapped in fishing nets, which can kill them. Over time, plastic breaks down into tiny pieces that enter the food chain, and these may eventually be eaten by humans through fish and seafood. Plastic waste also damages coastal communities that depend on tourism and fishing, since dirty beaches attract fewer visitors. The cost of cleaning beaches and removing waste from harbours also falls on local authorities, which means that taxpayers ultimately pay for the problem.",
+    "body2": "Several solutions could reduce this problem. Governments could ban or tax single-use plastics such as bags, straws and cups, as many countries have already done. Companies should be required to design packaging that is easier to recycle and to take responsibility for collecting it. Improving waste collection in coastal areas is also essential, because much plastic enters the sea from rivers in places without proper rubbish services. Finally, individuals can help by carrying reusable bags and bottles. International agreements are also needed, since plastic carried by ocean currents does not respect national borders and no single country can solve the problem alone.",
+    "concl": "In conclusion, plastic waste threatens marine life, human health and local economies, and it can be reduced through a combination of regulation, better waste management and changes in everyday habits."
+   },
+   "phrases": [
+    {
+     "en": "enter the food chain",
+     "vi": "đi vào chuỗi thức ăn"
+    },
+    {
+     "en": "single-use plastics",
+     "vi": "nhựa dùng một lần"
+    },
+    {
+     "en": "take responsibility for",
+     "vi": "chịu trách nhiệm về"
+    }
+   ]
+  },
+  {
+   "id": "p5",
+   "type": "problem",
+   "topic": "Văn hoá",
+   "q": "Fewer people are reading books for pleasure than in the past. Why is this happening, and what can be done to encourage reading?",
+   "model": {
+    "para": "Reading books for enjoyment appears to be less common than it used to be.",
+    "thesis": "This essay will discuss the reasons for this decline and suggest how reading could be encouraged.",
+    "body1": "The main reason for this trend is competition from other forms of entertainment. Smartphones offer endless short videos, games and social media, which provide instant enjoyment with little effort. Compared with these, reading a book requires concentration and time, which many busy people feel they do not have. In addition, some young people associate books mainly with schoolwork and exams, so they do not see reading as something they can enjoy. Furthermore, long working hours and long commutes leave many adults too tired to read in the evening, so they choose easier forms of relaxation.",
+    "body2": "There are several ways to encourage people to read more. Schools could give pupils more freedom to choose books that interest them, rather than only assigned texts, and set aside time for quiet reading every day. Public libraries could organise reading clubs and events with authors to make reading a social activity. Parents also play an important role, because children who see adults reading at home are more likely to develop the habit themselves. E-books and audiobooks can attract people who prefer to read on their phones. Publishers and authors could also make more use of social media to recommend books, reaching young people where they already spend much of their time.",
+    "concl": "In conclusion, reading has declined mainly because of competition from digital entertainment, but schools, libraries and families can all help to make it an enjoyable habit again."
+   },
+   "phrases": [
+    {
+     "en": "instant enjoyment",
+     "vi": "niềm vui tức thì"
+    },
+    {
+     "en": "set aside time for",
+     "vi": "dành thời gian cho"
+    },
+    {
+     "en": "develop the habit",
+     "vi": "hình thành thói quen"
+    }
+   ]
+  },
+  {
+   "id": "p6",
+   "type": "problem",
+   "topic": "Xã hội",
+   "q": "Many older people feel lonely and isolated. What are the causes of this, and what measures can be taken?",
+   "model": {
+    "para": "Loneliness has become a common problem among elderly people in many societies.",
+    "thesis": "This essay will examine why older people become isolated and suggest some measures to help them.",
+    "body1": "One major cause is the change in family structure. In the past, several generations often lived together, but today many young adults move to other cities for work, leaving their parents alone. Retirement can also reduce social contact, since work provided daily conversations with colleagues. Health problems, such as poor hearing or difficulty walking, make it harder for older people to go out, and the death of a partner or friends can leave them with very few people to talk to. In addition, many neighbourhoods have lost local shops, post offices and banks, which used to be places where older people met others during their daily routines.",
+    "body2": "Fortunately, there are several ways to reduce isolation. Local governments could fund community centres that offer activities such as exercise classes, choirs and lunch clubs, giving older people a reason to leave home. Volunteer programmes in which young people visit or phone elderly neighbours have proved successful in many places. Technology can help too: simple video-call devices allow grandparents to see their families regularly. Finally, accessible public transport makes it easier for elderly people to stay active in their communities. Doctors could also be trained to recognise the signs of loneliness and refer patients to local groups, since isolation can have serious effects on physical health.",
+    "concl": "In conclusion, loneliness among older people is caused mainly by changes in family life, retirement and poor health, and it can be reduced through community activities, volunteering and better access to transport and technology."
+   },
+   "phrases": [
+    {
+     "en": "leave them with very few people to talk to",
+     "vi": "khiến họ còn rất ít người để trò chuyện"
+    },
+    {
+     "en": "a reason to leave home",
+     "vi": "lý do để ra khỏi nhà"
+    },
+    {
+     "en": "stay active in their communities",
+     "vi": "duy trì hoạt động trong cộng đồng"
+    }
+   ]
+  },
+  {
+   "id": "t1",
+   "type": "twopart",
+   "topic": "Truyền thông",
+   "q": "Many people now get their news from social media rather than from newspapers or television. Why is this? Is it a positive or negative development?",
+   "model": {
+    "para": "Social media has increasingly replaced newspapers and television as people's main source of news.",
+    "thesis": "This change is mainly due to convenience, and I believe it is a largely negative development.",
+    "body1": "There are several reasons for this trend. Social media is available on the phones that most people carry all day, so news can be read instantly and for free. Updates appear as soon as events happen, often with photos and videos taken by people at the scene. In addition, social media platforms show users stories that match their interests, which makes the news feel more personal and engaging than a printed newspaper. Many people also find it easier to share and comment on stories with friends, which makes reading the news a more social activity than it used to be.",
+    "body2": "However, I believe this development is mostly negative. News on social media is often shared without being checked, so false or misleading stories can spread very quickly. Because platforms show users content similar to what they already like, people may see only one side of an issue, which can increase division in society. Finally, as fewer people pay for newspapers, professional journalism loses funding, and serious investigative reporting becomes harder to sustain. Constant exposure to dramatic headlines may also increase anxiety, particularly among young users who check their phones many times a day without taking a break.",
+    "concl": "In conclusion, people turn to social media for news because it is fast, free and personalised, but the spread of misinformation and the decline of professional journalism make this a worrying trend."
+   },
+   "phrases": [
+    {
+     "en": "a source of news",
+     "vi": "nguồn tin tức"
+    },
+    {
+     "en": "spread very quickly",
+     "vi": "lan truyền rất nhanh"
+    },
+    {
+     "en": "investigative reporting",
+     "vi": "báo chí điều tra"
+    }
+   ]
+  },
+  {
+   "id": "t2",
+   "type": "twopart",
+   "topic": "Xã hội",
+   "q": "In many countries, people are living longer than ever before. What problems does this create? How can they be addressed?",
+   "model": {
+    "para": "Life expectancy has risen significantly in many countries over recent decades.",
+    "thesis": "While this is a positive achievement, it creates economic and social challenges that require careful planning.",
+    "body1": "The main problem is the pressure that an ageing population puts on public finances. As the proportion of older people grows, governments must spend more on pensions and healthcare, while the number of working-age taxpayers falls. Health services may struggle to cope with the rising number of patients with long-term conditions such as heart disease. In addition, many families find it difficult to care for elderly relatives while also working full time. There may also be a shortage of workers in sectors such as construction and manufacturing, which can slow economic growth and increase costs for businesses.",
+    "body2": "These problems can be addressed in several ways. Gradually raising the retirement age, as many countries have done, would allow people who are healthy to keep working and contributing taxes for longer. Governments could also invest in preventive healthcare, encouraging exercise and healthy diets so that people stay independent in old age. Finally, expanding affordable care services and offering flexible working to family carers would reduce the burden on households. Encouraging older people to volunteer or work part-time could also help, as it keeps them active and socially connected while sharing their skills and experience with younger generations.",
+    "concl": "In conclusion, longer lives put pressure on pensions, health services and families, but these challenges can be managed through later retirement, preventive healthcare and better support for carers."
+   },
+   "phrases": [
+    {
+     "en": "an ageing population",
+     "vi": "dân số già hoá"
+    },
+    {
+     "en": "working-age taxpayers",
+     "vi": "người nộp thuế trong độ tuổi lao động"
+    },
+    {
+     "en": "preventive healthcare",
+     "vi": "y tế dự phòng"
+    }
+   ]
+  },
+  {
+   "id": "t3",
+   "type": "twopart",
+   "topic": "Công việc",
+   "q": "Many people change their jobs several times during their working lives. Why do people do this? Is it a positive or negative trend?",
+   "model": {
+    "para": "It has become common for people to move between several different jobs over the course of their careers.",
+    "thesis": "People do this mainly to find better pay and personal satisfaction, and I believe it is generally a positive trend.",
+    "body1": "There are several reasons why people change jobs. The most common is the search for a higher salary or better working conditions, since moving to a new employer is often the fastest way to receive a pay rise. Some people change careers because their interests develop over time, or because they feel they have stopped learning in their current role. In addition, technology is changing many industries so quickly that some jobs disappear, forcing workers to retrain and move into new fields. Moreover, younger generations tend to value personal fulfilment and work–life balance more than their parents did, so they are more willing to leave a job that does not meet their expectations.",
+    "body2": "In my view, this trend is mostly positive. Workers who change jobs gain a wider range of skills and experience, which makes them more adaptable in a changing economy. People are also more likely to be happy and productive when they do work that suits them. Admittedly, frequent job changes can reduce job security and make it harder for companies to keep experienced staff, but these drawbacks are outweighed by the benefits of a more flexible and motivated workforce. In fact, many employers now value candidates who have worked in different organisations, as they bring fresh ideas and a broader understanding of the industry.",
+    "concl": "In conclusion, people change jobs mainly to improve their pay, satisfaction and prospects, and I believe this flexibility benefits both individuals and the economy."
+   },
+   "phrases": [
+    {
+     "en": "receive a pay rise",
+     "vi": "được tăng lương"
+    },
+    {
+     "en": "retrain and move into new fields",
+     "vi": "đào tạo lại và chuyển sang lĩnh vực mới"
+    },
+    {
+     "en": "a more adaptable workforce",
+     "vi": "lực lượng lao động linh hoạt hơn"
+    }
+   ]
+  },
+  {
+   "id": "t4",
+   "type": "twopart",
+   "topic": "Sức khoẻ",
+   "q": "Fast food is becoming more and more popular. Why do you think this is? What can people do to eat more healthily?",
+   "model": {
+    "para": "Fast food is being eaten more widely than ever before.",
+    "thesis": "Its popularity is mainly due to busy lifestyles, but individuals can take simple steps to improve their diet.",
+    "body1": "The main reason for the popularity of fast food is that people have less time to cook. Many adults work long hours and commute for a long time, so a quick meal that is ready in minutes is very attractive. Fast food is also cheap and available almost everywhere, and delivery apps now bring it directly to people's homes. In addition, large chains spend heavily on advertising, which makes their products familiar and appealing, especially to young people. Many young people also enjoy eating fast food with friends, as these restaurants are cheap and relaxed places to meet after school or work.",
+    "body2": "There are several things people can do to eat more healthily. Planning meals for the week and cooking simple dishes in larger quantities can save time on busy days. Reading nutrition labels helps people choose products with less sugar, salt and fat. When eating out, they can choose healthier options, such as salads or grilled dishes, and avoid sugary drinks. Small changes, such as eating more fruit and vegetables and drinking water instead of soft drinks, can make a significant difference over time. Learning a few quick and healthy recipes can also make home cooking feel less like a chore, which helps people stick to better eating habits over time.",
+    "concl": "In conclusion, fast food is popular because it is quick, cheap and heavily promoted, but people can eat more healthily by planning meals, reading labels and making better choices when they eat out."
+   },
+   "phrases": [
+    {
+     "en": "busy lifestyles",
+     "vi": "lối sống bận rộn"
+    },
+    {
+     "en": "spend heavily on advertising",
+     "vi": "chi nhiều cho quảng cáo"
+    },
+    {
+     "en": "make a significant difference",
+     "vi": "tạo ra khác biệt đáng kể"
+    }
+   ]
+  },
+  {
+   "id": "t5",
+   "type": "twopart",
+   "topic": "Gia đình",
+   "q": "In many countries, more people are choosing to have fewer children or none at all. Why is this? Is it a positive or negative development?",
+   "model": {
+    "para": "An increasing number of people in many countries are deciding to have small families or no children.",
+    "thesis": "This trend is driven mainly by economic and social changes, and I believe it has both positive and negative effects, although the negatives are more serious.",
+    "body1": "There are several reasons for this trend. Raising children has become very expensive, particularly because of housing, childcare and education costs. Many women now pursue careers and higher education, which often leads them to start families later and have fewer children. Attitudes have also changed: having children is now seen as a personal choice rather than a social duty, and some couples prefer to focus on travel, work or other goals. In many cities, small apartments and long working hours also make it difficult for parents to raise several children without help from grandparents.",
+    "body2": "This development has some advantages. Smaller families can invest more time and money in each child, and lower population growth reduces pressure on resources and the environment. However, the negative effects are significant. When birth rates fall too low, the population ages, and fewer workers must support a growing number of retired people. Some countries, such as Japan and South Korea, already face labour shortages and rising pension costs as a result. In the long run, a shrinking workforce may also reduce innovation and economic growth, which could lower living standards for future generations.",
+    "concl": "In conclusion, people are having fewer children mainly because of financial pressure and changing attitudes, and although this has some benefits, I believe the long-term economic risks make it a mainly negative trend."
+   },
+   "phrases": [
+    {
+     "en": "pursue careers",
+     "vi": "theo đuổi sự nghiệp"
+    },
+    {
+     "en": "a personal choice rather than a social duty",
+     "vi": "một lựa chọn cá nhân thay vì nghĩa vụ xã hội"
+    },
+    {
+     "en": "labour shortages",
+     "vi": "thiếu hụt lao động"
+    }
+   ]
+  },
+  {
+   "id": "t6",
+   "type": "twopart",
+   "topic": "Công nghệ",
+   "q": "Many people today use their phones to pay for things instead of using cash. Why is this? Do you think cash will disappear completely?",
+   "model": {
+    "para": "Paying by mobile phone has become increasingly common, replacing cash in many everyday situations.",
+    "thesis": "This is mainly because digital payments are fast and convenient, but I do not believe cash will disappear entirely in the near future.",
+    "body1": "The popularity of mobile payments is easy to understand. Paying with a phone takes only a few seconds, and people do not need to carry coins or worry about having the right change. Payment apps also record every transaction, which helps users track their spending. For businesses, digital payments reduce the risk of theft and save time spent counting money. During periods when people wanted to avoid physical contact, many shops encouraged contactless payments, which accelerated the trend. In addition, younger people who have grown up with smartphones often see cash as old-fashioned and inconvenient.",
+    "body2": "However, I believe cash will remain in use for many years. Some groups, such as elderly people and those without bank accounts, still rely on it, and removing cash completely would exclude them from everyday life. Cash also works when there is a power cut or a technical failure, which makes it an important back-up. Moreover, many people value the privacy of paying in cash, since digital payments can be tracked. For these reasons, several countries have introduced rules to protect access to cash. In my view, cash may become much less common, but it is unlikely to vanish completely within the next few decades.",
+    "concl": "In conclusion, mobile payments have become popular because of their speed and convenience, but cash is likely to survive as a reliable and inclusive alternative."
+   },
+   "phrases": [
+    {
+     "en": "track their spending",
+     "vi": "theo dõi chi tiêu"
+    },
+    {
+     "en": "exclude them from everyday life",
+     "vi": "loại họ khỏi sinh hoạt hằng ngày"
+    },
+    {
+     "en": "an important back-up",
+     "vi": "phương án dự phòng quan trọng"
+    }
+   ]
+  }
+ ],
+ "tags": {
+  "w-style": {
+   "name": "Văn phong chưa trang trọng (Writing)"
+  }
+ },
+ "charts": [
+  {
+   "id": "museums",
+   "kind": "line",
+   "title": "the number of visitors to three museums in a city",
+   "unit": "thousand visitors",
+   "short": "thousand",
+   "xs": [
+    2000,
+    2005,
+    2010,
+    2015,
+    2020
+   ],
+   "series": [
+    {
+     "name": "Science museum",
+     "key": "science"
+    },
+    {
+     "name": "History museum",
+     "key": "history"
+    },
+    {
+     "name": "Art museum",
+     "key": "art"
+    }
+   ],
+   "min": 20,
+   "max": 120,
+   "step": 10,
+   "scale": 1000
+  },
+  {
+   "id": "spending",
+   "kind": "line",
+   "title": "average weekly household spending on food, transport and entertainment",
+   "unit": "dollars per week",
+   "short": "dollars",
+   "xs": [
+    2010,
+    2012,
+    2014,
+    2016,
+    2018,
+    2020
+   ],
+   "series": [
+    {
+     "name": "Food",
+     "key": "food"
+    },
+    {
+     "name": "Transport",
+     "key": "transport"
+    },
+    {
+     "name": "Entertainment",
+     "key": "entertainment"
+    }
+   ],
+   "min": 20,
+   "max": 140,
+   "step": 10
+  },
+  {
+   "id": "cars",
+   "kind": "line",
+   "title": "sales of petrol, diesel and electric cars in one country",
+   "unit": "thousand cars",
+   "short": "thousand",
+   "xs": [
+    2014,
+    2016,
+    2018,
+    2020,
+    2022,
+    2024
+   ],
+   "series": [
+    {
+     "name": "Petrol",
+     "key": "petrol"
+    },
+    {
+     "name": "Diesel",
+     "key": "diesel"
+    },
+    {
+     "name": "Electric",
+     "key": "electric"
+    }
+   ],
+   "min": 0,
+   "max": 200,
+   "step": 20,
+   "scale": 1000
+  },
+  {
+   "id": "commute",
+   "kind": "line",
+   "title": "the percentage of commuters travelling to work by car, bus and bicycle",
+   "unit": "%",
+   "short": "%",
+   "xs": [
+    1995,
+    2000,
+    2005,
+    2010,
+    2015,
+    2020
+   ],
+   "series": [
+    {
+     "name": "Car",
+     "key": "car"
+    },
+    {
+     "name": "Bus",
+     "key": "bus"
+    },
+    {
+     "name": "Bicycle",
+     "key": "bicycle"
+    }
+   ],
+   "min": 5,
+   "max": 60,
+   "step": 5
+  },
+  {
+   "id": "drinks",
+   "kind": "line",
+   "title": "the consumption of tea, coffee and fruit juice in one country",
+   "unit": "million litres",
+   "short": "million litres",
+   "xs": [
+    2004,
+    2008,
+    2012,
+    2016,
+    2020,
+    2024
+   ],
+   "series": [
+    {
+     "name": "Tea",
+     "key": "tea"
+    },
+    {
+     "name": "Coffee",
+     "key": "coffee"
+    },
+    {
+     "name": "Juice",
+     "key": "juice"
+    }
+   ],
+   "min": 10,
+   "max": 90,
+   "step": 10
+  },
+  {
+   "id": "subjects",
+   "kind": "bar",
+   "title": "the number of students enrolled in four subjects at a university",
+   "unit": "students",
+   "short": "students",
+   "xs": [
+    2000,
+    2010,
+    2020
+   ],
+   "series": [
+    {
+     "name": "Engineering",
+     "key": "engineering"
+    },
+    {
+     "name": "Medicine",
+     "key": "medicine"
+    },
+    {
+     "name": "Law",
+     "key": "law"
+    },
+    {
+     "name": "Business",
+     "key": "business"
+    }
+   ],
+   "min": 100,
+   "max": 900,
+   "step": 100
+  },
+  {
+   "id": "devices",
+   "kind": "bar",
+   "title": "the percentage of households owning four types of device",
+   "unit": "%",
+   "short": "%",
+   "xs": [
+    2005,
+    2015,
+    2025
+   ],
+   "series": [
+    {
+     "name": "Television",
+     "key": "television"
+    },
+    {
+     "name": "Laptop",
+     "key": "laptop"
+    },
+    {
+     "name": "Smartphone",
+     "key": "smartphone"
+    },
+    {
+     "name": "Tablet",
+     "key": "tablet"
+    }
+   ],
+   "min": 0,
+   "max": 100,
+   "step": 10
+  },
+  {
+   "id": "tourists",
+   "kind": "bar",
+   "title": "the number of international tourists visiting four regions",
+   "unit": "million tourists",
+   "short": "million",
+   "xs": [
+    2010,
+    2015,
+    2020,
+    2025
+   ],
+   "series": [
+    {
+     "name": "Asia",
+     "key": "asia"
+    },
+    {
+     "name": "Europe",
+     "key": "europe"
+    },
+    {
+     "name": "Africa",
+     "key": "africa"
+    },
+    {
+     "name": "America",
+     "key": "america"
+    }
+   ],
+   "min": 2,
+   "max": 20,
+   "step": 2
+  }
+ ],
+ "chartModes": [
+  {
+   "id": "detail",
+   "name": "Một câu số liệu",
+   "task": "Viết 1 câu mô tả đối tượng được tô đậm: số liệu đầu, cuối và xu hướng.",
+   "min": 12,
+   "max": 40,
+   "self": [
+    "Câu có nêu năm bắt đầu và năm kết thúc?",
+    "Có dùng động từ hoặc danh từ chỉ xu hướng (rise, fall, a sharp increase…)?"
+   ]
+  },
+  {
+   "id": "overview",
+   "name": "Câu tổng quan",
+   "task": "Viết 1–2 câu tổng quan (overview): xu hướng chính, không nêu số liệu cụ thể.",
+   "min": 15,
+   "max": 50,
+   "self": [
+    "Có nhắc tới đối tượng thay đổi nhiều nhất?",
+    "Có so sánh chung (cao nhất, tăng mạnh nhất…)?"
+   ]
+  },
+  {
+   "id": "full",
+   "name": "Cả bài Task 1",
+   "task": "Viết cả bài: câu giới thiệu, câu tổng quan và 2 đoạn chi tiết (150–200 từ).",
+   "min": 150,
+   "max": 200,
+   "self": [
+    "Câu đầu giới thiệu biểu đồ bằng cách nói khác đề?",
+    "Có đoạn tổng quan không có số liệu?",
+    "Hai đoạn chi tiết nhóm các đối tượng hợp lý?",
+    "Mỗi số liệu đi kèm năm?"
+   ]
+  }
+ ]
+}

@@ -91,6 +91,8 @@ export function gDueCards() {
 export const gDueCount = () => (G.state === 'ready' ? gDueCards().length : 0);
 const progressOf = (ids) => ({ done: ids.filter(isDone).length, total: ids.length });
 
+/** Cho module khác (Writing) ghi lỗi vào Sổ lỗi theo cùng nhãn. */
+export const logGrammarError = (tag, ok) => logError(tag, ok);
 async function logError(tag, ok) {
   if (!tag) return;
   const r = rec('E:' + tag) || { id: 'E:' + tag, tag, log: [] };
