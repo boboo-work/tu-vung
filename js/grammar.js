@@ -3,7 +3,7 @@
 import { S, gPut, logGrammarDay, dayOf, saveSettings } from './store.js';
 import { esc, toast, speak, norm, today, addDays, fmtInterval } from './util.js';
 import { schedule, newSrs, preview } from './srs.js';
-import { icon, on, go, replace, rerender, navBar, learnSwitch } from './ui.js';
+import { icon, on, go, back, replace, rerender, navBar, learnSwitch } from './ui.js';
 import { confetti, countUp, motionOK, wait } from './fx.js';
 
 const voice = () => ({ lang: S.settings.voice, rate: S.settings.rate, name: S.settings.voiceName });
@@ -232,7 +232,8 @@ function startLesson(id, fromStart = false) {
   if (!fromStart && !r.done && (r.step > 0 || r.pos > 0)) Object.assign(ls, { step: r.step, pos: r.pos, right: r.right, wrong: r.wrong });
   skipEmpty();
   prepare();
-  go('#/glesson/' + id);
+  // Đang ở một bài rồi (bấm "Bài tiếp theo") thì thay trang hiện tại, không chồng thêm vào lịch sử.
+  if (location.hash.startsWith('#/glesson/')) replace('#/glesson/' + id); else go('#/glesson/' + id);
 }
 
 const stepItems = () => (ls.step === W ? ls.warm : ls.step === PRAC ? ls.practice : ls.step === FIX ? ls.fixes : null);
@@ -312,7 +313,8 @@ async function finish() {
 }
 
 on('g-start', (el) => startLesson(el.dataset.id, el.dataset.fresh === '1'));
-on('gl-quit', () => { const to = ls ? `#/gunit/${ls.lesson.unitId}` : '#/grammar'; ls = null; go(to); });
+// Thoát = quay lại đúng trang đã mở bài (không mở thêm trang mới), để nút Back sau đó chỉ cần bấm một lần.
+on('gl-quit', () => { const to = ls ? `#/gunit/${ls.lesson.unitId}` : '#/grammar'; ls = null; back(to); });
 on('gl-next', () => nextItem());
 on('gl-step', (el) => nextStep(el.dataset.to ? Number(el.dataset.to) : undefined));
 on('gl-mc', (el) => { if (!ls.item.answered) { ls.item.choice = Number(el.dataset.i); grade(ls.item.choice === ls.item.it.a); } });
@@ -345,7 +347,7 @@ on('gl-finish', () => nextStep(DONE));
 on('gl-next-lesson', () => {
   const n = nextLesson();
   ls = null;
-  if (n) startLesson(n.id); else go('#/grammar');
+  if (n) startLesson(n.id); else back('#/grammar');
 });
 
 function itemView(st) {
@@ -512,7 +514,7 @@ on('gc-rate', async (el) => {
     if (cs.finished) confetti({ count: 70 });
   } finally { if (cs) cs.busy = false; }
 });
-on('gc-quit', () => { cs = null; go('#/grammar'); });
+on('gc-quit', () => { cs = null; back('#/grammar'); });
 
 export function cardsView() {
   if (!cs) { setTimeout(() => replace('#/grammar')); return ''; }
@@ -598,7 +600,7 @@ on('gt-answer', async (el) => {
   await saveSettings({ grammarCourse: avail[avail.length - 1] || '' });
   rerender(true);
 });
-on('gt-quit', () => { pt = null; go('#/grammar'); });
+on('gt-quit', () => { pt = null; back('#/grammar'); });
 
 export function testView() {
   if (!pt) { setTimeout(() => replace('#/grammar')); return ''; }
@@ -627,7 +629,7 @@ export function testView() {
       <div class="options">${pt.order.map((i) => `<button class="opt" data-act="gt-answer" data-i="${i}"><span class="en">${fmt(it.opts[i])}</span></button>`).join('')}</div></div>
     <div class="ses-actions"><button class="btn ghost" data-act="gt-answer" data-i="x">Không biết, bỏ qua</button></div></div>`;
 }
-on('gt-go-unit', (el) => { pt = null; go('#/gunit/' + el.dataset.id); });
+on('gt-go-unit', (el) => { pt = null; replace('#/gunit/' + el.dataset.id); });
 
 // ================= KHỐI DÙNG Ở TRANG KHÁC =================
 /** Thẻ nhỏ ở tab Ôn tập. */
