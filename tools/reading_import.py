@@ -672,8 +672,8 @@ def save(data):
     entry = {'id': data['id'], 'title': data['title'], 'file': f'content/reading/{data["id"]}.json', 'passages': [
         {'id': p['id'], 'n': p['n'], 'title': p['title'], 'topic': p['topic'], 'questions': sum(len(g['items']) for g in p['groups'])} for p in data['passages']]}
     idx['tests'] = [t for t in idx['tests'] if t['id'] != data['id']] + [entry]
-    # Đề mới nhất lên trên: Cam 21 Test 4 → … → Cam 15 Test 1.
-    idx['tests'].sort(key=lambda t: [int(x) if x.isdigit() else x for x in re.findall(r'\d+|\D+', t['id'])], reverse=True)
+    # Cuốn Cam mới nhất lên trên; trong mỗi cuốn Test 1 → Test 4.
+    idx['tests'].sort(key=lambda t: (-int(re.search(r'cam(\d+)', t['id']).group(1)), int(re.search(r'-t(\d+)', t['id']).group(1))))
     json.dump(idx, open(idx_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 
 
