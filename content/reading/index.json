@@ -2,6 +2,342 @@
  "version": 1,
  "tests": [
   {
+   "id": "cam17-t1",
+   "title": "Cambridge 17 · Test 1",
+   "file": "content/reading/cam17-t1.json",
+   "passages": [
+    {
+     "id": "cam17-t1-p1",
+     "n": 1,
+     "title": "The thylacine",
+     "topic": "Động vật",
+     "questions": 13
+    },
+    {
+     "id": "cam17-t1-p2",
+     "n": 2,
+     "title": "Palm oil",
+     "topic": "Thực vật · nông nghiệp",
+     "questions": 13
+    },
+    {
+     "id": "cam17-t1-p3",
+     "n": 3,
+     "title": "Building the Skyline: The Birth and Growth of Manhattan's Skyscrapers",
+     "topic": "Kinh tế · xã hội",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam17-t2",
+   "title": "Cambridge 17 · Test 2",
+   "file": "content/reading/cam17-t2.json",
+   "passages": [
+    {
+     "id": "cam17-t2-p1",
+     "n": 1,
+     "title": "The Dead Sea Scrolls",
+     "topic": "Lịch sử · khảo cổ",
+     "questions": 13
+    },
+    {
+     "id": "cam17-t2-p2",
+     "n": 2,
+     "title": "A second attempt at domesticating the tomato",
+     "topic": "Thực vật · nông nghiệp",
+     "questions": 13
+    },
+    {
+     "id": "cam17-t2-p3",
+     "n": 3,
+     "title": "Insight or evolution?",
+     "topic": "Khoa học · công nghệ",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam17-t3",
+   "title": "Cambridge 17 · Test 3",
+   "file": "content/reading/cam17-t3.json",
+   "passages": [
+    {
+     "id": "cam17-t3-p1",
+     "n": 1,
+     "title": "The development of the London underground railway",
+     "topic": "Kinh tế · xã hội",
+     "questions": 13
+    },
+    {
+     "id": "cam17-t3-p2",
+     "n": 2,
+     "title": "Stadiums: past, present and future",
+     "topic": "Thể thao",
+     "questions": 13
+    },
+    {
+     "id": "cam17-t3-p3",
+     "n": 3,
+     "title": "To catch a king",
+     "topic": "Lịch sử · khảo cổ",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam17-t4",
+   "title": "Cambridge 17 · Test 4",
+   "file": "content/reading/cam17-t4.json",
+   "passages": [
+    {
+     "id": "cam17-t4-p1",
+     "n": 1,
+     "title": "Bats to the rescue",
+     "topic": "Thực vật · nông nghiệp",
+     "questions": 13
+    },
+    {
+     "id": "cam17-t4-p2",
+     "n": 2,
+     "title": "Does education fuel economic growth?",
+     "topic": "Kinh tế · xã hội",
+     "questions": 13
+    },
+    {
+     "id": "cam17-t4-p3",
+     "n": 3,
+     "title": "Timur Gareyev – blindfold chess champion",
+     "topic": "Tâm lý học",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam18-t1",
+   "title": "Cambridge 18 · Test 1",
+   "file": "content/reading/cam18-t1.json",
+   "passages": [
+    {
+     "id": "cam18-t1-p1",
+     "n": 1,
+     "title": "Urban farming",
+     "topic": "Thực vật · nông nghiệp",
+     "questions": 13
+    },
+    {
+     "id": "cam18-t1-p2",
+     "n": 2,
+     "title": "Forest management in Pennsylvania, USA",
+     "topic": "Thực vật · nông nghiệp",
+     "questions": 13
+    },
+    {
+     "id": "cam18-t1-p3",
+     "n": 3,
+     "title": "Conquering Earth's space junk problem",
+     "topic": "Kinh tế · xã hội",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam18-t2",
+   "title": "Cambridge 18 · Test 2",
+   "file": "content/reading/cam18-t2.json",
+   "passages": [
+    {
+     "id": "cam18-t2-p1",
+     "n": 1,
+     "title": "Stonehenge",
+     "topic": "Lịch sử · khảo cổ",
+     "questions": 13
+    },
+    {
+     "id": "cam18-t2-p2",
+     "n": 2,
+     "title": "Living with artificial intelligence",
+     "topic": "Y học · sức khoẻ",
+     "questions": 13
+    },
+    {
+     "id": "cam18-t2-p3",
+     "n": 3,
+     "title": "An ideal city",
+     "topic": "Kinh tế · xã hội",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam18-t3",
+   "title": "Cambridge 18 · Test 3",
+   "file": "content/reading/cam18-t3.json",
+   "passages": [
+    {
+     "id": "cam18-t3-p1",
+     "n": 1,
+     "title": "Materials to take us beyond concrete",
+     "topic": "Môi trường · khí hậu",
+     "questions": 13
+    },
+    {
+     "id": "cam18-t3-p2",
+     "n": 2,
+     "title": "The steam car",
+     "topic": "Khoa học · công nghệ",
+     "questions": 13
+    },
+    {
+     "id": "cam18-t3-p3",
+     "n": 3,
+     "title": "The case for mixed-ability classes",
+     "topic": "Kinh tế · xã hội",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam18-t4",
+   "title": "Cambridge 18 · Test 4",
+   "file": "content/reading/cam18-t4.json",
+   "passages": [
+    {
+     "id": "cam18-t4-p1",
+     "n": 1,
+     "title": "Green roofs",
+     "topic": "Kinh tế · xã hội",
+     "questions": 13
+    },
+    {
+     "id": "cam18-t4-p2",
+     "n": 2,
+     "title": "The growth mindset",
+     "topic": "Tâm lý học",
+     "questions": 13
+    },
+    {
+     "id": "cam18-t4-p3",
+     "n": 3,
+     "title": "Alfred Wegener: science, exploration and the theory of continental drift",
+     "topic": "Khoa học · công nghệ",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam19-t1",
+   "title": "Cambridge 19 · Test 1",
+   "file": "content/reading/cam19-t1.json",
+   "passages": [
+    {
+     "id": "cam19-t1-p1",
+     "n": 1,
+     "title": "How tennis rackets have changed",
+     "topic": "Thể thao",
+     "questions": 13
+    },
+    {
+     "id": "cam19-t1-p2",
+     "n": 2,
+     "title": "The pirates of the ancient Mediterranean",
+     "topic": "Lịch sử · khảo cổ",
+     "questions": 13
+    },
+    {
+     "id": "cam19-t1-p3",
+     "n": 3,
+     "title": "The persistence and peril of misinformation",
+     "topic": "Khoa học · công nghệ",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam19-t2",
+   "title": "Cambridge 19 · Test 2",
+   "file": "content/reading/cam19-t2.json",
+   "passages": [
+    {
+     "id": "cam19-t2-p1",
+     "n": 1,
+     "title": "The Industrial Revolution in Britain",
+     "topic": "Kinh tế · xã hội",
+     "questions": 13
+    },
+    {
+     "id": "cam19-t2-p2",
+     "n": 2,
+     "title": "Athletes and stress",
+     "topic": "Tâm lý học",
+     "questions": 13
+    },
+    {
+     "id": "cam19-t2-p3",
+     "n": 3,
+     "title": "An inquiry into the existence of the gifted child",
+     "topic": "Khoa học · công nghệ",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam19-t3",
+   "title": "Cambridge 19 · Test 3",
+   "file": "content/reading/cam19-t3.json",
+   "passages": [
+    {
+     "id": "cam19-t3-p1",
+     "n": 1,
+     "title": "Archaeologists discover evidence of prehistoric island settlers",
+     "topic": "Lịch sử · khảo cổ",
+     "questions": 13
+    },
+    {
+     "id": "cam19-t3-p2",
+     "n": 2,
+     "title": "The global importance of wetlands",
+     "topic": "Môi trường · khí hậu",
+     "questions": 13
+    },
+    {
+     "id": "cam19-t3-p3",
+     "n": 3,
+     "title": "Is the era of artificial speech translation upon us?",
+     "topic": "Nghệ thuật · văn hoá",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam19-t4",
+   "title": "Cambridge 19 · Test 4",
+   "file": "content/reading/cam19-t4.json",
+   "passages": [
+    {
+     "id": "cam19-t4-p1",
+     "n": 1,
+     "title": "The impact of climate change on butterflies in Britain",
+     "topic": "Động vật",
+     "questions": 13
+    },
+    {
+     "id": "cam19-t4-p2",
+     "n": 2,
+     "title": "Deep-sea mining",
+     "topic": "Môi trường · khí hậu",
+     "questions": 13
+    },
+    {
+     "id": "cam19-t4-p3",
+     "n": 3,
+     "title": "The Unselfish Gene",
+     "topic": "Thực vật · nông nghiệp",
+     "questions": 14
+    }
+   ]
+  },
+  {
    "id": "cam20-t1",
    "title": "Cambridge 20 · Test 1",
    "file": "content/reading/cam20-t1.json",
@@ -38,6 +374,202 @@
       "choice",
       "tf"
      ]
+    }
+   ]
+  },
+  {
+   "id": "cam20-t2",
+   "title": "Cambridge 20 · Test 2",
+   "file": "content/reading/cam20-t2.json",
+   "passages": [
+    {
+     "id": "cam20-t2-p1",
+     "n": 1,
+     "title": "Manatees",
+     "topic": "Động vật",
+     "questions": 13
+    },
+    {
+     "id": "cam20-t2-p2",
+     "n": 2,
+     "title": "Procrastination",
+     "topic": "Tâm lý học",
+     "questions": 13
+    },
+    {
+     "id": "cam20-t2-p3",
+     "n": 3,
+     "title": "Invasion of the Robot Umpires",
+     "topic": "Thể thao",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam20-t3",
+   "title": "Cambridge 20 · Test 3",
+   "file": "content/reading/cam20-t3.json",
+   "passages": [
+    {
+     "id": "cam20-t3-p1",
+     "n": 1,
+     "title": "Frozen Food",
+     "topic": "Môi trường · khí hậu",
+     "questions": 13
+    },
+    {
+     "id": "cam20-t3-p2",
+     "n": 2,
+     "title": "Can the planet's coral reefs be saved?",
+     "topic": "Động vật",
+     "questions": 13
+    },
+    {
+     "id": "cam20-t3-p3",
+     "n": 3,
+     "title": "Robots and us",
+     "topic": "Khoa học · công nghệ",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam20-t4",
+   "title": "Cambridge 20 · Test 4",
+   "file": "content/reading/cam20-t4.json",
+   "passages": [
+    {
+     "id": "cam20-t4-p1",
+     "n": 1,
+     "title": "Georgia O'Keeffe",
+     "topic": "Nghệ thuật · văn hoá",
+     "questions": 13
+    },
+    {
+     "id": "cam20-t4-p2",
+     "n": 2,
+     "title": "Adapting to the effects of climate change",
+     "topic": "Môi trường · khí hậu",
+     "questions": 13
+    },
+    {
+     "id": "cam20-t4-p3",
+     "n": 3,
+     "title": "A new role for livestock guard dogs",
+     "topic": "Động vật",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam21-t1",
+   "title": "Cambridge 21 · Test 1",
+   "file": "content/reading/cam21-t1.json",
+   "passages": [
+    {
+     "id": "cam21-t1-p1",
+     "n": 1,
+     "title": "The Davies Sisters",
+     "topic": "Nghệ thuật · văn hoá",
+     "questions": 13
+    },
+    {
+     "id": "cam21-t1-p2",
+     "n": 2,
+     "title": "Why we need silence",
+     "topic": "Y học · sức khoẻ",
+     "questions": 13
+    },
+    {
+     "id": "cam21-t1-p3",
+     "n": 3,
+     "title": "Book review: The World of Sugar by Ulbe Bosma",
+     "topic": "Lịch sử · khảo cổ",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam21-t2",
+   "title": "Cambridge 21 · Test 2",
+   "file": "content/reading/cam21-t2.json",
+   "passages": [
+    {
+     "id": "cam21-t2-p1",
+     "n": 1,
+     "title": "Do animals dream?",
+     "topic": "Y học · sức khoẻ",
+     "questions": 13
+    },
+    {
+     "id": "cam21-t2-p2",
+     "n": 2,
+     "title": "Mapungubwe",
+     "topic": "Lịch sử · khảo cổ",
+     "questions": 13
+    },
+    {
+     "id": "cam21-t2-p3",
+     "n": 3,
+     "title": "Artificial Intelligence",
+     "topic": "Khoa học · công nghệ",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam21-t3",
+   "title": "Cambridge 21 · Test 3",
+   "file": "content/reading/cam21-t3.json",
+   "passages": [
+    {
+     "id": "cam21-t3-p1",
+     "n": 1,
+     "title": "Saving the saiga",
+     "topic": "Động vật",
+     "questions": 13
+    },
+    {
+     "id": "cam21-t3-p2",
+     "n": 2,
+     "title": "The problems of getting around the city of Dar es Salaam",
+     "topic": "Kinh tế · xã hội",
+     "questions": 13
+    },
+    {
+     "id": "cam21-t3-p3",
+     "n": 3,
+     "title": "Rethinking the Past",
+     "topic": "Động vật",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam21-t4",
+   "title": "Cambridge 21 · Test 4",
+   "file": "content/reading/cam21-t4.json",
+   "passages": [
+    {
+     "id": "cam21-t4-p1",
+     "n": 1,
+     "title": "The problems and benefits created by the spread of the water hyacinth in Kenya",
+     "topic": "Môi trường · khí hậu",
+     "questions": 13
+    },
+    {
+     "id": "cam21-t4-p2",
+     "n": 2,
+     "title": "How could multilingualism benefit India's poorest schoolchildren?",
+     "topic": "Nghệ thuật · văn hoá",
+     "questions": 13
+    },
+    {
+     "id": "cam21-t4-p3",
+     "n": 3,
+     "title": "The Globemakers: The Curious Story of an Ancient Craft",
+     "topic": "Lịch sử · khảo cổ",
+     "questions": 14
     }
    ]
   }

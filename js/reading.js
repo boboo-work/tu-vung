@@ -55,6 +55,8 @@ function passageOf(pid) {
 // ================= DẠNG CÂU HỎI =================
 export function qtype(g) {
   if (g.type === 'gap') return 'gap';
+  if (g.items?.[0]?.multi) return 'mc2';
+  if (/heading/i.test(g.instr)) return 'mhead';
   if (g.type === 'tf') return g.options?.[0]?.k === 'YES' ? 'ynng' : 'tfng';
   const i = g.instr.toLowerCase();
   if (/which (section|paragraph)/.test(i)) return 'minfo';
@@ -62,14 +64,16 @@ export function qtype(g) {
   if (/list of|match each/.test(i)) return 'mpeople';
   return 'mc';
 }
-export const TYPE_NAME = { tfng: 'True / False / Not Given', ynng: 'Yes / No / Not Given', gap: 'Điền từ', minfo: 'Tìm đoạn chứa thông tin', mpeople: 'Nối với người nói', mend: 'Nối đuôi câu', mc: 'Chọn đáp án' };
+export const TYPE_NAME = { tfng: 'True / False / Not Given', ynng: 'Yes / No / Not Given', gap: 'Điền từ', minfo: 'Tìm đoạn chứa thông tin', mpeople: 'Nối với người nói', mend: 'Nối đuôi câu', mc: 'Chọn đáp án', mc2: 'Chọn 2 đáp án', mhead: 'Nối tiêu đề đoạn' };
 const flatItems = (p) => p.groups.flatMap((g) => g.items.map((it) => ({ g, it })));
 
 const normAns = (s) => String(s).toLowerCase().replace(/[’']/g, "'").replace(/[.,;:!?"“”]+$/g, '').replace(/\s+/g, ' ').trim();
-function check(g, it, v) {
+function check(g, it, v, answers = {}) {
   const val = normAns(v);
   if (!val) return { ok: false, note: '' };
-  const ok = it.a.some((a) => normAns(a) === val);
+  let ok = it.a.some((a) => normAns(a) === val);
+  // "Chọn 2 đáp án": mỗi số câu nhận một đáp án đúng bất kỳ, không trùng với câu đi kèm.
+  if (it.multi) ok = ok && !it.multi.filter((k) => k !== it.n).some((k) => normAns(answers[k]?.v || '') === val);
   let note = '';
   if (g.type === 'gap' && g.maxWords) {
     const ws = val.split(' ').filter((w) => !(g.number && /^\d[\d,.]*$/.test(w)));
@@ -233,7 +237,7 @@ on('r-reveal', () => { if (rs) { rs.reveal = true; rerender(); } });
 
 function answerGuided(v) {
   const { g, it } = cur();
-  const r = check(g, it, v);
+  const r = check(g, it, v, rs.answers);
   rs.answers[it.n] = { ...(rs.answers[it.n] || {}), v, ok: r.ok, note: r.note, type: qtype(g) };
   rs.step = 'fb';
   saveDraft();
@@ -275,7 +279,7 @@ on('r-submit', async () => {
   if (left && !(await confirmSheet({ title: `Còn ${left} câu chưa trả lời`, body: 'Nộp bài luôn? Câu bỏ trống tính là sai.', okLabel: 'Nộp bài' }))) return;
   for (const { g, it } of rs.items) {
     const v = rs.answers[it.n]?.v || '';
-    const r = check(g, it, v);
+    const r = check(g, it, v, rs.answers);
     rs.answers[it.n] = { ...(rs.answers[it.n] || {}), v, ok: r.ok, note: r.note, type: qtype(g) };
   }
   await finish();
@@ -437,7 +441,7 @@ function answerButtons(g, it, chosen, { exam = false, disabled = false, correct 
   const opts = it.options || g.options || [];
   const cls = (o) => {
     if (correct === null) return chosen === o.k ? 'on' : '';
-    if (normAns(o.k) === normAns(it.a[0])) return 'right';
+    if (it.a.some((x) => normAns(o.k) === normAns(x))) return 'right';
     return chosen === o.k ? 'wrong' : 'dim';
   };
   if (g.type === 'tf') return `<div class="r-tf">${opts.map((o) => `<button class="opt ${cls(o)}" data-act="r-pick" data-n="${it.n}" data-v="${esc(o.k)}" ${disabled ? 'disabled' : ''}>${esc(o.k)}</button>`).join('')}</div>`;
@@ -483,7 +487,7 @@ export function runView() {
   const pct = Math.round(((rs.pos + steps.indexOf(rs.step) / steps.length) / rs.items.length) * 100);
   const top = `<div class="ses-top"><button class="iconbtn" data-act="r-quit" aria-label="Thoát">${icon('x')}</button><div class="progress"><i style="width:${pct}%"></i></div><span class="count">${rs.pos + 1}/${rs.items.length}</span></div>
     <p class="mode-label">${esc(TYPE_NAME[qtype(g)])}</p>`;
-  const qcard = `<div class="card r-qcard"><p class="small muted">Câu ${it.n}</p><p class="r-q">${inline(it.q)}</p>${g.type === 'gap' ? `<p class="small muted" style="margin-top:6px">${esc(g.limit)}</p>` : ''}</div>`;
+  const qcard = `<div class="card r-qcard"><p class="small muted">Câu ${it.n}${it.multi ? ` · chọn 2 đáp án cho câu ${it.multi.join(' và ')}` : ''}</p><p class="r-q">${inline(it.q)}</p>${g.type === 'gap' ? `<p class="small muted" style="margin-top:6px">${esc(g.limit)}</p>` : ''}</div>`;
   let body = '', actions = '', side = '';
   const a = rs.answers[it.n] || {};
   if (rs.step === 'q') {
@@ -518,7 +522,7 @@ export function runView() {
     const pairs = (it.pairs || []).map(([qa, pb]) => `<button class="tag r-pairbtn" data-act="r-pair" data-a="${esc(qa)}" data-b="${esc(pb)}" data-s="${esc(it.loc[0] ? sentOf(p, it.loc[0]) : '')}" data-t="${esc(p.title)}">${esc(qa)} ↔ ${esc(pb)} <b>+</b></button>`).join('');
     body = `${qcard}
       ${g.type === 'gap' ? `<div class="feedback ${right ? 'ok' : 'no'}"><b class="t">${right ? `${icon('check', 'sm')} Đúng` : 'Chưa đúng'}</b><p>Bạn điền: <b>${esc(a.v || '')}</b> · Đáp án: <b>${esc(it.a.join(' / '))}</b></p>${a.note ? `<p class="small">${esc(a.note)}</p>` : ''}</div>`
-        : `${answerButtons(g, it, a.v, { disabled: true, correct: true })}<div class="feedback ${right ? 'ok' : 'no'}"><b class="t">${right ? `${icon('check', 'sm')} Đúng` : `Chưa đúng · đáp án ${esc(it.a[0])}`}</b></div>`}
+        : `${answerButtons(g, it, a.v, { disabled: true, correct: true })}<div class="feedback ${right ? 'ok' : 'no'}"><b class="t">${right ? `${icon('check', 'sm')} Đúng` : `Chưa đúng · đáp án ${esc(it.a.join(it.multi ? ' và ' : ' / '))}`}</b>${it.multi ? `<p class="small">Câu ${it.multi.join(' và ')} cùng một câu hỏi: mỗi câu chọn một đáp án đúng, không trùng nhau.</p>` : ''}</div>`}
       ${it.exp ? `<h3 class="w-h">Giải theo 4 bước</h3><div class="card r-exp">${md(it.exp)}</div>` : ''}
       ${pairs ? `<h3 class="w-h">Cặp paraphrase · chạm để lưu</h3><div class="pill-list">${pairs}</div>` : ''}`;
     actions = `<button class="btn" data-act="r-next">${rs.pos < rs.items.length - 1 ? 'Câu tiếp theo' : 'Xem kết quả'}</button>`;
@@ -604,12 +608,13 @@ export function studyView(pid) {
   }).join('');
   const ex = test.exercises?.q ? `<h2>Bài tập cả đề</h2><div class="card r-exp">${md(test.exercises.q)}<details class="r-det"><summary>Đáp án gợi ý</summary>${md(test.exercises.a)}</details></div>` : '';
   const traps = test.traps ? `<details class="card r-guide" style="margin-top:12px"><summary>Bẫy hay gặp ở đề này</summary>${md(test.traps)}</details>` : '';
+  const extras = (test.extras || []).map((x) => `<details class="card r-guide" style="margin-top:12px"><summary>${esc(x.title)}</summary>${md(x.md)}</details>`).join('');
   const method = test.method ? `<details class="card r-guide" style="margin-top:12px"><summary>Quy trình chung theo dạng câu hỏi</summary>${md(test.method)}</details>` : '';
   return `<div class="page">${nav}
     <p class="small muted" style="margin:0 2px 6px">${esc(test.title)} · Passage ${p.n}</p>
     <h1 style="font-size:24px;margin:0 2px 6px">${esc(p.title)}</h1>
     <p class="small muted" style="margin:0 2px 12px">Đọc câu gốc, tự rút gọn trong đầu rồi mở Simplify. Chạm một từ để lưu vào kho.</p>
-    ${paras}${ex}${traps}${method}
+    ${paras}${ex}${traps}${extras}${method}
     <button class="btn soft" style="margin-top:16px" data-act="r-start" data-p="${pid}" data-mode="guided">Làm câu hỏi có hướng dẫn</button></div>`;
 }
 

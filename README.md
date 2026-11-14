@@ -76,7 +76,8 @@ Tab **Học** → *Reading*. Mỗi passage làm theo một trong hai cách: **c�
 Thêm đề mới từ bộ 3 file Markdown (đề + đáp án, Simplify + connection, giải chi tiết):
 
 ```bash
-python3 tools/reading_import.py --id cam20-t2 --title "Cambridge 20 · Test 2" --topics "Chủ đề P1,Chủ đề P2,Chủ đề P3" DE.md SIMPLIFY.md GIAI.md
+python3 tools/reading_import.py dir "…/Reading Lychee/Lychee 17" "…/Lychee 18" --skip cam20-t1
+python3 tools/reading_import.py one --id cam20-t2 --title "Cambridge 20 · Test 2" DE.md SIMPLIFY.md GIAI.md
 ```
 
-Công cụ tạo `content/reading/<id>.json`, cập nhật `content/reading/index.json` và dừng lại nếu đáp án hay vị trí câu không khớp. Nhớ thêm file mới vào `ASSETS` trong `sw.js` và tăng `VERSION`.
+Chế độ `dir` tự ghép file đề với file Simplify/giải theo tên bài đọc (tên file đề đặt nhầm cũng không sao), đọc được các kiểu file Simplify (①② nội dòng, bảng "Giữ lại", bảng có câu gốc gạch `~~`), hai kiểu file giải, và file đề chép từ web (mất tiêu đề nhóm câu, đáp án gộp `21&22`, danh sách phương án lẫn cột → lấy từ file giải). Đề nào lỗi nặng thì bỏ qua và in lý do. Kết quả nằm ở `content/reading/<id>.json` và `index.json`; app tải đề khi mở lần đầu rồi lưu lại để dùng offline. Tăng `VERSION` trong `sw.js` sau khi thêm đề.
