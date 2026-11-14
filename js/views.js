@@ -89,7 +89,7 @@ export function homeView() {
   const rDraftMeta = rDraft && R.tests.flatMap((t) => t.passages).find((p) => p.id === rDraft.pid);
   const ringCount = 2 + (gGoal ? 1 : 0) + (wGoal ? 1 : 0) + (rGoal ? 1 : 0);
 
-  return `<div class="page">${head}
+  return `<div class="page wide">${head}<div class="home-grid"><div>
     <div class="hero">
       <div class="row-between"><div><div class="big" data-count="${sum.streak}">${sum.streak}</div><div class="lbl">ngày học liên tiếp</div></div>${icon('flame')}</div>
       <div class="week">${week}</div>
@@ -111,7 +111,7 @@ export function homeView() {
       ${wDraft ? essayDraftCta(wDraft, due || canLearn || gDue || gNext ? 'ghost' : '') : ''}
       ${wNext ? `<button class="btn ${due || canLearn || gDue || gNext ? 'ghost' : ''}" data-act="w-today">${icon('pen', 'sm')} Writing: ${esc(wNext.part.name)}</button>` : ''}
       ${!due && !canLearn && !gDue && !gNext && !wNext && !wDraft && !rNext && !rDraftMeta ? `<div class="banner info">${icon('check')}<span>${fresh ? 'Bạn đã hoàn thành mục tiêu hôm nay. Muốn học thêm, mở tab <b>Học</b>.' : 'Không còn từ nào cần học hôm nay. Hãy thêm từ mới hoặc luyện tập tự do ở tab <b>Học</b>.'}</span></div>` : ''}
-    </div>
+    </div></div><div>
     <h2>Tổng quan</h2>
     <div class="tiles">
       <div class="tile"><b>${sum.total}</b><span>Tổng số từ</span></div>
@@ -122,7 +122,7 @@ export function homeView() {
     <button class="listlink" data-act="go" data-to="#/ai"><span class="lead">${icon('sparkle')}</span><span class="body"><b>Trợ lý AI</b><small>Giải thích, phân biệt từ, chấm câu</small></span>${icon('chev')}</button>
     <button class="listlink" data-act="go" data-to="#/new"><span class="lead">${icon('plus')}</span><span class="body"><b>Thêm từ mới</b><small>Lưu từ bạn vừa gặp</small></span>${icon('chev')}</button>
     ${needBackup ? `<div class="banner" style="margin-top:14px">${icon('info')}<span>${backupAge === null ? 'Bạn chưa sao lưu dữ liệu lần nào.' : `Lần sao lưu gần nhất cách đây ${backupAge} ngày.`} <a href="#/settings" data-act="go" data-to="#/settings">Sao lưu ngay</a></span></div>` : ''}
-  </div>`;
+  </div></div></div>`;
 }
 
 on('seed', async () => {

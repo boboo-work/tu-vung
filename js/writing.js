@@ -874,10 +874,11 @@ export function writeView() {
   const promptCard = ws.kind !== 'task1'
     ? `<div class="card"><p class="w-prompt small">${esc(ws.prompt.q)}</p></div>`
     : `${chartSvg(ws.chart, ws.mode.id === 'detail' ? ws.chart.target : -1)}<p class="small muted w-prompt" style="margin:8px 2px 0">${esc(chartPrompt(ws.chart))}</p>`;
-  let body, actions, focus = null;
+  let body, actions, focus = null, left = '';
   if (ws.stage === 'plan') {
     const box = (k, lab, ph) => `<label class="w-plan"><span>${lab}</span><textarea class="input" rows="2" data-in="w-plan" data-k="${k}" placeholder="${ph}" autocapitalize="sentences" spellcheck="false">${esc(ws.plan[k])}</textarea></label>`;
-    body = `${promptCard}<div class="row-between" style="margin:14px 2px 0;gap:10px"><span class="small muted">Ghi ý ngắn, tiếng Anh hay tiếng Việt đều được.</span><span id="w-plan-time" class="w-plantime ${t.spent > ESSAY.planMs ? 'over' : ''}">Dàn ý ${mmss(t.spent)} / 5:00</span></div>
+    left = promptCard;
+    body = `<div class="row-between" style="margin:14px 2px 0;gap:10px"><span class="small muted">Ghi ý ngắn, tiếng Anh hay tiếng Việt đều được.</span><span id="w-plan-time" class="w-plantime ${t.spent > ESSAY.planMs ? 'over' : ''}">Dàn ý ${mmss(t.spent)} / 5:00</span></div>
       ${box('view', 'Câu trả lời / quan điểm', W.types[ws.prompt.type].hint)}${box('p1', 'Ý chính đoạn thân bài 1', 'Lý do hoặc khía cạnh thứ nhất')}${box('p2', 'Ý chính đoạn thân bài 2', 'Lý do hoặc khía cạnh thứ hai')}${box('ex', 'Ví dụ sẽ dùng', 'Một ví dụ cụ thể cho mỗi đoạn')}
       ${vocabHtml(ws.vocab, '')}`;
     actions = `<button class="btn" data-act="w-stage" data-to="write">Bắt đầu viết</button>`;
@@ -887,7 +888,8 @@ export function writeView() {
     const task = ws.rewrite ? 'Sửa bài cũ theo các gợi ý và bài mẫu, không giới hạn thời gian. Nộp xong app so với bản trước.' : ws.kind === 'task1' && ws.mode.id === 'detail' ? `${p.task} Đối tượng: <b>${esc(ws.chart.series[ws.chart.target].name)}</b>.` : ws.kind === 'essay' ? 'Viết 4–5 đoạn, xuống dòng giữa các đoạn.' : esc(p.task);
     const pl = ws.kind === 'essay' && Object.values(ws.plan).some(Boolean)
       ? `<details class="card w-plansum"><summary>Dàn ý của bạn</summary><dl>${[['view', 'Quan điểm'], ['p1', 'Thân bài 1'], ['p2', 'Thân bài 2'], ['ex', 'Ví dụ']].filter(([k]) => ws.plan[k]).map(([k, lab]) => `<dt>${lab}</dt><dd>${esc(ws.plan[k])}</dd>`).join('')}</dl></details>` : '';
-    body = `${promptCard}${pl}<p class="w-task">${task}</p>
+    left = `${promptCard}${pl}`;
+    body = `<p class="w-task">${task}</p>
       <textarea id="w-text" class="input w-editor" rows="${ws.kind === 'essay' ? 16 : p.max > 100 ? 12 : 5}" data-in="w-input" placeholder="Viết bằng tiếng Anh…" autocapitalize="sentences" spellcheck="false">${esc(ws.text)}</textarea>
       <p id="w-count" class="w-count ${n < p.min ? '' : n > p.max ? 'over' : 'ok'}">${countLabel(n, p)}</p>${vocabHtml(ws.vocab, ws.text)}`;
     if (!ws.text) focus = '#w-text';
@@ -919,6 +921,8 @@ export function writeView() {
       ${Object.values(ws.self).some((v) => v === false) ? `<div class="banner info" style="margin-top:12px">${icon('info')}<span>Mục nào còn “Chưa”, hãy sửa ở lần viết sau cho đề này.</span></div>` : ''}`;
     actions = `<button class="btn" data-act="w-finish">Hoàn thành</button>`;
   }
+  // Lúc lập dàn ý và viết: màn rộng chia đôi (đề/biểu đồ bên trái, khung viết bên phải).
+  if (left) return { html: `<div class="page session split-page w-split">${top}<div class="ses-body split"><div class="split-l">${left}</div><div class="split-r">${body}</div></div><div class="ses-actions">${actions}</div></div>`, focus };
   return { html: `<div class="page session">${top}<div class="ses-body">${body}</div><div class="ses-actions">${actions}</div></div>`, focus };
 }
 

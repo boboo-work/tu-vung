@@ -412,7 +412,7 @@ function flashView(w) {
       body: `<div class="flash ${st.still ? 'still' : st.seen ? 'turn' : ''}" data-act="ses-flip" role="button" aria-label="Lật thẻ">
         <span class="stamp l" aria-hidden="true">Quên</span><span class="stamp r" aria-hidden="true">Dễ</span><span class="stamp d" aria-hidden="true">Khó</span><span class="stamp u" aria-hidden="true">Đã nhớ</span>
         ${ses.mode === 'en-vi' ? `<div class="speak">${speakBtn(w.word)}</div>` : ''}
-        <div class="front">${front}</div><p class="hint">Chạm để xem đáp án<br>Vuốt ← Quên · ↓ Khó · → Dễ · ↑ Đã nhớ</p></div>`,
+        <div class="front">${front}</div><p class="hint"><span class="m-only">Chạm để xem đáp án<br>Vuốt ← Quên · ↓ Khó · → Dễ · ↑ Đã nhớ</span><span class="w-only">Space: lật thẻ<br>Phím ← Quên · ↓ Khó · → Dễ · ↑ Đã nhớ (hoặc 1–4)</span></p></div>`,
       actions: `<button class="btn ghost" data-act="ses-flip">${st.seen ? 'Xem lại đáp án' : 'Xem đáp án'}</button>`,
     };
   }
@@ -550,3 +550,28 @@ export function sessionView() {
     focus: v.focus,
   };
 }
+
+// ---- Phím tắt (bàn phím Mac/iPad) ----
+// Space/Enter: lật thẻ · ←/1 Quên · ↓/2 Khó · →/3 Dễ · ↑/4 Đã nhớ (giống hướng vuốt) · 1–4 chọn đáp án · Enter: bước tiếp.
+const KEY_RATE = { ArrowLeft: 'again', 1: 'again', ArrowDown: 'hard', 2: 'hard', ArrowRight: 'easy', 3: 'easy', ArrowUp: 'known', 4: 'known' };
+document.addEventListener('keydown', (e) => {
+  if (!location.hash.startsWith('#/session') || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (document.body.classList.contains('sheet-open')) return;
+  const t = e.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  const q = (s) => document.querySelector(`#view ${s}`);
+  const rateBtn = KEY_RATE[e.key] && q(`[data-act="ses-rate"][data-rating="${KEY_RATE[e.key]}"]`);
+  if (rateBtn) { e.preventDefault(); rateBtn.click(); return; }
+  if (/^[1-9]$/.test(e.key)) {
+    const opts = [...document.querySelectorAll('#view [data-act="ses-choose"]:not([disabled])')];
+    const o = opts[Number(e.key) - 1];
+    if (o) { e.preventDefault(); o.click(); }
+    return;
+  }
+  if (e.key === ' ' || e.key === 'Enter') {
+    const next = q('[data-act="ses-next"]') || q('[data-act="ses-continue"]') || q('[data-act="ses-check"]');
+    const flip = q('.flash[data-act="ses-flip"]');
+    const btn = e.key === 'Enter' ? next || flip : flip || next;
+    if (btn) { e.preventDefault(); btn.click(); }
+  }
+});

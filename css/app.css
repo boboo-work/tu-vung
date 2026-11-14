@@ -864,3 +864,88 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 .r-letters .opt { min-width: 0; padding: 8px 0; }
 .goals.five .goal { padding: 10px 4px; }
 .goals.five .goal span { font-size: 10.5px; white-space: nowrap; }
+
+/* =====================================================================
+   iPad và máy tính
+   - 700–999px (iPad dọc): một cột rộng hơn, thanh tab vẫn ở đáy.
+   - từ 1000px (iPad ngang, Macbook): cột điều hướng bên trái, nội dung rộng,
+     Reading và Writing chia đôi màn hình, hộp thoại nằm giữa màn hình.
+   ===================================================================== */
+.split-l, .split-r { min-width: 0; }
+@media (max-width: 999px) {
+  /* Trên điện thoại/iPad dọc bài đọc nằm dưới câu hỏi, và chỉ hiện ở bước cần đến. */
+  .ses-body > .split-l.r-side { order: 2; }
+  .only-wide, .m-hide { display: none !important; }
+}
+@media (min-width: 700px) {
+  :root { --pad: 32px; }
+  #app, #sheet { max-width: 760px; }
+  .home-grid, .split { display: block; }
+}
+@media (min-width: 1000px) {
+  :root { --pad: 40px; --side-w: 232px; }
+  #app { max-width: none; display: grid; grid-template-columns: var(--side-w) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+  #view { grid-column: 2; grid-row: 1; padding: calc(var(--safe-t) + 28px) var(--pad) 48px; }
+  body.no-tabs #view { padding-bottom: 48px; }
+  #view:has(> .session) { padding-bottom: 0; }
+  #tabbar, body.no-tabs #tabbar {
+    grid-column: 1; grid-row: 1; position: relative; height: auto; display: flex; flex-direction: column; gap: 4px;
+    padding: calc(var(--safe-t) + 22px) 14px 24px; border-top: 0; border-right: 1px solid var(--line);
+    background: var(--surface-2); -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+  #tabbar::before { content: "Từ Vựng"; font: 700 21px/1.2 var(--sans); letter-spacing: -.02em; color: var(--text); padding: 4px 12px 18px; }
+  .tab { flex-direction: row; justify-content: flex-start; gap: 12px; padding: 11px 12px; border-radius: 12px; font-size: 15px; font-weight: 600; color: var(--text-2); }
+  .tab:hover { background: color-mix(in srgb, var(--text) 5%, transparent); }
+  .tab.on { background: var(--accent-soft); color: var(--accent); }
+  .tab .badge { position: static; margin-left: auto; }
+  .page { max-width: 880px; margin: 0 auto; }
+  .page.wide { max-width: 1160px; }
+  .page.session { max-width: 720px; width: 100%; margin: 0 auto; }
+  .page.session.split-page { max-width: 1440px; }
+  /* Hộp thoại giữa màn hình thay cho sheet trượt từ đáy. */
+  #sheet {
+    top: 50%; bottom: auto; left: 50%; right: auto; width: min(520px, 92vw); max-width: none; margin: 0;
+    border-radius: 22px; padding: 22px 24px; opacity: 0; pointer-events: none;
+    transform: translate(-50%, -46%); transition: opacity .18s, transform .18s; max-height: 86vh;
+  }
+  body.sheet-open #sheet { transform: translate(-50%, -50%); opacity: 1; pointer-events: auto; }
+  #sheet .grab { display: none; }
+  .toast, body.no-tabs:not(.kb) .toast { bottom: 32px; left: calc(50% + var(--side-w) / 2); }
+  .fab { position: fixed; right: 40px; bottom: 36px; }
+  .learn-switch { max-width: 520px; }
+  /* Danh sách dài chia 2 cột. */
+  .wlist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wlist > .wrow { border-top: 1px solid var(--line); }
+  .wlist > .wrow:nth-child(-n+2) { border-top: 0; }
+  .wlist > .wrow:nth-child(odd) { border-right: 1px solid var(--line); }
+  .wrow:hover, .listlink:hover { background: color-mix(in srgb, var(--text) 3%, var(--surface)); }
+  /* Trang chủ 2 cột. */
+  .home-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+  .home-grid > div > h2:first-child { margin-top: 0; }
+  .home-grid .goals.five .goal span { font-size: 11.5px; }
+  /* Chia đôi màn hình: mỗi bên cuộn riêng. */
+  .ses-body.split { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); gap: 0; overflow: hidden; padding: 0; margin: 0; }
+  .ses-body.split > .split-l, .ses-body.split > .split-r { overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 16px 28px 24px; }
+  .ses-body.split > .split-l { border-right: 1px solid var(--line); padding-left: 4px; }
+  .split-page .ses-actions { display: flex; justify-content: flex-end; }
+  .split-page .ses-actions > .btn, .split-page .ses-actions > .btn-row { width: min(440px, 100%); }
+  .r-tabs { display: none; }
+  .r-passage { font-size: 17.5px; }
+  .w-split .w-editor { min-height: 52vh; }
+  /* Đọc hiểu từng đoạn: câu gốc bên trái, Simplify/connection/main idea bên phải. */
+  .r-study { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); column-gap: 24px; }
+  .r-study > .row-between { grid-column: 1 / -1; }
+  .r-study .r-study-side .r-det:first-child { margin-top: 8px; border-top: 0; padding-top: 0; }
+}
+@media (min-width: 1400px) {
+  :root { --side-w: 260px; }
+  .page:not(.session):not(.wide) { max-width: 960px; }
+}
+.w-only { display: none; }
+@media (min-width: 1000px) { .w-only { display: inline; } .m-only { display: none; } }
+@media (min-width: 700px) {
+  .goals.five .goal { padding: 12px 10px; gap: 6px; }
+  .goals.five .ring { width: 40px; height: 40px; }
+  .goals.five .goal b { font-size: 17px; }
+  .goals.five .goal span, .home-grid .goals.five .goal span { font-size: 12.5px; }
+}

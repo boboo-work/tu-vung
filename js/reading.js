@@ -194,6 +194,14 @@ on('r-quit', async () => {
 });
 on('r-tab', (el) => { if (rs) { rs.tab = el.dataset.t; rerender(true); } });
 const cur = () => rs.items[rs.pos];
+const WIDE = matchMedia('(min-width: 1000px)');
+let scrolledFor = '';
+/** Màn rộng: cuộn bài đọc bên trái tới câu chứa thông tin (mỗi bước một lần). */
+function scrollToMark(key) {
+  if (!WIDE.matches || scrolledFor === key) return;
+  scrolledFor = key;
+  setTimeout(() => document.querySelector('.split-l .mark-hint, .split-l .mark-ok')?.scrollIntoView({ block: 'center' }), 60);
+}
 const answeredCount = () => rs.items.filter(({ it }) => String(rs.answers[it.n]?.v || '').trim()).length;
 function paintCount() {
   const n = answeredCount();
@@ -476,7 +484,7 @@ export function runView() {
   const top = `<div class="ses-top"><button class="iconbtn" data-act="r-quit" aria-label="Thoát">${icon('x')}</button><div class="progress"><i style="width:${pct}%"></i></div><span class="count">${rs.pos + 1}/${rs.items.length}</span></div>
     <p class="mode-label">${esc(TYPE_NAME[qtype(g)])}</p>`;
   const qcard = `<div class="card r-qcard"><p class="small muted">Câu ${it.n}</p><p class="r-q">${inline(it.q)}</p>${g.type === 'gap' ? `<p class="small muted" style="margin-top:6px">${esc(g.limit)}</p>` : ''}</div>`;
-  let body = '', actions = '';
+  let body = '', actions = '', side = '';
   const a = rs.answers[it.n] || {};
   if (rs.step === 'q') {
     body = `${groupHead(g)}${qcard}${g.guide ? `<details class="card r-guide"><summary>Gợi ý cho nhóm câu này</summary>${md(g.guide)}</details>` : ''}
@@ -488,9 +496,9 @@ export function runView() {
       marks[rs.pick.at.join('-')] = rs.pick.ok ? 'ok' : 'no';
       if (!rs.pick.ok) for (const l of it.loc) marks[l.join('-')] = 'hint';
     }
-    body = `${qcard}<p class="small muted" style="margin:10px 2px">Bước 2: chạm vào câu trong bài chứa thông tin cho câu hỏi.</p>
-      ${rs.pick ? `<div class="feedback ${rs.pick.ok ? 'ok' : 'no'}"><b class="t">${rs.pick.ok ? `${icon('check', 'sm')} Đúng chỗ` : 'Chưa đúng chỗ'}</b><p class="small">Thông tin nằm ở ${it.loc.map((l) => locName(p, l)).join(', ')} (tô vàng).</p></div>` : ''}
-      ${passageHtml(p, { mode: 'loc', marks })}`;
+    body = `${qcard}<p class="small muted" style="margin:10px 2px"><span class="m-only">Bước 2: chạm vào câu trong bài (bên dưới) chứa thông tin cho câu hỏi.</span><span class="w-only">Bước 2: chạm vào câu trong bài (bên trái) chứa thông tin cho câu hỏi.</span></p>
+      ${rs.pick ? `<div class="feedback ${rs.pick.ok ? 'ok' : 'no'}"><b class="t">${rs.pick.ok ? `${icon('check', 'sm')} Đúng chỗ` : 'Chưa đúng chỗ'}</b><p class="small">Thông tin nằm ở ${it.loc.map((l) => locName(p, l)).join(', ')} (tô vàng).</p></div>` : ''}`;
+    side = passageHtml(p, { mode: 'loc', marks });
     actions = rs.pick ? `<button class="btn" data-act="r-step" data-to="simp">Simplify câu này</button>` : `<button class="btn ghost" data-act="r-step" data-to="simp">Bỏ qua, xem luôn</button>`;
   } else if (rs.step === 'simp') {
     const at = it.loc[0];
@@ -516,7 +524,14 @@ export function runView() {
     actions = `<button class="btn" data-act="r-next">${rs.pos < rs.items.length - 1 ? 'Câu tiếp theo' : 'Xem kết quả'}</button>`;
   }
   const focus = rs.step === 'ans' && g.type === 'gap' ? '#r-gap-in' : null;
-  return { html: `<div class="page session">${top}<div class="ses-body">${body}</div><div class="ses-actions">${actions}</div></div>`, focus };
+  // Màn rộng: bài đọc luôn nằm bên trái; sau bước định vị thì tô các câu chứa thông tin.
+  if (!side) {
+    const marks = {};
+    if (rs.step !== 'q') for (const l of it.loc) marks[l.join('-')] = 'hint';
+    side = passageHtml(p, { marks });
+  }
+  scrollToMark(`${rs.pos}-${rs.step}`);
+  return { html: `<div class="page session split-page">${top}<div class="ses-body split"><div class="split-l r-side ${rs.step === 'loc' ? '' : 'only-wide'}">${side}</div><div class="split-r">${body}</div></div><div class="ses-actions">${actions}</div></div>`, focus };
 }
 
 function examView(p) {
@@ -525,8 +540,7 @@ function examView(p) {
   const top = `<div class="ses-top"><button class="iconbtn" data-act="r-quit" aria-label="Thoát">${icon('x')}</button><div class="progress"><i style="width:${Math.round((answered / rs.items.length) * 100)}%"></i></div><span id="r-timer" class="${t.cls}" role="timer">${t.text}</span></div>
     <div class="seg r-tabs"><button class="${rs.tab === 'p' ? 'on' : ''}" data-act="r-tab" data-t="p">Bài đọc</button><button class="${rs.tab === 'q' ? 'on' : ''}" data-act="r-tab" data-t="q">Câu hỏi · ${answered}/${rs.items.length}</button></div>`;
   let body;
-  if (rs.tab === 'p') body = passageHtml(p);
-  else {
+  {
     body = p.groups.map((g) => `<div class="r-group"><h3 class="w-h">Câu ${g.from}–${g.to}</h3>${groupHead(g)}
       ${g.type === 'gap' && g.context ? `<details class="card r-guide"><summary>Xem toàn bộ phần ${/summary/i.test(g.instr) ? 'tóm tắt' : 'ghi chú'}</summary>${md(g.context)}</details>` : ''}
       ${g.items.map((it) => {
@@ -535,7 +549,7 @@ function examView(p) {
           ${g.type === 'gap' ? `<input class="input r-gapin" data-in="r-gap" data-n="${it.n}" value="${esc(v)}" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="${esc(g.limit)}">` : answerButtons(g, it, v, { exam: true })}</div>`;
       }).join('')}</div>`).join('');
   }
-  return `<div class="page session">${top}<div class="ses-body">${body}</div><div class="ses-actions"><button class="btn" data-act="r-submit">Nộp bài</button></div></div>`;
+  return `<div class="page session split-page">${top}<div class="ses-body split"><div class="split-l ${rs.tab === 'p' ? '' : 'm-hide'}">${passageHtml(p)}</div><div class="split-r ${rs.tab === 'q' ? '' : 'm-hide'}">${body}</div></div><div class="ses-actions"><button class="btn" data-act="r-submit">Nộp bài</button></div></div>`;
 }
 
 // ---- Kết quả ----
@@ -582,10 +596,10 @@ export function studyView(pid) {
     return `<div class="card r-study">
       <div class="row-between"><b>Đoạn ${esc(pa.label)}</b>${qs.length ? `<span class="tag">→ Câu ${qs.join(', ')}</span>` : ''}</div>
       <div class="r-passage r-mini" data-act="r-word"><p>${pa.sents.map((s, si) => `<span class="rs" data-p="${pi}" data-s="${si}"><sup>${CIRC[si] || si + 1}</sup>${words(s)}</span>`).join(' ')}</p></div>
-      <details class="r-det"><summary>Simplify</summary>${pa.simp.map((s) => `<p class="en"><span class="small muted">${s.idx.map((i) => CIRC[i]).join('')}</span> <b>${esc(s.text)}</b>${s.note ? ` <span class="small muted">(${inline(s.note)})</span>` : ''}</p>`).join('')}</details>
+      <div class="r-study-side"><details class="r-det"><summary>Simplify</summary>${pa.simp.map((s) => `<p class="en"><span class="small muted">${s.idx.map((i) => CIRC[i]).join('')}</span> <b>${esc(s.text)}</b>${s.note ? ` <span class="small muted">(${inline(s.note)})</span>` : ''}</p>`).join('')}</details>
       ${pa.conn ? `<details class="r-det"><summary>Read connection</summary><p>${inline(pa.conn)}</p></details>` : ''}
       ${pa.main ? `<details class="r-det"><summary>Main idea · tự nghĩ trước rồi mở</summary><p><b>${inline(pa.main)}</b></p></details>` : ''}
-      ${pa.warn.length ? pa.warn.map((w) => `<p class="small r-warn">${inline(w)}</p>`).join('') : ''}
+      ${pa.warn.length ? pa.warn.map((w) => `<p class="small r-warn">${inline(w)}</p>`).join('') : ''}</div>
     </div>`;
   }).join('');
   const ex = test.exercises?.q ? `<h2>Bài tập cả đề</h2><div class="card r-exp">${md(test.exercises.q)}<details class="r-det"><summary>Đáp án gợi ý</summary>${md(test.exercises.a)}</details></div>` : '';
@@ -601,3 +615,24 @@ export function studyView(pid) {
 
 // Dùng cho kiểm thử tự động.
 export const _check = { check, qtype, md, flatItems, passageOf, nextPassage };
+
+// ---- Phím tắt (bàn phím Mac/iPad) ----
+// T/F/Y/N (N hoặc G = NOT GIVEN ở True/False), A–G chọn phương án, Enter = nút chính ở dưới.
+document.addEventListener('keydown', (e) => {
+  if (location.hash !== '#/rrun' || !rs || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (document.body.classList.contains('sheet-open')) return;
+  const t = e.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  if (e.key === 'Enter') {
+    const btns = [...document.querySelectorAll('#view .ses-actions .btn:not([disabled])')];
+    const main = btns.filter((b) => !b.classList.contains('ghost')).pop() || btns.pop();
+    if (main) { e.preventDefault(); main.click(); }
+    return;
+  }
+  if (rs.mode !== 'guided' || rs.step !== 'ans' || !/^[a-z]$/i.test(e.key)) return;
+  const k = e.key.toUpperCase();
+  const opts = [...document.querySelectorAll('#view [data-act="r-pick"]:not([disabled])')];
+  let b = opts.find((o) => o.dataset.v === k) || opts.find((o) => o.dataset.v.length > 1 && o.dataset.v[0] === k && !(k === 'N' && o.dataset.v === 'NOT GIVEN' && opts.some((x) => x.dataset.v === 'NO')));
+  if (!b && k === 'G') b = opts.find((o) => o.dataset.v === 'NOT GIVEN');
+  if (b) { e.preventDefault(); b.click(); }
+});
