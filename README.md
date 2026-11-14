@@ -68,3 +68,15 @@ là nơi duy nhất cần thay nếu muốn chuyển sang SQLite hoặc đồng 
 - Hai mini game chỉ dùng từ đã học, lấy theo "vòng": một vòng xong khi mọi từ đã xuất hiện ít nhất một lần, nên không từ nào bị sót. Từ gõ trượt ("nợ") được gặp lại đầu ván sau.
 - Game không ghi vào nhật ký học, chuỗi ngày hay tỉ lệ nhớ. Gõ trượt chỉ đưa từ vào danh sách cần ôn hôm nay, giữ nguyên khoảng cách và hệ số dễ.
 - Thống kê game (vòng, lượt gõ, kỷ lục) nằm riêng ở cuối tab Thống kê và có trong file sao lưu.
+
+## Reading
+
+Tab **Học** → *Reading*. Mỗi passage làm theo một trong hai cách: **có hướng dẫn** (từng câu: chạm câu chứa thông tin trong bài → Simplify bằng cách gạch phần phụ → trả lời → xem giải 4 bước, lưu cặp paraphrase) hoặc **như thi** (20 phút, làm hết rồi nộp). Trang *Đọc hiểu từng đoạn* có câu gốc, Simplify, Read connection, main idea và bài tập cả đề. Chạm một từ trong bài để lưu vào kho (chủ đề IELTS Reading) kèm câu gốc; từ đã có thì thêm câu ví dụ và nghĩa theo ngữ cảnh.
+
+Thêm đề mới từ bộ 3 file Markdown (đề + đáp án, Simplify + connection, giải chi tiết):
+
+```bash
+python3 tools/reading_import.py --id cam20-t2 --title "Cambridge 20 · Test 2" --topics "Chủ đề P1,Chủ đề P2,Chủ đề P3" DE.md SIMPLIFY.md GIAI.md
+```
+
+Công cụ tạo `content/reading/<id>.json`, cập nhật `content/reading/index.json` và dừng lại nếu đáp án hay vị trí câu không khớp. Nhớ thêm file mới vào `ASSETS` trong `sw.js` và tăng `VERSION`.

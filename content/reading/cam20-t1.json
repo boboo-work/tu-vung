@@ -1,0 +1,3687 @@
+{
+ "id": "cam20-t1",
+ "title": "Cambridge 20 · Test 1",
+ "version": 1,
+ "passages": [
+  {
+   "id": "cam20-t1-p1",
+   "n": 1,
+   "title": "The kākāpō",
+   "subtitle": "The kākāpō is a nocturnal, flightless parrot that is critically endangered and one of New Zealand's unique treasures",
+   "topic": "Động vật · bảo tồn",
+   "footnote": [],
+   "paras": [
+    {
+     "label": "1",
+     "sents": [
+      "The kākāpō, also known as the owl parrot, is a large, forest-dwelling bird, with a pale owl-like face.",
+      "Up to 64 cm in length, it has predominantly yellow-green feathers, forward-facing eyes, a large grey beak, large blue feet, and relatively short wings and tail.",
+      "It is the world's only flightless parrot, and is also possibly one of the world's longest-living birds, with a reported lifespan of up to 100 years."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "The kākāpō is a large, forest-dwelling bird.",
+       "keep": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "It has yellow-green feathers, a large beak, large feet and short wings",
+       "note": "mô tả, bỏ được",
+       "keep": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "It is the world's only flightless parrot, and possibly one of the longest-living birds",
+       "q": [
+        1
+       ],
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Kākāpō là loài vẹt duy nhất không bay được và có thể sống rất lâu.",
+     "warn": []
+    },
+    {
+     "label": "2",
+     "sents": [
+      "Kākāpō are solitary birds and tend to occupy the same home range for many years.",
+      "They forage on the ground and climb high into trees.",
+      "They often leap from trees and flap their wings, but at best manage a controlled descent to the ground.",
+      "They are entirely vegetarian, with their diet including the leaves, roots and bark of trees as well as bulbs, and fern fronds."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "They are solitary and occupy the same home range."
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "They forage on the ground and climb trees.",
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "They leap and flap, but at best manage a controlled descent.",
+       "keep": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "They are entirely vegetarian: leaves, roots, bark, bulbs and fern fronds",
+       "q": [
+        7
+       ],
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Kākāpō sống đơn độc, kiếm ăn trên mặt đất, ăn toàn thực vật.",
+     "warn": []
+    },
+    {
+     "label": "3",
+     "sents": [
+      "Kākāpō breed in summer and autumn, but only in years when food is plentiful.",
+      "Males play no part in incubation or chick-rearing – females alone incubate eggs and feed the chicks.",
+      "The 1–4 eggs are laid in soil, which is repeatedly turned over before and during incubation.",
+      "The female kākāpō has to spend long periods away from the nest searching for food, which leaves the unattended eggs and chicks particularly vulnerable to predators."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "They breed in summer and autumn, but only in years when food is plentiful",
+       "q": [
+        2
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "Males play no part; females alone incubate and feed",
+       "q": [
+        3
+       ],
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "Eggs are laid in soil",
+       "q": [
+        8
+       ],
+       "keep": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "The female spends long periods away, leaving eggs and chicks vulnerable."
+      }
+     ],
+     "conn": "① điều kiện sinh sản → ② chỉ con cái chăm sóc → ③ trứng trong đất → ④ **hệ quả**: con cái đi kiếm ăn nên trứng dễ bị săn. Chuỗi: **điều kiện → vai trò → nơi đẻ → rủi ro**.",
+     "main": "Kākāpō chỉ sinh sản khi đủ thức ăn, con cái chăm một mình nên trứng và chim non dễ bị săn.",
+     "warn": []
+    },
+    {
+     "label": "4",
+     "sents": [
+      "Before humans arrived, kākāpō were common throughout New Zealand's forests.",
+      "However, this all changed with the arrival of the first Polynesian settlers about 700 years ago.",
+      "For the early settlers, the flightless kākāpō was easy prey.",
+      "They ate its meat and used its feathers to make soft cloaks.",
+      "With them came the Polynesian dog and rat, which also preyed on kākāpō.",
+      "By the time European colonisers arrived in the early 1800s, kākāpō had become confined to the central North Island and forested parts of the South Island."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "Kākāpō were common before humans arrived."
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "However, this changed with the Polynesian settlers.",
+       "keep": [
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "The flightless kākāpō was easy prey.",
+       "keep": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "They ate its meat and used its feathers for cloaks",
+       "q": [
+        9
+       ]
+      },
+      {
+       "idx": [
+        4
+       ],
+       "text": "Their dog and rat also preyed on kākāpō",
+       "note": "không so mức độ",
+       "q": [
+        4
+       ]
+      },
+      {
+       "idx": [
+        5
+       ],
+       "text": "By the early 1800s, kākāpō were confined to a few areas."
+      }
+     ],
+     "conn": "",
+     "main": "Người Polynesia và thú họ mang theo làm số lượng kākāpō giảm mạnh.",
+     "warn": []
+    },
+    {
+     "label": "5",
+     "sents": [
+      "The fall in kākāpō numbers was accelerated by European colonisation.",
+      "A great deal of habitat was lost through forest clearance, and introduced species such as deer depleted the remaining forests of food.",
+      "Other predators such as cats, stoats and two more species of rat were also introduced.",
+      "The kākāpō were in serious trouble."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "The fall was accelerated by European colonisation.",
+       "keep": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "Habitat was lost, and deer depleted the forests of food",
+       "q": [
+        10
+       ],
+       "keep": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "Other predators were introduced.",
+       "keep": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+       ]
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "The kākāpō were in serious trouble."
+      }
+     ],
+     "conn": "",
+     "main": "Người châu Âu làm mất môi trường sống, hết thức ăn và thêm kẻ săn mồi.",
+     "warn": []
+    },
+    {
+     "label": "6",
+     "sents": [
+      "In 1894, the New Zealand government launched its first attempt to save the kākāpō.",
+      "Conservationist Richard Henry led an effort to relocate several hundred of the birds to predator-free Resolution Island in Fiordland.",
+      "Unfortunately, the island didn't remain predator free – stoats arrived within six years, eventually destroying the kākāpō population.",
+      "By the mid-1900s, the kākāpō was practically a lost species.",
+      "Only a few clung to life in the most isolated parts of New Zealand."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "In 1894, the government launched its first attempt to save the kākāpō.",
+       "keep": [
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "Henry relocated several hundred birds to a predator-free island."
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "Unfortunately, stoats arrived and destroyed the population."
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "By the mid-1900s it was practically a lost species."
+      },
+      {
+       "idx": [
+        4
+       ],
+       "text": "Only a few survived."
+      }
+     ],
+     "conn": "",
+     "main": "Nỗ lực cứu đầu tiên năm 1894 thất bại vì chồn ermine đến đảo.",
+     "warn": []
+    },
+    {
+     "label": "7",
+     "sents": [
+      "From 1949 to 1973, the newly formed New Zealand Wildlife Service made over 60 expeditions to find kākāpō, focusing mainly on Fiordland.",
+      "Six were caught, but there were no females amongst them and all but one died within a few months of captivity.",
+      "In 1974, a new initiative was launched, and by 1977, 18 more kākāpō were found in Fiordland.",
+      "However, there were still no females.",
+      "In 1977, a large population of males was spotted in Rakiura – a large island free from stoats, ferrets and weasels.",
+      "There were about 200 individuals, and in 1980 it was confirmed females were also present.",
+      "These birds have been the foundation of all subsequent work in managing the species."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0,
+        1
+       ],
+       "text": "Over 60 expeditions caught six, no females, and nearly all died."
+      },
+      {
+       "idx": [
+        2,
+        3
+       ],
+       "text": "18 more were found, however still no females."
+      },
+      {
+       "idx": [
+        4
+       ],
+       "text": "In 1977, a large population of males was spotted on Rakiura."
+      },
+      {
+       "idx": [
+        5
+       ],
+       "text": "In 1980 it was confirmed females were also present",
+       "q": [
+        11
+       ],
+       "keep": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        6
+       ],
+       "text": "These birds were the foundation of later work."
+      }
+     ],
+     "conn": "①②③④ tìm mãi không thấy con cái → ⑤ 1977 thấy đàn đực → ⑥ 1980 xác nhận có cái → ⑦ nền tảng. Chuỗi: **thất bại → phát hiện → xác nhận → nền tảng**.",
+     "main": "Sau nhiều năm tìm kiếm, đàn kākāpō ở Rakiura (có cả con cái, xác nhận năm 1980) trở thành nền tảng bảo tồn.",
+     "warn": [
+      "⚠️ **→ Q11:** `1977` là năm thấy **con đực**; `1980` mới xác nhận **con cái**."
+     ]
+    },
+    {
+     "label": "8",
+     "sents": [
+      "Unfortunately, predation by feral cats on Rakiura Island led to a rapid decline in kākāpō numbers.",
+      "As a result, during 1980–97, the surviving population was evacuated to three island sanctuaries: Codfish Island, Maud Island and Little Barrier Island.",
+      "However, breeding success was hard to achieve.",
+      "Rats were found to be a major predator of kākāpō chicks and an insufficient number of chicks survived to offset adult mortality.",
+      "By 1995, although at least 12 chicks had been produced on the islands, only three had survived.",
+      "The kākāpō population had dropped to 51 birds.",
+      "The critical situation prompted an urgent review of kākāpō management in New Zealand."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "Predation by feral cats led to a rapid decline.",
+       "keep": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "As a result, the survivors were evacuated to three island sanctuaries",
+       "q": [
+        5
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "However, breeding success was hard.",
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "Rats were a major predator of chicks.",
+       "keep": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        4
+       ],
+       "text": "Only three of at least 12 chicks survived."
+      },
+      {
+       "idx": [
+        5
+       ],
+       "text": "The population dropped to 51.",
+       "keep": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0
+       ]
+      },
+      {
+       "idx": [
+        6
+       ],
+       "text": "The situation prompted an urgent review.",
+       "keep": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Chuyển kākāpō ra đảo khỏi mèo hoang, nhưng chuột giết chim non nên dân số vẫn giảm xuống 51.",
+     "warn": []
+    },
+    {
+     "label": "9",
+     "sents": [
+      "In 1996, a new Recovery Plan was launched, together with a specialist advisory group called the Kākāpō Scientific and Technical Advisory Committee and a higher amount of funding.",
+      "Renewed steps were taken to control predators on the three islands.",
+      "Cats were eradicated from Little Barrier Island in 1980, and possums were eradicated from Codfish Island by 1986.",
+      "However, the population did not start to increase until rats were removed from all three islands, and the birds were more intensively managed.",
+      "This involved moving the birds between islands, supplementary feeding of adults and rescuing and hand-raising any failing chicks."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "A new Recovery Plan was launched, with an advisory group and a higher amount of funding",
+       "q": [
+        12
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "Renewed steps were taken to control predators.",
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "Cats and possums were eradicated on some islands."
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "However, the population did not start to increase until rats were removed and the birds were more intensively managed.",
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        4
+       ],
+       "text": "This involved moving birds, supplementary feeding and rescuing and hand-raising failing chicks",
+       "q": [
+        6
+       ],
+       "keep": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Kế hoạch phục hồi 1996 chỉ có hiệu quả khi loại bỏ chuột và chăm sóc chim chuyên sâu.",
+     "warn": []
+    },
+    {
+     "label": "10",
+     "sents": [
+      "After the first five years of the Recovery Plan, the population was on target.",
+      "By 2000, five new females had been produced, and the total population had grown to 62 birds.",
+      "For the first time, there was cautious optimism for the future of kākāpō and by June 2020, a total of 210 birds was recorded."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "After five years the population was on target.",
+       "keep": [
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "By 2000 there were five new females and 62 birds."
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "There was cautious optimism, and by June 2020 there were 210 birds."
+      }
+     ],
+     "conn": "",
+     "main": "Dân số tăng đều, lên 210 con năm 2020.",
+     "warn": []
+    },
+    {
+     "label": "11",
+     "sents": [
+      "Today, kākāpō management continues to be guided by the kākāpō Recovery Plan.",
+      "Its key goals are: minimise the loss of genetic diversity in the kākāpō population, restore or maintain sufficient habitat to accommodate the expected increase in the kākāpō population, and ensure stakeholders continue to be fully engaged in the preservation of the species."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "Management continues to be guided by the Recovery Plan.",
+       "keep": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "Key goals: minimise loss of genetic diversity, restore habitat, and ensure stakeholders continue to be engaged",
+       "q": [
+        13
+       ],
+       "keep": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Mục tiêu hiện nay: giữ đa dạng gen, môi trường sống và sự tham gia của các bên liên quan.",
+     "warn": []
+    }
+   ],
+   "groups": [
+    {
+     "from": 1,
+     "to": 6,
+     "type": "tf",
+     "instr": "Do the following statements agree with the information given in Reading Passage 1?",
+     "items": [
+      {
+       "n": 1,
+       "q": "There are other parrots that share the kakapo's inability to fly.",
+       "a": [
+        "FALSE"
+       ],
+       "loc": [
+        [
+         0,
+         2
+        ]
+       ],
+       "exp": "*Bước 1 – Mắt thông tin:* **có loài vẹt khác** cũng không bay được. *Bước 2:* đoạn 1③.\n*Bước 3 – Simplify:* **It is the world's only flightless parrot.**\n*Bước 4:* `only flightless parrot` → **không** có loài vẹt nào khác.\n\n→ **FALSE**",
+       "pairs": []
+      },
+      {
+       "n": 2,
+       "q": "Adult kakapo produce chicks every year.",
+       "a": [
+        "FALSE"
+       ],
+       "loc": [
+        [
+         2,
+         0
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 3①. *Bước 3 – Simplify:* **Kākāpō breed in summer and autumn, but only in years when food is plentiful.**\n*Bước 4:* chỉ sinh sản **vào những năm đủ thức ăn** → không phải năm nào cũng có.\n\n→ **FALSE**",
+       "pairs": []
+      },
+      {
+       "n": 3,
+       "q": "Adult male kakapo bring food back to nesting females.",
+       "a": [
+        "FALSE"
+       ],
+       "loc": [
+        [
+         2,
+         1
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 3②. *Bước 3:* **Males play no part in incubation or chick-rearing – females alone incubate eggs and feed the chicks.** Đoạn 3④: con cái tự đi tìm thức ăn.\n\n→ **FALSE**",
+       "pairs": []
+      },
+      {
+       "n": 4,
+       "q": "The Polynesian rat was a greater threat to the kakapo than Polynesian settlers.",
+       "a": [
+        "NOT GIVEN"
+       ],
+       "loc": [
+        [
+         3,
+         2
+        ],
+        [
+         3,
+         3
+        ],
+        [
+         3,
+         4
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 4③④⑤. *Bước 3 – Simplify:* **The kākāpō was easy prey for the settlers; with them came the Polynesian dog and rat, which also preyed on kākāpō.**\n*Bước 4:* bài nói cả người và chuột đều săn chúng, nhưng **không so sánh** mức độ đe dọa.\n\n→ **NOT GIVEN**",
+       "pairs": []
+      },
+      {
+       "n": 5,
+       "q": "Kakapo were transferred from Rakiura Island to other locations because they were at risk from feral cats.",
+       "a": [
+        "TRUE"
+       ],
+       "loc": [
+        [
+         7,
+         0
+        ],
+        [
+         7,
+         1
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 8①②. *Bước 3 – Simplify:* **Predation by feral cats on Rakiura Island led to a rapid decline. As a result, the surviving population was evacuated to three island sanctuaries.**\n*Bước 4:* `As a result` nối nguyên nhân (mèo hoang) → hệ quả (chuyển đi).\n\n→ **TRUE**",
+       "pairs": []
+      },
+      {
+       "n": 6,
+       "q": "One Recovery Plan initiative that helped increase the kakapo population size was caring for struggling young birds.",
+       "a": [
+        "TRUE"
+       ],
+       "loc": [
+        [
+         8,
+         3
+        ],
+        [
+         8,
+         4
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 9④⑤. *Bước 3 – Simplify:* **The population did not start to increase until rats were removed and the birds were more intensively managed. This involved … rescuing and hand-raising any failing chicks.**\n*Bước 4:* `caring for struggling young birds` ↔ `rescuing and hand-raising failing chicks`.\n\n→ **TRUE**",
+       "pairs": [
+        [
+         "caring for struggling young birds",
+         "rescuing and hand-raising failing chicks"
+        ]
+       ]
+      }
+     ],
+     "options": [
+      {
+       "k": "TRUE",
+       "t": "TRUE"
+      },
+      {
+       "k": "FALSE",
+       "t": "FALSE"
+      },
+      {
+       "k": "NOT GIVEN",
+       "t": "NOT GIVEN"
+      }
+     ]
+    },
+    {
+     "from": 7,
+     "to": 13,
+     "type": "gap",
+     "instr": "Complete the notes below. Choose **ONE WORD AND/OR A NUMBER** from the passage for each answer.",
+     "items": [
+      {
+       "n": 7,
+       "q": "diet consists of fern fronds, various parts of a tree and ______",
+       "a": [
+        "bulbs"
+       ],
+       "loc": [
+        [
+         1,
+         3
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 2④. *Bước 3:* **Their diet includes the leaves, roots and bark of trees as well as bulbs, and fern fronds.** `various parts of a tree` ↔ `leaves, roots and bark`; còn lại `bulbs`.\n\n→ **Đáp án: bulbs**",
+       "pairs": [
+        [
+         "various parts of a tree",
+         "leaves, roots and bark"
+        ]
+       ]
+      },
+      {
+       "n": 8,
+       "q": "nests are created in ______ where eggs are laid.",
+       "a": [
+        "soil"
+       ],
+       "loc": [
+        [
+         2,
+         2
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 3③. *Bước 3:* **The 1–4 eggs are laid in soil, which is repeatedly turned over.**\n\n→ **Đáp án: soil**",
+       "pairs": []
+      },
+      {
+       "n": 9,
+       "q": "the ______ of the kākāpō were used to make clothes.",
+       "a": [
+        "feathers"
+       ],
+       "loc": [
+        [
+         3,
+         3
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 4④. *Bước 3:* **They ate its meat and used its feathers to make soft cloaks.** `clothes` ↔ `cloaks`.\n\n→ **Đáp án: feathers**\n\n⚠️ `meat` (thịt) là để ăn, không phải làm quần áo.",
+       "pairs": [
+        [
+         "clothes",
+         "cloaks"
+        ]
+       ]
+      },
+      {
+       "n": 10,
+       "q": "______ were an animal which they introduced that ate the kākāpō's food sources.",
+       "a": [
+        "deer"
+       ],
+       "loc": [
+        [
+         4,
+         1
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 5②. *Bước 3:* **Introduced species such as deer depleted the remaining forests of food.** `ate the food sources` ↔ `depleted … of food`.\n\n→ **Đáp án: deer**\n\n⚠️ `cats, stoats, rats` (đoạn 5③) ăn **chính kākāpō** (động vật săn mồi), không phải nguồn thức ăn.",
+       "pairs": [
+        [
+         "ate the food sources",
+         "depleted … of food"
+        ]
+       ]
+      },
+      {
+       "n": 11,
+       "q": "a definite sighting of female kākāpō on Rakiura Island was reported in the year ______",
+       "a": [
+        "1980"
+       ],
+       "loc": [
+        [
+         6,
+         4
+        ],
+        [
+         6,
+         5
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 7⑤⑥. *Bước 3:* **In 1977, a large population of males was spotted … and in 1980 it was confirmed females were also present.** `definite` ↔ `confirmed`.\n\n→ **Đáp án: 1980**\n\n⚠️ **1977** là năm thấy đàn **đực**.",
+       "pairs": [
+        [
+         "definite",
+         "confirmed"
+        ]
+       ]
+      },
+      {
+       "n": 12,
+       "q": "the Recovery Plan included an increase in ______",
+       "a": [
+        "funding"
+       ],
+       "loc": [
+        [
+         8,
+         0
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 9①. *Bước 3:* **A new Recovery Plan was launched, together with a specialist advisory group and a higher amount of funding.** `increase` ↔ `higher amount`.\n\n→ **Đáp án: funding**",
+       "pairs": [
+        [
+         "increase",
+         "higher amount"
+        ]
+       ]
+      },
+      {
+       "n": 13,
+       "q": "a current goal of the Recovery Plan is to maintain the involvement of ______ in kākāpō protection.",
+       "a": [
+        "stakeholders"
+       ],
+       "loc": [
+        [
+         10,
+         1
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 11②. *Bước 3:* **… ensure stakeholders continue to be fully engaged in the preservation of the species.** `maintain the involvement` ↔ `continue to be fully engaged`.\n\n→ **Đáp án: stakeholders**",
+       "pairs": [
+        [
+         "maintain the involvement",
+         "continue to be fully engaged"
+        ]
+       ]
+      }
+     ],
+     "limit": "ONE WORD AND/OR A NUMBER",
+     "maxWords": 1,
+     "number": true,
+     "context": "**New Zealand's kākāpō**\n*A type of parrot:*\n- diet consists of fern fronds, various parts of a tree and **7** _________\n- nests are created in **8** _________ where eggs are laid.\n*Arrival of Polynesian settlers*\n- the **9** _________ of the kākāpō were used to make clothes.\n*Arrival of European colonisers*\n- **10** _________ were an animal which they introduced that ate the kākāpō's food sources.\n*Protecting kākāpō*\n- Richard Henry, a conservationist, tried to protect the kākāpō.\n- a definite sighting of female kākāpō on Rakiura Island was reported in the year **11** _________\n- the Recovery Plan included an increase in **12** _________\n- a current goal of the Recovery Plan is to maintain the involvement of **13** _________ in kākāpō protection."
+    }
+   ]
+  },
+  {
+   "id": "cam20-t1-p2",
+   "n": 2,
+   "title": "To Britain",
+   "subtitle": "Mark Rowe investigates attempts to reintroduce elms to Britain",
+   "topic": "Thực vật · môi trường",
+   "footnote": [
+    "horticultural analogue: a cultivated plant species that is genetically similar to an existing species"
+   ],
+   "paras": [
+    {
+     "label": "A",
+     "sents": [
+      "Around 25 million elms, accounting for 90% of all elm trees in the UK, died during the 1960s and '70s of Dutch elm disease.",
+      "In the aftermath, the elm, once so dominant in the British landscape, was largely forgotten.",
+      "However, there's now hope the elm may be reintroduced to the countryside of central and southern England.",
+      "Any reintroduction will start from a very low base.",
+      "'The impact of the disease is difficult to picture if you hadn't seen what was there before,' says Matt Elliot of the Woodland Trust.",
+      "'You look at old photographs from the 1960s and it's only then that you realise the impact [elms had] … They were significant, large trees … then they were gone.'"
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "25 million elms died of Dutch elm disease.",
+       "keep": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "The elm was largely forgotten.",
+       "keep": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "However, there's now hope it may be reintroduced."
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "Any reintroduction will start from a very low base."
+      },
+      {
+       "idx": [
+        4,
+        5
+       ],
+       "text": "Elliot: the impact is hard to picture; old photographs show how significant elms were",
+       "q": [
+        23
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Bệnh làm chết phần lớn cây du, giờ có hy vọng đưa chúng trở lại.",
+     "warn": []
+    },
+    {
+     "label": "B",
+     "sents": [
+      "The disease is caused by a fungus that blocks the elms' vascular (water, nutrient and food transport) system, causing branches to wilt and die.",
+      "A first epidemic, which occurred in the 1920s, gradually died down, but in the '70s a second epidemic was triggered by shipments of elm from Canada.",
+      "The wood came in the form of logs destined for boat building and its intact bark was perfect for the elm bark beetles that spread the deadly fungus.",
+      "This time, the beetles carried a much more virulent strain that destroyed the vast majority of British elms."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "A fungus blocks the vascular system, causing branches to wilt and die.",
+       "keep": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "A first epidemic died down, but a second was triggered by shipments of elm from Canada",
+       "q": [
+        16
+       ],
+       "keep": [
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "The logs' bark was perfect for the beetles.",
+       "keep": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "This time the beetles carried a more virulent strain.",
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Đợt dịch thứ hai do gỗ nhập từ Canada mang bọ mang nấm độc hơn.",
+     "warn": []
+    },
+    {
+     "label": "C",
+     "sents": [
+      "Today, elms still exist in the southern English countryside but mostly only in low hedgerows between fields.",
+      "'We have millions of small elms in hedgerows but they get targeted by the beetle as soon as they reach a certain size,' says Karen Russell, co-author of the report 'Where we are with elm'.",
+      "Once the trunk of the elm reaches 10–15 centimetres or so in diameter, it becomes a perfect size for beetles to lay eggs and for the fungus to take hold.",
+      "Yet mature specimens have been identified, in counties such as Cambridgeshire, that are hundreds of years old, and have mysteriously escaped the epidemic.",
+      "The key, Russell says, is to identify and study those trees that have survived and work out why they stood tall when millions of others succumbed.",
+      "Nevertheless, opportunities are limited as the number of these mature survivors is relatively small.",
+      "'What are the reasons for their survival?' asks Russell. 'Avoidance, tolerance, resistance? We don't know where the balance lies between the three. I don't see how it can be entirely down to luck.'"
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "Elms still exist, mostly in low hedgerows.",
+       "keep": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "Small elms are targeted by the beetle as soon as they reach a certain size."
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "At 10–15 cm in diameter, they become a perfect size for beetles",
+       "q": [
+        18
+       ]
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "Yet some mature specimens have escaped the epidemic."
+      },
+      {
+       "idx": [
+        4
+       ],
+       "text": "The key is to identify and study the survivors."
+      },
+      {
+       "idx": [
+        5
+       ],
+       "text": "Nevertheless, opportunities are limited as the survivors are few",
+       "q": [
+        14
+       ]
+      },
+      {
+       "idx": [
+        6
+       ],
+       "text": "I don't see how it can be entirely down to luck",
+       "q": [
+        21
+       ],
+       "keep": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      }
+     ],
+     "conn": "①② cây nhỏ bị bọ nhắm đến → ③ kích thước dễ bị tấn công → ④ **Yet** vài cây già sống sót → ⑤ phải nghiên cứu → ⑥ **Nevertheless** nhưng ít → ⑦ không chỉ do may mắn. Chuỗi: **vấn đề → cơ chế → ngoại lệ → giải pháp → hạn chế → nhận định**.",
+     "main": "Cây du nhỏ dễ bị bọ tấn công khi đủ lớn; cần nghiên cứu những cây già sống sót nhưng số lượng hạn chế.",
+     "warn": []
+    },
+    {
+     "label": "D",
+     "sents": [
+      "For centuries, elm ran a close second to oak as the hardwood tree of choice in Britain and was in many instances the most prominent tree in the landscape.",
+      "Not only was elm common in European forests, it became a key component of birch, ash and hazel woodlands.",
+      "The use of elm is thought to go back to the Bronze Age, when it was widely used for tools.",
+      "Elm was also the preferred material for shields and early swords.",
+      "In the 18th century, it was planted more widely and its wood was used for items such as storage crates and flooring.",
+      "It was also suitable for items that experienced high levels of impact and was used to build the keel of the 19th-century sailing ship Cutty Sark as well as mining equipment."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "Elm ran a close second to oak as the hardwood of choice",
+       "q": [
+        24
+       ],
+       "keep": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "It was common and a key component of woodlands."
+      },
+      {
+       "idx": [
+        2,
+        3
+       ],
+       "text": "Used for tools, shields and swords since the Bronze Age."
+      },
+      {
+       "idx": [
+        4
+       ],
+       "text": "In the 18th century its wood was used for crates and flooring",
+       "q": [
+        25
+       ],
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        5
+       ],
+       "text": "Suitable for high-impact items, used for the keel of the Cutty Sark and mining equipment",
+       "q": [
+        26
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Cây du từng là gỗ cứng quan trọng, dùng làm nhiều thứ từ công cụ đến thân tàu.",
+     "warn": []
+    },
+    {
+     "label": "E",
+     "sents": [
+      "Given how ingrained elm is in British culture, it's unsurprising the tree has many advocates.",
+      "Amongst them is Peter Bourne of the National Elm Collection in Brighton.",
+      "'I saw Dutch elm disease unfold as a small boy,' he says. 'The elm seemed to be part of rural England, but I remember watching trees just lose their leaves and that really stayed with me.'",
+      "Today, the city of Brighton's elms total about 17,000.",
+      "Local factors appear to have contributed to their survival.",
+      "Strong winds from the sea make it difficult for the determined elm bark beetle to attack this coastal city's elm population.",
+      "However, the situation is precarious.",
+      "'The beetles can just march in if we're not careful, as the threat is right on our doorstep,' says Bourne."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "The tree has many advocates.",
+       "keep": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        1,
+        2
+       ],
+       "text": "Bourne saw the disease unfold as a boy."
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "Brighton's elms total about 17,000.",
+       "keep": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        4,
+        5
+       ],
+       "text": "Local factors, such as strong winds from the sea, help them survive",
+       "q": [
+        17
+       ]
+      },
+      {
+       "idx": [
+        6
+       ],
+       "text": "However, the situation is precarious."
+      },
+      {
+       "idx": [
+        7
+       ],
+       "text": "The beetles can just march in; the threat is on our doorstep",
+       "q": [
+        22
+       ],
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Brighton còn nhiều cây du nhờ gió biển, nhưng nguy cơ vẫn rất gần.",
+     "warn": []
+    },
+    {
+     "label": "F",
+     "sents": [
+      "Any prospect of the elm returning relies heavily on trees being either resistant to, or tolerant of, the disease.",
+      "This means a widespread reintroduction would involve existing or new hybrid strains derived from resistant, generally non-native elm species.",
+      "A new generation of seedlings have been bred and tested to see if they can withstand the fungus by cutting a small slit on the bark and injecting a tiny amount of the pathogen.",
+      "'The effects are very quick,' says Russell.",
+      "'You return in four to six weeks and trees that are resistant show no symptoms, whereas those that are susceptible show leaf loss and may even have died completely.'"
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "The elm's return relies on trees being resistant or tolerant."
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "Reintroduction would involve hybrid strains from non-native species.",
+       "keep": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "Seedlings have been bred and tested by injecting the pathogen.",
+       "keep": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        3,
+        4
+       ],
+       "text": "The effects are very quick: in four to six weeks susceptible trees show leaf loss",
+       "q": [
+        19
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Cây du chỉ quay lại nếu kháng bệnh, và thử nghiệm cho kết quả rất nhanh.",
+     "warn": []
+    },
+    {
+     "label": "G",
+     "sents": [
+      "All of this raises questions of social acceptance, acknowledges Russell.",
+      "'If we're putting elm back into the landscape, a small element of it is not native – are we bothered about that?'",
+      "For her, the environmental case for reintroducing elm is strong.",
+      "'They will host wildlife, which is a good thing.'",
+      "Others are more wary. 'On the face of it, it seems like a good idea,' says Elliot.",
+      "The problem, he suggests, is that, 'You're replacing a native species with a horticultural analogue. You're effectively cloning.'",
+      "There's also the risk of introducing new diseases.",
+      "Rather than plant new elms, the Woodland Trust emphasises providing space to those elms that have survived independently.",
+      "'Sometimes the best thing you can do is just give nature time to recover – over time, you might get resistance,' says Elliot."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "This raises questions of social acceptance.",
+       "keep": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        1,
+        2,
+        3
+       ],
+       "text": "Russell: the environmental case is strong; they will host wildlife."
+      },
+      {
+       "idx": [
+        4,
+        5
+       ],
+       "text": "Others are more wary: you're replacing a native species with a horticultural analogue",
+       "q": [
+        15
+       ]
+      },
+      {
+       "idx": [
+        6
+       ],
+       "text": "There's also the risk of new diseases.",
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        7,
+        8
+       ],
+       "text": "The Trust prefers giving space to survivors; give nature time to recover",
+       "q": [
+        20
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Việc trồng lại cây du còn tranh cãi: Russell ủng hộ, Elliot thận trọng.",
+     "warn": []
+    }
+   ],
+   "groups": [
+    {
+     "from": 14,
+     "to": 18,
+     "type": "choice",
+     "instr": "Reading Passage 2 has seven sections, **A–G**. Which section contains the following information? **NB** You may use any letter more than once.",
+     "items": [
+      {
+       "n": 14,
+       "q": "reference to the research problems that arise from there being only a few surviving large elms",
+       "a": [
+        "C"
+       ],
+       "loc": [
+        [
+         2,
+         5
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn C⑥. *Bước 3 – Simplify:* **Opportunities are limited as the number of these mature survivors is relatively small.** `research problems` ↔ `opportunities are limited`.\n\n→ **C**",
+       "pairs": [
+        [
+         "research problems",
+         "opportunities are limited"
+        ]
+       ]
+      },
+      {
+       "n": 15,
+       "q": "details of a difference of opinion about the value of reintroducing elms to Britain",
+       "a": [
+        "G"
+       ],
+       "loc": [
+        [
+         6,
+         1
+        ],
+        [
+         6,
+         2
+        ],
+        [
+         6,
+         3
+        ],
+        [
+         6,
+         4
+        ],
+        [
+         6,
+         5
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn G②–⑥. *Bước 3 – Simplify:* **For Russell, the environmental case is strong. Others are more wary. Elliot: you're replacing a native species with a horticultural analogue.** `difference of opinion` ↔ Russell vs Elliot.\n\n→ **G**",
+       "pairs": []
+      },
+      {
+       "n": 16,
+       "q": "reference to how Dutch elm disease was brought into Britain",
+       "a": [
+        "B"
+       ],
+       "loc": [
+        [
+         1,
+         1
+        ],
+        [
+         1,
+         2
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn B②③. *Bước 3:* **In the '70s a second epidemic was triggered by shipments of elm from Canada, in the form of logs.**\n\n→ **B**",
+       "pairs": []
+      },
+      {
+       "n": 17,
+       "q": "a description of the conditions that have enabled a location in Britain to escape Dutch elm disease",
+       "a": [
+        "E"
+       ],
+       "loc": [
+        [
+         4,
+         4
+        ],
+        [
+         4,
+         5
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn E⑤⑥. *Bước 3:* **Local factors … Strong winds from the sea make it difficult for the beetle to attack this coastal city's elm population.** `location` ↔ Brighton; `conditions` ↔ gió biển mạnh.\n\n→ **E**",
+       "pairs": []
+      },
+      {
+       "n": 18,
+       "q": "reference to the stage at which young elms become vulnerable to Dutch elm disease",
+       "a": [
+        "C"
+       ],
+       "loc": [
+        [
+         2,
+         1
+        ],
+        [
+         2,
+         2
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn C②③. *Bước 3:* **Once the trunk reaches 10–15 centimetres in diameter, it becomes a perfect size for beetles to lay eggs.** `stage` ↔ kích thước thân.\n\n→ **C**",
+       "pairs": []
+      }
+     ],
+     "options": [
+      {
+       "k": "A",
+       "t": ""
+      },
+      {
+       "k": "B",
+       "t": ""
+      },
+      {
+       "k": "C",
+       "t": ""
+      },
+      {
+       "k": "D",
+       "t": ""
+      },
+      {
+       "k": "E",
+       "t": ""
+      },
+      {
+       "k": "F",
+       "t": ""
+      },
+      {
+       "k": "G",
+       "t": ""
+      }
+     ]
+    },
+    {
+     "from": 19,
+     "to": 23,
+     "type": "choice",
+     "instr": "Look at the following statements (19–23) and the list of people below. Match each statement with the correct person, **A**, **B**, or **C**. **NB** You may use any letter more than once.",
+     "items": [
+      {
+       "n": 19,
+       "q": "If a tree gets infected with Dutch elm disease, the damage rapidly becomes visible.",
+       "a": [
+        "B"
+       ],
+       "loc": [
+        [
+         5,
+         3
+        ]
+       ],
+       "exp": "→ Russell: `The effects are very quick … return in four to six weeks … leaf loss`. → **B**",
+       "pairs": []
+      },
+      {
+       "n": 20,
+       "q": "It may be better to wait and see if the mature elms that have survived continue to flourish.",
+       "a": [
+        "A"
+       ],
+       "loc": [
+        [
+         6,
+         8
+        ]
+       ],
+       "exp": "→ Elliot: `Sometimes the best thing you can do is just give nature time to recover`. → **A**",
+       "pairs": []
+      },
+      {
+       "n": 21,
+       "q": "There must be an explanation for the survival of some mature elms.",
+       "a": [
+        "B"
+       ],
+       "loc": [
+        [
+         2,
+         6
+        ]
+       ],
+       "exp": "→ Russell: `I don't see how it can be entirely down to luck.` → **B**",
+       "pairs": []
+      },
+      {
+       "n": 22,
+       "q": "We need to be aware that insects carrying Dutch elm disease are not very far away.",
+       "a": [
+        "C"
+       ],
+       "loc": [
+        [
+         4,
+         7
+        ]
+       ],
+       "exp": "→ Bourne: `The beetles can just march in if we're not careful, as the threat is right on our doorstep.` → **C**",
+       "pairs": []
+      },
+      {
+       "n": 23,
+       "q": "You understand the effect Dutch elm disease has had when you see evidence of how prominent the tree once was.",
+       "a": [
+        "A"
+       ],
+       "loc": [
+        [
+         0,
+         5
+        ]
+       ],
+       "exp": "→ Elliot: `You look at old photographs from the 1960s and it's only then that you realise the impact.` → **A**\n\n⚠️ Russell xuất hiện hai lần (Q19, Q21) và Elliot hai lần (Q20, Q23).",
+       "pairs": []
+      }
+     ],
+     "options": [
+      {
+       "k": "A",
+       "t": "Matt Elliot"
+      },
+      {
+       "k": "B",
+       "t": "Karen Russell"
+      },
+      {
+       "k": "C",
+       "t": "Peter Bourne"
+      }
+     ],
+     "guide": "| Người | Ý chính |\n|---|---|\n| **A Matt Elliot** | Ảnh cũ thập niên 1960 cho thấy tác động (A⑤⑥); nên **cho thiên nhiên thời gian** (G⑨) |\n| **B Karen Russell** | Cây trưởng thành sống sót **không thể do may mắn** (C⑦); thử nghiệm: tác động **rất nhanh** (F④⑤) |\n| **C Peter Bourne** | Brighton: bọn bọ **sát cửa nhà** (E⑧) |"
+    },
+    {
+     "from": 24,
+     "to": 26,
+     "type": "gap",
+     "instr": "Complete the summary below. Choose **ONE WORD ONLY** from the passage for each answer.",
+     "items": [
+      {
+       "n": 24,
+       "q": "For hundreds of years, the only tree that was more popular in Britain than elm was ______.",
+       "a": [
+        "oak"
+       ],
+       "loc": [
+        [
+         3,
+         0
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn D①. *Bước 3:* **For centuries, elm ran a close second to oak as the hardwood tree of choice.** `more popular than elm` ↔ `elm ran a close second to`.\n\n→ **Đáp án: oak**",
+       "pairs": [
+        [
+         "more popular than elm",
+         "elm ran a close second to"
+        ]
+       ]
+      },
+      {
+       "n": 25,
+       "q": "In the 18th century, it was grown to provide wood for boxes and ______.",
+       "a": [
+        "flooring"
+       ],
+       "loc": [
+        [
+         3,
+         4
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn D⑤. *Bước 3:* **In the 18th century, it was planted more widely and its wood was used for storage crates and flooring.** `boxes` ↔ `storage crates`.\n\n→ **Đáp án: flooring**",
+       "pairs": [
+        [
+         "boxes",
+         "storage crates"
+        ]
+       ]
+      },
+      {
+       "n": 26,
+       "q": "Due to its strength, elm was often used for mining equipment and the Cutty Sark's ______ was also constructed from elm.",
+       "a": [
+        "keel"
+       ],
+       "loc": [
+        [
+         3,
+         5
+        ]
+       ],
+       "exp": "*Bước 3 (D⑥):* **… used to build the keel of the 19th-century sailing ship Cutty Sark.**\n\n→ **Đáp án: keel**",
+       "pairs": []
+      }
+     ],
+     "limit": "ONE WORD ONLY",
+     "maxWords": 1,
+     "number": false,
+     "context": "**Uses of a popular tree**\nFor hundreds of years, the only tree that was more popular in Britain than elm was **24** __________. Starting in the Bronze Age, many tools were made from elm and people also used it to make weapons. In the 18th century, it was grown to provide wood for boxes and **25** __________. Due to its strength, elm was often used for mining equipment and the Cutty Sark's **26** __________ was also constructed from elm."
+    }
+   ]
+  },
+  {
+   "id": "cam20-t1-p3",
+   "n": 3,
+   "title": "How stress affects our judgement",
+   "subtitle": "",
+   "topic": "Tâm lý học",
+   "footnote": [],
+   "paras": [
+    {
+     "label": "1",
+     "sents": [
+      "Some of the most important decisions of our lives occur while we're feeling stressed and anxious.",
+      "From medical decisions to financial and professional ones, we are all sometimes required to weigh up information under stressful conditions.",
+      "But do we become better or worse at processing and using information under such circumstances?"
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "Some of the most important decisions occur while we're stressed.",
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "We are all sometimes required to weigh up information under stress",
+       "q": [
+        27
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "But do we become better or worse at processing information?",
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Ai cũng phải ra quyết định khi căng thẳng; câu hỏi là ta làm tốt hơn hay kém đi.",
+     "warn": []
+    },
+    {
+     "label": "2",
+     "sents": [
+      "My colleague and I, both neuroscientists, wanted to investigate how the mind operates under stress, so we visited some local fire stations.",
+      "Firefighters' workdays vary quite a bit.",
+      "Some are pretty relaxed; they'll spend their time washing the truck, cleaning equipment, cooking meals and reading.",
+      "Other days can be hectic, with numerous life-threatening incidents to attend to; they'll enter burning homes to rescue trapped residents, and assist with medical emergencies.",
+      "These ups and downs presented the perfect setting for an experiment on how people's ability to use information changes when they feel under pressure."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "We wanted to investigate how the mind operates under stress, so we visited fire stations."
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "Firefighters' workdays vary quite a bit."
+      },
+      {
+       "idx": [
+        2,
+        3
+       ],
+       "text": "Some days are relaxed, others hectic."
+      },
+      {
+       "idx": [
+        4
+       ],
+       "text": "These ups and downs presented the perfect setting for an experiment",
+       "q": [
+        28
+       ],
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Lính cứu hỏa có ngày thư giãn, ngày căng thẳng nên là đối tượng nghiên cứu lý tưởng.",
+     "warn": []
+    },
+    {
+     "label": "3",
+     "sents": [
+      "We found that perceived threat acted as a trigger for a stress reaction that made the task of processing information easier for the firefighters – but only as long as it conveyed bad news."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "Perceived threat triggered a stress reaction that made processing information easier – but only as long as it conveyed bad news",
+       "note": "`but only` giới hạn ý chính"
+      }
+     ],
+     "conn": "",
+     "main": "Căng thẳng giúp xử lý thông tin dễ hơn, nhưng chỉ với tin xấu.",
+     "warn": []
+    },
+    {
+     "label": "4",
+     "sents": [
+      "This is how we arrived at these results.",
+      "We asked the firefighters to estimate their likelihood of experiencing 40 different adverse events in their life, such as being involved in an accident or becoming a victim of card fraud.",
+      "We then gave them either good news (that their likelihood of experiencing these events was lower than they'd thought) or bad news (that it was higher) and asked them to provide new estimates."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "This is how we arrived at these results."
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "We asked the firefighters to estimate their likelihood of experiencing 40 adverse events.",
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "We then gave them good news or bad news and asked for new estimates",
+       "q": [
+        29
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Mô tả phương pháp: ước tính nguy cơ, nhận tin tốt hoặc xấu, rồi ước tính lại.",
+     "warn": []
+    },
+    {
+     "label": "5",
+     "sents": [
+      "People are normally quite optimistic – they will ignore bad news and embrace the good.",
+      "This is what happened when the firefighters were relaxed; but when they were under stress, a different pattern emerged.",
+      "Under these conditions, they became hyper-vigilant to bad news, even when it had nothing to do with their job (such as learning that the likelihood of card fraud was higher than they'd thought), and altered their beliefs in response.",
+      "In contrast, stress didn't change how they responded to good news (such as learning that the likelihood of card fraud was lower than they'd thought)."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "People are normally optimistic: they ignore bad news and embrace the good.",
+       "keep": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "This happened when relaxed; but under stress a different pattern emerged",
+       "q": [
+        31
+       ],
+       "keep": [
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "Under stress they became hyper-vigilant to bad news and altered their beliefs",
+       "note": "**→ Q32, Q35**",
+       "q": [
+        32,
+        35
+       ]
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "In contrast, stress didn't change how they responded to good news",
+       "q": [
+        33
+       ],
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      }
+     ],
+     "conn": "① mặc định lạc quan → ② thư giãn thì đúng như vậy; **but** căng thẳng thì khác → ③ nhạy tin xấu → ④ **In contrast** tin tốt không đổi. Chuỗi: **mặc định → ngoại lệ → thay đổi → phần không đổi**.",
+     "main": "Khi căng thẳng, lính cứu hỏa nhạy với tin xấu và điều chỉnh niềm tin, còn phản ứng với tin tốt thì không đổi.",
+     "warn": []
+    },
+    {
+     "label": "6",
+     "sents": [
+      "Back in our lab, we observed the same pattern in students who were told they had to give a surprise public speech, which would be judged by a panel, recorded and posted online.",
+      "Sure enough, their cortisol levels spiked, their heart rates went up and they suddenly became better at processing unrelated, yet alarming, information about rates of disease and violence."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "We observed the same pattern in students told they had to give a surprise public speech",
+       "q": [
+        34
+       ],
+       "keep": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "Their cortisol and heart rates went up and they became better at processing alarming information."
+      }
+     ],
+     "conn": "",
+     "main": "Sinh viên bị đặt vào tình huống căng thẳng cũng xử lý thông tin đáng lo tốt hơn.",
+     "warn": []
+    },
+    {
+     "label": "7",
+     "sents": [
+      "When we experience stressful events, a physiological change is triggered that causes us to take in warnings and focus on what might go wrong.",
+      "Brain imaging reveals that this 'switch' is related to a sudden boost in a neural signal important for learning, specifically in response to unexpected warning signs, such as faces expressing fear."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "A physiological change causes us to take in warnings and focus on what might go wrong.",
+       "keep": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "This 'switch' is related to a boost in a neural signal in response to warning signs",
+       "q": [
+        30
+       ],
+       "keep": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Căng thẳng bật một \"công tắc\" não làm ta nhạy với dấu hiệu nguy hiểm.",
+     "warn": []
+    },
+    {
+     "label": "8",
+     "sents": [
+      "Such neural engineering could have helped prehistoric humans to survive.",
+      "When our ancestors found themselves surrounded by hungry animals, they would have benefited from an increased ability to learn about hazards.",
+      "In a safe environment, however, it would have been wasteful to be on high alert constantly.",
+      "So, a neural switch that automatically increases or decreases our ability to process warnings in response to changes in our environment could have been useful.",
+      "In fact, people with clinical depression and anxiety seem unable to switch away from a state in which they absorb all the negative messages around them."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0,
+        1
+       ],
+       "text": "This helped ancestors survive when surrounded by hungry animals."
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "In a safe environment, constant high alert would be wasteful."
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "A switch that increases or decreases our ability to process warnings could be useful."
+      },
+      {
+       "idx": [
+        4
+       ],
+       "text": "People with depression and anxiety seem unable to switch away.",
+       "keep": [
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Công tắc này có lợi cho tổ tiên, nhưng người trầm cảm, lo âu không tắt được.",
+     "warn": []
+    },
+    {
+     "label": "9",
+     "sents": [
+      "It is also important to realise that stress travels rapidly from one person to the next.",
+      "If a co-worker is stressed, we are more likely to tense up and feel stressed ourselves.",
+      "We don't even need to be in the same room with someone for their emotions to influence our behaviour.",
+      "Studies show that if we observe positive feeds on social media, such as images of a pink sunset, we are more likely to post uplifting messages ourselves.",
+      "If we observe negative posts, such as complaints about a long queue at the coffee shop, we will in turn create more negative posts."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "Stress travels rapidly from one person to the next.",
+       "keep": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "If a co-worker is stressed, we are more likely to feel stressed.",
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "We don't even need to be in the same room.",
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        3,
+        4
+       ],
+       "text": "Positive feeds lead to uplifting posts; negative posts lead to more negative posts",
+       "q": [
+        36
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Cảm xúc, nhất là căng thẳng, lây nhanh, kể cả qua mạng xã hội.",
+     "warn": []
+    },
+    {
+     "label": "10",
+     "sents": [
+      "In some ways, many of us now live as if we are in danger, constantly ready to tackle demanding emails and text messages, and respond to news alerts and comments on social media.",
+      "Repeatedly checking your phone, according to a survey conducted by the American Psychological Association, is related to stress.",
+      "In other words, a pre-programmed physiological reaction, which evolution has equipped us with to help us avoid famished predators, is now being triggered by an online post.",
+      "Social media posting, according to one study, raises your pulse, makes you sweat, and enlarges your pupils more than most daily activities."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "Many of us live as if in danger.",
+       "keep": [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        1
+       ],
+       "text": "Repeatedly checking your phone is related to stress",
+       "note": "không so với thiết bị khác",
+       "q": [
+        37
+       ],
+       "keep": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+       ]
+      },
+      {
+       "idx": [
+        2
+       ],
+       "text": "A reaction meant for predators is now triggered by an online post."
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "Posting raises your pulse more than most daily activities.",
+       "keep": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+       ]
+      }
+     ],
+     "conn": "",
+     "main": "Phản ứng sinh lý dành cho thú dữ giờ bị kích hoạt bởi mạng xã hội.",
+     "warn": []
+    },
+    {
+     "label": "11",
+     "sents": [
+      "The fact that stress increases the likelihood that we will focus more on alarming messages, together with the fact that it spreads extremely rapidly, can create collective fear that is not always justified.",
+      "After a stressful public event, such as a natural disaster or major financial crash, there is often a wave of alarming information in traditional and social media, which individuals become very aware of.",
+      "But that has the effect of exaggerating existing danger.",
+      "And so, a reliable pattern emerges – stress is triggered, spreading from one person to the next, which temporarily enhances the likelihood that people will take in negative reports, which increases stress further.",
+      "As a result, trips are cancelled, even if the disaster took place across the globe; stocks are sold, even when holding on is the best thing to do.",
+      "The good news, however, is that positive emotions, such as hope, are contagious too, and are powerful in inducing people to act to find solutions.",
+      "Being aware of the close relationship between people's emotional state and how they process information can help us frame our messages more effectively and become conscientious agents of change."
+     ],
+     "simp": [
+      {
+       "idx": [
+        0
+       ],
+       "text": "Stress makes us focus on alarming messages and spreads rapidly, creating collective fear not always justified",
+       "q": [
+        39
+       ]
+      },
+      {
+       "idx": [
+        1,
+        2
+       ],
+       "text": "After a public event, a wave of alarming information exaggerates danger."
+      },
+      {
+       "idx": [
+        3
+       ],
+       "text": "A reliable pattern: stress spreads, people take in more negative reports, stress increases",
+       "q": [
+        38
+       ]
+      },
+      {
+       "idx": [
+        4
+       ],
+       "text": "As a result, trips are cancelled and stocks sold",
+       "q": [
+        39
+       ]
+      },
+      {
+       "idx": [
+        5
+       ],
+       "text": "The good news is that positive emotions are contagious too",
+       "q": [
+        40
+       ],
+       "keep": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "idx": [
+        6
+       ],
+       "text": "Awareness can help us frame messages more effectively."
+      }
+     ],
+     "conn": "①②③ nỗi sợ tập thể → ④ vòng lặp → ⑤ hậu quả → ⑥ **The good news, however** → cảm xúc tích cực cũng lây → ⑦ ứng dụng. Chuỗi: **vấn đề → cơ chế → hậu quả → mặt tích cực → ứng dụng**.",
+     "main": "Căng thẳng lây lan gây nỗi sợ không cần thiết, nhưng cảm xúc tích cực cũng lây và có thể dùng để thay đổi.",
+     "warn": []
+    }
+   ],
+   "groups": [
+    {
+     "from": 27,
+     "to": 30,
+     "type": "choice",
+     "instr": "Choose the correct letter, **A**, **B**, **C** or **D**.",
+     "items": [
+      {
+       "n": 27,
+       "q": "In the first paragraph, the writer introduces the topic of the text by",
+       "options": [
+        {
+         "k": "A",
+         "t": "defining some commonly used terms."
+        },
+        {
+         "k": "B",
+         "t": "questioning a widely held assumption."
+        },
+        {
+         "k": "C",
+         "t": "mentioning a challenge faced by everyone."
+        },
+        {
+         "k": "D",
+         "t": "specifying a situation which makes us most anxious."
+        }
+       ],
+       "a": [
+        "C"
+       ],
+       "loc": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         1
+        ],
+        [
+         0,
+         2
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 1①②③. *Bước 3 – Simplify:* **Some of the most important decisions occur while we're stressed. We are all sometimes required to weigh up information under stressful conditions.**\n*Bước 4:* `we are all` ↔ thách thức mà **mọi người** gặp.\n\n→ **C** mentioning a challenge faced by everyone.\n\n⚠️ B (đặt nghi vấn một **giả định phổ biến**): đoạn 1③ chỉ nêu câu hỏi, không bác giả định nào.",
+       "pairs": []
+      },
+      {
+       "n": 28,
+       "q": "What point does the writer make about firefighters in the second paragraph?",
+       "options": [
+        {
+         "k": "A",
+         "t": "The regular changes of stress levels in their working lives make them ideal study subjects."
+        },
+        {
+         "k": "B",
+         "t": "The strategies they use to handle stress are of particular interest to researchers."
+        },
+        {
+         "k": "C",
+         "t": "The stressful nature of their job is typical of many public service professions."
+        },
+        {
+         "k": "D",
+         "t": "Their personalities make them especially well-suited to working under stress."
+        }
+       ],
+       "a": [
+        "A"
+       ],
+       "loc": [
+        [
+         1,
+         1
+        ],
+        [
+         1,
+         2
+        ],
+        [
+         1,
+         3
+        ],
+        [
+         1,
+         4
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 2②–⑤. *Bước 3 – Simplify:* **Workdays vary: some relaxed, others hectic. These ups and downs presented the perfect setting for an experiment.**\n*Bước 4:* thay đổi mức căng thẳng đều đặn → **đối tượng nghiên cứu lý tưởng**.\n\n→ **A** The regular changes of stress levels in their working lives make them ideal study subjects.",
+       "pairs": []
+      },
+      {
+       "n": 29,
+       "q": "What is the writer doing in the fourth paragraph?",
+       "options": [
+        {
+         "k": "A",
+         "t": "explaining their findings"
+        },
+        {
+         "k": "B",
+         "t": "justifying their approach"
+        },
+        {
+         "k": "C",
+         "t": "setting out their objectives"
+        },
+        {
+         "k": "D",
+         "t": "describing their methodology"
+        }
+       ],
+       "a": [
+        "D"
+       ],
+       "loc": [
+        [
+         3,
+         0
+        ],
+        [
+         3,
+         1
+        ],
+        [
+         3,
+         2
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 4①②③. *Bước 3:* **This is how we arrived at these results. We asked the firefighters to estimate their likelihood of experiencing 40 adverse events. We then gave them good news or bad news.**\n*Bước 4:* kể **cách làm thí nghiệm**.\n\n→ **D** describing their methodology.\n\n⚠️ A (giải thích **phát hiện**) là đoạn 3; đoạn 4 mở đầu bằng `This is how we arrived at`.",
+       "pairs": []
+      },
+      {
+       "n": 30,
+       "q": "In the seventh paragraph, the writer describes a mechanism in the brain which",
+       "options": [
+        {
+         "k": "A",
+         "t": "enables people to respond more quickly to stressful situations."
+        },
+        {
+         "k": "B",
+         "t": "results in increased ability to control our levels of anxiety."
+        },
+        {
+         "k": "C",
+         "t": "produces heightened sensitivity to indications of external threats."
+        },
+        {
+         "k": "D",
+         "t": "is activated when there is a need to communicate a sense of danger."
+        }
+       ],
+       "a": [
+        "C"
+       ],
+       "loc": [
+        [
+         6,
+         0
+        ],
+        [
+         6,
+         1
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 7①②. *Bước 3 – Simplify:* **A physiological change causes us to take in warnings and focus on what might go wrong. This 'switch' is related to a boost in a neural signal … in response to unexpected warning signs.**\n*Bước 4:* `take in warnings … response to warning signs` ↔ **nhạy hơn với dấu hiệu nguy hiểm bên ngoài**.\n\n→ **C** produces heightened sensitivity to indications of external threats.",
+       "pairs": []
+      }
+     ]
+    },
+    {
+     "from": 31,
+     "to": 35,
+     "type": "choice",
+     "instr": "Complete each sentence with the correct ending, **A–G**, below.",
+     "items": [
+      {
+       "n": 31,
+       "q": "At times when they were relaxed, the firefighters usually",
+       "a": [
+        "B"
+       ],
+       "loc": [
+        [
+         4,
+         0
+        ],
+        [
+         4,
+         1
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 5①②. *Bước 3:* **People are normally quite optimistic – they will ignore bad news and embrace the good. This is what happened when the firefighters were relaxed.** `ignore bad news` ↔ `took relatively little notice of bad news`.\n\n→ **B**\n\n⚠️ A (làm họ lạc quan) hợp nghĩa nhưng không nối đúng ngữ pháp với chủ ngữ `the firefighters usually …`.",
+       "pairs": [
+        [
+         "ignore bad news",
+         "took relatively little notice of bad news"
+        ]
+       ]
+      },
+      {
+       "n": 32,
+       "q": "The researchers noted that when the firefighters were stressed, they",
+       "a": [
+        "G"
+       ],
+       "loc": [
+        [
+         4,
+         2
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 5③. *Bước 3 – Simplify:* **Under stress, they became hyper-vigilant to bad news and altered their beliefs in response.**\n*Bước 4:* sau tin xấu, họ **điều chỉnh niềm tin**: cho rằng khả năng gặp chuyện xấu **cao hơn**.\n\n→ **G**",
+       "pairs": []
+      },
+      {
+       "n": 33,
+       "q": "When the firefighters were told good news, they always",
+       "a": [
+        "F"
+       ],
+       "loc": [
+        [
+         4,
+         3
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 5④. *Bước 3:* **In contrast, stress didn't change how they responded to good news.** `always` + `didn't change` ↔ `behaved in a similar manner, regardless of the circumstances`.\n\n→ **F**",
+       "pairs": [
+        [
+         "didn't change",
+         "behaved in a similar manner, regardless of the circumstances"
+        ]
+       ]
+      },
+      {
+       "n": 34,
+       "q": "The students' cortisol levels and heart rates were affected when the researchers",
+       "a": [
+        "E"
+       ],
+       "loc": [
+        [
+         5,
+         0
+        ],
+        [
+         5,
+         1
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 6①②. *Bước 3:* **Students were told they had to give a surprise public speech … their cortisol levels spiked, their heart rates went up.**\n*Bước 4:* nhà nghiên cứu **đặt sinh viên vào tình huống căng thẳng**.\n\n→ **E**",
+       "pairs": []
+      },
+      {
+       "n": 35,
+       "q": "In both experiments, negative information was processed better when the subjects",
+       "a": [
+        "D"
+       ],
+       "loc": [
+        [
+         4,
+         2
+        ],
+        [
+         5,
+         1
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 5③ và 6②. *Bước 3:* cả lính cứu hỏa lẫn sinh viên xử lý thông tin xấu tốt hơn **khi bị căng thẳng**.\n\n→ **D**",
+       "pairs": []
+      }
+     ],
+     "options": [
+      {
+       "k": "A",
+       "t": "made them feel optimistic."
+      },
+      {
+       "k": "B",
+       "t": "took relatively little notice of bad news."
+      },
+      {
+       "k": "C",
+       "t": "responded to negative and positive information in the same way."
+      },
+      {
+       "k": "D",
+       "t": "were feeling under stress."
+      },
+      {
+       "k": "E",
+       "t": "put them in a stressful situation."
+      },
+      {
+       "k": "F",
+       "t": "behaved in a similar manner, regardless of the circumstances."
+      },
+      {
+       "k": "G",
+       "t": "thought it more likely that they would experience something bad."
+      }
+     ],
+     "guide": "Các đáp án: **A** made them feel optimistic · **B** took relatively little notice of bad news · **C** responded to negative and positive information in the same way · **D** were feeling under stress · **E** put them in a stressful situation · **F** behaved in a similar manner, regardless of the circumstances · **G** thought it more likely that they would experience something bad."
+    },
+    {
+     "from": 36,
+     "to": 40,
+     "type": "tf",
+     "instr": "Do the following statements agree with the claims of the writer in Reading Passage 3?",
+     "items": [
+      {
+       "n": 36,
+       "q": "The tone of the content we post on social media tends to reflect the nature of the posts in our feeds.",
+       "a": [
+        "YES"
+       ],
+       "loc": [
+        [
+         8,
+         3
+        ],
+        [
+         8,
+         4
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 9④⑤. *Bước 3 – Simplify:* **If we observe positive feeds, we are more likely to post uplifting messages. If we observe negative posts, we will create more negative posts.** `tone of content` ↔ `uplifting / negative`.\n\n→ **YES**",
+       "pairs": [
+        [
+         "tone of content",
+         "uplifting / negative"
+        ]
+       ]
+      },
+      {
+       "n": 37,
+       "q": "Phones have a greater impact on our stress levels than other electronic media devices.",
+       "a": [
+        "NOT GIVEN"
+       ],
+       "loc": [
+        [
+         9,
+         1
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 10②. *Bước 3:* **Repeatedly checking your phone … is related to stress.**\n*Bước 4:* bài **không so sánh** điện thoại với thiết bị khác.\n\n→ **NOT GIVEN**",
+       "pairs": []
+      },
+      {
+       "n": 38,
+       "q": "The more we read about a stressful public event on social media, the less able we are to take the information in.",
+       "a": [
+        "NO"
+       ],
+       "loc": [
+        [
+         10,
+         3
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 11④. *Bước 3:* **Stress … temporarily enhances the likelihood that people will take in negative reports, which increases stress further.**\n*Bước 4:* stress làm ta **tiếp nhận nhiều hơn**, không phải **kém hơn**.\n\n→ **NO** (PDF in `N0`)",
+       "pairs": []
+      },
+      {
+       "n": 39,
+       "q": "Stress created by social media posts can lead us to take unnecessary precautions.",
+       "a": [
+        "YES"
+       ],
+       "loc": [
+        [
+         10,
+         0
+        ],
+        [
+         10,
+         4
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 11①⑤. *Bước 3:* **Collective fear that is not always justified … trips are cancelled, even if the disaster took place across the globe; stocks are sold, even when holding on is the best thing to do.** `unnecessary precautions` ↔ hủy chuyến đi, bán cổ phiếu không cần thiết.\n\n→ **YES**",
+       "pairs": []
+      },
+      {
+       "n": 40,
+       "q": "Our tendency to be affected by other people's moods can be used in a positive way.",
+       "a": [
+        "YES"
+       ],
+       "loc": [
+        [
+         10,
+         5
+        ],
+        [
+         10,
+         6
+        ]
+       ],
+       "exp": "*Bước 2:* đoạn 11⑥⑦. *Bước 3:* **Positive emotions, such as hope, are contagious too, and are powerful in inducing people to act to find solutions.**\n\n→ **YES**",
+       "pairs": []
+      }
+     ],
+     "options": [
+      {
+       "k": "YES",
+       "t": "YES"
+      },
+      {
+       "k": "NO",
+       "t": "NO"
+      },
+      {
+       "k": "NOT GIVEN",
+       "t": "NOT GIVEN"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "exercises": {
+  "q": "**A. Simplify** – tìm [S]–[V], bỏ phần phụ:\n1. `However, the population did not start to increase until rats were removed from all three islands, and the birds were more intensively managed.`\n2. `Once the trunk of the elm reaches 10–15 centimetres or so in diameter, it becomes a perfect size for beetles to lay eggs and for the fungus to take hold.`\n3. `The fact that stress increases the likelihood that we will focus more on alarming messages, together with the fact that it spreads extremely rapidly, can create collective fear that is not always justified.`\n\n**B. Đại từ:** `them` trong `no females amongst them` (P1 đoạn 7②) chỉ gì? `this` trong `This involved moving the birds…` (P1 đoạn 9⑤) chỉ gì? `it` trong `it spreads extremely rapidly` (P3 đoạn 11①) chỉ gì?\n\n**C. Paraphrase:** `depleted` – ? · `precarious` – ? · `hyper-vigilant` – ? · `contagious` – ?\n\n**D.** Vì sao P1 Q4 là **NOT GIVEN** còn Q5 là **TRUE**?\n\n---",
+  "a": "**A.**\n1. [S] the population [V] did not start to increase; `until…` là thời điểm, `However` đảo chiều.\n2. [S] it [V] becomes a perfect size; `Once…` là điều kiện thời gian.\n3. [S] The fact that stress increases… together with the fact that it spreads [V] can create collective fear; `that is not always justified` là phụ.\n\n**B.** `them` = **sáu con kākāpō bị bắt**; `this` = **việc quản lý chuyên sâu (intensively managed)**; `it` = **căng thẳng (stress)**.\n\n**C.** `depleted` – `used up / reduced`; `precarious` – `unstable / risky`; `hyper-vigilant` – `extremely alert`; `contagious` – `spreading from person to person`.\n\n**D.** Q4: bài nói cả người Polynesia và chuột đều săn kākāpō nhưng không so sánh mức độ → NOT GIVEN. Q5: đoạn 8①② nói mèo hoang gây suy giảm, **As a result** chim được chuyển sang đảo khác → TRUE."
+ },
+ "method": "1. **Đọc câu hỏi, xác định cấu trúc** (từ loại ô trống, mắt thông tin).\n2. **Định vị** bằng từ không paraphrase được (tên riêng, số, năm).\n3. **Simplify** câu trong bài: tìm [S]–[V], bỏ phần phụ.\n4. **So ý, không so chữ.**\n\n| Dạng | Nguyên tắc |\n|---|---|\n| T/F/NG và Y/N/NG | Tách câu hỏi thành **mắt thông tin**; FALSE/NO cần chỗ nói **ngược**; NG là **thiếu mắt** |\n| Note / Summary Completion | Từ loại trước, lấy **nguyên văn từ bài**, kiểm tra giới hạn từ; ô trống đi **theo thứ tự bài** |\n| Matching Information | Dùng **ý chính từng đoạn**; có thể dùng một chữ cái nhiều lần |\n| Matching người nói | Gạch **ý khác biệt** của từng người, rồi so câu hỏi |\n| Matching Sentence Endings | Đọc **phần đầu câu**, tìm ý trong bài, kiểm tra ngữ pháp nối |\n| Multiple Choice | Định vị đoạn trong câu hỏi, **loại từng phương án** |",
+ "traps": "1. **T/F/NG:** `only flightless parrot` → FALSE (Q1); `only in years when food is plentiful` → FALSE (Q2); thiếu so sánh mức độ đe dọa → NG (Q4).\n2. **Note completion:** chọn đúng **năm xác nhận** (1980, không phải 1977) và đúng **thứ làm quần áo** (feathers, không phải meat).\n3. **Matching Information:** C có hai mắt (Q14 vấn đề nghiên cứu, Q18 giai đoạn dễ bị bệnh); dùng được một chữ cái nhiều lần.\n4. **Matching người nói:** mỗi người xuất hiện hai lần; gắn ý với người đúng.\n5. **Matching Sentence Endings:** `usually / always` + `didn't change` ↔ `regardless of the circumstances` (Q33).\n6. **Y/N/NG:** `than other devices` là so sánh bài không có (Q37); `the less able` ngược với `take in more` (Q38).",
+ "band": "**Quy đổi band (tham khảo):** 15–18 ≈ 5.0 · 19–22 ≈ 5.5 · 23–26 ≈ 6.0 · 27–29 ≈ 6.5 · 30–32 ≈ 7.0"
+}

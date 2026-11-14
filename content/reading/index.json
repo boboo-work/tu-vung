@@ -1,0 +1,45 @@
+{
+ "version": 1,
+ "tests": [
+  {
+   "id": "cam20-t1",
+   "title": "Cambridge 20 · Test 1",
+   "file": "content/reading/cam20-t1.json",
+   "passages": [
+    {
+     "id": "cam20-t1-p1",
+     "n": 1,
+     "title": "The kākāpō",
+     "topic": "Động vật · bảo tồn",
+     "questions": 13,
+     "types": [
+      "gap",
+      "tf"
+     ]
+    },
+    {
+     "id": "cam20-t1-p2",
+     "n": 2,
+     "title": "To Britain",
+     "topic": "Thực vật · môi trường",
+     "questions": 13,
+     "types": [
+      "choice",
+      "gap"
+     ]
+    },
+    {
+     "id": "cam20-t1-p3",
+     "n": 3,
+     "title": "How stress affects our judgement",
+     "topic": "Tâm lý học",
+     "questions": 14,
+     "types": [
+      "choice",
+      "tf"
+     ]
+    }
+   ]
+  }
+ ]
+}

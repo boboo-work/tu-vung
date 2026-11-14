@@ -25,6 +25,7 @@ const ICONS = {
   folder: '<path d="M3 7a1 1 0 0 1 1-1h5l2 2.5h8a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
   pen: '<path d="M4 20l1-4L16.5 4.5l3 3L8 19zM14 7l3 3"/>',
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
   ear: '<path d="M7 10a5 5 0 0 1 10 0c0 3-3 3.5-3 6.5a3 3 0 0 1-5.5 1.6M10 10.5a2 2 0 0 1 4 0"/>',
   list: '<path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>',
   swap: '<path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/>',
@@ -42,7 +43,7 @@ export const actions = {};
 export const on = (name, fn) => (actions[name] = fn);
 
 // ---- Điều hướng ----
-export const TABS = ['home', 'learn', 'grammar', 'writing', 'review', 'vocab', 'stats']; // 'grammar' nằm trong tab Học
+export const TABS = ['home', 'learn', 'grammar', 'writing', 'reading', 'review', 'vocab', 'stats']; // 'grammar' nằm trong tab Học
 let depth = 0;
 export function go(hash) {
   const name = hash.split('/')[1];
@@ -62,7 +63,8 @@ export function back(fallback = '#/home') {
 export const learnSwitch = (cur) => `<div class="seg learn-switch" role="tablist">
   <button class="${cur === 'vocab' ? 'on' : ''}" data-act="go" data-to="#/learn" role="tab" aria-selected="${cur === 'vocab'}">Từ vựng</button>
   <button class="${cur === 'grammar' ? 'on' : ''}" data-act="go" data-to="#/grammar" role="tab" aria-selected="${cur === 'grammar'}">Ngữ pháp</button>
-  <button class="${cur === 'writing' ? 'on' : ''}" data-act="go" data-to="#/writing" role="tab" aria-selected="${cur === 'writing'}">Writing</button></div>`;
+  <button class="${cur === 'writing' ? 'on' : ''}" data-act="go" data-to="#/writing" role="tab" aria-selected="${cur === 'writing'}">Writing</button>
+  <button class="${cur === 'reading' ? 'on' : ''}" data-act="go" data-to="#/reading" role="tab" aria-selected="${cur === 'reading'}">Reading</button></div>`;
 
 let renderFn = () => {};
 export const setRenderer = (fn) => (renderFn = fn);
