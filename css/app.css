@@ -950,3 +950,17 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
   .goals.five .goal span, .home-grid .goals.five .goal span { font-size: 12.5px; }
 }
 .rate.three { grid-template-columns: repeat(3, 1fr); }
+/* Reading giai đoạn 2–3 */
+.r-testhead { margin: 26px 2px 10px; gap: 10px; }
+.r-testhead h2 { margin: 0; }
+.r-fullbtn { border: 0; cursor: pointer; flex: none; }
+.r-why { margin-top: 12px; }
+.r-why .pill-list { margin-top: 6px; }
+.r-why .tag { border: 0; cursor: pointer; font-size: 13px; padding: 5px 10px; }
+.r-reason + .r-reason { border-top: 1px solid var(--line); margin-top: 8px; padding-top: 8px; }
+.r-mi .opt { width: 100%; min-height: 0; font-size: 15px; font-weight: 500; margin-top: 8px; text-align: left; justify-content: flex-start; }
+.r-pp { margin: 0 0 8px; }
+.r-rv { margin-top: 10px; }
+.r-rv .opt { min-height: 48px; font-size: 15.5px; }
+.r-pat { margin-top: 10px; }
+.r-pat .tag { border: 0; cursor: pointer; }

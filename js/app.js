@@ -8,7 +8,7 @@ import { gameView } from './game.js';
 import { dropView } from './drop.js';
 import { matchView, popView } from './games2.js';
 import { loadWriting, writingView, typeView as wTypeView, promptView as wPromptView, writeView, essaysView, essayView, statsView as wStatsView } from './writing.js';
-import { loadReading, readingView, passageView as rPassageView, runView as rRunView, resultView as rResultView, studyView as rStudyView } from './reading.js';
+import { loadReading, readingView, passageView as rPassageView, runView as rRunView, resultView as rResultView, studyView as rStudyView, fullView as rFullView, reviewView as rReviewView, patternsView as rPatternsView, ownListView as rOwnListView, ownView as rOwnView, statsView as rStatsView } from './reading.js';
 import { loadGrammar, grammarView, unitView, lessonView, cardsView, errorsView, testView, gDueCount } from './grammar.js';
 import { countUp } from './fx.js';
 
@@ -18,6 +18,7 @@ const routes = {
   settings: settingsView, ai: aiView, session: sessionView, game: gameView, drop: dropView, match: matchView, pop: popView,
   writing: writingView, wtype: wTypeView, wprompt: wPromptView, wwrite: writeView, wessays: essaysView, wessay: essayView, wstats: wStatsView,
   reading: readingView, rpassage: rPassageView, rrun: rRunView, rresult: rResultView, rstudy: rStudyView,
+  rfull: rFullView, rvocab: rReviewView, rpatterns: rPatternsView, rown: rOwnListView, rownv: rOwnView, rstats: rStatsView,
   grammar: grammarView, gunit: unitView, glesson: lessonView, gcards: cardsView, gerrors: errorsView, gtest: testView,
 };
 const TAB_META = [['home', 'Trang chủ', 'home'], ['learn', 'Học', 'learn'], ['review', 'Ôn tập', 'review'], ['vocab', 'Từ vựng', 'vocab'], ['stats', 'Thống kê', 'stats']];

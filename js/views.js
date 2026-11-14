@@ -84,7 +84,7 @@ export function homeView() {
   const wNext = !wDraft && wGoal && wToday < wGoal ? nextPart() : null;
   const rGoal = R.state === 'ready' ? S.settings.readingPerDay : 0;
   const rToday = todayReading();
-  const rDraft = [...S.reading.values()].find((x) => x.kind === 'draft');
+  const rDraft = [...S.reading.values()].find((x) => x.kind === 'draft' && !String(x.pid).startsWith('full:'));
   const rNext = !rDraft && rGoal && rToday < rGoal ? nextPassage() : null;
   const rDraftMeta = rDraft && R.tests.flatMap((t) => t.passages).find((p) => p.id === rDraft.pid);
   const ringCount = 2 + (gGoal ? 1 : 0) + (wGoal ? 1 : 0) + (rGoal ? 1 : 0);

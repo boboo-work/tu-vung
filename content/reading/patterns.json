@@ -1,0 +1,439 @@
+{
+ "version": 1,
+ "patterns": [
+  {
+   "p": "distinguish between A and B",
+   "vi": "phân biệt A và B",
+   "ex": "Even with journalists and scholars pointing to the phenomenon of 'fake news', people do not distinguish between demonstrably false stories and those based in fact when scanning and processing written information.",
+   "src": "Cambridge 19 · Test 1 · The persistence and peril of misinformation",
+   "n": 1
+  },
+  {
+   "p": "attribute A to B",
+   "vi": "cho rằng A là do B",
+   "ex": "Djoser is thought to have reigned for 19 years, but some historians and scholars attribute a much longer time for his rule, owing to the number and size of the monuments he built.",
+   "src": "Cambridge 16 · Test 1 · The Step Pyramid of Djoser",
+   "n": 1
+  },
+  {
+   "p": "result in + N",
+   "vi": "dẫn đến",
+   "ex": "Unlike extrinsic factors, motivator factors may ideally result in job satisfaction (Maroudas et al., 2008).",
+   "src": "Cambridge 14 · Test 1 · Motivational factors and the hospitality industry",
+   "n": 13
+  },
+  {
+   "p": "result from + N",
+   "vi": "là kết quả của",
+   "ex": "Scientific discovery is popularly believed to result from the sheer genius of such intellectual stars as naturalist Charles Darwin and theoretical physicist Albert Einstein.",
+   "src": "Cambridge 17 · Test 2 · Insight or evolution?",
+   "n": 2
+  },
+  {
+   "p": "lead to + N",
+   "vi": "dẫn tới",
+   "ex": "Cutting down native woodland leads to erosion, as there is nothing to keep the soil in place.",
+   "src": "Cambridge 15 · Test 4 · The return of the huarango",
+   "n": 26
+  },
+  {
+   "p": "contribute to + N",
+   "vi": "góp phần vào",
+   "ex": "We often ignore the suffering of strangers, and even contribute to it, at least indirectly.",
+   "src": "Cambridge 18 · Test 2 · Living with artificial intelligence",
+   "n": 7
+  },
+  {
+   "p": "account for + N",
+   "vi": "chiếm; giải thích cho",
+   "ex": "This country is estimated to be home to well over 90% of the global saiga population, with Russia, Mongolia and Uzbekistan accounting for the rest.",
+   "src": "Cambridge 21 · Test 3 · Saving the saiga",
+   "n": 6
+  },
+  {
+   "p": "depend on + N",
+   "vi": "phụ thuộc vào",
+   "ex": "Yet many of the poorest people in the world still depend on it to make a living.",
+   "src": "Cambridge 21 · Test 1 · Book review: The World of Sugar by Ulbe Bosma",
+   "n": 18
+  },
+  {
+   "p": "rely on + N",
+   "vi": "dựa vào",
+   "ex": "In the ancient times, the inhabitants of these areas relied heavily on marine resources, including fish and salt.",
+   "src": "Cambridge 19 · Test 1 · The pirates of the ancient Mediterranean",
+   "n": 11
+  },
+  {
+   "p": "consist of + N",
+   "vi": "gồm có",
+   "ex": "This consisted of frozen turkey, potatoes and vegetables served in the same segmented aluminum tray that was used by airlines.",
+   "src": "Cambridge 20 · Test 3 · Frozen Food",
+   "n": 7
+  },
+  {
+   "p": "be composed of + N",
+   "vi": "được cấu tạo từ",
+   "ex": "The king and his advisers dwelt in a stone enclosure composed of stone walls and housing built on the highest level of the community's territory, a natural sandstone hill which is some 30 metres high and 100 metres in length.",
+   "src": "Cambridge 21 · Test 2 · Mapungubwe",
+   "n": 2
+  },
+  {
+   "p": "regard A as B",
+   "vi": "coi A là B",
+   "ex": "It's regarded as something trivial, or even as something negative that contrasts with \"work\".",
+   "src": "Cambridge 14 · Test 1 · The importance of children's play",
+   "n": 2
+  },
+  {
+   "p": "consider A (to be) B",
+   "vi": "xem A là B",
+   "ex": "'Organisations are attracted to using algorithms because they want to make choices based on what they consider is \"perfect information\", as well as to reduce costs and enhance productivity.'",
+   "src": "Cambridge 16 · Test 1 · The future of work",
+   "n": 2
+  },
+  {
+   "p": "see A as B",
+   "vi": "nhìn nhận A là B",
+   "ex": "Dingoes never reached Tasmania, and most scientists see this as the main reason for the thylacine's survival there.",
+   "src": "Cambridge 17 · Test 1 · The thylacine",
+   "n": 5
+  },
+  {
+   "p": "refer to A as B",
+   "vi": "gọi A là B",
+   "ex": "Scientists refer to the timing of such lifecycle events as 'phenology', so when an animal or plant starts to do something earlier in the year than it usually does, it is said to be 'advancing its phenology'.",
+   "src": "Cambridge 19 · Test 4 · The impact of climate change on butterflies in Britain",
+   "n": 1
+  },
+  {
+   "p": "replace A with B",
+   "vi": "thay A bằng B",
+   "ex": "The problem, he suggests, is that, 'You're replacing a native species with a horticultural analogue. You're effectively cloning.'",
+   "src": "Cambridge 20 · Test 1 · To Britain",
+   "n": 3
+  },
+  {
+   "p": "prevent A from V-ing",
+   "vi": "ngăn A làm gì",
+   "ex": "Unfortunately, all of the precautions and intricate design of the underground network did not prevent ancient robbers from finding a way in.",
+   "src": "Cambridge 16 · Test 1 · The Step Pyramid of Djoser",
+   "n": 5
+  },
+  {
+   "p": "protect A from B",
+   "vi": "bảo vệ A khỏi B",
+   "ex": "'The idea is that people in a developing country will only protect wetlands if they value and profit from them,' says McCartney.",
+   "src": "Cambridge 19 · Test 3 · The global importance of wetlands",
+   "n": 4
+  },
+  {
+   "p": "provide A with B",
+   "vi": "cung cấp B cho A",
+   "ex": "And those artefacts have provided archaeologists with some surprising insights into how ancient Norwegians made their livings.",
+   "src": "Cambridge 16 · Test 3 · Climate change reveals ancient artefacts in Norway's glaciers",
+   "n": 5
+  },
+  {
+   "p": "compare A with/to B",
+   "vi": "so sánh A với B",
+   "ex": "Chowdhury says that the results are very visible, comparing a barren plot of land to the 'beautiful, lush green vegetable garden' sitting beside it ...",
+   "src": "Cambridge 20 · Test 4 · Adapting to the effects of climate change",
+   "n": 5
+  },
+  {
+   "p": "associate A with B",
+   "vi": "liên tưởng A với B",
+   "ex": "The word 'genius' is universally associated with the name of Leonardo da Vinci.",
+   "src": "Cambridge 18 · Test 2 · An ideal city",
+   "n": 13
+  },
+  {
+   "p": "link A to/with B",
+   "vi": "liên kết A với B",
+   "ex": "In humans, for example, a decrease in serotonin has been linked to Alzheimer's disease.",
+   "src": "Cambridge 14 · Test 4 · The secret of staying young",
+   "n": 16
+  },
+  {
+   "p": "involve + V-ing",
+   "vi": "bao gồm việc",
+   "ex": "Whitebread's recent research has involved developing a play-based approach to supporting children's writing.",
+   "src": "Cambridge 14 · Test 1 · The importance of children's play",
+   "n": 10
+  },
+  {
+   "p": "enable A to V",
+   "vi": "giúp A có thể",
+   "ex": "The boost to his income enabled him to take on ambitious projects and start working on the scale he felt his sculpture demanded.",
+   "src": "Cambridge 15 · Test 3 · Henry Moore (1898-1986)",
+   "n": 12
+  },
+  {
+   "p": "allow A to V",
+   "vi": "cho phép A",
+   "ex": "This then allows the forester to decide which tree species are regenerated.",
+   "src": "Cambridge 18 · Test 1 · Forest management in Pennsylvania, USA",
+   "n": 26
+  },
+  {
+   "p": "encourage A to V",
+   "vi": "khuyến khích A",
+   "ex": "In doing so they make crossings feel longer, introducing psychological barriers greatly impacting those that are the least mobile, and encouraging others to make dangerous crossings to get around the guard rails.",
+   "src": "Cambridge 15 · Test 2 · Could urban engineers learn from dance?",
+   "n": 2
+  },
+  {
+   "p": "require A to V",
+   "vi": "yêu cầu A",
+   "ex": "More often than not, data is spread across different government departments that each require special permissions to be accessed.",
+   "src": "Cambridge 21 · Test 2 · Artificial Intelligence",
+   "n": 7
+  },
+  {
+   "p": "tend to V",
+   "vi": "có xu hướng",
+   "ex": "The few digitised sources of data that exist tend to be buried in bureaucracy.",
+   "src": "Cambridge 21 · Test 2 · Artificial Intelligence",
+   "n": 26
+  },
+  {
+   "p": "be likely to V",
+   "vi": "có khả năng",
+   "ex": "Some situations are more likely to promote wisdom than others.'",
+   "src": "Cambridge 16 · Test 2 · How to make wise decisions",
+   "n": 22
+  },
+  {
+   "p": "be unlikely to V",
+   "vi": "ít khả năng",
+   "ex": "That said, dreaming and REM sleep are unlikely to be universal in the animal kingdom.",
+   "src": "Cambridge 21 · Test 2 · Do animals dream?",
+   "n": 1
+  },
+  {
+   "p": "be able to V",
+   "vi": "có thể",
+   "ex": "'People in these states may not be able to relax or calm down in a silent condition,' he says.",
+   "src": "Cambridge 21 · Test 1 · Why we need silence",
+   "n": 16
+  },
+  {
+   "p": "manage to V",
+   "vi": "xoay xở làm được",
+   "ex": "If we are good, it's only because we have managed to control and transcend our innate selfishness and brutality.",
+   "src": "Cambridge 19 · Test 4 · The Unselfish Gene",
+   "n": 4
+  },
+  {
+   "p": "fail to V",
+   "vi": "không làm được",
+   "ex": "While many politicians proclaim the transformative effects of the coming 'AI revolution', they fail to realise the complexity around deploying advanced machine learning systems in the real world.",
+   "src": "Cambridge 21 · Test 2 · Artificial Intelligence",
+   "n": 2
+  },
+  {
+   "p": "aim to V",
+   "vi": "nhằm mục đích",
+   "ex": "There are some crucial lessons here for everyone aiming to boost investments in national AI programmes.",
+   "src": "Cambridge 21 · Test 2 · Artificial Intelligence",
+   "n": 5
+  },
+  {
+   "p": "seek to V",
+   "vi": "tìm cách",
+   "ex": "These types of cut reduce the number of sick trees and seek to manage the future spread of a pest problem.",
+   "src": "Cambridge 18 · Test 1 · Forest management in Pennsylvania, USA",
+   "n": 4
+  },
+  {
+   "p": "intend to V",
+   "vi": "dự định",
+   "ex": "They intend to look not only at test results, but also at variables such as the standard of schooling, the environment and the teaching practices themselves.",
+   "src": "Cambridge 21 · Test 4 · How could multilingualism benefit India's poorest schoolchildren?",
+   "n": 3
+  },
+  {
+   "p": "help (to) V",
+   "vi": "giúp",
+   "ex": "This can help create a feeling of control over the stressful event.",
+   "src": "Cambridge 19 · Test 2 · Athletes and stress",
+   "n": 7
+  },
+  {
+   "p": "mean that + S + V",
+   "vi": "có nghĩa là",
+   "ex": "This faster rate of turnover may mean that vehicle production will not necessarily decrease.",
+   "src": "Cambridge 15 · Test 1 · Driverless cars",
+   "n": 8
+  },
+  {
+   "p": "suggest that + S + V",
+   "vi": "cho thấy / gợi ý rằng",
+   "ex": "'We suggest that humour is not only enjoyable but more importantly, energising.'",
+   "src": "Cambridge 15 · Test 2 · Having a laugh",
+   "n": 25
+  },
+  {
+   "p": "argue that + S + V",
+   "vi": "lập luận rằng",
+   "ex": "Instead, educators such as John Dewey argued that every child's intelligence could be developed, given the right environment.",
+   "src": "Cambridge 18 · Test 4 · The growth mindset",
+   "n": 9
+  },
+  {
+   "p": "claim that + S + V",
+   "vi": "khẳng định rằng",
+   "ex": "Such examples give lie to the claim that ingenious, designing minds are responsible for human creativity and invention.",
+   "src": "Cambridge 17 · Test 2 · Insight or evolution?",
+   "n": 7
+  },
+  {
+   "p": "indicate that + S + V",
+   "vi": "chỉ ra rằng",
+   "ex": "The evidence indicates that guard dogs are highly effective.",
+   "src": "Cambridge 20 · Test 4 · A new role for livestock guard dogs",
+   "n": 14
+  },
+  {
+   "p": "reveal that + S + V",
+   "vi": "tiết lộ rằng",
+   "ex": "Brain imaging reveals that this 'switch' is related to a sudden boost in a neural signal important for learning, specifically in response to unexpected warning signs, such as faces expressing fear.",
+   "src": "Cambridge 20 · Test 1 · How stress affects our judgement",
+   "n": 4
+  },
+  {
+   "p": "find + N + adj",
+   "vi": "thấy cái gì như thế nào",
+   "ex": "'We find that there's a barrier with sharing one of the earphones with a stranger,' says Ochoa.",
+   "src": "Cambridge 19 · Test 3 · Is the era of artificial speech translation upon us?",
+   "n": 22
+  },
+  {
+   "p": "make it + adj + to V",
+   "vi": "khiến việc… trở nên…",
+   "ex": "Having a stronger roof also makes it easier to grow a greater variety of plants, since the soil can be deeper.",
+   "src": "Cambridge 18 · Test 4 · Green roofs",
+   "n": 5
+  },
+  {
+   "p": "cause A to V",
+   "vi": "khiến A",
+   "ex": "One way to look at whether education causes economic growth is to 'hold wealth constant'.",
+   "src": "Cambridge 17 · Test 4 · Does education fuel economic growth?",
+   "n": 19
+  },
+  {
+   "p": "deal with + N",
+   "vi": "giải quyết",
+   "ex": "We have a new powerful technology to deal with – itself, literally, a new way of thinking.",
+   "src": "Cambridge 18 · Test 2 · Living with artificial intelligence",
+   "n": 8
+  },
+  {
+   "p": "cope with + N",
+   "vi": "đối phó với",
+   "ex": "Is this a sign that butterflies are well equipped to cope with climate change, and readily adjust to new temperatures?",
+   "src": "Cambridge 19 · Test 4 · The impact of climate change on butterflies in Britain",
+   "n": 5
+  },
+  {
+   "p": "focus on + N",
+   "vi": "tập trung vào",
+   "ex": "A shortage of materials forced him to focus on drawing.",
+   "src": "Cambridge 15 · Test 3 · Henry Moore (1898-1986)",
+   "n": 20
+  },
+  {
+   "p": "benefit from + N",
+   "vi": "hưởng lợi từ",
+   "ex": "These countries also benefit from having newer buildings than in many parts of the world, which makes it easier to install green roofs.",
+   "src": "Cambridge 18 · Test 4 · Green roofs",
+   "n": 8
+  },
+  {
+   "p": "suffer from + N",
+   "vi": "chịu đựng",
+   "ex": "This rapid urbanisation brought significant challenges, as overcrowded cities suffered from pollution and inadequate sanitation.",
+   "src": "Cambridge 19 · Test 2 · The Industrial Revolution in Britain",
+   "n": 5
+  },
+  {
+   "p": "derive from + N",
+   "vi": "bắt nguồn từ",
+   "ex": "Palm oil is an edible oil derived from the fruit of the African oil palm tree, and is currently the most consumed vegetable oil in the world.",
+   "src": "Cambridge 17 · Test 1 · Palm oil",
+   "n": 2
+  },
+  {
+   "p": "respond to + N",
+   "vi": "phản ứng với",
+   "ex": "More specifically, he's interested in how bats are responding to human activity and deforestation in particular.",
+   "src": "Cambridge 17 · Test 4 · Bats to the rescue",
+   "n": 10
+  },
+  {
+   "p": "adapt to + N",
+   "vi": "thích nghi với",
+   "ex": "History shows that stadiums can drive urban development and adapt to the culture of every age.",
+   "src": "Cambridge 17 · Test 3 · Stadiums: past, present and future",
+   "n": 10
+  },
+  {
+   "p": "be exposed to + N",
+   "vi": "tiếp xúc với",
+   "ex": "When we are exposed to too much noise over the long term, however, those responses can lead to a multitude of health issues, from sleep disturbance to even cardiovascular disease.",
+   "src": "Cambridge 21 · Test 1 · Why we need silence",
+   "n": 3
+  },
+  {
+   "p": "be responsible for + N",
+   "vi": "chịu trách nhiệm về; là nguyên nhân của",
+   "ex": "As a result, the cheetahs are often held responsible for animal losses, and large numbers have been killed by farmers.",
+   "src": "Cambridge 20 · Test 4 · A new role for livestock guard dogs",
+   "n": 5
+  },
+  {
+   "p": "be capable of + V-ing",
+   "vi": "có khả năng",
+   "ex": "The study demonstrates that bears are capable of agile and thought-out behaviours.",
+   "src": "Cambridge 16 · Test 1 · Why we need to protect polar bears",
+   "n": 6
+  },
+  {
+   "p": "be aware of + N",
+   "vi": "nhận thức được",
+   "ex": "'This allows us to be more aware of what is happening around us and what the situation may require from us so we can provide [a more] adequate response.'",
+   "src": "Cambridge 21 · Test 1 · Why we need silence",
+   "n": 5
+  },
+  {
+   "p": "in terms of + N",
+   "vi": "xét về mặt",
+   "ex": "Barr identifies four primary immigrant enclaves and analyses their locations in terms of the amenities available in the area.",
+   "src": "Cambridge 17 · Test 1 · Building the Skyline",
+   "n": 5
+  },
+  {
+   "p": "as a result of + N",
+   "vi": "do / vì",
+   "ex": "Another threat to the survival of the saiga is loss of habitat, as a result of agricultural expansion and human settlement.",
+   "src": "Cambridge 21 · Test 3 · Saving the saiga",
+   "n": 5
+  },
+  {
+   "p": "in spite of / despite + N",
+   "vi": "mặc dù",
+   "ex": "Despite the common name 'tiger', the thylacine had a shy, nervous temperament.",
+   "src": "Cambridge 17 · Test 1 · The thylacine",
+   "n": 14
+  },
+  {
+   "p": "rather than + N/V",
+   "vi": "thay vì",
+   "ex": "Rather than fighting against it, one project is helping communities adapt to salt-affected soils.",
+   "src": "Cambridge 20 · Test 4 · Adapting to the effects of climate change",
+   "n": 21
+  }
+ ]
+}

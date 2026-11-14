@@ -213,6 +213,8 @@ export async function rDel(id) {
   await del('reading', id);
 }
 export const readingResults = () => [...S.reading.values()].filter((r) => r.kind === 'result');
+/** Mọi bản ghi Reading cần sao lưu: kết quả từng passage, đề trọn, bài tự dán (bỏ bài đang làm dở). */
+export const readingBackup = () => [...S.reading.values()].filter((r) => r.kind !== 'draft');
 
 // ---- Ngữ pháp ----
 export async function gPut(...recs) {
@@ -422,7 +424,7 @@ export function exportData({ withWriting = true } = {}) {
     app: 'vocab-app', version: 1, exportedAt: new Date().toISOString(),
     settings, decks: S.decks, words: allWords(), days: [...S.days.values()], game: S.game, grammar: [...S.grammar.values()],
     ...(withWriting ? { writing: essays() } : {}),
-    reading: readingResults(),
+    reading: readingBackup(),
   };
 }
 
@@ -470,14 +472,28 @@ function cleanWriting(w) {
 }
 // Kết quả Reading trong file sao lưu: chỉ giữ trường đã biết, cắt độ dài.
 function cleanReading(r) {
-  if (!r || typeof r !== 'object' || r.kind !== 'result' || !W_ID.test(str(r.id)) || !W_ID.test(str(r.pid))) return null;
+  if (!r || typeof r !== 'object' || !W_ID.test(str(r.id))) return null;
+  // Bài đọc tự dán (chỉ trên máy người dùng).
+  if (r.kind === 'own') {
+    const mains = {}, strike = {};
+    for (const [k, v] of Object.entries(r.mains && typeof r.mains === 'object' ? r.mains : {}).slice(0, 80)) if (/^\d{1,3}$/.test(k)) mains[k] = str(v).slice(0, 500);
+    for (const [k, v] of Object.entries(r.strike && typeof r.strike === 'object' ? r.strike : {}).slice(0, 400)) if (/^\d{1,3}-\d{1,3}$/.test(k) && Array.isArray(v)) strike[k] = v.map((x) => int(x, 0, 999, 0)).slice(0, 200);
+    return { id: r.id, kind: 'own', title: str(r.title).slice(0, 200), text: str(r.text).slice(0, 30000), at: DATE_RE.test(str(r.at)) ? r.at : today(), mains, strike };
+  }
+  // Đề trọn 3 passage: điểm /40 và band tham khảo.
+  if (r.kind === 'full') {
+    return { id: r.id, kind: 'full', tid: str(r.tid).slice(0, 40), title: str(r.title).slice(0, 200), score: int(r.score, 0, 40, 0), total: int(r.total, 0, 40, 40),
+      band: Math.min(9, Math.max(0, Number(r.band) || 0)), ms: int(r.ms, 0, 864e5, 0), at: DATE_RE.test(str(r.at)) ? r.at : today(),
+      parts: (Array.isArray(r.parts) ? r.parts : []).map((x) => str(x).slice(0, 80)).filter((x) => W_ID.test(x)).slice(0, 3) };
+  }
+  if (r.kind !== 'result' || !W_ID.test(str(r.pid))) return null;
   const answers = {};
   for (const [k, v] of Object.entries(r.answers && typeof r.answers === 'object' ? r.answers : {}).slice(0, 60)) {
     if (!/^\d{1,3}$/.test(k) || !v || typeof v !== 'object') continue;
-    answers[k] = { v: str(v.v).slice(0, 80), ok: v.ok === true, loc: v.loc === true ? true : v.loc === false ? false : null, type: str(v.type).slice(0, 12) };
+    answers[k] = { v: str(v.v).slice(0, 80), ok: v.ok === true, loc: v.loc === true ? true : v.loc === false ? false : null, type: str(v.type).slice(0, 12), why: str(v.why).slice(0, 12) };
   }
   return {
-    id: r.id, kind: 'result', pid: r.pid, mode: r.mode === 'exam' ? 'exam' : 'guided', title: str(r.title).slice(0, 200),
+    id: r.id, kind: 'result', pid: r.pid, mode: ['exam', 'full'].includes(r.mode) ? r.mode : 'guided', title: str(r.title).slice(0, 200), placement: r.placement === true,
     score: int(r.score, 0, 100, 0), total: int(r.total, 0, 100, 0), ms: int(r.ms, 0, 864e5, 0),
     at: DATE_RE.test(str(r.at)) ? r.at : today(), answers,
   };
