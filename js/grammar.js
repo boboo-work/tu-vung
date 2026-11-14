@@ -534,17 +534,18 @@ export function cardsView() {
         <span class="tag">Mẫu câu · ${esc(lesson.title)}</span><div class="vi" style="margin-top:6px">${fmt(card.front)}</div></div>
         <p class="hint">Tự nói một câu, rồi chạm để xem mẫu</p></div>`
     : `<div class="flash back" data-act="gc-flip" role="button" aria-label="Lật lại">
+        <span class="stamp l" aria-hidden="true">Quên</span><span class="stamp r" aria-hidden="true">Dễ</span><span class="stamp d" aria-hidden="true">Khó</span>
         <span class="tag">${esc(lesson.title)}</span>
         <p class="meaning" style="margin-top:12px">${fmt(card.pattern)}</p>
         <div class="ex-row" style="margin-top:10px;border-top:1px solid var(--line);padding-top:14px"><div style="flex:1;min-width:0"><p class="en">${fmt(card.example)}</p>${card.vi ? `<small>${fmt(card.vi)}</small>` : ''}</div>${speakBtn(card.example.replace(/\*/g, ''), 'sm')}</div>
-        <p class="hint" style="margin-top:auto;padding-top:18px">Chạm để lật lại</p></div>`;
+        <p class="hint" style="margin-top:auto;padding-top:18px"><span class="m-only">Chạm để lật lại · vuốt ← Quên · ↓ Khó · → Dễ</span><span class="w-only">Space: lật lại · phím ← Quên · ↓ Khó · → Dễ (hoặc 1–3)</span></p></div>`;
   const hint = (x) => fmtInterval(preview(r.srs, x));
   return `<div class="page session">
     <div class="ses-top"><button class="iconbtn" data-act="gc-quit" aria-label="Thoát">${icon('x')}</button>
       <div class="progress"><i style="width:${pct}%"></i></div><span class="count">${Math.min(cs.done + 1, cs.total)}/${cs.total}</span></div>
     <p class="mode-label">Ôn thẻ mẫu câu</p>
     <div class="ses-body">${body}</div>
-    <div class="ses-actions">${cs.flipped ? `<div class="rate">
+    <div class="ses-actions">${cs.flipped ? `<div class="rate three">
       <button class="again" data-act="gc-rate" data-rating="again">Quên<small>ôn lại ngay</small></button>
       <button class="hard" data-act="gc-rate" data-rating="hard">Khó<small>${hint('hard')}</small></button>
       <button class="easy" data-act="gc-rate" data-rating="easy">Dễ<small>${hint('easy')}</small></button></div>`
@@ -643,3 +644,15 @@ export function grammarReviewCard() {
   return `<button class="listlink" data-act="${due ? 'g-cards' : 'go'}" data-to="#/grammar" style="margin-top:12px"><span class="lead">${icon('learn')}</span>
     <span class="body"><b>${due ? `Ôn ${due} thẻ mẫu câu` : 'Thẻ mẫu câu ngữ pháp'}</b><small>${due ? 'Ngữ pháp · đến hạn hôm nay' : `${total} thẻ · chưa có thẻ đến hạn`}</small></span>${icon('chev')}</button>`;
 }
+
+// ---- Phím tắt cho thẻ mẫu câu (bàn phím Mac/iPad) ----
+// Space/Enter: lật thẻ · ←/1 Quên · ↓/2 Khó · →/3 Dễ.
+const GC_KEYS = { ArrowLeft: 'again', 1: 'again', ArrowDown: 'hard', 2: 'hard', ArrowRight: 'easy', 3: 'easy' };
+document.addEventListener('keydown', (e) => {
+  if (!location.hash.startsWith('#/gcards') || e.metaKey || e.ctrlKey || e.altKey || document.body.classList.contains('sheet-open')) return;
+  const t = e.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+  const btn = GC_KEYS[e.key] && document.querySelector(`#view [data-act="gc-rate"][data-rating="${GC_KEYS[e.key]}"]`);
+  if (btn) { e.preventDefault(); btn.click(); return; }
+  if (e.key === ' ' || e.key === 'Enter') { const f = document.querySelector('#view .flash[data-act="gc-flip"]'); if (f) { e.preventDefault(); f.click(); } }
+});

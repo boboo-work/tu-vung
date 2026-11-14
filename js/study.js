@@ -211,6 +211,9 @@ document.addEventListener('pointerdown', (e) => {
   const el = e.target.closest?.('.ses-body .flash');
   // Cho phép bắt đầu vuốt cả khi ngón tay đặt trên một nút trong thẻ (nút loa, "Xem thêm"): nếu đã kéo thì cú chạm đó không tính là bấm nút.
   if (!el || busy || (e.pointerType === 'mouse' && e.button !== 0)) return;
+  // Thẻ mẫu câu ngữ pháp: chỉ vuốt để chấm khi đã lật ra mặt sau (có nút Quên/Khó/Dễ).
+  const gcards = location.hash.startsWith('#/gcards');
+  if (gcards && !document.querySelector('#view [data-act="gc-rate"]')) return;
   const sc = el.closest('.ses-body');
   // Thẻ chỉ dài hơn khung nhìn một chút thì coi như nằm gọn: vuốt lên/xuống là chấm điểm chứ không phải cuộn.
   const snug = sc.scrollHeight - sc.clientHeight <= 24;
@@ -267,8 +270,16 @@ function endDrag(e) {
     const dist = horiz ? lastP.x : lastP.y, vel = horiz ? vx : vy;
     const flick = Math.abs(dist) > 24 && Math.abs(vel) > 0.35 && Math.sign(vel) === Math.sign(dist);
     if (Math.abs(dist) > 80 || flick) {
-      d.el.style.transform = `translate3d(${d.dx}px, ${d.dy}px, 0) rotate(${d.dx / 20}deg)`;
-      return rate(horiz ? (dist < 0 ? 'again' : 'easy') : (dist > 0 ? 'hard' : 'known'), { dx: d.dx, dy: d.dy, vx, vy });
+      const rating = horiz ? (dist < 0 ? 'again' : 'easy') : (dist > 0 ? 'hard' : 'known');
+      // Thẻ mẫu câu ngữ pháp: chấm bằng nút tương ứng (không có "Đã nhớ" → vuốt lên thì thả về chỗ cũ).
+      const gcards = location.hash.startsWith('#/gcards');
+      const gbtn = gcards && document.querySelector(`#view [data-act="gc-rate"][data-rating="${rating}"]`);
+      if (!gcards || gbtn) {
+        d.el.style.transform = `translate3d(${d.dx}px, ${d.dy}px, 0) rotate(${d.dx / 20}deg)`;
+        // Cú chạm sau khi vuốt đang bị chặn: cho nút chấm đi qua rồi chặn lại cú chạm thật của ngón tay.
+        if (gbtn) { suppressClick = false; gbtn.click(); suppressClick = true; setTimeout(() => { suppressClick = false; }, 350); return; }
+        return rate(rating, { dx: d.dx, dy: d.dy, vx, vy });
+      }
     }
   }
   d.el.style.transition = 'transform .3s cubic-bezier(.2,.9,.3,1.15)';

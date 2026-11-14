@@ -949,3 +949,4 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
   .goals.five .goal b { font-size: 17px; }
   .goals.five .goal span, .home-grid .goals.five .goal span { font-size: 12.5px; }
 }
+.rate.three { grid-template-columns: repeat(3, 1fr); }
