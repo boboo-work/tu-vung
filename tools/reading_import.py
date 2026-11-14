@@ -261,7 +261,8 @@ def parse_group(a, b, block):
     up = block.upper()
     rng = re.search(r'\b([A-J])\s*[-–]\s*([A-Jl])\b', g['instr'])
     letters = [chr(c) for c in range(ord(rng.group(1)), ord(rng.group(2).replace('l', 'I')) + 1)] if rng else []
-    if 'NOT GIVEN' in up and re.search(r'\bTRUE\b', up):
+    ti, yi = up.find('TRUE'), up.find('YES')
+    if 'NOT GIVEN' in up and ti >= 0 and (yi < 0 or ti < yi):
         g['type'] = 'tf'; g['options'] = [('TRUE', ''), ('FALSE', ''), ('NOT GIVEN', '')]
     elif 'NOT GIVEN' in up and re.search(r'\bYES\b', up):
         g['type'] = 'tf'; g['options'] = [('YES', ''), ('NO', ''), ('NOT GIVEN', '')]
@@ -528,11 +529,11 @@ def build(test_path, simp_path, giai_path, tid, ttitle):
         raise Skip(f'số passage: đề {len(tps)}, Simplify {len(sps)}')
     notes, out = [], []
     for tp, sp in zip(tps, sps):
-        labels = [p['label'] for p in sp['paras']]
         paras = []
         for p in sp['paras']:
             if not p['sents']:
-                raise Skip(f'P{tp["n"]} đoạn {p["label"]}: không có câu gốc')
+                notes.append(f'P{tp["n"]} đoạn {p["label"]}: không có câu gốc, bỏ đoạn này')
+                continue
             simp = []
             for s in p['simp']:
                 idx = [i for i in s['idx'] if i < len(p['sents'])]
@@ -546,6 +547,7 @@ def build(test_path, simp_path, giai_path, tid, ttitle):
                     if m: it['keep'] = m
                 simp.append(it)
             paras.append({'label': p['label'], 'sents': p['sents'], 'simp': simp, 'conn': p['conn'], 'main': p['main'], 'warn': p['warn']})
+        labels = [p['label'] for p in paras]
         groups = []
         for g in tp['groups']:
             items = []
@@ -632,6 +634,10 @@ def build(test_path, simp_path, giai_path, tid, ttitle):
             groups.append(gg)
         nums = [q['n'] for g in groups for q in g['items']]
         title = tp['title'] or sp['title'].title()
+        title = re.sub(r'\s+[A-H]$', '', title)
+        st = sp['title'].lower()
+        if len(title) > 60 and st and title.lower().startswith(st[:12]):
+            title = title[:len(sp['title'])]
         out.append({'id': f'{tid}-p{tp["n"]}', 'n': tp['n'], 'title': title, 'subtitle': '', 'footnote': tp['footnote'],
                     'topic': topic_of(title, tp['text']), 'paras': paras, 'groups': groups, '_nums': nums})
     allnums = sorted(n for p in out for n in p.pop('_nums'))

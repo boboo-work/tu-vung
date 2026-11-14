@@ -2,6 +2,146 @@
  "version": 1,
  "tests": [
   {
+   "id": "cam15-t1",
+   "title": "Cambridge 15 · Test 1",
+   "file": "content/reading/cam15-t1.json",
+   "passages": [
+    {
+     "id": "cam15-t1-p1",
+     "n": 1,
+     "title": "Nutmeg – a valuable spice",
+     "topic": "Thực vật · nông nghiệp",
+     "questions": 13
+    },
+    {
+     "id": "cam15-t1-p2",
+     "n": 2,
+     "title": "Driverless cars",
+     "topic": "Khoa học · công nghệ",
+     "questions": 13
+    },
+    {
+     "id": "cam15-t1-p3",
+     "n": 3,
+     "title": "What is exploration?",
+     "topic": "Động vật",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam15-t3",
+   "title": "Cambridge 15 · Test 3",
+   "file": "content/reading/cam15-t3.json",
+   "passages": [
+    {
+     "id": "cam15-t3-p1",
+     "n": 1,
+     "title": "Henry Moore (1898-1986)",
+     "topic": "Nghệ thuật · văn hoá",
+     "questions": 13
+    },
+    {
+     "id": "cam15-t3-p2",
+     "n": 2,
+     "title": "The Desolenator: producing clean water",
+     "topic": "Môi trường · khí hậu",
+     "questions": 13
+    },
+    {
+     "id": "cam15-t3-p3",
+     "n": 3,
+     "title": "Why fairy tales are really scary tales",
+     "topic": "Động vật",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam16-t1",
+   "title": "Cambridge 16 · Test 1",
+   "file": "content/reading/cam16-t1.json",
+   "passages": [
+    {
+     "id": "cam16-t1-p1",
+     "n": 1,
+     "title": "Why we need to protect polar bears",
+     "topic": "Y học · sức khoẻ",
+     "questions": 13
+    },
+    {
+     "id": "cam16-t1-p2",
+     "n": 2,
+     "title": "The Step Pyramid of Djoser",
+     "topic": "Lịch sử · khảo cổ",
+     "questions": 13
+    },
+    {
+     "id": "cam16-t1-p3",
+     "n": 3,
+     "title": "The future of work",
+     "topic": "Kinh tế · xã hội",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam16-t2",
+   "title": "Cambridge 16 · Test 2",
+   "file": "content/reading/cam16-t2.json",
+   "passages": [
+    {
+     "id": "cam16-t2-p1",
+     "n": 1,
+     "title": "The White Horse of Uffington",
+     "topic": "Lịch sử · khảo cổ",
+     "questions": 13
+    },
+    {
+     "id": "cam16-t2-p2",
+     "n": 2,
+     "title": "I contain multitudes",
+     "topic": "Động vật",
+     "questions": 13
+    },
+    {
+     "id": "cam16-t2-p3",
+     "n": 3,
+     "title": "How to make wise decisions",
+     "topic": "Tâm lý học",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam16-t3",
+   "title": "Cambridge 16 · Test 3",
+   "file": "content/reading/cam16-t3.json",
+   "passages": [
+    {
+     "id": "cam16-t3-p1",
+     "n": 1,
+     "title": "Roman shipbuilding and navigation",
+     "topic": "Lịch sử · khảo cổ",
+     "questions": 13
+    },
+    {
+     "id": "cam16-t3-p2",
+     "n": 2,
+     "title": "Climate change reveals ancient artefacts in Norway's glaciers",
+     "topic": "Môi trường · khí hậu",
+     "questions": 13
+    },
+    {
+     "id": "cam16-t3-p3",
+     "n": 3,
+     "title": "Plant 'thermometer' triggers springtime growth",
+     "topic": "Thực vật · nông nghiệp",
+     "questions": 14
+    }
+   ]
+  },
+  {
    "id": "cam17-t1",
    "title": "Cambridge 17 · Test 1",
    "file": "content/reading/cam17-t1.json",
