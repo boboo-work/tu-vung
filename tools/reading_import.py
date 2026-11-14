@@ -112,6 +112,9 @@ def parse_simplify(text):
                 para['sents'].append(orig)
                 simp = drop_struck(cells[0])
                 note = strip_md(cells[1]) if len(cells) > 1 else ''
+                # Bảng "Câu gốc | Simplify | Bỏ gì | → Q": câu rút gọn nằm ở cột 2.
+                if simp == orig and len(cells) >= 3 and re.search(r'[A-Za-z]{3}', cells[1]):
+                    simp, note = drop_struck(cells[1]), strip_md(cells[2])
                 para['simp'].append({'idx': idx, 'text': simp if simp and simp != orig else '', 'note': note, 'q': qs})
             else:
                 para['simp'].append({'idx': idx, 'text': drop_struck(cells[0]), 'note': strip_md(cells[1]) if len(cells) > 1 else '', 'q': qs})
@@ -347,7 +350,8 @@ def parse_group(a, b, block):
     else:
         pos, starts = 0, []
         for n in range(a, b + 1):
-            m = re.compile(rf'(?:^|(?<=\s)){n}\.?\s+(?=[^\s\d])', re.M).search(block, pos)
+            # "…more than once.7 It is…": số câu dính vào dấu chấm của câu trước.
+            m = re.compile(rf'(?:^|(?<=\s)|(?<=[a-z]\.)){n}\.?\s+(?=[^\s\d])', re.M).search(block, pos)
             if not m:
                 raise Skip(f'câu {n}: không tìm thấy trong đề')
             starts.append((n, m.start(), m.end()))
@@ -653,6 +657,8 @@ def build(test_path, simp_path, giai_path, tid, ttitle):
         nums = [q['n'] for g in groups for q in g['items']]
         title = tp['title'] or sp['title'].title()
         title = re.sub(r'\s+[A-H]$', '', title)
+        if title.isupper():
+            title = title.capitalize()
         st = sp['title'].lower()
         if len(title) > 60 and st and title.lower().startswith(st[:12]):
             title = title[:len(sp['title'])]

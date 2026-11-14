@@ -796,6 +796,118 @@
      "questions": 14
     }
    ]
+  },
+  {
+   "id": "cam14-t1",
+   "title": "Cambridge 14 · Test 1",
+   "file": "content/reading/cam14-t1.json",
+   "passages": [
+    {
+     "id": "cam14-t1-p1",
+     "n": 1,
+     "title": "The importance of children's play",
+     "topic": "Khoa học · công nghệ",
+     "questions": 13
+    },
+    {
+     "id": "cam14-t1-p2",
+     "n": 2,
+     "title": "The growth of bike-sharing schemes around the world",
+     "topic": "Kinh tế · xã hội",
+     "questions": 13
+    },
+    {
+     "id": "cam14-t1-p3",
+     "n": 3,
+     "title": "Motivational factors and the hospitality industry",
+     "topic": "Kinh tế · xã hội",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam14-t2",
+   "title": "Cambridge 14 · Test 2",
+   "file": "content/reading/cam14-t2.json",
+   "passages": [
+    {
+     "id": "cam14-t2-p1",
+     "n": 1,
+     "title": "Alexander Henderson (1831-1913)",
+     "topic": "Kinh tế · xã hội",
+     "questions": 13
+    },
+    {
+     "id": "cam14-t2-p2",
+     "n": 2,
+     "title": "Back to the future of skyscraper design",
+     "topic": "Môi trường · khí hậu",
+     "questions": 13
+    },
+    {
+     "id": "cam14-t2-p3",
+     "n": 3,
+     "title": "Why companies should welcome disorder",
+     "topic": "Kinh tế · xã hội",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam14-t3",
+   "title": "Cambridge 14 · Test 3",
+   "file": "content/reading/cam14-t3.json",
+   "passages": [
+    {
+     "id": "cam14-t3-p1",
+     "n": 1,
+     "title": "The concept of intelligence",
+     "topic": "Nghệ thuật · văn hoá",
+     "questions": 13
+    },
+    {
+     "id": "cam14-t3-p2",
+     "n": 2,
+     "title": "Saving bugs to find new drugs",
+     "topic": "Động vật",
+     "questions": 13
+    },
+    {
+     "id": "cam14-t3-p3",
+     "n": 3,
+     "title": "The power of play",
+     "topic": "Tâm lý học",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam14-t4",
+   "title": "Cambridge 14 · Test 4",
+   "file": "content/reading/cam14-t4.json",
+   "passages": [
+    {
+     "id": "cam14-t4-p1",
+     "n": 1,
+     "title": "The secret of staying young",
+     "topic": "Động vật",
+     "questions": 13
+    },
+    {
+     "id": "cam14-t4-p2",
+     "n": 2,
+     "title": "Why zoos are good",
+     "topic": "Động vật",
+     "questions": 13
+    },
+    {
+     "id": "cam14-t4-p3",
+     "n": 3,
+     "title": "Chelsea Rochman And Marine Debris",
+     "topic": "Môi trường · khí hậu",
+     "questions": 14
+    }
+   ]
   }
  ]
 }
