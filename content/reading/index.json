@@ -30,6 +30,34 @@
    ]
   },
   {
+   "id": "cam15-t2",
+   "title": "Cambridge 15 · Test 2",
+   "file": "content/reading/cam15-t2.json",
+   "passages": [
+    {
+     "id": "cam15-t2-p1",
+     "n": 1,
+     "title": "Could urban engineers learn from dance?",
+     "topic": "Kinh tế · xã hội",
+     "questions": 13
+    },
+    {
+     "id": "cam15-t2-p2",
+     "n": 2,
+     "title": "Should we try to bring extinct species back to life?",
+     "topic": "Động vật",
+     "questions": 13
+    },
+    {
+     "id": "cam15-t2-p3",
+     "n": 3,
+     "title": "Having a laugh",
+     "topic": "Kinh tế · xã hội",
+     "questions": 14
+    }
+   ]
+  },
+  {
    "id": "cam15-t3",
    "title": "Cambridge 15 · Test 3",
    "file": "content/reading/cam15-t3.json",
@@ -53,6 +81,34 @@
      "n": 3,
      "title": "Why fairy tales are really scary tales",
      "topic": "Động vật",
+     "questions": 14
+    }
+   ]
+  },
+  {
+   "id": "cam15-t4",
+   "title": "Cambridge 15 · Test 4",
+   "file": "content/reading/cam15-t4.json",
+   "passages": [
+    {
+     "id": "cam15-t4-p1",
+     "n": 1,
+     "title": "The return of the huarango",
+     "topic": "Thực vật · nông nghiệp",
+     "questions": 13
+    },
+    {
+     "id": "cam15-t4-p2",
+     "n": 2,
+     "title": "Silbo Gomero – the whistle 'language' of the Canary Islands",
+     "topic": "Nghệ thuật · văn hoá",
+     "questions": 13
+    },
+    {
+     "id": "cam15-t4-p3",
+     "n": 3,
+     "title": "Environmental practices of big businesses",
+     "topic": "Kinh tế · xã hội",
      "questions": 14
     }
    ]
@@ -142,6 +198,34 @@
    ]
   },
   {
+   "id": "cam16-t4",
+   "title": "Cambridge 16 · Test 4",
+   "file": "content/reading/cam16-t4.json",
+   "passages": [
+    {
+     "id": "cam16-t4-p1",
+     "n": 1,
+     "title": "Roman tunnels",
+     "topic": "Lịch sử · khảo cổ",
+     "questions": 13
+    },
+    {
+     "id": "cam16-t4-p2",
+     "n": 2,
+     "title": "Changes in reading habits",
+     "topic": "Khoa học · công nghệ",
+     "questions": 13
+    },
+    {
+     "id": "cam16-t4-p3",
+     "n": 3,
+     "title": "Attitudes towards Artificial Intelligence",
+     "topic": "Y học · sức khoẻ",
+     "questions": 14
+    }
+   ]
+  },
+  {
    "id": "cam17-t1",
    "title": "Cambridge 17 · Test 1",
    "file": "content/reading/cam17-t1.json",
@@ -163,7 +247,7 @@
     {
      "id": "cam17-t1-p3",
      "n": 3,
-     "title": "Building the Skyline: The Birth and Growth of Manhattan's Skyscrapers",
+     "title": "Building the Skyline",
      "topic": "Kinh tế · xã hội",
      "questions": 14
     }
@@ -359,7 +443,7 @@
     {
      "id": "cam18-t4-p3",
      "n": 3,
-     "title": "Alfred Wegener: science, exploration and the theory of continental drift",
+     "title": "Alfred Wegener",
      "topic": "Khoa học · công nghệ",
      "questions": 14
     }

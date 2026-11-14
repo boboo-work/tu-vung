@@ -239,6 +239,13 @@ def parse_test(text):
         last = None
         for k, (g0, g1, ga, gb) in enumerate(gms):
             end = gms[k + 1][0] if k + 1 < len(gms) else len(sec)
+            # Tiêu đề chép sai ("Questions 18-22" nhưng "boxes 20-26") → tin dòng "boxes" ngay trong nhóm.
+            bx = re.search(r'(?i)\bboxes?\s+(\d+)(?:\s*(?:[-–]|and)\s*(\d+))?', sec[g1:end][:600])
+            if bx:
+                ba, bb = int(bx.group(1)), int(bx.group(2) or bx.group(1))
+                nxt_a = gms[k + 1][2] if k + 1 < len(gms) else 99
+                if (ba, bb) != (ga, gb) and (last is None or ba == last + 1) and bb < nxt_a:
+                    ga, gb = ba, bb
             # Đề chép sai tiêu đề ("Questions 6-13" sau "Questions 5-8") → bắt đầu sau nhóm trước.
             if last is not None and ga <= last:
                 ga = last + 1
@@ -266,7 +273,7 @@ def parse_group(a, b, block):
         g['type'] = 'tf'; g['options'] = [('TRUE', ''), ('FALSE', ''), ('NOT GIVEN', '')]
     elif 'NOT GIVEN' in up and re.search(r'\bYES\b', up):
         g['type'] = 'tf'; g['options'] = [('YES', ''), ('NO', ''), ('NOT GIVEN', '')]
-    elif re.search(r'COMPLETE', up) and re.search(r'ONE WORD|TWO WORDS|THREE WORDS|NO MORE THAN|WORDS? AND/OR', up) and not re.search(r'LIST OF', up):
+    elif re.search(r'COMPLETE|LABEL THE|ANSWER THE QUESTIONS', up) and re.search(r'ONE WORD|TWO WORDS|THREE WORDS|NO MORE THAN|WORDS? AND/OR', up) and not re.search(r'LIST OF', up):
         g['type'] = 'gap'
         lim = re.search(r'((?:ONE|TWO|THREE|NO MORE THAN \w+) WORDS?(?: AND/OR A NUMBER| ONLY)?)', up)
         g['limit'] = lim.group(1).strip() if lim else ''
@@ -463,7 +470,11 @@ def parse_giai(text):
 def ans_variants(raw):
     """'(Sumatran) orangutan / orang-utan' → ['sumatran orangutan', 'orangutan', 'orang-utan']."""
     out = []
-    raw = re.sub(r'(?<=[a-z])\s+I\s+(?=[a-z])', ' / ', raw.strip())  # 'I' do chép từ PDF thay cho '/'
+    raw = re.sub(r'(?i)\b(IN EITHER ORDER|BOTH REQUIRED FOR ONE MARK|IN ANY ORDER)\b[,;:]?', ' ', raw).strip()
+    raw = re.sub(r'(?<=[a-z])\s+I\s+(?=[a-z])', ' / ', raw.strip())
+    if ' and ' in raw and '/' not in raw and len(raw.split()) <= 5:  # "leaves and bark" → nhận cả "bark and leaves"
+        x, y = raw.split(' and ', 1)
+        raw = f'{raw} / {y} and {x}'  # 'I' do chép từ PDF thay cho '/'
     for part in re.split(r'\s*/\s*|\s+OR\s+', raw):
         part = part.strip().strip('.')
         if not part:
@@ -568,6 +579,10 @@ def build(test_path, simp_path, giai_path, tid, ttitle):
                         ans = [a.split(' ')[0].upper() if len(a.split(' ')[0]) <= 2 or a.upper().startswith(('TRUE', 'FALSE', 'YES', 'NO')) else a for a in ans]
                         if g['type'] == 'tf':
                             ans = ['NOT GIVEN' if a.upper().startswith('NOT') else a.upper() for a in ans]
+                            # Hướng dẫn ghi TRUE/FALSE nhưng bảng đáp án ghi YES/NO (hoặc ngược lại).
+                            okeys = [o[0] for o in g['options']]
+                            swap = {'YES': 'TRUE', 'NO': 'FALSE', 'TRUE': 'YES', 'FALSE': 'NO'}
+                            ans = [swap.get(a, a) if a not in okeys else a for a in ans]
                 if info['ans'] and 'multi' not in it:
                     ga = norm(re.sub(r'\s*\(.*\)$', '', info['ans']))
                     if ga and not any(norm(a) == ga or norm(a).startswith(ga) or ga.startswith(norm(a)) for a in ans):
@@ -609,6 +624,9 @@ def build(test_path, simp_path, giai_path, tid, ttitle):
                     q['options'] = [{'k': k, 't': t} for k, t in it['options']]
                 if 'multi' in it:
                     q['multi'] = it['multi']
+                if not q['q'] and g['type'] == 'gap':
+                    q['q'] = f'Ô số {n} trên sơ đồ/bảng của đề gốc (bản chép không có hình) ______'
+                    notes.append(f'câu {n}: không có chữ trong đề (sơ đồ), dùng câu thay thế')
                 if not q['q']:
                     raise Skip(f'câu {n}: không có nội dung câu hỏi')
                 if not loc:

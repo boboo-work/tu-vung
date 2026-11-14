@@ -79,7 +79,8 @@ function check(g, it, v, answers = {}) {
     const ws = val.split(' ').filter((w) => !(g.number && /^\d[\d,.]*$/.test(w)));
     if (ws.length > g.maxWords) note = `Quá giới hạn ${g.limit}: bài thi sẽ tính sai.`;
   }
-  return { ok: ok && !note, note };
+  // Khớp đáp án chuẩn thì tính đúng (đáp án chuẩn có thể dài hơn giới hạn, ví dụ "leaves and bark").
+  return { ok, note: ok ? '' : note };
 }
 
 // ================= HIỂN THỊ VĂN BẢN =================
