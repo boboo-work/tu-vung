@@ -69,7 +69,9 @@ export function homeView() {
   const newLeft = Math.max(0, S.settings.newPerDay - day.newIds.length);
   const canLearn = Math.min(fresh, newLeft);
   const backupAge = S.settings.lastBackup ? dayDiff(S.settings.lastBackup, t) : null;
-  const needBackup = sum.total >= 10 && (backupAge === null || backupAge >= 14);
+  // Nhắc sao lưu mỗi tuần, khi đã có dữ liệu đáng giữ (từ vựng, ngữ pháp, bài viết hoặc kết quả Reading).
+  const hasData = sum.total >= 10 || S.grammar.size > 0 || S.writing.size > 0 || S.reading.size > 0;
+  const needBackup = hasData && (backupAge === null || backupAge >= 7);
   const gReady = G.state === 'ready';
   const gGoal = gReady ? S.settings.grammarPerDay : 0;
   const gToday = todayLessons();
