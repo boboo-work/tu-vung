@@ -195,6 +195,8 @@ export function settingsView() {
       ${aiFields(s.ai)}
       <div class="btn-row" style="margin-top:16px"><button class="btn" data-act="ai-save">Lưu</button><button class="btn ghost" data-act="ai-test">Kiểm tra kết nối</button></div>
     </div>
+    <h2>Speaking (thử nghiệm)</h2>
+    <button class="listlink" data-act="go" data-to="#/mictest"><span class="lead">${icon('speaker')}</span><span class="body"><b>Thử micro</b><small>Ghi âm, nghe lại, đếm khoảng dừng, nhận dạng giọng nói</small></span>${icon('chev')}</button>
     <h2>Cài lên iPhone</h2>
     <div class="card small muted">${standalone ? 'Ứng dụng đang chạy ở chế độ cài đặt trên màn hình chính.' : 'Mở trang này bằng Safari → nút Chia sẻ → “Thêm vào MH chính”. Sau đó app chạy toàn màn hình và dùng được khi offline.'}</div>
     <h2>Vùng nguy hiểm</h2>

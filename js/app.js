@@ -9,6 +9,7 @@ import { dropView } from './drop.js';
 import { matchView, popView } from './games2.js';
 import { loadWriting, writingView, typeView as wTypeView, promptView as wPromptView, writeView, essaysView, essayView, statsView as wStatsView } from './writing.js';
 import { loadReading, readingView, passageView as rPassageView, runView as rRunView, resultView as rResultView, studyView as rStudyView, fullView as rFullView, reviewView as rReviewView, patternsView as rPatternsView, ownListView as rOwnListView, ownView as rOwnView, statsView as rStatsView } from './reading.js';
+import { micTestView } from './speaking.js';
 import { loadGrammar, grammarView, unitView, lessonView, cardsView, errorsView, testView, gDueCount } from './grammar.js';
 import { countUp } from './fx.js';
 
@@ -18,6 +19,7 @@ const routes = {
   settings: settingsView, ai: aiView, session: sessionView, game: gameView, drop: dropView, match: matchView, pop: popView,
   writing: writingView, wtype: wTypeView, wprompt: wPromptView, wwrite: writeView, wessays: essaysView, wessay: essayView, wstats: wStatsView,
   reading: readingView, rpassage: rPassageView, rrun: rRunView, rresult: rResultView, rstudy: rStudyView,
+  mictest: micTestView,
   rfull: rFullView, rvocab: rReviewView, rpatterns: rPatternsView, rown: rOwnListView, rownv: rOwnView, rstats: rStatsView,
   grammar: grammarView, gunit: unitView, glesson: lessonView, gcards: cardsView, gerrors: errorsView, gtest: testView,
 };
@@ -94,7 +96,7 @@ function bindEvents() {
   matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', applyTheme);
   // Sang ngày mới khi app đang mở nền → vẽ lại để cập nhật danh sách đến hạn.
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && !['session', 'game', 'drop', 'match', 'pop', 'edit', 'new', 'ai', 'settings', 'glesson', 'gcards', 'gtest', 'wwrite', 'rrun'].includes(location.hash.split('/')[1])) render();
+    if (!document.hidden && !['session', 'game', 'drop', 'match', 'pop', 'edit', 'new', 'ai', 'settings', 'glesson', 'gcards', 'gtest', 'wwrite', 'rrun', 'mictest'].includes(location.hash.split('/')[1])) render();
   });
 }
 
