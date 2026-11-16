@@ -246,6 +246,14 @@ export async function gPut(...recs) {
   recs.forEach((r) => S.grammar.set(r.id, r));
 }
 /** Ghi nhận hoạt động ngữ pháp vào nhật ký ngày (để tính chuỗi ngày và mục tiêu). kind: 'gLessons' | 'gReviews' */
+/** Bỏ một mục khỏi nhật ký ngày (ví dụ xoá lượt Speaking bấm nhầm) để mục tiêu ngày đếm lại đúng. */
+export async function unlogDay(kind, id, date = today()) {
+  const d = S.days.get(date);
+  if (!d || !Array.isArray(d[kind]) || !d[kind].includes(id)) return;
+  const day = { ...blankDay(date), ...d, [kind]: d[kind].filter((x) => x !== id) };
+  S.days.set(date, day);
+  await put('days', day);
+}
 export async function logGrammarDay(kind, id) {
   const t = today();
   const day = { ...blankDay(t), ...dayOf(t) };
