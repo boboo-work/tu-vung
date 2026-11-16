@@ -43,7 +43,7 @@ export const actions = {};
 export const on = (name, fn) => (actions[name] = fn);
 
 // ---- Điều hướng ----
-export const TABS = ['home', 'learn', 'grammar', 'writing', 'reading', 'speaking', 'review', 'vocab', 'stats']; // 'grammar' nằm trong tab Học
+export const TABS = ['home', 'learn', 'grammar', 'writing', 'reading', 'speaking', 'listening', 'review', 'vocab', 'stats']; // ngữ pháp và 4 kỹ năng IELTS nằm trong tab Học
 let depth = 0;
 export function go(hash) {
   const name = hash.split('/')[1];
@@ -59,13 +59,19 @@ export function back(fallback = '#/home') {
   else { depth = 0; replace(fallback); }
 }
 
-/** Công tắc Từ vựng | Ngữ pháp ở đầu tab Học. */
-export const learnSwitch = (cur) => `<div class="seg learn-switch" role="tablist">
-  <button class="${cur === 'vocab' ? 'on' : ''}" data-act="go" data-to="#/learn" role="tab" aria-selected="${cur === 'vocab'}">Từ vựng</button>
-  <button class="${cur === 'grammar' ? 'on' : ''}" data-act="go" data-to="#/grammar" role="tab" aria-selected="${cur === 'grammar'}">Ngữ pháp</button>
-  <button class="${cur === 'writing' ? 'on' : ''}" data-act="go" data-to="#/writing" role="tab" aria-selected="${cur === 'writing'}">Writing</button>
-  <button class="${cur === 'reading' ? 'on' : ''}" data-act="go" data-to="#/reading" role="tab" aria-selected="${cur === 'reading'}">Reading</button>
-  <button class="${cur === 'speaking' ? 'on' : ''}" data-act="go" data-to="#/speaking" role="tab" aria-selected="${cur === 'speaking'}">Speaking</button></div>`;
+/** 4 kỹ năng IELTS, theo thứ tự trong bài thi. */
+export const SKILLS = [['listening', 'Listening'], ['reading', 'Reading'], ['writing', 'Writing'], ['speaking', 'Speaking']];
+// Mục IELTS mở lại kỹ năng đã xem gần nhất (chỉ là tiện ích trên máy này, không cần giữ chắc chắn).
+let lastSkill = 'listening';
+try { lastSkill = SKILLS.some(([k]) => k === localStorage.getItem('ieltsSkill')) ? localStorage.getItem('ieltsSkill') : 'listening'; } catch { /* bỏ qua */ }
+/** Công tắc Từ vựng | Ngữ pháp | IELTS ở đầu tab Học; trong IELTS có thêm hàng chọn 4 kỹ năng. */
+export const learnSwitch = (cur) => {
+  const skill = SKILLS.some(([k]) => k === cur);
+  if (skill && cur !== lastSkill) { lastSkill = cur; try { localStorage.setItem('ieltsSkill', cur); } catch { /* bỏ qua */ } }
+  const b = (on, to, label) => `<button class="${on ? 'on' : ''}" data-act="go" data-to="${to}" role="tab" aria-selected="${on}">${label}</button>`;
+  return `<div class="seg learn-switch" role="tablist">${b(cur === 'vocab', '#/learn', 'Từ vựng')}${b(cur === 'grammar', '#/grammar', 'Ngữ pháp')}${b(skill, `#/${lastSkill}`, 'IELTS')}</div>
+    ${skill ? `<div class="seg skill-switch" role="tablist">${SKILLS.map(([k, l]) => b(cur === k, `#/${k}`, l)).join('')}</div>` : ''}`;
+};
 
 let renderFn = () => {};
 export const setRenderer = (fn) => (renderFn = fn);
