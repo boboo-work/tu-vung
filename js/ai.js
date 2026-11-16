@@ -20,8 +20,8 @@ export const GEMINI_MODELS = ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-
 
 // Cấu hình gọi kiểu "chat completions" cho hai cách kết nối gemini / openai.
 function chatConfig(ai) {
-  if (ai?.provider === 'gemini') return { name: 'Gemini', base: GEMINI_BASE, key: ai.geminiKey, model: ai.geminiModel };
-  if (ai?.provider === 'openai') return { name: 'API', base: ai.oaBase, key: ai.oaKey, model: ai.oaModel };
+  if (ai?.provider === 'gemini') return { provider: 'gemini', name: 'Gemini', base: GEMINI_BASE, key: ai.geminiKey, model: ai.geminiModel };
+  if (ai?.provider === 'openai') return { provider: 'openai', name: 'API', base: ai.oaBase, key: ai.oaKey, model: ai.oaModel };
   return null;
 }
 
@@ -59,6 +59,43 @@ export const AI_ACTIONS = [
 
 export class AIError extends Error {}
 
+// ---- Key do người dùng dán: dọn ký tự thừa và chỉ ra lỗi thường gặp ----
+// Bỏ khoảng trắng / xuống dòng / ký tự vô hình / dấu nháy, tiền tố "Bearer", và đổi gạch ngang kiểu Unicode (hay gặp khi
+// sao chép qua ghi chú hay tin nhắn) về "-".
+export function cleanKey(s) {
+  return String(s ?? '').replace(/^\s*bearer\s+/i, '').replace(/[\u2010-\u2015\u2212]/g, '-').replace(/[\s\u200B-\u200D\u2060\uFEFF"'`“”‘’]/g, '');
+}
+// Nhận xét về hình dạng của key (chỉ nêu 4 ký tự đầu và độ dài, không lộ cả key).
+export function keyHints(provider, raw) {
+  const k = cleanKey(raw);
+  if (!k) return ['Chưa có API key trong ô này.'];
+  const out = [`Key bạn đang dùng: bắt đầu bằng “${k.slice(0, 4)}…”, dài ${k.length} ký tự.`];
+  if (provider === 'gemini') {
+    if (/^sk-ant/i.test(k)) out.push('Đây là key của Claude (bắt đầu bằng “sk-ant”), không phải key của Gemini.');
+    else if (/^sk-/i.test(k)) out.push('Đây giống key của OpenAI (bắt đầu bằng “sk-”), không phải key của Gemini.');
+    else if (!/^AIza/.test(k)) out.push('Key Gemini thường bắt đầu bằng “AIza”. Hãy chắc là bạn đã sao chép đúng chuỗi key (không phải tên key hay số dự án).');
+    if (k.length < 35) out.push('Key này khá ngắn so với key Gemini (thường khoảng 39 ký tự) — có thể bị dán thiếu.');
+  } else if (provider === 'anthropic') {
+    if (/^AIza/.test(k)) out.push('Đây là key của Gemini (bắt đầu bằng “AIza”). Hãy đổi “Cách kết nối” sang Google Gemini rồi dán key vào đó.');
+    else if (!/^sk-ant/i.test(k)) out.push('Key Claude thường bắt đầu bằng “sk-ant”.');
+  }
+  if (/[^A-Za-z0-9_.\-]/.test(k)) out.push('Key có ký tự lạ (key chỉ gồm chữ, số, “_” và “-”). Hãy sao chép lại.');
+  return out;
+}
+const KEY_STEPS = {
+  gemini: 'Cách lấy key mới: vào aistudio.google.com bằng tài khoản Google → bấm “Get API key” → “Create API key” → bấm biểu tượng sao chép → dán vào ô API key ở đây (xoá ô cũ trước khi dán).',
+  anthropic: 'Key Claude lấy ở console.anthropic.com → API Keys.',
+  openai: 'Hãy kiểm tra key và địa chỉ API của nhà cung cấp này.',
+};
+function keyError(provider, name, rawKey, detail) {
+  const lines = [`${name === 'Gemini' ? 'Google' : name} báo API key không hợp lệ${detail ? ` (“${detail}”)` : ''}.`, ...keyHints(provider, rawKey).map((h) => `• ${h}`), KEY_STEPS[provider] || ''].filter(Boolean);
+  const e = new AIError(lines.join('\n'));
+  e.kind = 'key';
+  return e;
+}
+const errDetail = (data) => { const err = Array.isArray(data) ? data[0]?.error : data?.error; return (typeof err === 'string' ? err : err?.message) || ''; };
+const isKeyProblem = (status, data) => status === 401 || status === 403 || (status === 400 && /api[ _-]?key|API_KEY_INVALID|Authorization header/i.test(JSON.stringify(data) || ''));
+
 export async function askAI(ai, prompt, { system = SYSTEM } = {}) {
   if (!aiReady(ai)) throw new AIError('Chưa kết nối AI. Hãy cấu hình trong Cài đặt → Trợ lý AI.');
   if (!navigator.onLine) throw new AIError('Trợ lý AI cần kết nối mạng. Hiện thiết bị đang offline.');
@@ -88,7 +125,7 @@ export async function askAI(ai, prompt, { system = SYSTEM } = {}) {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'x-api-key': ai.apiKey.trim(),
+        'x-api-key': cleanKey(ai.apiKey),
         'anthropic-version': '2026-10-21',
         'anthropic-beta': 'server-side-fallback-2026-07-01',
         'anthropic-dangerous-direct-browser-access': 'true',
@@ -107,7 +144,7 @@ export async function askAI(ai, prompt, { system = SYSTEM } = {}) {
   const data = await res.json().catch(() => null);
   if (!res.ok) {
     const detail = data?.error?.message || '';
-    if (res.status === 401) throw new AIError('API key không hợp lệ. Kiểm tra lại trong Cài đặt.');
+    if (res.status === 401) throw keyError('anthropic', 'Claude', ai.apiKey, detail);
     if (res.status === 429) throw new AIError('Đã vượt giới hạn tần suất của API. Hãy thử lại sau ít phút.');
     if (res.status >= 500) throw new AIError('Claude API đang gặp sự cố tạm thời. Hãy thử lại sau.');
     throw new AIError(`Claude API báo lỗi ${res.status}${detail ? ': ' + detail : ''}`);
@@ -119,13 +156,13 @@ export async function askAI(ai, prompt, { system = SYSTEM } = {}) {
 }
 
 // Định dạng "chat completions" (OpenAI, Gemini qua cổng tương thích, và nhiều nhà cung cấp khác).
-async function askChat({ name, base, key, model }, prompt, system = SYSTEM) {
+async function askChat({ provider, name, base, key, model }, prompt, system = SYSTEM) {
   const url = base.trim().replace(/\/+$/, '').replace(/\/chat\/completions$/, '') + '/chat/completions';
   let res;
   try {
     res = await fetch(url, {
       method: 'POST',
-      headers: { 'content-type': 'application/json', authorization: `Bearer ${key.trim()}` },
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${cleanKey(key)}` },
       body: JSON.stringify({ model: model.trim(), messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }] }),
     });
   } catch {
@@ -133,9 +170,8 @@ async function askChat({ name, base, key, model }, prompt, system = SYSTEM) {
   }
   const data = await res.json().catch(() => null);
   if (!res.ok) {
-    const err = Array.isArray(data) ? data[0]?.error : data?.error;
-    const detail = (typeof err === 'string' ? err : err?.message) || '';
-    if (res.status === 401 || res.status === 403) throw new AIError('API key không hợp lệ hoặc chưa được cấp quyền. Kiểm tra lại trong Cài đặt.');
+    const detail = errDetail(data);
+    if (isKeyProblem(res.status, data)) throw keyError(provider, name, key, detail);
     if (res.status === 404) throw new AIError(`Không tìm thấy mô hình “${model.trim()}” hoặc địa chỉ API sai. Kiểm tra lại tên mô hình.`);
     if (res.status === 429) throw new AIError('Đã vượt giới hạn tần suất hoặc hết hạn mức của API. Hãy thử lại sau.');
     if (res.status >= 500) throw new AIError(`${name} đang gặp sự cố tạm thời. Hãy thử lại sau.`);
@@ -146,4 +182,27 @@ async function askChat({ name, base, key, model }, prompt, system = SYSTEM) {
   const text = (Array.isArray(content) ? content.map((p) => p?.text || '').join('') : content || '').trim();
   if (!text) throw new AIError('AI không trả về nội dung.');
   return choice.finish_reason === 'length' ? text + '\n\n(Câu trả lời bị cắt do quá dài.)' : text;
+}
+
+// ---- Kiểm tra kết nối ở Cài đặt: tách "key sai" khỏi "tên mô hình sai" ----
+// Với Gemini và API tương thích OpenAI: hỏi danh sách mô hình trước. Nếu key đúng nhưng mô hình không có trong danh sách
+// (ví dụ mô hình cũ đã bị Google gỡ) thì liệt kê các tên đang dùng được.
+export async function testConnection(ai) {
+  const c = chatConfig(ai);
+  if (c && aiReady(ai) && navigator.onLine) {
+    let ids = null;
+    try {
+      const res = await fetch(c.base.trim().replace(/\/+$/, '').replace(/\/chat\/completions$/, '') + '/models', { headers: { authorization: `Bearer ${cleanKey(c.key)}` } });
+      const data = await res.json().catch(() => null);
+      if (res.ok) ids = (data?.data || data?.models || []).map((m) => String(m?.id || m?.name || '').replace(/^models\//, '')).filter(Boolean);
+      else if (isKeyProblem(res.status, data)) throw keyError(c.provider, c.name, c.key, errDetail(data));
+    } catch (e) { if (e instanceof AIError) throw e; /* nhà cung cấp không có API danh sách → bỏ qua */ }
+    const want = c.model.trim().replace(/^models\//, '');
+    if (ids?.length && !ids.includes(want)) {
+      const usable = ids.filter((id) => (c.provider !== 'gemini' || /^gemini/.test(id)) && !/embed|imagen|tts|image|live|audio|veo|aqa/i.test(id));
+      usable.sort((a, b) => Number(/flash/.test(b) && !/lite/.test(b)) - Number(/flash/.test(a) && !/lite/.test(a)));
+      throw new AIError(`Key hợp lệ ✓ nhưng không có mô hình “${want}” (có thể đã bị gỡ hoặc gõ sai).\nMô hình dùng được: ${(usable.length ? usable : ids).slice(0, 8).join(', ')}.\nHãy gõ một trong các tên đó vào ô Mô hình rồi kiểm tra lại.`);
+    }
+  }
+  return askAI(ai, 'Trả lời đúng một từ: OK');
 }

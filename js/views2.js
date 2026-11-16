@@ -7,7 +7,8 @@ import { importFile, exportCSV, exportBackup, restoreBackup, downloadTemplate, l
 import { roundInfo, bestRun } from './game.js';
 import { bestDrop, DROP_ROUND } from './drop.js';
 import { bestOf, ROUND2 } from './games2.js';
-import { AI_ACTIONS, AI_MODELS, GEMINI_MODELS, aiReady, askAI } from './ai.js';
+import { audioTakes } from './speak.js';
+import { AI_ACTIONS, AI_MODELS, GEMINI_MODELS, aiReady, askAI, cleanKey, testConnection } from './ai.js';
 
 const ui = { statsKind: 'day', statsSel: null, anim: false, ai: { wordId: null, action: 'context', input: '', q: '', loading: false, result: null, error: null } };
 
@@ -135,7 +136,10 @@ function aiFields(ai) {
   if (ai.provider === 'proxy') return `<label for="ai-endpoint">Địa chỉ máy chủ</label><input type="url" id="ai-endpoint" value="${esc(ai.endpoint)}" placeholder="https://…/api/ask" autocomplete="off" autocapitalize="none">
       <p class="small faint" style="margin-top:6px">Máy chủ nhận POST {system, prompt, model} và trả về {text}. API key nằm ở máy chủ.</p>`;
   if (ai.provider === 'gemini') return `<label for="ai-gemini-key">API key của Gemini</label>${keyInput('ai-gemini-key', ai.geminiKey, 'AIza…')}
-      <p class="small faint" style="margin-top:6px">Lấy key miễn phí tại aistudio.google.com → “Get API key”. Key chỉ lưu trên thiết bị này, không nằm trong file sao lưu, và chỉ được gửi tới máy chủ của Google.</p>
+      <details style="margin-top:6px"><summary>Cách lấy API key Gemini</summary>
+        <ol class="small muted" style="margin:6px 0 0;padding-left:20px;line-height:1.55"><li>Mở <b>aistudio.google.com</b> bằng tài khoản Google.</li><li>Bấm <b>Get API key</b> rồi <b>Create API key</b>.</li><li>Bấm biểu tượng sao chép cạnh key (key dạng <b>AIza…</b>, dài khoảng 39 ký tự).</li><li>Quay lại đây, dán vào ô trên và bấm <b>Kiểm tra kết nối</b>.</li></ol>
+        <p class="small faint" style="margin-top:6px">Giao diện của Google có thể khác đôi chút. Nếu báo key không hợp lệ: xoá ô cũ, tạo key mới và dán lại.</p></details>
+      <p class="small faint" style="margin-top:6px">Key chỉ lưu trên thiết bị này, không nằm trong file sao lưu, và chỉ được gửi tới máy chủ của Google.</p>
       <label for="ai-gemini-model">Mô hình</label>${modelInput('ai-gemini-model', ai.geminiModel, 'gemini-2.5-flash', GEMINI_MODELS)}
       <p class="small faint" style="margin-top:6px">Gõ đúng tên mô hình như trong Google AI Studio. Nếu Google đã ra mô hình mới hơn, bạn cứ gõ tên đó vào đây.</p>`;
   if (ai.provider === 'openai') return `<label for="ai-oa-base">Địa chỉ API</label><input type="url" id="ai-oa-base" value="${esc(ai.oaBase)}" placeholder="https://api.openai.com/v1" autocomplete="off" autocapitalize="none">
@@ -164,6 +168,7 @@ export function settingsView() {
       <div class="setrow"><div><b>Thẻ ngữ pháp</b><small>Số thẻ mẫu câu mỗi lượt ôn</small></div>${stepper('grammarReviewPerDay', s.grammarReviewPerDay)}</div>
       <div class="setrow"><div><b>Bài Writing</b><small>Số bài mỗi ngày · 0 = tắt mục tiêu</small></div>${seg('writingPerDay', s.writingPerDay, [[0, '0'], [1, '1'], [2, '2']])}</div>
       <div class="setrow"><div><b>Bài Reading</b><small>Số passage mỗi ngày · 0 = tắt mục tiêu</small></div>${seg('readingPerDay', s.readingPerDay, [[0, '0'], [1, '1'], [2, '2']])}</div>
+      <div class="setrow"><div><b>Lượt Speaking</b><small>1 lượt = 1 chủ đề Part 1 hoặc 1 đề Part 2 · 0 = tắt</small></div>${seg('speakingPerDay', s.speakingPerDay ?? 1, [[0, '0'], [1, '1'], [2, '2']])}</div>
     </div>
     <h2>Giao diện & phát âm</h2>
     <div class="card">
@@ -194,6 +199,7 @@ export function settingsView() {
       <select id="ai-provider" data-change="ai-provider">${[['anthropic', 'Claude API'], ['gemini', 'Google Gemini'], ['openai', 'API khác (tương thích OpenAI)'], ['proxy', 'Máy chủ riêng (proxy)']].map(([v, l]) => `<option value="${v}" ${s.ai.provider === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
       ${aiFields(s.ai)}
       <div class="btn-row" style="margin-top:16px"><button class="btn" data-act="ai-save">Lưu</button><button class="btn ghost" data-act="ai-test">Kiểm tra kết nối</button></div>
+      <div class="small fill-status" id="ai-result" role="status" hidden></div>
     </div>
     <h2>Speaking (thử nghiệm)</h2>
     <button class="listlink" data-act="go" data-to="#/mictest"><span class="lead">${icon('speaker')}</span><span class="body"><b>Thử micro</b><small>Ghi âm, nghe lại, đếm khoảng dừng, nhận dạng giọng nói</small></span>${icon('chev')}</button>
@@ -213,7 +219,7 @@ on('step', async (el) => {
 });
 on('set', async (el) => {
   const key = el.dataset.key;
-  const v = key === 'rate' || key === 'grammarPerDay' || key === 'writingPerDay' || key === 'readingPerDay' ? Number(el.dataset.value) : (key === 'autoSpeak' || key === 'autoFill') ? el.dataset.value === 'true' : el.dataset.value;
+  const v = key === 'rate' || key === 'grammarPerDay' || key === 'writingPerDay' || key === 'readingPerDay' || key === 'speakingPerDay' ? Number(el.dataset.value) : (key === 'autoSpeak' || key === 'autoFill') ? el.dataset.value === 'true' : el.dataset.value;
   await saveSettings(key === 'voice' ? { voice: v, voiceName: '' } : { [key]: v });
   if (key === 'theme' || key === 'accent') applyTheme();
   rerender();
@@ -235,7 +241,19 @@ on('backup', async () => {
     if (!v) return;
     withWriting = v === 'yes';
   }
-  if (await exportBackup({ withWriting })) { toast('Đã tạo file sao lưu'); rerender(); }
+  // Có bản ghi âm Speaking → mặc định không kèm (file rất nặng), hỏi trước.
+  let withAudio = false;
+  const rec = audioTakes();
+  if (rec.length) {
+    const mb = rec.reduce((a, t) => a + (t.audio?.size || 0), 0) / 1048576;
+    const v = await chooseSheet({ title: 'Kèm bản ghi âm Speaking?', current: 'no', options: [
+      { value: 'no', label: 'Không kèm âm thanh', sub: 'Vẫn lưu số liệu và tự chấm của mọi lượt luyện' },
+      { value: 'yes', label: `Kèm ${rec.length} bản ghi âm`, sub: `File nặng thêm khoảng ${mb < 1 ? '<1' : Math.round(mb * 1.35)} MB` },
+    ] });
+    if (!v) return;
+    withAudio = v === 'yes';
+  }
+  if (await exportBackup({ withWriting, withAudio })) { toast('Đã tạo file sao lưu'); rerender(); }
 });
 on('restore', async () => {
   const file = await pickFile('.json,application/json');
@@ -272,17 +290,19 @@ on('wipe', async () => {
 // Đọc form AI: ô nào đang hiển thị thì lấy giá trị mới, ô của cách kết nối khác giữ nguyên giá trị đã lưu.
 const readAiForm = () => {
   const val = (id, old) => { const el = document.getElementById(id); return el ? el.value.trim() : old; };
+  // Ô key: dọn ký tự thừa người dùng vô tình dán vào (khoảng trắng, xuống dòng, dấu nháy…) và hiện lại bản đã dọn.
+  const key = (id, old) => { const el = document.getElementById(id); if (!el) return old; const k = cleanKey(el.value); if (el.value !== k) el.value = k; return k; };
   const cur = S.settings.ai;
   return {
     ...cur,
     provider: val('ai-provider', cur.provider),
-    apiKey: val('ai-key', cur.apiKey),
+    apiKey: key('ai-key', cur.apiKey),
     model: val('ai-model', cur.model),
     endpoint: val('ai-endpoint', cur.endpoint),
-    geminiKey: val('ai-gemini-key', cur.geminiKey),
+    geminiKey: key('ai-gemini-key', cur.geminiKey),
     geminiModel: val('ai-gemini-model', cur.geminiModel),
     oaBase: val('ai-oa-base', cur.oaBase),
-    oaKey: val('ai-oa-key', cur.oaKey),
+    oaKey: key('ai-oa-key', cur.oaKey),
     oaModel: val('ai-oa-model', cur.oaModel),
   };
 };
@@ -295,12 +315,23 @@ on('ai-save', async () => {
   toast(aiReady(ai) ? 'Đã lưu cấu hình AI' : 'Đã lưu — AI vẫn chưa được kết nối');
   rerender();
 });
+// Kết quả kiểm tra hiện ngay dưới nút (không dùng thông báo nổi: câu giải thích dài, cần đọc kỹ và không được tự biến mất).
+function showAiResult(text, kind) {
+  const r = document.getElementById('ai-result');
+  if (!r) return toast(text.split('\n')[0], kind);
+  r.textContent = text;
+  r.className = `small fill-status ${kind}`;
+  r.hidden = !text;
+  r.scrollIntoView({ block: 'nearest' });
+}
 on('ai-test', async (el) => {
   await saveSettings({ ai: readAiForm() });
+  const label = el.textContent;
   el.disabled = true; el.textContent = 'Đang kiểm tra…';
-  try { await askAI(S.settings.ai, 'Trả lời đúng một từ: OK'); toast('Kết nối AI hoạt động tốt'); }
-  catch (e) { toast(e.message, 'bad'); }
-  rerender();
+  showAiResult('', '');
+  try { await testConnection(S.settings.ai); showAiResult('Kết nối AI hoạt động tốt. Bạn có thể dùng Trợ lý AI và nút Tự điền.', 'ok'); }
+  catch (e) { showAiResult(e.message, 'bad'); }
+  finally { if (el.isConnected) { el.disabled = false; el.textContent = label; } }
 });
 
 // ================= AI ASSISTANT =================

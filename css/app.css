@@ -966,3 +966,56 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 .r-pat .tag { border: 0; cursor: pointer; }
 .mt-meter { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; margin-top: 10px; }
 .mt-meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .05s linear; }
+
+/* ===== Speaking ===== */
+.goals.six { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.sp-page .ses-top { gap: 8px; }
+.sp-title { flex: 1; min-width: 0; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sp-q { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 16px 14px; margin-top: 10px; }
+.sp-qtext { font: 600 19px/1.4 var(--serif); }
+.iconbtn.sp-say { width: 40px; height: 40px; background: var(--accent-soft); color: var(--accent); flex: none; }
+.sp-frame { display: flex; gap: 6px; align-items: flex-start; margin-top: 12px; color: var(--text-2); }
+.sp-frame .ic { flex: none; color: var(--accent); margin-top: 1px; }
+.sp-note { margin: 2px 2px 8px; }
+.sp-recbox { margin-top: 12px; }
+.sp-tiles { margin-top: 12px; }
+.sp-tiles .tile b { font-size: 21px; }
+.sp-warn { margin-top: 8px; color: var(--amber); font-weight: 600; }
+.sp-compare { margin-top: 6px; color: var(--text-2); }
+.sp-take { background: var(--surface); border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 10px 12px; margin-top: 10px; }
+.sp-take audio { width: 100%; margin-top: 6px; height: 40px; }
+.sp-take .tag { margin-top: 6px; }
+.sp-h { margin: 18px 2px 8px; font-size: 13px; font-weight: 700; color: var(--text-3); letter-spacing: .05em; text-transform: uppercase; }
+.sp-samples { display: grid; gap: 10px; }
+.sp-sample { background: var(--surface); border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 12px 14px; }
+.sp-sample.b7 { border-left: 3px solid var(--accent); }
+.sp-text { margin-top: 8px; font-size: 16.5px; line-height: 1.6; }
+.sp-text p + p { margin-top: 8px; }
+.sp-vocab { display: grid; gap: 8px; }
+.sp-v { background: var(--surface); border-radius: 12px; padding: 9px 12px; font-size: 15px; }
+.sp-v small { display: block; color: var(--text-2); font-size: 13px; margin-top: 2px; }
+.sp-v .sp-err { color: var(--amber); }
+.sp-gram { margin-top: 10px; color: var(--text-2); }
+.sp-gl { margin: 0; padding-left: 20px; color: var(--text-2); line-height: 1.5; }
+.sp-hist { margin-top: 14px; }
+.sp-cue { margin-top: 10px; }
+.sp-cue-t { font: 600 18px/1.4 var(--serif); }
+.sp-cue ul { margin: 6px 0 4px; padding-left: 20px; line-height: 1.55; }
+.sp-notesbox { margin-top: 6px; font-size: 16px; }
+.sp-notes { width: 100%; border-collapse: collapse; margin-top: 8px; background: var(--surface); border-radius: 12px; overflow: hidden; }
+.sp-notes td { padding: 7px 10px; border-top: 1px solid var(--line); vertical-align: top; }
+.sp-notes tr:first-child td { border-top: 0; }
+.sp-notes td:first-child { font-weight: 600; white-space: nowrap; color: var(--text-2); }
+.sp-mynotes { margin-top: 10px; white-space: pre-wrap; }
+.sp-self { background: var(--surface); border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 12px 14px; margin-top: 12px; }
+.sp-yn { gap: 10px; margin-top: 8px; }
+.sp-yn > span:first-child { flex: 1; min-width: 0; }
+.seg.sm { flex: none; padding: 2px; border-radius: 10px; }
+.seg.sm button { min-height: 32px; padding: 0 12px; font-size: 13.5px; }
+.sp-bands { margin-top: 14px; }
+.sp-bands table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+.sp-bands th, .sp-bands td { padding: 6px; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+.sp-prog + .sp-prog { border-top: 1px solid var(--line); margin-top: 8px; padding-top: 8px; }
+/* Tab Học có 5 mục: chữ không xuống dòng. */
+.learn-switch button { white-space: nowrap; font-size: 13px; padding: 0 2px; letter-spacing: -.01em; }
+@media (min-width: 600px) { .learn-switch button { font-size: 14px; padding: 0 6px; } }

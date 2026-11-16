@@ -2,6 +2,7 @@
 import { S, blankWord, bulkAddWords, addDeck, allWords, deckName, exportData, restoreData, saveSettings, findByText, FALLBACK_DECK } from './store.js';
 import { parseCSV, toCSV, readXlsx, download, today, splitList } from './util.js';
 import { SEED, SEED_FIELDS } from './seed.js';
+import { audioForBackup } from './speak.js';
 
 export const CSV_COLUMNS = ['word', 'ipa', 'part_of_speech', 'meaning_vi', 'definition_en', 'examples', 'collocations', 'synonyms', 'antonyms', 'word_family', 'common_mistakes', 'topic', 'difficulty', 'notes'];
 
@@ -97,8 +98,10 @@ export function downloadTemplate() {
   return download('mau-import-tu-vung.csv', toCSV([CSV_COLUMNS, sample]), 'text/csv;charset=utf-8');
 }
 
-export async function exportBackup({ withWriting = true } = {}) {
-  const saved = await download(`sao-luu-tu-vung-${today()}.json`, JSON.stringify(exportData({ withWriting }), null, 2), 'application/json');
+export async function exportBackup({ withWriting = true, withAudio = false } = {}) {
+  const data = exportData({ withWriting });
+  if (withAudio) data.speakingAudio = await audioForBackup();
+  const saved = await download(`sao-luu-tu-vung-${today()}.json`, JSON.stringify(data, null, withAudio ? 0 : 2), 'application/json');
   if (saved) await saveSettings({ lastBackup: today() });
   return saved;
 }
