@@ -168,6 +168,7 @@ export function settingsView() {
       <div class="setrow"><div><b>Thẻ ngữ pháp</b><small>Số thẻ mẫu câu mỗi lượt ôn</small></div>${stepper('grammarReviewPerDay', s.grammarReviewPerDay)}</div>
       <div class="setrow"><div><b>Bài Writing</b><small>Số bài mỗi ngày · 0 = tắt mục tiêu</small></div>${seg('writingPerDay', s.writingPerDay, [[0, '0'], [1, '1'], [2, '2']])}</div>
       <div class="setrow"><div><b>Bài Reading</b><small>Số passage mỗi ngày · 0 = tắt mục tiêu</small></div>${seg('readingPerDay', s.readingPerDay, [[0, '0'], [1, '1'], [2, '2']])}</div>
+      <div class="setrow"><div><b>Lượt Listening</b><small>1 lượt = 1 bộ nghe số &amp; chính tả hoặc nghe chép · 0 = tắt</small></div>${seg('listeningPerDay', s.listeningPerDay ?? 1, [[0, '0'], [1, '1'], [2, '2']])}</div>
       <div class="setrow"><div><b>Lượt Speaking</b><small>1 lượt = 1 chủ đề Part 1 hoặc 1 đề Part 2 · 0 = tắt</small></div>${seg('speakingPerDay', s.speakingPerDay ?? 1, [[0, '0'], [1, '1'], [2, '2']])}</div>
       <div class="setrow"><div><b>Ghi âm Speaking</b><small>Tự xoá âm thanh sau 7 / 30 / 90 ngày, trừ bản “Giữ lại”</small></div>${seg('speakingKeepDays', s.speakingKeepDays ?? 30, [[7, '7'], [30, '30'], [90, '90']])}</div>
     </div>
@@ -220,7 +221,7 @@ on('step', async (el) => {
 });
 on('set', async (el) => {
   const key = el.dataset.key;
-  const v = key === 'rate' || key === 'grammarPerDay' || key === 'writingPerDay' || key === 'readingPerDay' || key === 'speakingPerDay' || key === 'speakingKeepDays' ? Number(el.dataset.value) : (key === 'autoSpeak' || key === 'autoFill') ? el.dataset.value === 'true' : el.dataset.value;
+  const v = key === 'rate' || key === 'grammarPerDay' || key === 'writingPerDay' || key === 'readingPerDay' || key === 'speakingPerDay' || key === 'speakingKeepDays' || key === 'listeningPerDay' ? Number(el.dataset.value) : (key === 'autoSpeak' || key === 'autoFill') ? el.dataset.value === 'true' : el.dataset.value;
   await saveSettings(key === 'voice' ? { voice: v, voiceName: '' } : { [key]: v });
   if (key === 'speakingKeepDays') { const n = await spCleanup(); if (n) toast(`Đã xoá âm thanh của ${n} bản ghi quá hạn`); }
   if (key === 'theme' || key === 'accent') applyTheme();

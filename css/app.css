@@ -1029,3 +1029,36 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 .sp-take-acts .tag { margin-top: 0; }
 .sp-tiles.four { grid-template-columns: repeat(4, 1fr); }
 .sp-tiles.four .tile b { font-size: 18px; }
+
+/* ===== Mục IELTS và Listening ===== */
+.learn-switch + .skill-switch { margin: -6px 0 14px; }
+.skill-switch button { font-size: 13.5px; min-height: 34px; padding: 0 2px; }
+.ls-q { margin-top: 10px; }
+.ls-playrow .btn { min-height: 52px; }
+.ls-play.playing { box-shadow: inset 0 0 0 2px var(--accent); }
+.ls-field { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ls-field .ls-label { font-weight: 650; }
+.ls-field .input { flex: 1; min-width: 120px; font-size: 18px; }
+.ls-tx { font-size: 17px; }
+.ls-fb { border-radius: var(--radius-sm); padding: 12px 14px; margin-top: 12px; }
+.ls-fb.good { background: var(--green-soft, rgba(46, 160, 67, .12)); }
+.ls-fb.bad { background: var(--red-soft, rgba(214, 69, 65, .1)); }
+.ls-fb > b { display: flex; align-items: center; gap: 6px; }
+.ls-fb p { margin-top: 6px; }
+.ls-tr { margin-top: 10px; }
+.ls-tr p + p { margin-top: 4px; }
+.ls-chunks { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.ls-chunks .tag, .ls-misslist .tag, .ls-wrong .tag, .ls-errs .tag { border: 0; cursor: pointer; padding: 5px 11px; font-size: 13.5px; }
+.ls-diff { line-height: 1.9; font-size: 16.5px; }
+.ls-ok { color: var(--text); }
+.ls-miss { color: var(--red); text-decoration: underline dashed; text-underline-offset: 3px; }
+.ls-sub { color: var(--red); font-weight: 650; }
+.ls-sub s, .ls-extra { color: var(--text-3); font-weight: 400; }
+.ls-legend { margin-top: 4px; display: flex; gap: 12px; }
+.ls-errs > div + div, .ls-wrong + .ls-wrong { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 10px; }
+.ls-misslist { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.ls-catline { padding: 6px 0; gap: 10px; }
+.ls-catline + .ls-catline { border-top: 1px solid var(--line); }
+.ls-wrong .tag { margin-top: 6px; }
+.setrow.col { flex-direction: column; align-items: stretch; gap: 8px; }
+.ls-seg { width: 100%; }

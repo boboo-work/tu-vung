@@ -33,6 +33,7 @@ Dữ liệu gắn với địa chỉ (origin) của trang. Khi đổi địa ch�
 | `js/drop.js` | Mini game “Bắn Từ”: từ rơi xuống, gõ đúng để bắn trúng, sai thì bị đập vỡ và gặp lại |
 | `js/games2.js` | Mini game “Nối Cụm” (hoàn thành collocation) và “Nghe & Chạm” (nghe, chạm bong bóng nghĩa đúng) |
 | `js/speak.js` | Luyện IELTS Speaking: kho đề theo quý, ghi âm/nghe lại/bản 2, đồng hồ Part 2, số liệu thời gian nói và khoảng dừng, tự chấm |
+| `js/listening.js` | Luyện IELTS Listening: nghe số và chính tả (7 dạng của Part 1, câu sinh ngẫu nhiên, có câu gây nhiễu), nghe chép có so từng từ |
 | `js/lookup.js` | “Tự điền” ở form thêm từ (tự chạy khi gõ xong từ, bật/tắt ở Cài đặt): từ điển Wiktionary, dịch MyMemory, gợi ý Datamuse và Trợ lý AI để điền IPA, định nghĩa, ví dụ, nghĩa tiếng Việt, collocations… |
 | `js/views.js`, `js/views2.js` | Các màn hình |
 | `js/io.js` | Import CSV/XLSX, export CSV, sao lưu JSON, bộ từ mẫu |
@@ -82,6 +83,15 @@ python3 tools/reading_import.py one --id cam20-t2 --title "Cambridge 20 · Test 
 ```
 
 Chế độ `dir` tự ghép file đề với file Simplify/giải theo tên bài đọc (tên file đề đặt nhầm cũng không sao), đọc được các kiểu file Simplify (①② nội dòng, bảng "Giữ lại", bảng có câu gốc gạch `~~`), hai kiểu file giải, và file đề chép từ web (mất tiêu đề nhóm câu, đáp án gộp `21&22`, danh sách phương án lẫn cột → lấy từ file giải). Đề nào lỗi nặng thì bỏ qua và in lý do. Kết quả nằm ở `content/reading/<id>.json` và `index.json`; app tải đề khi mở lần đầu rồi lưu lại để dùng offline. Tăng `VERSION` trong `sw.js` sau khi thêm đề.
+
+## Listening
+
+Tab **Học** → *IELTS* → *Listening* (mục IELTS gồm 4 kỹ năng Listening, Reading, Writing, Speaking và mở lại kỹ năng xem gần nhất). Âm thanh là giọng đọc có sẵn trên máy, ưu tiên giọng Anh và Úc (chọn *Trộn / Anh / Úc* và tốc độ ở trang Listening), chạy được khi offline.
+
+- **Nghe số & chính tả (Part 1):** 7 dạng: đánh vần tên, số điện thoại, số dễ nhầm (13/30), giá tiền, ngày tháng, giờ, mã số và mã bưu điện. Mỗi bộ 10 câu sinh ngẫu nhiên; một phần có câu gây nhiễu kiểu thi ("It used to be £45, but it's gone up to £52"). Chấm theo luật thi (sai chính tả là sai), chấp nhận các cách viết hợp lệ (7.30 / 7:30, 23 March / March 23rd, £12.50 / 12.50), và nói rõ vì sao sai: nhầm -teen/-ty, nhầm chữ cái, bị nhiễu, đọc giờ "quarter to"… Có chế độ *Chỉ nghe 1 lần* như khi thi. Mỗi dạng hiện tỉ lệ đúng; app gợi ý dạng yếu nhất.
+- **Nghe chép:** mỗi bộ 6 câu (Part 1–2, Part 3–4 trong `content/listening/dictation.json`, hoặc câu ví dụ trong từ vựng của bạn). Nghe lại, nghe chậm, nghe từng đoạn; gõ lại rồi app so từng từ và chỉ ra từ thiếu, từ sai, từ thừa, loại lỗi (từ nhỏ bị nuốt, đuôi -s/-ed, chính tả). Chính tả Anh và Mỹ đều được chấp nhận, số viết bằng chữ hay bằng số đều được.
+- **Lỗi hay gặp và từ hay nghe sót** hiện ở trang Listening; thống kê có trong file sao lưu.
+- **Mục tiêu ngày:** 1 lượt = 1 bộ (làm được quá nửa bộ cũng tính); Cài đặt → Lượt Listening.
 
 ## Speaking
 

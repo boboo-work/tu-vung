@@ -76,6 +76,10 @@ const DEFAULT_SETTINGS = {
   speakingPerDay: 1, // số lượt Speaking mỗi ngày: 1 chủ đề Part 1 hoặc 1 đề Part 2 (0 = tắt mục tiêu)
   speakingKeepDays: 30, // âm thanh bản ghi Speaking tự xoá sau bao nhiêu ngày (7 / 30 / 90), trừ bản "giữ lại"
   speakingStt: true, // hiện chữ khi nói (nhận dạng giọng nói của trình duyệt)
+  listeningPerDay: 1, // số lượt Listening mỗi ngày: 1 lượt = 1 bộ nghe số / chính tả hoặc 1 bộ nghe chép (0 = tắt mục tiêu)
+  listenAccent: 'mix', // giọng nghe: mix (trộn, ưu tiên Anh và Úc) | en-GB | en-AU
+  listenRate: 0.95, // tốc độ đọc khi luyện nghe: 0.8 chậm | 0.95 thường | 1.05 nhanh
+  listenOnce: false, // chỉ cho nghe 1 lần như khi thi
   grammarCourse: '', // khoá ngữ pháp đang học ('' = tự chọn theo kiểm tra đầu vào / tiến độ)
   grammarReviewPerDay: 10, // số thẻ mẫu câu tối đa mỗi lượt ôn
   voiceName: '', // '' = tự chọn giọng tốt nhất trên máy
@@ -95,6 +99,7 @@ export const S = {
   speaking: new Map(), // id → T:<…> một bản ghi âm (kind: take) · S:<…> một lượt luyện kèm tự chấm (kind: session)
   grammar: new Map(), // id → bản ghi: L:<bài> tiến độ · C:<thẻ> lịch ôn · E:<nhãn lỗi> sổ lỗi · placement
   settings: structuredClone(DEFAULT_SETTINGS),
+  listening: null, // thống kê Listening: các bộ đã làm, tỉ lệ đúng theo dạng, lỗi hay gặp, từ hay nghe sót
   game: null, // dữ liệu mini game (vòng chơi, thống kê, kỷ lục) — tách riêng, không tính vào tiến độ học
   persisted: false,
 };
@@ -112,6 +117,7 @@ export async function init() {
   const saved = kv.find((x) => x.key === 'settings')?.value;
   if (saved) S.settings = { ...DEFAULT_SETTINGS, ...saved, ai: { ...DEFAULT_SETTINGS.ai, ...(saved.ai || {}) } };
   S.game = cleanGame(kv.find((x) => x.key === 'game')?.value);
+  S.listening = cleanListening(kv.find((x) => x.key === 'listening')?.value);
   if (!S.decks.length) {
     S.decks = DEFAULT_DECKS.map(([id, name], i) => ({ id, name, builtin: true, order: i }));
     await tx(['decks'], 'readwrite', (t) => S.decks.forEach((d) => t.objectStore('decks').put(d)));
@@ -196,9 +202,9 @@ export async function deleteDeck(id) {
 }
 
 // ---- Nhật ký theo ngày ----
-const blankDay = (date) => ({ date, newIds: [], reviewIds: [], correct: 0, wrong: 0, gLessons: [], gReviews: [], wEssays: [], rPassages: [], sTurns: [] });
+const blankDay = (date) => ({ date, newIds: [], reviewIds: [], correct: 0, wrong: 0, gLessons: [], gReviews: [], wEssays: [], rPassages: [], sTurns: [], lSets: [] });
 /** Ngày có học gì không (từ vựng hoặc ngữ pháp). */
-export const dayActive = (x) => !!x && (x.newIds.length + x.reviewIds.length + x.correct + x.wrong + (x.gLessons?.length || 0) + (x.gReviews?.length || 0) + (x.wEssays?.length || 0) + (x.rPassages?.length || 0) + (x.sTurns?.length || 0)) > 0;
+export const dayActive = (x) => !!x && (x.newIds.length + x.reviewIds.length + x.correct + x.wrong + (x.gLessons?.length || 0) + (x.gReviews?.length || 0) + (x.wEssays?.length || 0) + (x.rPassages?.length || 0) + (x.sTurns?.length || 0) + (x.lSets?.length || 0)) > 0;
 
 // ---- Writing ----
 export async function wPut(...recs) {
@@ -423,6 +429,28 @@ function cleanGame(g) {
 const cleanWordGame = (g) => (g && typeof g === 'object' && Number(g.last) > 0
   ? { last: Number(g.last), round: Math.max(0, Math.round(Number(g.round)) || 0), debt: !!g.debt } : undefined);
 
+// ---- Listening ----
+// S.listening = { sets: các bộ đã làm (mới nhất cuối, giữ 300), cat: { dạng: { n, ok } }, err: { loại lỗi: số lần },
+//   miss: từ hay nghe sót trong nghe chép [{ w, at }], seen: id câu nghe chép đã làm gần đây }
+const LS_CATS = ['spell', 'phone', 'teen', 'price', 'date', 'time', 'code'];
+export function cleanListening(l) {
+  const o = l && typeof l === 'object' ? l : {};
+  const n = (v) => (Number.isFinite(Number(v)) && Number(v) >= 0 ? Math.round(Number(v)) : 0);
+  const cat = {};
+  for (const c of LS_CATS) cat[c] = { n: n(o.cat?.[c]?.n), ok: n(o.cat?.[c]?.ok) };
+  const err = {};
+  if (o.err && typeof o.err === 'object') for (const [k, v] of Object.entries(o.err)) if (/^[a-z]{2,12}$/.test(k)) err[k] = n(v);
+  const sets = (Array.isArray(o.sets) ? o.sets : []).filter((x) => x && /^L:[A-Za-z0-9_-]{1,40}$/.test(String(x.id)) && /^\d{4}-\d{2}-\d{2}$/.test(String(x.date))).slice(-300).map((x) => ({
+    id: String(x.id), kind: x.kind === 'dict' ? 'dict' : 'num', cat: String(x.cat || '').slice(0, 20), date: x.date, at: n(x.at), n: n(x.n), ok: n(x.ok), first: n(x.first), pct: Math.min(100, n(x.pct)),
+  }));
+  const miss = (Array.isArray(o.miss) ? o.miss : []).filter((x) => x && typeof x.w === 'string' && x.w.length < 40).slice(-100).map((x) => ({ w: x.w, at: n(x.at) }));
+  const seen = (Array.isArray(o.seen) ? o.seen : []).filter((x) => typeof x === 'string' && x.length < 80).slice(-300);
+  return { sets, cat, err, miss, seen };
+}
+export async function saveListening() {
+  await put('kv', { key: 'listening', value: S.listening });
+}
+
 export async function saveGame(patch = {}) {
   S.game = { ...S.game, ...patch };
   await put('kv', { key: 'game', value: S.game });
@@ -459,6 +487,7 @@ export function exportData({ withWriting = true } = {}) {
     ...(withWriting ? { writing: essays() } : {}),
     reading: readingBackup(),
     speaking: [...S.speaking.values()].map(({ audio, ...r }) => ({ ...r, hasAudio: !!audio })),
+    listening: S.listening,
   };
 }
 
@@ -630,6 +659,7 @@ function cleanBackup(data) {
     wEssays: Array.isArray(d.wEssays) ? d.wEssays.filter((x) => typeof x === 'string') : [],
     rPassages: Array.isArray(d.rPassages) ? d.rPassages.filter((x) => typeof x === 'string') : [],
     sTurns: Array.isArray(d.sTurns) ? d.sTurns.filter((x) => typeof x === 'string') : [],
+    lSets: Array.isArray(d.lSets) ? d.lSets.filter((x) => typeof x === 'string') : [],
   }));
   const writing = Array.isArray(data.writing) ? data.writing.map(cleanWriting).filter(Boolean) : null;
   const reading = Array.isArray(data.reading) ? data.reading.map(cleanReading).filter(Boolean) : null;
@@ -655,9 +685,14 @@ function cleanBackup(data) {
     speakingPerDay: int(st.speakingPerDay, 0, 2, DEFAULT_SETTINGS.speakingPerDay),
     speakingKeepDays: [7, 30, 90].includes(Number(st.speakingKeepDays)) ? Number(st.speakingKeepDays) : DEFAULT_SETTINGS.speakingKeepDays,
     speakingStt: st.speakingStt !== false,
+    listeningPerDay: int(st.listeningPerDay, 0, 2, DEFAULT_SETTINGS.listeningPerDay),
+    listenAccent: ['mix', 'en-GB', 'en-AU'].includes(st.listenAccent) ? st.listenAccent : 'mix',
+    listenRate: [0.8, 0.95, 1.05].includes(Number(st.listenRate)) ? Number(st.listenRate) : 0.95,
+    listenOnce: st.listenOnce === true,
     grammarReviewPerDay: int(st.grammarReviewPerDay, 5, 50, DEFAULT_SETTINGS.grammarReviewPerDay),
   };
-  return { decks, words, days, settings, game: cleanGame(data.game), grammar, writing, reading, speaking };
+  const listening = data.listening && typeof data.listening === 'object' ? cleanListening(data.listening) : null;
+  return { decks, words, days, settings, game: cleanGame(data.game), grammar, writing, reading, speaking, listening };
 }
 
 export async function restoreData(data) {
@@ -689,6 +724,8 @@ export async function restoreData(data) {
     clean.days.forEach((d) => t.objectStore('days').put(d));
     t.objectStore('kv').put({ key: 'settings', value: { ...clean.settings, ai } });
     t.objectStore('kv').put({ key: 'game', value: clean.game });
+    // File sao lưu cũ (chưa có Listening) → giữ nguyên thống kê Listening trên máy.
+    if (clean.listening) t.objectStore('kv').put({ key: 'listening', value: clean.listening });
   });
   await init();
   return clean.words.length;
