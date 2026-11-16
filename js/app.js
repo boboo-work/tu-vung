@@ -122,7 +122,11 @@ function report(err) {
 const KB_GUESS = 380; // bàn phím iPhone kèm thanh gợi ý
 function focusNoPan(el) {
   const r = el.getBoundingClientRect();
-  const lift = r.top + 48 > window.innerHeight - KB_GUESS ? Math.round(r.top - 90) : 0;
+  // Bàn phím đang mở (chạm sang ô khác): so với mép trên bàn phím thật; chưa mở: so với chỗ bàn phím sẽ lên tới.
+  const vv = window.visualViewport;
+  const open = vv && window.innerHeight - vv.height > 120;
+  const limit = open ? vv.offsetTop + vv.height - 8 : window.innerHeight - KB_GUESS;
+  const lift = r.top + 48 > limit ? Math.round(r.top - (open ? vv.offsetTop : 0) - 90) : 0;
   if (lift <= 0) { el.focus({ preventScroll: true }); return; }
   const prev = el.style.transform;
   el.style.transform = `translateY(${-lift}px)`;
@@ -180,6 +184,7 @@ function watchKeyboard() {
   };
   let lastH = 0;
   let settleTimer = 0;
+  let wasOpen = false;
   const settle = () => {
     unshift();
     const top = Math.max(0, Math.round(vv.offsetTop));
@@ -196,7 +201,11 @@ function watchKeyboard() {
     if (!vv.offsetTop) root.style.setProperty('--vv-top', '0px');
     document.body.classList.toggle('kb', open);
     clearTimeout(settleTimer);
-    settleTimer = setTimeout(settle, 320);
+    // Bàn phím đang mở sẵn (không trượt lên/xuống): iOS dời trang khi chuyển ô (mũi tên ∧ ∨ trên bàn phím) → bù ngay,
+    // không chờ, để không thấy màn hình bị đẩy lên rồi mới về.
+    if (open && wasOpen && Math.round(vv.height) === lastH) settle();
+    else settleTimer = setTimeout(settle, 320);
+    wasOpen = open;
     if (Math.round(vv.height) !== lastH) {
       lastH = Math.round(vv.height);
       // Sau khi thu app lại, đưa ô đang nhập vào vùng nhìn thấy nếu nó đang bị khuất (form thêm từ, cài đặt, màn hình thấp…).
@@ -204,6 +213,14 @@ function watchKeyboard() {
       if (open && el && el !== document.body && view.contains(el)) requestAnimationFrame(() => ensureVisible(el));
     }
   };
+  // Chuyển sang ô khác khi bàn phím đã mở (chạm hoặc mũi tên ∧ ∨): kéo trang về, chỉ cuộn khung chứa để lộ ô.
+  document.addEventListener('focusin', (e) => {
+    const el = e.target;
+    if (!el.matches?.(TYPING) || !view.contains(el) || window.innerHeight - vv.height <= 120) return;
+    const fix = () => { if (document.activeElement === el) { unshift(); ensureVisible(el); settle(); } };
+    requestAnimationFrame(fix);
+    setTimeout(fix, 250);
+  });
   vv.addEventListener('resize', sync);
   vv.addEventListener('scroll', sync);
   window.addEventListener('scroll', unshift, { passive: true });

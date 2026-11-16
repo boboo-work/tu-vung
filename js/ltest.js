@@ -4,7 +4,7 @@
 //  Làm bài: cả đề như thi (mỗi Part nghe 1 lần, không tua) hoặc luyện từng Part (tua, đổi tốc độ).
 //  Chấm: theo luật thi (sai chính tả là sai, đúng số từ cho phép), band ước lượng khi làm đủ 40 câu,
 //        lý do sai từng câu, tỉ lệ đúng theo dạng câu hỏi; nghe lại từng Part khi chữa.
-import { S, ltPut, ltDel, logGrammarDay } from './store.js';
+import { S, ltPut, ltDel, logGrammarDay, saveSettings } from './store.js';
 import { esc, toast, uid, today, fmtDate, dateStr, unzip, download } from './util.js';
 import { icon, on, go, back, rerender, navBar, confirmSheet } from './ui.js';
 import { aiReady, askAI } from './ai.js';
@@ -639,7 +639,7 @@ export function testView(id) {
       <p class="small muted" style="margin-top:8px">${ui.mode === 'exam' ? 'Mỗi Part chỉ nghe 1 lần, không tua lại. Nộp bài mới xem đáp án.' : 'Được tạm dừng, tua lại 5 giây, nghe chậm. Nộp bài để xem đáp án.'}</p>
       <button class="btn" style="margin-top:12px" data-act="lt-start" data-id="${esc(id)}" data-parts="1,2,3,4">Làm cả đề · khoảng 30 phút</button></div>
     <h2>Từng Part</h2><div class="wlist">${parts}</div>
-    ${att.length ? `<h2>Các lần làm</h2><div class="card">${att.slice(0, 8).map((a) => `<div class="row-between ls-catline" data-act="lt-open-att" data-id="${a.id}" role="button"><span>${a.parts.length === 4 ? 'Cả đề' : `Part ${a.parts.join(', ')}`} · ${a.mode === 'exam' ? 'như thi' : 'luyện'} <span class="small muted">· ${fmtDate(a.date)}</span></span><b>${a.score}/${a.total}${a.total === 40 ? ` · ${a.band}` : ''}</b></div>`).join('')}</div>` : ''}
+    ${att.length ? `<h2>Các lần làm</h2><div class="card">${att.slice(0, 8).map((a) => `<div class="row-between ls-catline" data-act="lt-open-att" data-id="${a.id}" role="button"><span>${a.parts.length === 4 ? 'Cả đề' : `Part ${a.parts.join(', ')}`} · ${a.mode === 'exam' ? 'như thi' : 'luyện'}${a.rate && a.rate !== 1 ? ` · ${String(a.rate).replace('.', ',')}×` : ''} <span class="small muted">· ${fmtDate(a.date)}</span></span><b>${a.score}/${a.total}${a.total === 40 ? ` · ${a.band}` : ''}</b></div>`).join('')}</div>` : ''}
     <h2>Lời thoại &amp; giải thích</h2><div class="card"><div class="row-between ls-catline"><span>Lời thoại</span><span class="small muted">${t.tx ? `${Object.keys(t.tx.parts).length} Part · ${t.tx.n} câu có mốc` : 'chưa có'}</span></div>
       <div class="row-between ls-catline"><span>Giải thích từng câu</span><span class="small muted">${noteCount(t.notes) ? `${noteCount(t.notes)} câu` : 'chưa có'}</span></div>
       <p class="small muted" style="margin-top:6px">Hiện sau khi nộp bài: câu chứa đáp án trong lời thoại, vì sao chọn, bẫy, paraphrase.</p>
@@ -675,7 +675,8 @@ function loadPart(n) {
   A.url = a ? URL.createObjectURL(a.blob) : '';
   A.n = n;
   if (A.url) { el.src = A.url; el.load(); } else el.removeAttribute('src');
-  el.playbackRate = 1;
+  el.defaultPlaybackRate = rate();
+  el.playbackRate = rate();
 }
 async function holdLock() { try { A.lock = await navigator.wakeLock?.request('screen'); } catch { A.lock = null; } }
 function releaseLock() { try { A.lock?.release?.(); } catch { /* bỏ qua */ } A.lock = null; }
@@ -690,7 +691,7 @@ function syncBar() {
 }
 function playLabel() {
   if (A.el && !A.el.paused) return 'Tạm dừng';
-  return `${icon('speaker', 'sm')} ${R?.played[A.n] ? 'Nghe tiếp' : R?.review ? 'Nghe lại' : 'Bắt đầu nghe'}`;
+  return `${icon('speaker', 'sm')} ${R?.played[A.n] ? 'Nghe tiếp' : R?.review ? 'Nghe lại' : 'Nghe'}`;
 }
 function syncBtn() {
   const b = document.getElementById('lt-play');
@@ -719,9 +720,15 @@ on('lt-seek', (el) => {
   A.el.currentTime = Math.max(0, Math.min((A.el.duration || 0), A.el.currentTime + Number(el.dataset.d)));
   syncBar();
 });
-on('lt-rate', () => {
-  if (!A.el || (R.mode === 'exam' && !R.review)) return;
-  A.el.playbackRate = A.el.playbackRate === 1 ? 0.85 : 1;
+// Tốc độ nghe: 0.85× / 1× / 1.1× / 1.25× (nhớ cho các lần sau). Nghe nhanh hơn thi thật giúp tốc độ thật thấy dễ hơn.
+const RATES = [1, 1.1, 1.25, 0.85];
+const rate = () => (RATES.includes(S.settings.ltRate) ? S.settings.ltRate : 1);
+const rateLabel = () => `${String(rate()).replace('.', ',')}×`;
+on('lt-rate', async () => {
+  const next = RATES[(RATES.indexOf(rate()) + 1) % RATES.length];
+  await saveSettings({ ltRate: next });
+  if (A.el) { A.el.playbackRate = next; A.el.defaultPlaybackRate = next; }
+  toast(`Tốc độ nghe ${rateLabel()}`);
   rerender();
 });
 on('lt-in', (el) => { if (R && R.stage === 'do') R.ans[el.dataset.n] = el.value; });
@@ -769,7 +776,7 @@ on('lt-submit', async () => {
   R.pi = 0;
   loadPart(R.parts[0]);
   const id = 'R:' + uid();
-  await ltPut({ id, kind: 'attempt', test: R.test.id, title: R.test.title, date: today(), at: Date.now(), mode: R.mode, parts: R.parts, score: g.score, total: g.total, band: R.result.band, ans: R.ans, byType, whys });
+  await ltPut({ id, kind: 'attempt', test: R.test.id, title: R.test.title, date: today(), at: Date.now(), mode: R.mode, rate: rate(), parts: R.parts, score: g.score, total: g.total, band: R.result.band, ans: R.ans, byType, whys });
   await logGrammarDay('lSets', id);
   rerender(true);
 });
@@ -795,11 +802,12 @@ function audioBox() {
   const free = R.mode === 'practice' || R.review;
   const done = R.mode === 'exam' && !R.review && R.ended[A.n];
   if (!A.url) return '<div class="card lt-audio"><p class="small muted">Part này không có file nghe.</p></div>';
-  return `<div class="card lt-audio">
-    <div class="row-between" style="gap:8px">${done ? '<b class="small">Đã nghe xong Part này</b>' : `<button class="btn soft lt-playbtn" id="lt-play" data-act="lt-play">${playLabel()}</button>`}
-      ${free ? `<button class="btn ghost lt-sm" data-act="lt-seek" data-d="-5" aria-label="Lùi 5 giây">−5″</button><button class="btn ghost lt-sm" data-act="lt-seek" data-d="5" aria-label="Tới 5 giây">+5″</button><button class="btn ghost lt-sm" data-act="lt-rate">${A.el?.playbackRate === 0.85 ? '0.85×' : '1×'}</button>` : ''}</div>
-    <div class="progress lt-bar" id="lt-bar"><i style="width:0%"></i></div><p class="small muted" id="lt-time">0:00 / –:––</p>
-    ${R.mode === 'exam' && !R.review ? '<p class="small faint">Như thi: nghe 1 lần, không tua. Đọc trước câu hỏi trong lúc chờ.</p>' : ''}</div>`;
+  // Khung nghe gọn một hàng, kích thước cố định (không đổi khi bàn phím mở để câu hỏi bên dưới không bị xô lệch).
+  return `<div class="card lt-audio"><div class="lt-arow">${done ? '<b class="small lt-done">Đã nghe xong Part này</b>' : `<button class="btn soft lt-playbtn" id="lt-play" data-act="lt-play">${playLabel()}</button>`}
+      ${free ? `<button class="btn ghost lt-sm" data-act="lt-seek" data-d="-5" aria-label="Lùi 5 giây">−5″</button><button class="btn ghost lt-sm" data-act="lt-seek" data-d="5" aria-label="Tới 5 giây">+5″</button>` : ''}
+      <button class="btn ghost lt-sm lt-rate ${rate() !== 1 ? 'on' : ''}" data-act="lt-rate" aria-label="Tốc độ nghe">${rateLabel()}</button></div>
+    <div class="lt-brow"><div class="progress lt-bar" id="lt-bar"><i style="width:0%"></i></div><span class="small muted" id="lt-time">0:00 / –:––</span></div></div>
+    ${R.mode === 'exam' && !R.review ? `<p class="small faint lt-anote">Như thi: nghe 1 lần, không tua. Đọc trước câu hỏi trong lúc chờ.${rate() !== 1 ? ` Đang nghe ở tốc độ ${rateLabel()}.` : ''}</p>` : ''}`;
 }
 function gapInput(n) {
   const r = R.result?.res[n];
