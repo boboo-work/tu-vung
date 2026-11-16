@@ -214,7 +214,7 @@ async function boot() {
     sw.register('sw.js', { updateViaCache: 'none' }).then((reg) => {
       // App mở từ màn hình chính trên iOS thường chỉ "thức dậy" chứ không tải lại → kiểm tra bản mới mỗi lần quay lại app.
       document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') reg.update().catch(() => {});
+        if (document.visibilityState === 'visible') reg?.update?.().catch(() => {});
       });
     }).catch((e) => console.warn('Service worker chưa đăng ký được:', e));
   }

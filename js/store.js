@@ -74,6 +74,8 @@ const DEFAULT_SETTINGS = {
   writingPerDay: 1, // số bài Writing mỗi ngày (0 = tắt mục tiêu)
   readingPerDay: 1, // số passage Reading mỗi ngày (0 = tắt mục tiêu)
   speakingPerDay: 1, // số lượt Speaking mỗi ngày: 1 chủ đề Part 1 hoặc 1 đề Part 2 (0 = tắt mục tiêu)
+  speakingKeepDays: 30, // âm thanh bản ghi Speaking tự xoá sau bao nhiêu ngày (7 / 30 / 90), trừ bản "giữ lại"
+  speakingStt: true, // hiện chữ khi nói (nhận dạng giọng nói của trình duyệt)
   grammarCourse: '', // khoá ngữ pháp đang học ('' = tự chọn theo kiểm tra đầu vào / tiến độ)
   grammarReviewPerDay: 10, // số thẻ mẫu câu tối đa mỗi lượt ôn
   voiceName: '', // '' = tự chọn giọng tốt nhất trên máy
@@ -232,7 +234,8 @@ export async function spDel(...ids) {
 export const SP_KEEP_DAYS = 30;
 /** Bỏ phần âm thanh của bản ghi quá 30 ngày (trừ bản người học đánh dấu "giữ lại"); số liệu vẫn giữ. */
 export async function spCleanup(now = Date.now()) {
-  const old = [...S.speaking.values()].filter((r) => r.kind === 'take' && r.audio && !r.keep && now - (r.at || 0) > SP_KEEP_DAYS * 864e5);
+  const days = [7, 30, 90].includes(S.settings.speakingKeepDays) ? S.settings.speakingKeepDays : SP_KEEP_DAYS;
+  const old = [...S.speaking.values()].filter((r) => r.kind === 'take' && r.audio && !r.keep && now - (r.at || 0) > days * 864e5);
   if (old.length) await spPut(...old.map((r) => ({ ...r, audio: null, dropped: true })));
   return old.length;
 }
@@ -513,7 +516,8 @@ function cleanSpeaking(r, audioMap) {
     const audio = a && a.b64 ? b64ToBlob(a.b64, a.type) : null;
     return { id: r.id, kind: 'take', sid: str(r.sid).slice(0, 80), item, part: int(r.part, 1, 3, 1), qi: int(r.qi, -1, 999, -1), v: int(r.v, 1, 9, 1),
       at, date, ms: int(r.ms, 0, 6e5, 0), speakMs: int(r.speakMs, 0, 6e5, 0), pauses: int(r.pauses, 0, 999, 0), longest: int(r.longest, 0, 6e5, 0),
-      keep: r.keep === true, silent: r.silent === true, mime: str(r.mime).slice(0, 60), audio, dropped: !audio };
+      keep: r.keep === true, silent: r.silent === true, mime: str(r.mime).slice(0, 60), audio, dropped: !audio, deleted: r.deleted === true,
+      text: str(r.text).slice(0, 6000), edited: r.edited === true };
   }
   if (r.kind === 'session') {
     const self = {};
@@ -641,6 +645,8 @@ function cleanBackup(data) {
     writingPerDay: int(st.writingPerDay, 0, 2, DEFAULT_SETTINGS.writingPerDay),
     readingPerDay: int(st.readingPerDay, 0, 2, DEFAULT_SETTINGS.readingPerDay),
     speakingPerDay: int(st.speakingPerDay, 0, 2, DEFAULT_SETTINGS.speakingPerDay),
+    speakingKeepDays: [7, 30, 90].includes(Number(st.speakingKeepDays)) ? Number(st.speakingKeepDays) : DEFAULT_SETTINGS.speakingKeepDays,
+    speakingStt: st.speakingStt !== false,
     grammarReviewPerDay: int(st.grammarReviewPerDay, 5, 50, DEFAULT_SETTINGS.grammarReviewPerDay),
   };
   return { decks, words, days, settings, game: cleanGame(data.game), grammar, writing, reading, speaking };

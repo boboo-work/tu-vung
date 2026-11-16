@@ -1019,3 +1019,13 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 /* Tab Học có 5 mục: chữ không xuống dòng. */
 .learn-switch button { white-space: nowrap; font-size: 13px; padding: 0 2px; letter-spacing: -.01em; }
 @media (min-width: 600px) { .learn-switch button { font-size: 14px; padding: 0 6px; } }
+
+/* Speaking: chữ khi nói, xoá bản ghi */
+.sp-live { background: var(--surface); border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 10px 14px; margin-top: 10px; }
+.sp-live #sp-live { min-height: 44px; margin-top: 4px; font-size: 16px; line-height: 1.5; }
+.sp-tx { margin-top: 12px; }
+.sp-tx textarea { margin-top: 6px; width: 100%; font: 16px/1.5 var(--serif); }
+.sp-take-acts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.sp-take-acts .tag { margin-top: 0; }
+.sp-tiles.four { grid-template-columns: repeat(4, 1fr); }
+.sp-tiles.four .tile b { font-size: 18px; }
