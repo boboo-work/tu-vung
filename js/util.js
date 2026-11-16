@@ -217,14 +217,14 @@ async function inflate(bytes) {
   return new Uint8Array(await new Response(stream).arrayBuffer());
 }
 
-async function unzip(buf) {
+export async function unzip(buf) {
   const dv = new DataView(buf);
   const u8 = new Uint8Array(buf);
   let eocd = -1;
   for (let i = buf.byteLength - 22; i >= Math.max(0, buf.byteLength - 66000); i--) {
     if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
   }
-  if (eocd < 0) throw new Error('File không phải định dạng .xlsx hợp lệ');
+  if (eocd < 0) throw new Error('File nén không hợp lệ');
   const n = dv.getUint16(eocd + 10, true);
   let p = dv.getUint32(eocd + 16, true);
   const dec = new TextDecoder();
@@ -241,8 +241,16 @@ async function unzip(buf) {
     files[name] = { method, csize, off };
     p += 46 + nlen + elen + clen;
   }
+  const bytes = async (name) => {
+    const f = files[name];
+    if (!f) return null;
+    const start = f.off + 30 + dv.getUint16(f.off + 26, true) + dv.getUint16(f.off + 28, true);
+    const raw = u8.subarray(start, start + f.csize);
+    return f.method === 0 ? raw : inflate(raw);
+  };
   return {
     names: Object.keys(files),
+    bytes,
     async text(name) {
       const f = files[name];
       if (!f) return null;

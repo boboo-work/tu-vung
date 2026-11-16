@@ -1070,3 +1070,82 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 .ls-wrong .tag { margin-top: 6px; }
 .setrow.col { flex-direction: column; align-items: stretch; gap: 8px; }
 .ls-seg { width: 100%; }
+
+/* ===== Listening: đề thật ===== */
+.lt-page .ses-top { gap: 8px; }
+.lt-audio { margin-top: 12px; position: sticky; top: -18px; z-index: 3; }
+.lt-audio .btn { min-height: 46px; }
+.lt-audio .lt-sm { flex: none; width: auto; padding: 0 8px; min-width: 46px; }
+.lt-playbtn { flex: 1; min-width: 0; white-space: nowrap; }
+.lt-bar { margin-top: 10px; }
+.lt-bar i { animation: none; transition: width .25s linear; }
+.lt-audio #lt-time { margin-top: 4px; font-variant-numeric: tabular-nums; }
+.lt-group { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 14px 16px; margin-top: 12px; }
+.lt-qhead { font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--accent); }
+.lt-instr { margin-top: 4px; color: var(--text-2); font-size: 14px; }
+.lt-instr p + p { margin-top: 2px; }
+.lt-title, .lt-fill h4 { font-size: 16px; margin: 12px 0 6px; }
+.lt-fill { margin-top: 8px; font-size: 15.5px; line-height: 1.65; }
+.lt-fill p { margin: 4px 0; }
+.lt-fill ul, .lt-fill ol { margin: 4px 0; padding-left: 20px; }
+.lt-card { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px 12px; margin-top: 8px; }
+.lt-cell + .lt-cell { margin-top: 6px; }
+.lt-cell small { display: block; font-size: 11.5px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .03em; }
+.lt-trow { padding: 4px 0; }
+.lt-trow > div:first-child:not(:only-child) { font-weight: 650; }
+.lt-gap { display: inline-block; width: 8.5em; max-width: 100%; height: 34px; padding: 0 8px; margin: 2px 2px; border: 1.5px solid var(--accent); border-radius: 8px; background: var(--bg); font-size: 16px; vertical-align: middle; }
+.lt-gap::placeholder { color: var(--text-3); font-weight: 700; }
+.lt-ans { display: inline-block; padding: 1px 8px; border-radius: 8px; font-weight: 600; }
+.lt-ans.ok { background: var(--green-soft); color: var(--green); }
+.lt-ans.no { background: var(--red-soft); color: var(--red); }
+.lt-ans .lt-n { margin-right: 6px; opacity: .7; }
+.lt-ans i { font-weight: 400; }
+.lt-right { color: var(--green); }
+.lt-q { margin-top: 12px; }
+.lt-q > p { font-size: 15.5px; }
+.lt-opt { display: flex; gap: 10px; align-items: center; margin-top: 8px; font-size: 15px; }
+.lt-chip { flex: none; width: 38px; height: 38px; border-radius: 10px; background: var(--surface-2); font-weight: 700; color: var(--text-2); }
+.lt-chip.on { background: var(--accent); color: var(--accent-ink, #fff); }
+.lt-chip.right { background: var(--green-soft); color: var(--green); box-shadow: inset 0 0 0 2px var(--green); }
+.lt-chip.wrong { background: var(--red-soft); color: var(--red); box-shadow: inset 0 0 0 2px var(--red); }
+.lt-chip.dim { opacity: .45; }
+.lt-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.lt-optbox { background: var(--surface-2); border-radius: var(--radius-sm); padding: 8px 12px; margin-top: 8px; font-size: 14.5px; }
+.lt-optbox p + p { margin-top: 3px; }
+.lt-sub { font-weight: 700; margin-top: 10px; }
+.lt-mark { font-size: 12.5px; font-weight: 650; margin-left: 4px; white-space: nowrap; }
+.lt-mark.ok { color: var(--green); }
+.lt-mark.no { color: var(--red); white-space: normal; }
+.lt-bad { color: var(--red); }
+.lt-pchips { display: flex; gap: 8px; margin-top: 12px; }
+.lt-pchip { flex: 1; padding: 8px 4px; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); font-size: 13px; color: var(--text-2); display: flex; flex-direction: column; align-items: center; }
+.lt-pchip b { font-size: 16px; color: var(--text); }
+.lt-pchip.on { box-shadow: inset 0 0 0 2px var(--accent); }
+.danger-text { color: var(--red); }
+/* Đang gõ (bàn phím mở): khung nghe thôi ghim và gọn lại để chỗ cho câu hỏi; âm thanh vẫn phát. */
+body.kb .lt-audio { position: static; padding: 8px 12px; }
+body.kb .lt-audio .btn { min-height: 38px; }
+body.kb .lt-audio .faint { display: none; }
+/* Chữa bài đề thật */
+.lt-rvlist { display: grid; gap: 10px; }
+.lt-rv { background: var(--surface); border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 12px 14px; border-left: 4px solid var(--green); }
+.lt-rv.no { border-left-color: var(--red); }
+.lt-rv > p { margin-top: 4px; }
+.lt-rvq { font-style: italic; }
+.lt-ev { margin: 8px 0 0; padding: 8px 10px; border-radius: 10px; background: var(--surface-2); font-size: 14.5px; line-height: 1.5; cursor: pointer; }
+.lt-ev u, .lt-tx u { text-decoration: none; background: var(--amber-soft); color: var(--text); font-weight: 650; border-radius: 3px; padding: 0 2px; }
+.lt-note { margin-top: 8px; font-size: 14.5px; line-height: 1.5; }
+.lt-note p + p, .lt-note .lt-para + p, .lt-note p + .lt-para { margin-top: 6px; }
+.lt-para > div { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; font-size: 13.5px; }
+.lt-para > div span { background: var(--accent-soft); border-radius: 8px; padding: 4px 8px; }
+.lt-tip { color: var(--text-2); display: flex; gap: 6px; }
+.lt-tip .ic { flex: none; color: var(--accent); margin-top: 2px; }
+.lt-aibtn { margin-top: 8px; display: inline-flex; align-items: center; gap: 4px; border: 0; cursor: pointer; }
+.lt-tx { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 12px 14px; margin-top: 14px; font-size: 15px; line-height: 1.6; }
+.lt-tx summary { font-weight: 700; cursor: pointer; list-style: none; }
+.lt-tx summary::after { content: ' ▾'; color: var(--text-3); }
+.lt-tx p { margin-top: 8px; border-radius: 8px; }
+.lt-tx hr { border: 0; border-top: 1px dashed var(--line); margin: 10px 0; }
+.lt-qb { display: inline-block; font-size: 11.5px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border-radius: 6px; padding: 0 6px; margin-left: 2px; cursor: pointer; }
+.lt-flash { animation: ltflash 1.6s ease; }
+@keyframes ltflash { 0%, 40% { background: var(--amber-soft); } 100% { background: transparent; } }
