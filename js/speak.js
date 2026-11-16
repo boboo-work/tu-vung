@@ -6,7 +6,7 @@
 //  S5 Tự chấm 4 tiêu chí bằng câu Có/Chưa (không quy đổi ra band), lưu lại để xem tiến bộ.
 //  S6 Mục Speaking trong tab Học, mục tiêu ngày, giữ bản ghi 30 ngày (trừ bản "giữ lại").
 // Nội dung: content/speaking/*.json (tạo bằng tools/speaking_import.py từ bộ đề quý của người học).
-import { S, spPut, spDel, spCleanup, logGrammarDay, dayOf, saveSettings, SP_KEEP_DAYS } from './store.js';
+import { S, spPut, spDel, spCleanup, logGrammarDay, unlogDay, dayOf, saveSettings, SP_KEEP_DAYS } from './store.js';
 import { esc, toast, speak, uid, today, fmtDate } from './util.js';
 import { icon, on, go, back, rerender, navBar, learnSwitch, confirmSheet, chooseSheet } from './ui.js';
 import { _mt } from './speaking.js';
@@ -323,6 +323,15 @@ async function finishRec() {
   releaseMic();
   releaseWake();
   if (!P) return;
+  // Bấm nhầm / không nói gì: không nghe thấy tiếng nói (dưới 1 giây) và không có chữ → không lưu.
+  if (res && !res.silent && !(res.text || '').trim() && res.speakMs < 1000) {
+    toast('Không nghe thấy tiếng nói nên không lưu bản ghi này');
+    const has = takesOf(part, qi).length;
+    P.stage = wasTalk ? (has ? 'p2review' : 'card') : (has ? 'review' : 'ask');
+    if (wasTalk) P.part = 2;
+    rerender(true);
+    return;
+  }
   if (res) await saveTake(res, part, qi);
   P.stage = wasTalk ? 'p2review' : 'review';
   if (wasTalk) await countTurn(); // xong bài nói Part 2 = một lượt trong ngày
@@ -404,11 +413,64 @@ on('sp-keep', async (el) => {
 });
 on('sp-del', async (el) => {
   const t = S.speaking.get(el.dataset.id);
-  if (!t?.audio) return;
-  if (!(await confirmSheet({ title: 'Xoá âm thanh của bản ghi này?', body: 'Số liệu (thời lượng, khoảng dừng) và chữ đã chép vẫn được giữ.', okLabel: 'Xoá', danger: true }))) return;
-  await spPut({ ...t, audio: null, keep: false, dropped: true, deleted: true });
+  if (!t) return;
+  const v = t.audio
+    ? await chooseSheet({ title: 'Xoá bản ghi', options: [
+      { value: 'all', label: 'Xoá hẳn bản ghi này', sub: 'Mất cả âm thanh, số liệu và chữ; không còn trong lịch sử' },
+      { value: 'audio', label: 'Chỉ xoá âm thanh', sub: 'Giữ số liệu và chữ để xem tiến bộ' },
+    ] })
+    : ((await confirmSheet({ title: 'Xoá hẳn bản ghi này?', body: 'Số liệu và chữ của bản ghi sẽ bị xoá khỏi lịch sử.', okLabel: 'Xoá', danger: true })) ? 'all' : null);
+  if (!v) return;
   if (urls.has(t.id)) { URL.revokeObjectURL(urls.get(t.id)); urls.delete(t.id); }
-  toast('Đã xoá âm thanh');
+  if (v === 'audio') { await spPut({ ...t, audio: null, keep: false, dropped: true, deleted: true }); toast('Đã xoá âm thanh'); return rerender(); }
+  await removeTakes([t]);
+  toast('Đã xoá bản ghi');
+  rerender();
+});
+/** Xoá hẳn các bản ghi; cập nhật lượt đang luyện, lượt đã lưu và mục tiêu ngày cho khớp. */
+async function removeTakes(list) {
+  const ids = new Set(list.map((t) => t.id));
+  await spDel(...ids);
+  if (P) {
+    for (const k of Object.keys(P.ans)) { P.ans[k] = P.ans[k].filter((id) => !ids.has(id)); if (!P.ans[k].length) delete P.ans[k]; }
+    // Bản ghi đang xem bị xoá hết → quay về bước trước của câu đó.
+    const qi = P.part === 2 ? -1 : P.qi;
+    if (!takesOf(P.part, qi).length) {
+      if (P.stage === 'review') P.stage = 'ask';
+      if (P.stage === 'p2review') P.stage = 'card';
+    }
+    if (P.counted && !Object.keys(P.ans).length) { P.counted = false; await unlogDay('sTurns', P.id); }
+  }
+  // Lượt đã lưu không còn bản ghi nào → xoá luôn lượt đó.
+  const sids = new Set(list.map((t) => t.sid));
+  for (const sid of sids) {
+    const s = S.speaking.get(sid);
+    if (!s) continue;
+    const left = [...S.speaking.values()].filter((x) => x.kind === 'take' && x.sid === sid);
+    if (!left.length) await removeSession(s);
+    else {
+      // Như lúc lưu: mỗi câu lấy bản ghi mới nhất.
+      const last = new Map();
+      for (const x of left.sort((a, b) => a.at - b.at)) last.set(`${x.part}:${x.qi}`, x);
+      const L = [...last.values()];
+      await spPut({ ...s, takes: L.length, speakMs: L.reduce((a, x) => a + (x.speakMs || 0), 0), pauses: L.reduce((a, x) => a + (x.pauses || 0), 0) });
+    }
+  }
+}
+/** Xoá một lượt đã lưu cùng các bản ghi của nó; bỏ khỏi mục tiêu ngày nếu hôm đó không còn lượt nào khác cho đề này. */
+async function removeSession(s) {
+  const takes = [...S.speaking.values()].filter((x) => x.kind === 'take' && x.sid === s.id);
+  for (const t of takes) if (urls.has(t.id)) { URL.revokeObjectURL(urls.get(t.id)); urls.delete(t.id); }
+  await spDel(s.id, ...takes.map((t) => t.id));
+  const other = [...S.speaking.values()].some((x) => x.item === s.item && x.date === s.date);
+  if (!other && !(P && P.id === s.item && Object.keys(P.ans).length)) await unlogDay('sTurns', s.item, s.date);
+}
+on('sp-del-session', async (el) => {
+  const s = S.speaking.get(el.dataset.id);
+  if (!s) return;
+  if (!(await confirmSheet({ title: 'Xoá lượt luyện này?', body: `${s.title || ''} · ${fmtDate(s.date)}. Xoá cả bản ghi, số liệu, chữ và phần tự chấm của lượt này.`, okLabel: 'Xoá', danger: true }))) return;
+  await removeSession(s);
+  toast('Đã xoá lượt luyện');
   rerender();
 });
 // Sửa / sao chép chữ đã nhận dạng
@@ -561,7 +623,7 @@ function takeRow(t, label) {
   const meta = t.silent ? `${mmss(t.ms)} · không ghi âm` : `${mmss(t.ms)} · nói thật ${sec(t.speakMs)} · ${t.pauses} lần dừng > 2″`;
   return `<div class="sp-take"><div class="row-between"><b>${label}</b><span class="small muted">${meta}</span></div>
     ${url ? `<audio controls preload="none" src="${url}"></audio>` : t.silent ? '' : `<p class="small faint">${t.deleted ? 'Đã xoá âm thanh' : t.dropped ? 'Âm thanh đã tự xoá theo hạn lưu' : 'Không có âm thanh'}</p>`}
-    ${url ? `<div class="sp-take-acts"><button class="tag ${t.keep ? 'on' : ''}" data-act="sp-keep" data-id="${t.id}">${t.keep ? 'Đang giữ lại' : `Giữ lại (mặc định xoá sau ${keepDays()} ngày)`}</button><button class="tag" data-act="sp-del" data-id="${t.id}">Xoá âm thanh</button></div>` : ''}</div>`;
+    <div class="sp-take-acts">${url ? `<button class="tag ${t.keep ? 'on' : ''}" data-act="sp-keep" data-id="${t.id}">${t.keep ? 'Đang giữ lại' : `Giữ lại (mặc định xoá sau ${keepDays()} ngày)`}</button>` : ''}<button class="tag" data-act="sp-del" data-id="${t.id}">Xoá…</button></div></div>`;
 }
 /** Ô chữ đã nhận dạng của bản ghi mới nhất: sửa được, sao chép được (chỉ câu trả lời, hoặc kèm câu hỏi để nhờ chấm). */
 function transcriptBox(t, part, qi) {
@@ -643,7 +705,7 @@ export function speakingView() {
       <p class="small muted">7 ngày qua: ${week.length} lượt · nói thật ${Math.round(week.reduce((a, s) => a + s.speakMs, 0) / 60000)} phút</p>
       ${ss.slice(0, 6).map((s) => {
         const yes = s.self ? Object.entries(s.self).map(([k, v]) => `${k.toUpperCase()} ${v.filter(Boolean).length}/${v.length}`).join(' · ') : 'chưa tự chấm';
-        return `<div class="sp-prog"><div class="row-between"><b class="small">${esc(s.title || s.item)}</b><span class="small muted">${fmtDate(s.date)}</span></div><p class="small muted">${s.takes} bản ghi · nói thật ${sec(s.speakMs)} · ${s.pauses} lần dừng · ${yes}</p></div>`;
+        return `<div class="sp-prog"><div class="row-between"><b class="small">${esc(s.title || s.item)}</b><span class="small muted">${fmtDate(s.date)}</span></div><div class="row-between" style="gap:8px"><p class="small muted">${s.takes} bản ghi · nói thật ${sec(s.speakMs)} · ${s.pauses} lần dừng · ${yes}</p><button class="tag" data-act="sp-del-session" data-id="${s.id}" aria-label="Xoá lượt luyện">Xoá</button></div></div>`;
       }).join('')}</div>` : '';
   return `<div class="page">${head}${todayCard}${qSeg}${tSeg}<div class="wlist" style="margin-top:10px">${list}</div>${prog}
     ${settingsCard()}
