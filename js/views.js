@@ -11,6 +11,7 @@ import { lookupWord, buildFill, POS_LIST } from './lookup.js';
 import { G, nextLesson, todayLessons, gDueCount, grammarReviewCard } from './grammar.js';
 import { W, nextPart, todayWriting, essayDraft, essayDraftCta } from './writing.js';
 import { R, nextPassage, todayReading } from './reading.js';
+import { SP, nextSpeaking, todaySpeaking } from './speak.js';
 import { learnSwitch } from './ui.js';
 
 const ui = { learnDeck: '', vocab: { q: '', filter: 'all', limit: 60 }, form: null };
@@ -87,19 +88,23 @@ export function homeView() {
   const rDraft = [...S.reading.values()].find((x) => x.kind === 'draft' && !String(x.pid).startsWith('full:'));
   const rNext = !rDraft && rGoal && rToday < rGoal ? nextPassage() : null;
   const rDraftMeta = rDraft && R.tests.flatMap((t) => t.passages).find((p) => p.id === rDraft.pid);
-  const ringCount = 2 + (gGoal ? 1 : 0) + (wGoal ? 1 : 0) + (rGoal ? 1 : 0);
+  const sGoal = SP.state === 'ready' ? S.settings.speakingPerDay : 0;
+  const sToday = todaySpeaking();
+  const sNext = sGoal && sToday < sGoal ? nextSpeaking() : null;
+  const ringCount = 2 + (gGoal ? 1 : 0) + (wGoal ? 1 : 0) + (rGoal ? 1 : 0) + (sGoal ? 1 : 0);
 
   return `<div class="page wide">${head}<div class="home-grid"><div>
     <div class="hero">
       <div class="row-between"><div><div class="big" data-count="${sum.streak}">${sum.streak}</div><div class="lbl">ngày học liên tiếp</div></div>${icon('flame')}</div>
       <div class="week">${week}</div>
     </div>
-    <div class="goals ${['', '', '', 'three', 'four', 'four five'][ringCount]}">
+    <div class="goals ${['', '', '', 'three', 'four', 'four five', 'four six'][ringCount]}">
       <div class="goal">${ring(day.newIds.length, S.settings.newPerDay)}<div><b>${day.newIds.length}/${S.settings.newPerDay}</b><span>Từ mới</span></div></div>
       <div class="goal">${ring(day.reviewIds.length, S.settings.reviewPerDay)}<div><b>${day.reviewIds.length}/${S.settings.reviewPerDay}</b><span>Ôn tập</span></div></div>
       ${gGoal ? `<div class="goal" data-act="go" data-to="#/grammar" role="button">${ring(gToday, gGoal)}<div><b>${gToday}/${gGoal}</b><span>Ngữ pháp</span></div></div>` : ''}
       ${wGoal ? `<div class="goal" data-act="go" data-to="#/writing" role="button">${ring(wToday, wGoal)}<div><b>${wToday}/${wGoal}</b><span>Writing</span></div></div>` : ''}
       ${rGoal ? `<div class="goal" data-act="go" data-to="#/reading" role="button">${ring(rToday, rGoal)}<div><b>${rToday}/${rGoal}</b><span>Reading</span></div></div>` : ''}
+      ${sGoal ? `<div class="goal" data-act="go" data-to="#/speaking" role="button">${ring(sToday, sGoal)}<div><b>${sToday}/${sGoal}</b><span>Speaking</span></div></div>` : ''}
     </div>
     <div class="cta-stack">
       ${due ? `<button class="btn" data-act="start-review">${icon('review', 'sm')} Ôn tập ${due} từ đến hạn</button>` : ''}
@@ -108,6 +113,7 @@ export function homeView() {
       ${gNext ? `<button class="btn ${due || canLearn || gDue ? 'ghost' : ''}" data-act="g-start" data-id="${gNext.id}">${icon('learn', 'sm')} Ngữ pháp: ${esc(gNext.title)}</button>` : ''}
       ${rDraftMeta ? `<button class="btn ${due || canLearn || gDue || gNext ? 'ghost' : ''}" data-act="go" data-to="#/rpassage/${rDraftMeta.id}">${icon('learn', 'sm')} Reading: làm tiếp ${esc(rDraftMeta.title)}</button>` : ''}
       ${rNext ? `<button class="btn ${due || canLearn || gDue || gNext ? 'ghost' : ''}" data-act="go" data-to="#/rpassage/${rNext.id}">${icon('learn', 'sm')} Reading: ${esc(rNext.title)}</button>` : ''}
+      ${sNext?.p1 ? `<button class="btn ${due || canLearn || gDue || gNext || rNext ? 'ghost' : ''}" data-act="sp-open" data-id="${sNext.p1.id}">${icon('ear', 'sm')} Speaking: ${esc(sNext.p1.title)}</button>` : ''}
       ${wDraft ? essayDraftCta(wDraft, due || canLearn || gDue || gNext ? 'ghost' : '') : ''}
       ${wNext ? `<button class="btn ${due || canLearn || gDue || gNext ? 'ghost' : ''}" data-act="w-today">${icon('pen', 'sm')} Writing: ${esc(wNext.part.name)}</button>` : ''}
       ${!due && !canLearn && !gDue && !gNext && !wNext && !wDraft && !rNext && !rDraftMeta ? `<div class="banner info">${icon('check')}<span>${fresh ? 'Bạn đã hoàn thành mục tiêu hôm nay. Muốn học thêm, mở tab <b>Học</b>.' : 'Không còn từ nào cần học hôm nay. Hãy thêm từ mới hoặc luyện tập tự do ở tab <b>Học</b>.'}</span></div>` : ''}

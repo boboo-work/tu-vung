@@ -1,0 +1,1284 @@
+{
+ "quarters": [
+  {
+   "id": "q3-2026",
+   "title": "Quý 3/2026",
+   "months": "tháng 9–12",
+   "p1": {
+    "file": "content/speaking/q3-2026-p1.json",
+    "topics": [
+     {
+      "id": "q3-2026-p1-i1",
+      "title": "Where you live now",
+      "n": 10,
+      "c": 1
+     },
+     {
+      "id": "q3-2026-p1-i2-a",
+      "title": "Work",
+      "n": 5,
+      "c": 1
+     },
+     {
+      "id": "q3-2026-p1-i2-b",
+      "title": "Study",
+      "n": 7,
+      "c": 1
+     },
+     {
+      "id": "q3-2026-p1-1",
+      "title": "Computers / Tablets",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-2",
+      "title": "Collecting Things",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-3",
+      "title": "Street Market",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-4",
+      "title": "Travelling",
+      "n": 5
+     },
+     {
+      "id": "q3-2026-p1-5",
+      "title": "Paper / Writing Letters",
+      "n": 4
+     },
+     {
+      "id": "q3-2026-p1-6",
+      "title": "Losing Things / Lost And Found",
+      "n": 2
+     },
+     {
+      "id": "q3-2026-p1-7",
+      "title": "Being Polite / Politeness",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-8",
+      "title": "Shoes",
+      "n": 4
+     },
+     {
+      "id": "q3-2026-p1-9",
+      "title": "Advertisements",
+      "n": 4
+     },
+     {
+      "id": "q3-2026-p1-10",
+      "title": "Secondary School",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-11",
+      "title": "Rubbish / Recycling",
+      "n": 4
+     },
+     {
+      "id": "q3-2026-p1-12",
+      "title": "Remembering Names",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-13",
+      "title": "Tiredness",
+      "n": 4
+     },
+     {
+      "id": "q3-2026-p1-14",
+      "title": "Glasses",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-15",
+      "title": "Food",
+      "n": 5
+     },
+     {
+      "id": "q3-2026-p1-16",
+      "title": "Headphones",
+      "n": 5
+     },
+     {
+      "id": "q3-2026-p1-17",
+      "title": "Watches",
+      "n": 5
+     },
+     {
+      "id": "q3-2026-p1-18",
+      "title": "Cars / Driving",
+      "n": 6
+     },
+     {
+      "id": "q3-2026-p1-19",
+      "title": "Websites",
+      "n": 2
+     },
+     {
+      "id": "q3-2026-p1-20",
+      "title": "Mirrors",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-21",
+      "title": "Parks",
+      "n": 8
+     },
+     {
+      "id": "q3-2026-p1-22",
+      "title": "Shopping",
+      "n": 4
+     },
+     {
+      "id": "q3-2026-p1-23",
+      "title": "Keeping Things Tidy",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-24",
+      "title": "Music",
+      "n": 10
+     },
+     {
+      "id": "q3-2026-p1-25",
+      "title": "Teachers",
+      "n": 6
+     },
+     {
+      "id": "q3-2026-p1-26",
+      "title": "Social Media",
+      "n": 4
+     },
+     {
+      "id": "q3-2026-p1-27",
+      "title": "Clothes",
+      "n": 4
+     },
+     {
+      "id": "q3-2026-p1-28",
+      "title": "Films",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-29",
+      "title": "Dreams",
+      "n": 7
+     },
+     {
+      "id": "q3-2026-p1-30",
+      "title": "City",
+      "n": 10
+     },
+     {
+      "id": "q3-2026-p1-31",
+      "title": "Outer Space",
+      "n": 1
+     },
+     {
+      "id": "q3-2026-p1-32",
+      "title": "Art",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-33",
+      "title": "Singing",
+      "n": 5
+     },
+     {
+      "id": "q3-2026-p1-34",
+      "title": "Evening",
+      "n": 4
+     },
+     {
+      "id": "q3-2026-p1-35",
+      "title": "Old Buildings",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-36",
+      "title": "Sports",
+      "n": 4
+     },
+     {
+      "id": "q3-2026-p1-37",
+      "title": "Science",
+      "n": 5
+     },
+     {
+      "id": "q3-2026-p1-38",
+      "title": "Comedy / Jokes",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-39",
+      "title": "History",
+      "n": 5
+     },
+     {
+      "id": "q3-2026-p1-40",
+      "title": "Morning Routine",
+      "n": 3
+     },
+     {
+      "id": "q3-2026-p1-41",
+      "title": "Study / Subject",
+      "n": 7
+     },
+     {
+      "id": "q3-2026-p1-42",
+      "title": "Home / Accommodation",
+      "n": 9
+     },
+     {
+      "id": "q3-2026-p1-43",
+      "title": "Hometown",
+      "n": 7
+     },
+     {
+      "id": "q3-2026-p1-44",
+      "title": "Neighbourhood / Area",
+      "n": 3
+     }
+    ]
+   },
+   "p23": {
+    "file": "content/speaking/q3-2026-p23.json",
+    "cards": [
+     {
+      "id": "q3-2026-c01",
+      "n": 1,
+      "title": "Describe a person you only met once recently and want to know more about",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c02",
+      "n": 2,
+      "title": "Describe a gift you would like to buy for your friend",
+      "q3": 3
+     },
+     {
+      "id": "q3-2026-c03",
+      "n": 3,
+      "title": "Describe a time when you changed an important decision of yours",
+      "q3": 1
+     },
+     {
+      "id": "q3-2026-c04",
+      "n": 4,
+      "title": "Describe a famous person in your local area",
+      "q3": 2
+     },
+     {
+      "id": "q3-2026-c05",
+      "n": 5,
+      "title": "Describe a time you made an important decision and were happy with the result",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c06",
+      "n": 6,
+      "title": "Describe a person you know who did something difficult and was successful",
+      "q3": 3
+     },
+     {
+      "id": "q3-2026-c07",
+      "n": 7,
+      "title": "Describe a course that impressed you a lot",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c08",
+      "n": 8,
+      "title": "Describe a time when someone talked about something you were not interested in but you kept listening",
+      "q3": 3
+     },
+     {
+      "id": "q3-2026-c09",
+      "n": 9,
+      "title": "Describe a person you know who really likes taking photos",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c10",
+      "n": 10,
+      "title": "Describe a new skill you learned when you were a child",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c11",
+      "n": 11,
+      "title": "Describe a time when you saved money to buy something you wanted",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c12",
+      "n": 12,
+      "title": "Describe a person you know who is very organised",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c13",
+      "n": 13,
+      "title": "Describe a time when you interviewed a famous person",
+      "q3": 4
+     },
+     {
+      "id": "q3-2026-c14",
+      "n": 14,
+      "title": "Describe a happy person you know",
+      "q3": 4
+     },
+     {
+      "id": "q3-2026-c15",
+      "n": 15,
+      "title": "Describe your least favourite movie",
+      "q3": 4
+     },
+     {
+      "id": "q3-2026-c16",
+      "n": 16,
+      "title": "Describe a person who learns history and loves history",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c17",
+      "n": 17,
+      "title": "Describe an enjoyable evening you had with your friends",
+      "q3": 1
+     },
+     {
+      "id": "q3-2026-c18",
+      "n": 18,
+      "title": "Describe a person who is good at making things by hand",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c19",
+      "n": 19,
+      "title": "Describe a natural place in your city that you enjoy visiting",
+      "q3": 3
+     },
+     {
+      "id": "q3-2026-c20",
+      "n": 20,
+      "title": "Describe a noisy place you have been to",
+      "q3": 3
+     },
+     {
+      "id": "q3-2026-c21",
+      "n": 21,
+      "title": "Describe an older person you admire",
+      "q3": 2
+     },
+     {
+      "id": "q3-2026-c22",
+      "n": 22,
+      "title": "Describe an activity that you think is a waste of time",
+      "q3": 2
+     },
+     {
+      "id": "q3-2026-c23",
+      "n": 23,
+      "title": "Describe a crowded place you have been to",
+      "q3": 3
+     },
+     {
+      "id": "q3-2026-c24",
+      "n": 24,
+      "title": "Describe a time when you received good service in a shop/store",
+      "q3": 2
+     },
+     {
+      "id": "q3-2026-c25",
+      "n": 25,
+      "title": "Describe a city you have visited and would like to visit again",
+      "q3": 3
+     },
+     {
+      "id": "q3-2026-c26",
+      "n": 26,
+      "title": "Describe a place where you listened to music that you did not like",
+      "q3": 3
+     },
+     {
+      "id": "q3-2026-c27",
+      "n": 27,
+      "title": "Describe an experience that you were proud of",
+      "q3": 8
+     },
+     {
+      "id": "q3-2026-c28",
+      "n": 28,
+      "title": "Describe a quiet place that you would love to go to",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c29",
+      "n": 29,
+      "title": "Describe a long trip that you often take but do not like",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c30",
+      "n": 30,
+      "title": "Describe a party that was held after a special event",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c31",
+      "n": 31,
+      "title": "Describe a change that you made recently",
+      "q3": 4
+     },
+     {
+      "id": "q3-2026-c32",
+      "n": 32,
+      "title": "Describe a time when you changed an important opinion of yours",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c33",
+      "n": 33,
+      "title": "Describe a law on environmental protection",
+      "q3": 8
+     },
+     {
+      "id": "q3-2026-c34",
+      "n": 34,
+      "title": "Describe a long-term goal/ambition you would like to achieve",
+      "q3": 4
+     },
+     {
+      "id": "q3-2026-c35",
+      "n": 35,
+      "title": "Describe a time when you sent a message or an email to someone but received no reply for a long time",
+      "q3": 7
+     },
+     {
+      "id": "q3-2026-c36",
+      "n": 36,
+      "title": "Describe a story/book with animals in it",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c37",
+      "n": 37,
+      "title": "Describe an advertisement with a famous person in it",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c38",
+      "n": 38,
+      "title": "Describe a place you have travelled to that you would like to recommend to others",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c39",
+      "n": 39,
+      "title": "Describe a challenging technological problem you faced",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c40",
+      "n": 40,
+      "title": "Describe a person who is good at learning and speaking new languages",
+      "q3": 4
+     },
+     {
+      "id": "q3-2026-c41",
+      "n": 41,
+      "title": "Describe a food that people eat on special occasions/events",
+      "q3": 4
+     },
+     {
+      "id": "q3-2026-c42",
+      "n": 42,
+      "title": "Describe a live sports event you watched and liked",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c43",
+      "n": 43,
+      "title": "Describe a person you know who would like to choose a career in the medical field",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c44",
+      "n": 44,
+      "title": "Describe a time when you worked in a group",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c45",
+      "n": 45,
+      "title": "Describe a person you know who has a successful business",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c46",
+      "n": 46,
+      "title": "Describe a person who loves to grow plants (e.g. vegetables, flowers) at home or in the garden",
+      "q3": 7
+     },
+     {
+      "id": "q3-2026-c47",
+      "n": 47,
+      "title": "Describe an interesting video",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c48",
+      "n": 48,
+      "title": "Describe a tall building you like or dislike",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c49",
+      "n": 49,
+      "title": "Describe a boring place",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c50",
+      "n": 50,
+      "title": "Describe a plan that you had to change recently",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c51",
+      "n": 51,
+      "title": "A new law you would like to introduce in your country",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c52",
+      "n": 52,
+      "title": "An important decision that you made",
+      "q3": 4
+     },
+     {
+      "id": "q3-2026-c53",
+      "n": 53,
+      "title": "A friend from your childhood",
+      "q3": 4
+     },
+     {
+      "id": "q3-2026-c54",
+      "n": 54,
+      "title": "A time when you were stuck in a traffic jam for a very long time",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c55",
+      "n": 55,
+      "title": "A special day out that cost you little money / didn't cost you much",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c56",
+      "n": 56,
+      "title": "A time when you organised a happy event successfully",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c57",
+      "n": 57,
+      "title": "A special cake you received from others",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c58",
+      "n": 58,
+      "title": "A thing you did to learn another language",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c59",
+      "n": 59,
+      "title": "A place you would like to visit in your free time",
+      "q3": 4
+     },
+     {
+      "id": "q3-2026-c60",
+      "n": 60,
+      "title": "Describe a person who works in a successful company",
+      "q3": 4
+     },
+     {
+      "id": "q3-2026-c61",
+      "n": 61,
+      "title": "An important river/lake in your country",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c62",
+      "n": 62,
+      "title": "A home that you like to visit but do not want to live in",
+      "q3": 4
+     },
+     {
+      "id": "q3-2026-c63",
+      "n": 63,
+      "title": "An environmental law you would like your country to introduce",
+      "q3": 5
+     },
+     {
+      "id": "q3-2026-c64",
+      "n": 64,
+      "title": "A piece of local news that people are interested in",
+      "q3": 4
+     },
+     {
+      "id": "q3-2026-c65",
+      "n": 65,
+      "title": "A time when you got up early",
+      "q3": 6
+     },
+     {
+      "id": "q3-2026-c66",
+      "n": 66,
+      "title": "Describe a friend's home you visited and liked but didn't want to live there",
+      "q3": 10
+     }
+    ]
+   }
+  },
+  {
+   "id": "q2-2026",
+   "title": "Quý 2/2026",
+   "months": "tháng 5–8",
+   "p1": {
+    "file": "content/speaking/q2-2026-p1.json",
+    "topics": [
+     {
+      "id": "q2-2026-p1-1",
+      "title": "Singing",
+      "n": 8
+     },
+     {
+      "id": "q2-2026-p1-2",
+      "title": "The area you live in",
+      "n": 8
+     },
+     {
+      "id": "q2-2026-p1-3",
+      "title": "Science",
+      "n": 8
+     },
+     {
+      "id": "q2-2026-p1-4",
+      "title": "Memory",
+      "n": 7
+     },
+     {
+      "id": "q2-2026-p1-5",
+      "title": "Work",
+      "n": 11
+     },
+     {
+      "id": "q2-2026-p1-6",
+      "title": "Study",
+      "n": 13
+     },
+     {
+      "id": "q2-2026-p1-7",
+      "title": "Teachers",
+      "n": 8
+     },
+     {
+      "id": "q2-2026-p1-8",
+      "title": "Social media",
+      "n": 5
+     },
+     {
+      "id": "q2-2026-p1-9",
+      "title": "Dream and ambition",
+      "n": 4
+     },
+     {
+      "id": "q2-2026-p1-10",
+      "title": "Outer space and stars",
+      "n": 6
+     },
+     {
+      "id": "q2-2026-p1-11",
+      "title": "Clothing",
+      "n": 4
+     },
+     {
+      "id": "q2-2026-p1-12",
+      "title": "Mirrors",
+      "n": 5
+     },
+     {
+      "id": "q2-2026-p1-13",
+      "title": "Free time & weekend",
+      "n": 10
+     },
+     {
+      "id": "q2-2026-p1-14",
+      "title": "Music",
+      "n": 6
+     },
+     {
+      "id": "q2-2026-p1-15",
+      "title": "Tidy",
+      "n": 5
+     },
+     {
+      "id": "q2-2026-p1-16",
+      "title": "Website",
+      "n": 5
+     },
+     {
+      "id": "q2-2026-p1-17",
+      "title": "Watches",
+      "n": 8
+     },
+     {
+      "id": "q2-2026-p1-18",
+      "title": "Shopping",
+      "n": 13
+     },
+     {
+      "id": "q2-2026-p1-19",
+      "title": "Cars",
+      "n": 8
+     },
+     {
+      "id": "q2-2026-p1-20",
+      "title": "Feeling bored",
+      "n": 6
+     },
+     {
+      "id": "q2-2026-p1-21",
+      "title": "Telling jokes",
+      "n": 6
+     },
+     {
+      "id": "q2-2026-p1-22",
+      "title": "Reading carefully",
+      "n": 5
+     },
+     {
+      "id": "q2-2026-p1-23",
+      "title": "Parks and gardens",
+      "n": 9
+     },
+     {
+      "id": "q2-2026-p1-24",
+      "title": "Headphones",
+      "n": 6
+     },
+     {
+      "id": "q2-2026-p1-25",
+      "title": "Travelling",
+      "n": 9
+     },
+     {
+      "id": "q2-2026-p1-26",
+      "title": "Daily routine",
+      "n": 7
+     },
+     {
+      "id": "q2-2026-p1-27",
+      "title": "Stages in life",
+      "n": 9
+     },
+     {
+      "id": "q2-2026-p1-28",
+      "title": "Views",
+      "n": 6
+     },
+     {
+      "id": "q2-2026-p1-29",
+      "title": "Hobbies",
+      "n": 6
+     },
+     {
+      "id": "q2-2026-p1-30",
+      "title": "Typing",
+      "n": 7
+     },
+     {
+      "id": "q2-2026-p1-31",
+      "title": "Scenery",
+      "n": 9
+     },
+     {
+      "id": "q2-2026-p1-32",
+      "title": "Buildings",
+      "n": 8
+     },
+     {
+      "id": "q2-2026-p1-33",
+      "title": "Childhood activities",
+      "n": 6
+     },
+     {
+      "id": "q2-2026-p1-34",
+      "title": "Morning time",
+      "n": 8
+     },
+     {
+      "id": "q2-2026-p1-35",
+      "title": "Gift",
+      "n": 12
+     },
+     {
+      "id": "q2-2026-p1-36",
+      "title": "Reading",
+      "n": 7
+     },
+     {
+      "id": "q2-2026-p1-37",
+      "title": "Keys",
+      "n": 6
+     },
+     {
+      "id": "q2-2026-p1-38",
+      "title": "Day off",
+      "n": 7
+     },
+     {
+      "id": "q2-2026-p1-39",
+      "title": "Working with old people",
+      "n": 7
+     },
+     {
+      "id": "q2-2026-p1-40",
+      "title": "Pets",
+      "n": 10
+     },
+     {
+      "id": "q2-2026-p1-41",
+      "title": "Dreams (giấc mơ khi ngủ)",
+      "n": 7
+     },
+     {
+      "id": "q2-2026-p1-42",
+      "title": "Food",
+      "n": 8
+     },
+     {
+      "id": "q2-2026-p1-43",
+      "title": "Sports team",
+      "n": 7
+     },
+     {
+      "id": "q2-2026-p1-44",
+      "title": "Walking",
+      "n": 9
+     }
+    ]
+   },
+   "p23": {
+    "file": "content/speaking/q2-2026-p23.json",
+    "cards": [
+     {
+      "id": "q2-2026-c01",
+      "n": 1,
+      "title": "Describe a person who has chosen a career in the medical field (doctor, nurse, vet)",
+      "q3": 10
+     },
+     {
+      "id": "q2-2026-c02",
+      "n": 2,
+      "title": "Describe a person you know who loves to grow plants",
+      "q3": 12
+     },
+     {
+      "id": "q2-2026-c03",
+      "n": 3,
+      "title": "Describe a type of favourite food that you ate at a special event",
+      "q3": 11
+     },
+     {
+      "id": "q2-2026-c04",
+      "n": 4,
+      "title": "Describe a difficult decision that you made and had a good result",
+      "q3": 8
+     },
+     {
+      "id": "q2-2026-c05",
+      "n": 5,
+      "title": "Describe a special cake you received",
+      "q3": 5
+     },
+     {
+      "id": "q2-2026-c06",
+      "n": 6,
+      "title": "Describe a friend from childhood who you remember very well",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c07",
+      "n": 7,
+      "title": "Describe a time you changed your opinion",
+      "q3": 12
+     },
+     {
+      "id": "q2-2026-c08",
+      "n": 8,
+      "title": "Describe a time when you had to make an important decision",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c09",
+      "n": 9,
+      "title": "Describe a wild animal you would like to learn more about",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c10",
+      "n": 10,
+      "title": "Describe an interesting building that you would like to visit",
+      "q3": 5
+     },
+     {
+      "id": "q2-2026-c11",
+      "n": 11,
+      "title": "Describe a person who is good at learning languages",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c12",
+      "n": 12,
+      "title": "Describe a piece of advertisement which is about a famous person",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c13",
+      "n": 13,
+      "title": "Describe a person who has not replied to your messages for a long time",
+      "q3": 5
+     },
+     {
+      "id": "q2-2026-c14",
+      "n": 14,
+      "title": "Describe a story you knew that involves an animal (in a movie or a book)",
+      "q3": 5
+     },
+     {
+      "id": "q2-2026-c15",
+      "n": 15,
+      "title": "Describe a person you know who successfully achieved something difficult",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c16",
+      "n": 16,
+      "title": "Describe a place you have been to and felt bored",
+      "q3": 8
+     },
+     {
+      "id": "q2-2026-c17",
+      "n": 17,
+      "title": "Describe a place you went to on holiday that you would recommend",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c18",
+      "n": 18,
+      "title": "Describe an interesting video you watched on social media",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c19",
+      "n": 19,
+      "title": "Describe a time that you had to change your plan",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c20",
+      "n": 20,
+      "title": "Describe a problem of technology you have encountered (computer or cell phone)",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c21",
+      "n": 21,
+      "title": "Describe a piece of local news that people are interested in",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c22",
+      "n": 22,
+      "title": "Describe a live sport match you have ever watched",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c23",
+      "n": 23,
+      "title": "Describe a person you know about who runs a successful business",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c24",
+      "n": 24,
+      "title": "Describe a tall building in your town that you like or dislike",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c25",
+      "n": 25,
+      "title": "Describe a person you know who encourages people to protect the environment or nature",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c26",
+      "n": 26,
+      "title": "Describe a time when you had to pay more than you expected for something",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c27",
+      "n": 27,
+      "title": "Describe a person who you think is good at planning things",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c28",
+      "n": 28,
+      "title": "Describe an ambition you have had for a long time",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c29",
+      "n": 29,
+      "title": "Describe a home that you like to visit but would not want to live in",
+      "q3": 5
+     },
+     {
+      "id": "q2-2026-c30",
+      "n": 30,
+      "title": "Describe a place you'd like to visit in your free time",
+      "q3": 3
+     },
+     {
+      "id": "q2-2026-c31",
+      "n": 31,
+      "title": "Describe an occasion when you got up extremely early",
+      "q3": 9
+     },
+     {
+      "id": "q2-2026-c32",
+      "n": 32,
+      "title": "Describe a new law that you want to implement in your country",
+      "q3": 8
+     },
+     {
+      "id": "q2-2026-c33",
+      "n": 33,
+      "title": "Describe a quiet place you like to go",
+      "q3": 9
+     },
+     {
+      "id": "q2-2026-c34",
+      "n": 34,
+      "title": "Describe a story you read recently",
+      "q3": 3
+     },
+     {
+      "id": "q2-2026-c35",
+      "n": 35,
+      "title": "Describe a foreign country you would like to stay in or work in for a short period of time",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c36",
+      "n": 36,
+      "title": "Describe a shopping mall",
+      "q3": 2
+     },
+     {
+      "id": "q2-2026-c37",
+      "n": 37,
+      "title": "Describe a person who encouraged you to protect nature",
+      "q3": 3
+     },
+     {
+      "id": "q2-2026-c38",
+      "n": 38,
+      "title": "Describe a bicycle, motorcycle or car trip you would like to go on",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c39",
+      "n": 39,
+      "title": "Describe a city that you have been to and enjoy visiting",
+      "q3": 9
+     },
+     {
+      "id": "q2-2026-c40",
+      "n": 40,
+      "title": "Describe a music event that you didn't enjoy",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c41",
+      "n": 41,
+      "title": "Describe one of your friends who learned something new, not from a teacher",
+      "q3": 10
+     },
+     {
+      "id": "q2-2026-c42",
+      "n": 42,
+      "title": "Describe a person who solved a problem in a smart way",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c43",
+      "n": 43,
+      "title": "Describe a person who often helps others",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c44",
+      "n": 44,
+      "title": "Describe a time you needed to use your imagination",
+      "q3": 9
+     },
+     {
+      "id": "q2-2026-c45",
+      "n": 45,
+      "title": "Describe a movie you watched and enjoyed recently",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c46",
+      "n": 46,
+      "title": "Describe a programme you like to watch",
+      "q3": 9
+     },
+     {
+      "id": "q2-2026-c47",
+      "n": 47,
+      "title": "Describe an item on which you spent more than expected",
+      "q3": 5
+     },
+     {
+      "id": "q2-2026-c48",
+      "n": 48,
+      "title": "Describe a shopping place you often go to",
+      "q3": 8
+     },
+     {
+      "id": "q2-2026-c49",
+      "n": 49,
+      "title": "Describe a time when you encouraged someone to do something that he or she didn't want to do",
+      "q3": 8
+     },
+     {
+      "id": "q2-2026-c50",
+      "n": 50,
+      "title": "Describe a piece of technology, not a phone, that you would like to own",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c51",
+      "n": 51,
+      "title": "Describe a child you know who likes drawing very much",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c52",
+      "n": 52,
+      "title": "Describe a person who makes plans a lot",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c53",
+      "n": 53,
+      "title": "Describe something that you can't live without (not a computer or phone)",
+      "q3": 5
+     },
+     {
+      "id": "q2-2026-c54",
+      "n": 54,
+      "title": "Describe a traditional product made in your country which you like",
+      "q3": 5
+     },
+     {
+      "id": "q2-2026-c55",
+      "n": 55,
+      "title": "Describe a place which is far away that you would like to visit in the future",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c56",
+      "n": 56,
+      "title": "Describe an occasion when the electricity suddenly went off",
+      "q3": 4
+     },
+     {
+      "id": "q2-2026-c57",
+      "n": 57,
+      "title": "Describe an occasion when you were not allowed to use your mobile phone",
+      "q3": 9
+     },
+     {
+      "id": "q2-2026-c58",
+      "n": 58,
+      "title": "Describe a time when you felt proud of a family member",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c59",
+      "n": 59,
+      "title": "Describe your favourite place in your house where you can relax",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c60",
+      "n": 60,
+      "title": "Describe your perfect job",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c61",
+      "n": 61,
+      "title": "Describe an occasion when many people were smiling",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c62",
+      "n": 62,
+      "title": "Describe a program or app on your computer or phone",
+      "q3": 7
+     },
+     {
+      "id": "q2-2026-c63",
+      "n": 63,
+      "title": "Describe a famous person you would like to meet",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c64",
+      "n": 64,
+      "title": "Describe a time when you gave advice to others",
+      "q3": 10
+     },
+     {
+      "id": "q2-2026-c65",
+      "n": 65,
+      "title": "Describe a movie you watched recently that you felt disappointed about",
+      "q3": 6
+     },
+     {
+      "id": "q2-2026-c66",
+      "n": 66,
+      "title": "Describe an important old thing that your family has kept for a long time",
+      "q3": 8
+     }
+    ]
+   }
+  }
+ ]
+}

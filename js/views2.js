@@ -7,6 +7,7 @@ import { importFile, exportCSV, exportBackup, restoreBackup, downloadTemplate, l
 import { roundInfo, bestRun } from './game.js';
 import { bestDrop, DROP_ROUND } from './drop.js';
 import { bestOf, ROUND2 } from './games2.js';
+import { audioTakes } from './speak.js';
 import { AI_ACTIONS, AI_MODELS, GEMINI_MODELS, aiReady, askAI, cleanKey, testConnection } from './ai.js';
 
 const ui = { statsKind: 'day', statsSel: null, anim: false, ai: { wordId: null, action: 'context', input: '', q: '', loading: false, result: null, error: null } };
@@ -167,6 +168,7 @@ export function settingsView() {
       <div class="setrow"><div><b>Thẻ ngữ pháp</b><small>Số thẻ mẫu câu mỗi lượt ôn</small></div>${stepper('grammarReviewPerDay', s.grammarReviewPerDay)}</div>
       <div class="setrow"><div><b>Bài Writing</b><small>Số bài mỗi ngày · 0 = tắt mục tiêu</small></div>${seg('writingPerDay', s.writingPerDay, [[0, '0'], [1, '1'], [2, '2']])}</div>
       <div class="setrow"><div><b>Bài Reading</b><small>Số passage mỗi ngày · 0 = tắt mục tiêu</small></div>${seg('readingPerDay', s.readingPerDay, [[0, '0'], [1, '1'], [2, '2']])}</div>
+      <div class="setrow"><div><b>Lượt Speaking</b><small>1 lượt = 1 chủ đề Part 1 hoặc 1 đề Part 2 · 0 = tắt</small></div>${seg('speakingPerDay', s.speakingPerDay ?? 1, [[0, '0'], [1, '1'], [2, '2']])}</div>
     </div>
     <h2>Giao diện & phát âm</h2>
     <div class="card">
@@ -217,7 +219,7 @@ on('step', async (el) => {
 });
 on('set', async (el) => {
   const key = el.dataset.key;
-  const v = key === 'rate' || key === 'grammarPerDay' || key === 'writingPerDay' || key === 'readingPerDay' ? Number(el.dataset.value) : (key === 'autoSpeak' || key === 'autoFill') ? el.dataset.value === 'true' : el.dataset.value;
+  const v = key === 'rate' || key === 'grammarPerDay' || key === 'writingPerDay' || key === 'readingPerDay' || key === 'speakingPerDay' ? Number(el.dataset.value) : (key === 'autoSpeak' || key === 'autoFill') ? el.dataset.value === 'true' : el.dataset.value;
   await saveSettings(key === 'voice' ? { voice: v, voiceName: '' } : { [key]: v });
   if (key === 'theme' || key === 'accent') applyTheme();
   rerender();
@@ -239,7 +241,19 @@ on('backup', async () => {
     if (!v) return;
     withWriting = v === 'yes';
   }
-  if (await exportBackup({ withWriting })) { toast('Đã tạo file sao lưu'); rerender(); }
+  // Có bản ghi âm Speaking → mặc định không kèm (file rất nặng), hỏi trước.
+  let withAudio = false;
+  const rec = audioTakes();
+  if (rec.length) {
+    const mb = rec.reduce((a, t) => a + (t.audio?.size || 0), 0) / 1048576;
+    const v = await chooseSheet({ title: 'Kèm bản ghi âm Speaking?', current: 'no', options: [
+      { value: 'no', label: 'Không kèm âm thanh', sub: 'Vẫn lưu số liệu và tự chấm của mọi lượt luyện' },
+      { value: 'yes', label: `Kèm ${rec.length} bản ghi âm`, sub: `File nặng thêm khoảng ${mb < 1 ? '<1' : Math.round(mb * 1.35)} MB` },
+    ] });
+    if (!v) return;
+    withAudio = v === 'yes';
+  }
+  if (await exportBackup({ withWriting, withAudio })) { toast('Đã tạo file sao lưu'); rerender(); }
 });
 on('restore', async () => {
   const file = await pickFile('.json,application/json');

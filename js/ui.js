@@ -43,7 +43,7 @@ export const actions = {};
 export const on = (name, fn) => (actions[name] = fn);
 
 // ---- Điều hướng ----
-export const TABS = ['home', 'learn', 'grammar', 'writing', 'reading', 'review', 'vocab', 'stats']; // 'grammar' nằm trong tab Học
+export const TABS = ['home', 'learn', 'grammar', 'writing', 'reading', 'speaking', 'review', 'vocab', 'stats']; // 'grammar' nằm trong tab Học
 let depth = 0;
 export function go(hash) {
   const name = hash.split('/')[1];
@@ -64,7 +64,8 @@ export const learnSwitch = (cur) => `<div class="seg learn-switch" role="tablist
   <button class="${cur === 'vocab' ? 'on' : ''}" data-act="go" data-to="#/learn" role="tab" aria-selected="${cur === 'vocab'}">Từ vựng</button>
   <button class="${cur === 'grammar' ? 'on' : ''}" data-act="go" data-to="#/grammar" role="tab" aria-selected="${cur === 'grammar'}">Ngữ pháp</button>
   <button class="${cur === 'writing' ? 'on' : ''}" data-act="go" data-to="#/writing" role="tab" aria-selected="${cur === 'writing'}">Writing</button>
-  <button class="${cur === 'reading' ? 'on' : ''}" data-act="go" data-to="#/reading" role="tab" aria-selected="${cur === 'reading'}">Reading</button></div>`;
+  <button class="${cur === 'reading' ? 'on' : ''}" data-act="go" data-to="#/reading" role="tab" aria-selected="${cur === 'reading'}">Reading</button>
+  <button class="${cur === 'speaking' ? 'on' : ''}" data-act="go" data-to="#/speaking" role="tab" aria-selected="${cur === 'speaking'}">Speaking</button></div>`;
 
 let renderFn = () => {};
 export const setRenderer = (fn) => (renderFn = fn);

@@ -32,6 +32,7 @@ Dữ liệu gắn với địa chỉ (origin) của trang. Khi đổi địa ch�
 | `js/game.js` | Mini game “Chạy & Gõ”: gõ đúng từ để nhảy qua chướng ngại vật |
 | `js/drop.js` | Mini game “Bắn Từ”: từ rơi xuống, gõ đúng để bắn trúng, sai thì bị đập vỡ và gặp lại |
 | `js/games2.js` | Mini game “Nối Cụm” (hoàn thành collocation) và “Nghe & Chạm” (nghe, chạm bong bóng nghĩa đúng) |
+| `js/speak.js` | Luyện IELTS Speaking: kho đề theo quý, ghi âm/nghe lại/bản 2, đồng hồ Part 2, số liệu thời gian nói và khoảng dừng, tự chấm |
 | `js/lookup.js` | “Tự điền” ở form thêm từ (tự chạy khi gõ xong từ, bật/tắt ở Cài đặt): từ điển Wiktionary, dịch MyMemory, gợi ý Datamuse và Trợ lý AI để điền IPA, định nghĩa, ví dụ, nghĩa tiếng Việt, collocations… |
 | `js/views.js`, `js/views2.js` | Các màn hình |
 | `js/io.js` | Import CSV/XLSX, export CSV, sao lưu JSON, bộ từ mẫu |
@@ -81,3 +82,22 @@ python3 tools/reading_import.py one --id cam20-t2 --title "Cambridge 20 · Test 
 ```
 
 Chế độ `dir` tự ghép file đề với file Simplify/giải theo tên bài đọc (tên file đề đặt nhầm cũng không sao), đọc được các kiểu file Simplify (①② nội dòng, bảng "Giữ lại", bảng có câu gốc gạch `~~`), hai kiểu file giải, và file đề chép từ web (mất tiêu đề nhóm câu, đáp án gộp `21&22`, danh sách phương án lẫn cột → lấy từ file giải). Đề nào lỗi nặng thì bỏ qua và in lý do. Kết quả nằm ở `content/reading/<id>.json` và `index.json`; app tải đề khi mở lần đầu rồi lưu lại để dùng offline. Tăng `VERSION` trong `sw.js` sau khi thêm đề.
+
+## Speaking
+
+Tab **Học** → *Speaking*. Đề lấy theo quý (forecast), mỗi quý có Part 1 (chủ đề bắt buộc Where you live / Work / Study lên đầu) và Part 2 kèm câu Part 3; câu nào cũng có bài mẫu **6.0–6.5** và **7.0**, cụm hay, ghi chú ngữ pháp.
+
+- **Part 1 / Part 3:** app đọc câu hỏi, gợi ý khung trả lời, ghi âm (Part 1 tự dừng ở 1 phút, Part 3 ở 2 phút), hiện thời lượng, thời gian nói thật (trừ khoảng lặng), số khoảng dừng > 2 giây; nghe lại, xem bài mẫu, nói lại bản 2 và so với bản trước.
+- **Part 2:** thẻ đề → 1 phút chuẩn bị (ô ghi từ khoá) → tự bắt đầu ghi, 2 phút nói, nhắc khi còn 30 giây, tự dừng ở 2:00. Đồng hồ tính theo giờ thật.
+- **Tự chấm:** cuối lượt, 10 câu Có/Chưa cho 4 tiêu chí; không quy đổi ra band. Mục *Tiến bộ* ở trang Speaking.
+- **Mục tiêu ngày:** 1 lượt = 1 chủ đề Part 1 hoặc 1 đề Part 2 (Cài đặt → Lượt Speaking); tính vào chuỗi ngày học và vòng trên Trang chủ.
+- **Bản ghi:** lưu trên máy, tự xoá âm thanh sau 30 ngày trừ bản bấm "Giữ lại" (số liệu giữ lại). Sao lưu mặc định không kèm âm thanh, có hỏi khi tạo file. Không có micro thì chọn "Nói thầm": vẫn bấm giờ và tự chấm.
+
+Thêm đề quý mới từ thư mục Markdown (`Part 1/Forecast Qn-YYYY/*.md`, `Part 2&3/Forecast Qn-YYYY/*.md`):
+
+```bash
+python3 tools/speaking_import.py "…/Speaking" content/speaking
+```
+
+Công cụ đọc được cả kiểu viết Quý 2 (`**Q1. …**`, `**Band 6.0–6.5:** …`) và Quý 3 (`### Q1. …`, `**Band 6.0–6.5**` + `> …`), in số câu và câu nào thiếu bài mẫu. Đề Part 2 thiếu phần "You should say" thì lấy gợi ý từ `tools/speaking_cuecards_<quý>.json` (app ghi chú "gợi ý do app soạn"). Tăng `VERSION` trong `sw.js` sau khi nhập.
+
