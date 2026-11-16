@@ -5,7 +5,7 @@
 //  Chấm: theo luật thi (sai chính tả là sai, đúng số từ cho phép), band ước lượng khi làm đủ 40 câu,
 //        lý do sai từng câu, tỉ lệ đúng theo dạng câu hỏi; nghe lại từng Part khi chữa.
 import { S, ltPut, ltDel, logGrammarDay } from './store.js';
-import { esc, toast, uid, today, fmtDate, dateStr } from './util.js';
+import { esc, toast, uid, today, fmtDate, dateStr, unzip, download } from './util.js';
 import { icon, on, go, back, rerender, navBar, confirmSheet } from './ui.js';
 import { aiReady, askAI } from './ai.js';
 
@@ -273,6 +273,113 @@ function noteOf(t, n) {
   return null;
 }
 
+// ---------------------------------------------------------------- Gói đề (.zip một file)
+// ltest.json: { type: 'ltest-pack', v: 1, title, parts, key, tx, notes, audio: { "1": "audio/part1.mp3", … } } + các file nghe.
+// Gói có thể do người khác gửi tới: mọi HTML trong gói được lọc lại (chỉ giữ thẻ định dạng cơ bản) trước khi dùng.
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8) { let c = 0xffffffff; for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
+/** Tạo file .zip không nén (file nghe vốn đã nén sẵn). */
+function zipStore(entries) {
+  const enc = new TextEncoder();
+  const parts = [], central = [];
+  let off = 0, csize = 0;
+  for (const e of entries) {
+    const name = enc.encode(e.name), crc = crc32(e.data), size = e.data.length;
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(12, 0x21, true);
+    h.setUint32(14, crc, true); h.setUint32(18, size, true); h.setUint32(22, size, true); h.setUint16(26, name.length, true);
+    parts.push(h.buffer, name, e.data);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(14, 0x21, true);
+    c.setUint32(16, crc, true); c.setUint32(20, size, true); c.setUint32(24, size, true); c.setUint16(28, name.length, true); c.setUint32(42, off, true);
+    central.push(c.buffer, name);
+    csize += 46 + name.length;
+    off += 30 + name.length + size;
+  }
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, entries.length, true); end.setUint16(10, entries.length, true); end.setUint32(12, csize, true); end.setUint32(16, off, true);
+  return new Blob([...parts, ...central, end.buffer], { type: 'application/zip' });
+}
+async function exportPack(t) {
+  const enc = new TextEncoder();
+  const audio = {}, files = [];
+  for (const [n, a] of Object.entries(t.audio || {})) {
+    const ext = (a.name.match(/\.(mp3|m4a|aac|wav|ogg)$/i) || ['', 'mp3'])[1].toLowerCase();
+    audio[n] = `audio/part${n}.${ext}`;
+    files.push({ name: audio[n], data: new Uint8Array(await a.blob.arrayBuffer()) });
+  }
+  const meta = { type: 'ltest-pack', v: 1, title: t.title, parts: t.parts, key: t.key, tx: t.tx || null, notes: t.notes || {}, audio };
+  return zipStore([{ name: 'ltest.json', data: enc.encode(JSON.stringify(meta)) }, ...files]);
+}
+on('lt-export', async (el) => {
+  const t = S.ltest.get(el.dataset.id);
+  if (!t) return;
+  ui.exporting = true;
+  rerender();
+  try {
+    const blob = await exportPack(t);
+    const name = `${t.title.replace(/[\\/:*?"<>|]+/g, ' ').trim() || 'De Listening'}.zip`;
+    await download(name, blob, 'application/zip');
+  } catch (e) { console.error(e); toast('Không tạo được gói đề: ' + (e?.message || e), 'bad'); }
+  finally { ui.exporting = false; rerender(); }
+});
+/** Lọc HTML từ gói: chỉ giữ thẻ định dạng, lớp và mốc chỗ trống của app; mọi chữ được escape lại. */
+const SAFE_CLASS = /^(lt-card|lt-cell|lt-trow|lt-qb)$/;
+function safeHtml(html) {
+  const doc = new DOMParser().parseFromString(`<body>${String(html || '')}</body>`, 'text/html');
+  const walk = (node) => {
+    if (node.nodeType === 3) return esc(node.nodeValue);
+    if (node.nodeType !== 1) return '';
+    const tag = node.tagName.toLowerCase();
+    const inner = [...node.childNodes].map(walk).join('');
+    if (tag === 'span' && /^\d{1,2}$/.test(node.getAttribute('data-gap') || '')) return `<span data-gap="${node.getAttribute('data-gap')}"></span>`;
+    const cls = (node.getAttribute('class') || '').split(/\s+/).filter((c) => SAFE_CLASS.test(c)).join(' ');
+    if (['b', 'i', 'u', 'p', 'li', 'ul', 'ol', 'h4', 'small'].includes(tag)) return `<${tag}>${inner}</${tag}>`;
+    if (tag === 'br') return '<br>';
+    if ((tag === 'div' || tag === 'span') && cls) return `<${tag} class="${cls}">${inner}</${tag}>`;
+    if (['script', 'style', 'iframe', 'object', 'embed', 'svg', 'math', 'template'].includes(tag)) return '';
+    return inner;
+  };
+  return [...doc.body.childNodes].map(walk).join('');
+}
+const sStr = (v, n = 400) => String(v ?? '').slice(0, n);
+const sNum = (v) => Math.max(0, Math.min(99, Math.round(Number(v)) || 0));
+const sOpts = (a) => (Array.isArray(a) ? a : []).slice(0, 12).map((o) => ({ k: sStr(o?.k, 1).toUpperCase().replace(/[^A-L]/, ''), t: sStr(o?.t, 400) })).filter((o) => o.k);
+function cleanGroup(g) {
+  const base = { from: sNum(g?.from), to: sNum(g?.to), instr: (Array.isArray(g?.instr) ? g.instr : []).slice(0, 6).map((x) => sStr(x, 400)) };
+  if (g?.t === 'fill') return { ...base, t: 'fill', limit: { words: sNum(g.limit?.words), num: !!g.limit?.num }, html: safeHtml(g.html), gaps: (g.gaps || []).map(sNum).filter(Boolean) };
+  if (g?.t === 'mcq') return { ...base, t: 'mcq', title: sStr(g.title, 300), qs: (g.qs || []).slice(0, 20).map((q) => ({ n: sNum(q.n), q: sStr(q.q, 600), opts: sOpts(q.opts) })) };
+  if (g?.t === 'multi') return { ...base, t: 'multi', pick: Math.min(5, sNum(g.pick)) || 2, nums: (g.nums || []).map(sNum).filter(Boolean), q: sStr(g.q, 600), opts: sOpts(g.opts) };
+  if (g?.t === 'match') return { ...base, t: 'match', opts: sOpts(g.opts), items: (g.items || []).slice(0, 20).map((x) => ({ n: sNum(x.n), t: sStr(x.t, 400) })), heads: (g.heads || []).slice(0, 10).map((h) => ({ t: sStr(h.t, 300), at: ['top', 'mid', 'items'].includes(h.at) ? h.at : 'top' })) };
+  return null;
+}
+async function readPack(z) {
+  const meta = JSON.parse(new TextDecoder().decode(await z.bytes('ltest.json')));
+  if (meta?.type !== 'ltest-pack') throw new Error('Không phải gói đề');
+  const parts = (Array.isArray(meta.parts) ? meta.parts : []).slice(0, 4).map((p) => ({ n: sNum(p.n), groups: (p.groups || []).slice(0, 12).map(cleanGroup).filter(Boolean) })).filter((p) => p.n && p.groups.length);
+  const key = {};
+  for (const [k, v] of Object.entries(meta.key || {})) {
+    if (!/^\d{1,2}$/.test(k) || !v) continue;
+    key[k] = Array.isArray(v.set) ? { set: v.set.map((x) => sStr(x, 1).toUpperCase()).slice(0, 5), nums: (v.nums || []).map(sNum) } : { text: sStr(v.text, 200) };
+  }
+  let tx = null;
+  if (meta.tx?.parts) {
+    const tp = {}, ev = {};
+    for (const [pn, paras] of Object.entries(meta.tx.parts)) if (/^[1-4]$/.test(pn) && Array.isArray(paras)) tp[pn] = paras.slice(0, 200).map((x) => (x?.sep ? { sep: true } : { html: safeHtml(x?.html), qs: (x?.qs || []).map(sNum) }));
+    for (const [q, list] of Object.entries(meta.tx.ev || {})) if (/^\d{1,2}$/.test(q) && Array.isArray(list)) ev[q] = list.slice(0, 6).map((e) => ({ part: sNum(e.part), i: sNum(e.i), html: safeHtml(e.html) }));
+    tx = { parts: tp, ev, n: Object.keys(ev).length };
+  }
+  const notes = {};
+  for (const [k, v] of Object.entries(meta.notes || {})) if (/^\d{1,2}(-\d{1,2})?$/.test(k)) { const c = cleanNote(v); if (c) notes[k] = c; }
+  const audio = {};
+  for (const [n, path] of Object.entries(meta.audio || {})) {
+    if (!/^[1-4]$/.test(n) || !z.names.includes(path)) continue;
+    const ext = path.split('.').pop().toLowerCase();
+    audio[n] = new File([await z.bytes(path)], `Part${n}.${ext}`, { type: ext === 'm4a' ? 'audio/mp4' : 'audio/mpeg' });
+  }
+  return { title: sStr(meta.title, 120) || 'Đề Listening', parts, key, tx, notes: Object.keys(notes).length ? notes : null, audio };
+}
+
 // ---------------------------------------------------------------- Chấm
 const normA = (s) => String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[’‘`]/g, "'").replace(/[£$€]/g, '')
   .replace(/[-–—]/g, ' ').replace(/[.,;:!?"]+$/g, '').replace(/^[.,;:!?"]+/g, '').replace(/\s+/g, ' ').trim();
@@ -362,6 +469,12 @@ async function readImport(files) {
   imp.error = '';
   imp.preview = null;
   const extra = await readExtras(files);
+  if (extra.pack) {
+    const pk = extra.pack;
+    imp.preview = { title: pk.title, parts: pk.parts, key: pk.key, audio: pk.audio, cnt: countQs(pk.parts, pk.key), file: 'gói đề', tx: pk.tx, notes: pk.notes ? { notes: pk.notes } : null };
+    return;
+  }
+  if (extra.errors.length && !extra.testHtml) { imp.error = extra.errors[0]; return; }
   const html = extra.testHtml;
   const audios = extra.audios;
   if (!html) { imp.error = 'Chưa có file đề (.html có câu hỏi và đáp án). Chọn cùng lúc file đề và các file nghe.'; return; }
@@ -374,8 +487,24 @@ async function readImport(files) {
   imp.preview = { ...parsed, audio: byPart, cnt, file: html.name, tx: extra.tx, notes: extra.notes };
 }
 /** Phân loại file đã chọn: file đề, file lời thoại, file giải thích (.json), file nghe. */
-async function readExtras(files) {
-  const out = { testHtml: null, tx: null, notes: null, audios: [], errors: [] };
+async function readExtras(input) {
+  const out = { testHtml: null, tx: null, notes: null, audios: [], errors: [], pack: null };
+  const files = [];
+  for (const f of input) {
+    if (!/\.zip$/i.test(f.name) && !/zip/.test(f.type)) { files.push(f); continue; }
+    try {
+      const z = await unzip(await f.arrayBuffer());
+      if (z.names.includes('ltest.json')) { out.pack = await readPack(z); continue; }
+      // File zip tự nén các file đề: mở ra rồi xử lý như chọn từng file.
+      for (const name of z.names) {
+        if (name.endsWith('/') || /(^|\/)(__MACOSX|\.)/.test(name)) continue;
+        const base = name.split('/').pop();
+        const type = /\.mp3$/i.test(base) ? 'audio/mpeg' : /\.m4a$/i.test(base) ? 'audio/mp4' : /\.html?$/i.test(base) ? 'text/html' : /\.json$/i.test(base) ? 'application/json' : '';
+        if (!type) continue;
+        files.push(new File([await z.bytes(name)], base, { type }));
+      }
+    } catch (e) { console.error(e); out.errors.push(`${f.name}: không mở được file nén`); }
+  }
   for (const f of files) {
     if (/^audio\//.test(f.type) || /\.(mp3|m4a|aac|wav|ogg)$/i.test(f.name)) { out.audios.push(f); continue; }
     if (/\.json$/i.test(f.name) || f.type === 'application/json') {
@@ -449,8 +578,8 @@ on('lt-pick-files', async () => {
   const input = document.createElement('input');
   input.type = 'file';
   input.multiple = true;
-  input.accept = '.html,.htm,.json,text/html,application/json,audio/*,.mp3,.m4a';
-  input.onchange = async () => { await readImport([...input.files]); rerender(); };
+  input.accept = '.zip,application/zip,.html,.htm,.json,text/html,application/json,audio/*,.mp3,.m4a';
+  input.onchange = async () => { imp.error = 'Đang đọc file…'; rerender(); await readImport([...input.files]); rerender(); };
   input.click();
 });
 on('lt-files', async (el) => { await readImport([...el.files]); rerender(); }); // dùng cho kiểm thử
@@ -466,10 +595,10 @@ on('lt-del', async (el) => {
 export function importView() {
   const pv = imp.preview;
   const nav = navBar('Nhập đề Listening', { fallback: '#/listening' });
-  let body = `<div class="card"><p>Chọn <b>cùng lúc</b> file đề (.html, có câu hỏi và đáp án) và các file nghe của từng Part (.mp3). Có thể chọn thêm file lời thoại (.html) và file giải thích (.json).</p>
+  let body = `<div class="card"><p>Chọn <b>gói đề</b> (.zip) bạn được gửi, hoặc chọn <b>cùng lúc</b> file đề (.html, có câu hỏi và đáp án) và các file nghe của từng Part (.mp3). Có thể chọn thêm file lời thoại (.html) và file giải thích (.json).</p>
     <p class="small muted" style="margin-top:6px">Tên file nghe nên có "Part1", "Part2"… để app tự ghép đúng Part. Đề và file nghe chỉ lưu trên máy này, không gửi đi đâu và không có trong file sao lưu.</p>
     <button class="btn" style="margin-top:14px" data-act="lt-pick-files">${icon('folder', 'sm')} Chọn file</button>
-    <input type="file" id="lt-files" data-change="lt-files" multiple hidden accept=".html,.htm,.json,audio/*"></div>`;
+    <input type="file" id="lt-files" data-change="lt-files" multiple hidden accept=".zip,.html,.htm,.json,audio/*"></div>`;
   if (imp.error) body += `<div class="banner" style="margin-top:12px">${icon('info')}<span>${esc(imp.error)}</span></div>`;
   if (pv) {
     const rows = pv.parts.map((p) => {
@@ -516,6 +645,8 @@ export function testView(id) {
       <p class="small muted" style="margin-top:6px">Hiện sau khi nộp bài: câu chứa đáp án trong lời thoại, vì sao chọn, bẫy, paraphrase.</p>
       <button class="btn soft" style="margin-top:10px" data-act="lt-attach" data-id="${esc(id)}">${icon('plus', 'sm')} Thêm lời thoại / giải thích / file nghe</button>
       <input type="file" id="lt-attach-files" data-change="lt-attach-files" data-id="${esc(id)}" multiple hidden></div>
+    <h2>Chia sẻ</h2><div class="card"><p class="small muted">Gộp đề, file nghe, lời thoại và giải thích thành một file .zip để gửi riêng cho bạn học (Zalo, Drive…). Người nhận bấm Nhập đề và chọn file đó.</p>
+      <button class="btn soft" style="margin-top:10px" data-act="lt-export" data-id="${esc(id)}" ${ui.exporting ? 'disabled' : ''}>${icon('upload', 'sm')} ${ui.exporting ? 'Đang tạo gói…' : 'Xuất gói đề (1 file)'}</button></div>
     <button class="btn ghost danger-text" style="margin-top:18px" data-act="lt-del" data-id="${esc(id)}">${icon('trash', 'sm')} Xoá đề khỏi máy</button>
   </div>`;
 }
