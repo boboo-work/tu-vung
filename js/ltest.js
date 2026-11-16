@@ -1,0 +1,592 @@
+// Listening — đề thật người học tự nhập (L3–L5 trong bản nghiệp vụ).
+//  Nhập: 1 file đề HTML (câu hỏi + đáp án) và các file nghe theo Part. Đề và file nghe chỉ lưu trên máy (IndexedDB),
+//        không đưa lên mạng, không có trong file sao lưu (đề sách thường có bản quyền).
+//  Làm bài: cả đề như thi (mỗi Part nghe 1 lần, không tua) hoặc luyện từng Part (tua, đổi tốc độ).
+//  Chấm: theo luật thi (sai chính tả là sai, đúng số từ cho phép), band ước lượng khi làm đủ 40 câu,
+//        lý do sai từng câu, tỉ lệ đúng theo dạng câu hỏi; nghe lại từng Part khi chữa.
+import { S, ltPut, ltDel, logGrammarDay } from './store.js';
+import { esc, toast, uid, today, fmtDate, dateStr } from './util.js';
+import { icon, on, go, back, rerender, navBar, confirmSheet } from './ui.js';
+
+// ---------------------------------------------------------------- Đọc đề HTML
+const BLOCK = new Set(['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'TABLE', 'UL', 'OL']);
+const txt = (el) => (el.textContent || '').replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
+const RE_PART = /^PART\s*(\d)\b/i;
+const RE_GROUP = /^Questions?\s+(\d{1,2})\s*(?:[-–—]|and|to|&)\s*(\d{1,2})\b/i;
+const RE_INSTR = /^(Complete|Choose|Write|Label|Answer|Match|Look|List|Which|What|Where|Who|How|Why|When)\b/i;
+const RE_OPT = /^([A-I])\s+(\S.*)$/;
+const RE_NUM = /^(\d{1,2})\s+(\S.*)$/;
+const DOTS = /\s*[.…]{2,}\s*$/;
+
+/** Chép nội dung một khối thành HTML gọn và an toàn: chỉ giữ thẻ định dạng cơ bản, mọi chữ đều được escape. */
+function cleanHtml(node) {
+  if (node.nodeType === 3) return esc(node.nodeValue.replace(/ /g, ' '));
+  if (node.nodeType !== 1) return '';
+  const tag = node.tagName;
+  if (['SCRIPT', 'STYLE', 'INS', 'IFRAME', 'AUDIO', 'VIDEO', 'NOSCRIPT', 'BUTTON', 'FORM', 'INPUT', 'SVG', 'IMG'].includes(tag)) return tag === 'IMG' ? '<i>[hình]</i>' : '';
+  const inner = [...node.childNodes].map(cleanHtml).join('');
+  const map = { B: 'b', STRONG: 'b', I: 'i', EM: 'i', U: 'u', P: 'p', LI: 'li', UL: 'ul', OL: 'ol', TD: 'td', TH: 'td', TR: 'tr', H1: 'h4', H2: 'h4', H3: 'h4', H4: 'h4', H5: 'h4', H6: 'h4' };
+  if (tag === 'BR') return '<br>';
+  if (tag === 'TABLE') return tableHtml(node);
+  const t = map[tag];
+  return t ? `<${t}>${inner}</${t}>` : inner;
+}
+/** Bảng nhiều cột → mỗi hàng thành một thẻ, mỗi ô kèm tên cột (dễ đọc và dễ gõ trên điện thoại). */
+function tableHtml(table) {
+  const rows = [...table.querySelectorAll('tr')].filter((r) => r.closest('table') === table);
+  const cells = (r) => [...r.children].filter((c) => /^T[DH]$/.test(c.tagName));
+  if (!rows.length) return '';
+  const first = cells(rows[0]);
+  const isHead = first.length > 1 && first.every((c) => c.tagName === 'TH' || (txt(c) && c.querySelector('b, strong') && txt(c.querySelector('b, strong')) === txt(c)));
+  if (!isHead || first.length < 2) {
+    return rows.map((r) => `<div class="lt-trow">${cells(r).map((c) => `<div>${[...c.childNodes].map(cleanHtml).join('')}</div>`).join('')}</div>`).join('');
+  }
+  const heads = first.map(txt);
+  return rows.slice(1).map((r) => `<div class="lt-card">${cells(r).map((c, i) => `<div class="lt-cell"><small>${esc(heads[i] || '')}</small>${[...c.childNodes].map(cleanHtml).join('')}</div>`).join('')}</div>`).join('');
+}
+/** Đổi chỗ trống "<b>7</b> ……" thành ô nhập cho câu 7. */
+function markGaps(html, from, to) {
+  const used = new Set();
+  let out = html.replace(/<b>\s*(\d{1,2})\s*<\/b>\s*[.…_]{2,}/g, (m, n) => {
+    const k = Number(n);
+    if (k < from || k > to) return m;
+    used.add(k);
+    return `<span data-gap="${k}"></span>`;
+  });
+  // Đề không in đậm số câu: "7 ………"
+  out = out.replace(/(^|[\s>(])(\d{1,2})\s*[.…_]{4,}/g, (m, pre, n) => {
+    const k = Number(n);
+    if (k < from || k > to || used.has(k)) return m;
+    used.add(k);
+    return `${pre}<span data-gap="${k}"></span>`;
+  });
+  return { html: out.replace(/<p>\s*<\/p>/g, '').replace(/<h4>\s*<\/h4>/g, ''), gaps: [...used].sort((a, b) => a - b) };
+}
+function wordLimit(instr) {
+  const t = instr.join(' ');
+  const W = { ONE: 1, TWO: 2, THREE: 3, FOUR: 4 };
+  const m = t.match(/(?:NO MORE THAN\s+)?(ONE|TWO|THREE|FOUR)\s+WORDS?/i);
+  return { words: m ? W[m[1].toUpperCase()] : 0, num: /A NUMBER/i.test(t) };
+}
+/** Đọc đáp án: "1 10/ten", "21&22 B, D", "31 metal(s)". Chữ "I" in nghiêng giữa hai đáp án là dấu "/" bị lỗi font. */
+function readKey(doc) {
+  const key = {};
+  const lines = [];
+  for (const h of doc.querySelectorAll('h5, h4, h3, p, div')) {
+    if (h.tagName !== 'H5' && h.tagName !== 'H4') continue;
+    if (!/^Part\s*\d\b/i.test(txt(h))) continue;
+    const box = h.nextElementSibling;
+    if (!box) continue;
+    box.querySelectorAll('i, em').forEach((i) => { if (txt(i) === 'I') i.textContent = ' / '; });
+    box.querySelectorAll('p, li').forEach((p) => lines.push(txt(p)));
+    h.parentElement?.remove();
+  }
+  for (const l of lines) {
+    const m = l.match(/^(\d{1,2})\s*(?:(?:&|and|,)\s*(\d{1,2}))?\s*[.):]?\s+(\S.*)$/i);
+    if (!m) continue;
+    const a = Number(m[1]), b = m[2] ? Number(m[2]) : 0;
+    const val = m[3].trim();
+    if (b) { const set = val.toUpperCase().match(/\b[A-I]\b/g) || []; key[a] = { set, nums: [a, b] }; key[b] = { set, nums: [a, b] }; }
+    else key[a] = { text: val };
+  }
+  return key;
+}
+export function parseTestHtml(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  doc.querySelectorAll('script, style, ins, iframe, noscript, .ielts-manual-ads, .ielts-adlabel').forEach((e) => e.remove());
+  const key = readKey(doc);
+  const title = (doc.querySelector('title')?.textContent || doc.querySelector('h1')?.textContent || 'Đề Listening').replace(/\s*[-–]\s*(De bai|Đề bài).*$/i, '').trim();
+  // Các khối theo thứ tự trong trang (bảng, danh sách tính là một khối).
+  const blocks = [];
+  const walk = (el) => {
+    for (const c of el.children) {
+      if (BLOCK.has(c.tagName)) { if (c.tagName !== 'H1') blocks.push(c); } else walk(c);
+    }
+  };
+  walk(doc.body);
+  const parts = [];
+  let part = null, group = null;
+  const close = () => { if (group && part) part.groups.push(buildGroup(group)); group = null; };
+  for (const el of blocks) {
+    const t = txt(el);
+    if (!t && el.tagName !== 'TABLE') continue;
+    if (/^(Answer|Audioscript|Transcript)\b/i.test(t) || el.querySelector('a[href]') && /Test\s*\d/i.test(t)) { close(); continue; }
+    const pm = t.match(RE_PART);
+    if (pm && el.tagName !== 'TABLE' && t.length < 30) { close(); part = { n: Number(pm[1]), groups: [] }; parts.push(part); continue; }
+    const gm = t.match(RE_GROUP);
+    if (gm && t.length < 40) { close(); if (!part) { part = { n: 1, groups: [] }; parts.push(part); } group = { from: Number(gm[1]), to: Number(gm[2]), blocks: [] }; continue; }
+    if (group) group.blocks.push(el);
+  }
+  close();
+  return { title, parts: parts.filter((p) => p.groups.length), key };
+}
+function buildGroup({ from, to, blocks }) {
+  const instr = [];
+  let i = 0;
+  while (i < blocks.length && RE_INSTR.test(txt(blocks[i])) && !RE_NUM.test(txt(blocks[i]))) instr.push(txt(blocks[i++]));
+  const rest = blocks.slice(i);
+  const it = instr.join(' ');
+  const base = { from, to, instr };
+  if (/Choose\s+(TWO|THREE|FOUR)\s+(letters|answers)/i.test(it) && !/next to/i.test(it)) {
+    const pick = { TWO: 2, THREE: 3, FOUR: 4 }[it.match(/Choose\s+(TWO|THREE|FOUR)/i)[1].toUpperCase()];
+    const opts = [], heads = [];
+    for (const el of rest) { const t = txt(el), m = t.match(RE_OPT); if (m) opts.push({ k: m[1], t: m[2] }); else if (t) heads.push(t); }
+    return { ...base, t: 'multi', pick, nums: Array.from({ length: to - from + 1 }, (_, j) => from + j), q: heads.join(' '), opts };
+  }
+  if (/next to|from the box|write the correct letter/i.test(it) || (/Label|Match/i.test(it) && !/Complete/i.test(it))) {
+    const opts = [], items = [], heads = [];
+    for (const el of rest) {
+      const t = txt(el);
+      let m = t.match(RE_NUM);
+      if (m && Number(m[1]) >= from && Number(m[1]) <= to) { items.push({ n: Number(m[1]), t: m[2].replace(DOTS, '').replace(/[.…]{3,}/g, '').trim() }); continue; }
+      m = t.match(RE_OPT);
+      if (m && !items.length) { opts.push({ k: m[1], t: m[2] }); continue; }
+      if (t) (items.length ? heads : heads).push({ t, at: items.length ? 'items' : opts.length ? 'mid' : 'top' });
+    }
+    return { ...base, t: 'match', opts, items, heads };
+  }
+  if (/Choose the correct letter/i.test(it)) {
+    const qs = [];
+    let title = '';
+    for (const el of rest) {
+      const t = txt(el);
+      let m = t.match(RE_NUM);
+      if (m && Number(m[1]) >= from && Number(m[1]) <= to) { qs.push({ n: Number(m[1]), q: m[2], opts: [] }); continue; }
+      m = t.match(RE_OPT);
+      if (m && qs.length) { qs[qs.length - 1].opts.push({ k: m[1], t: m[2] }); continue; }
+      if (t && !qs.length) title = title ? `${title} · ${t}` : t;
+    }
+    return { ...base, t: 'mcq', title, qs };
+  }
+  const { html, gaps } = markGaps(rest.map(cleanHtml).join(''), from, to);
+  return { ...base, t: 'fill', limit: wordLimit(instr), html, gaps };
+}
+/** Số câu của đề (theo nhóm) và số câu có đáp án. */
+function countQs(parts, key) {
+  const nums = [];
+  for (const p of parts) for (const g of p.groups) nums.push(...groupNums(g));
+  return { n: nums.length, keyed: nums.filter((n) => key[n]).length, nums };
+}
+function groupNums(g) {
+  if (g.t === 'fill') return g.gaps;
+  if (g.t === 'mcq') return g.qs.map((q) => q.n);
+  if (g.t === 'match') return g.items.map((x) => x.n);
+  return g.nums;
+}
+
+// ---------------------------------------------------------------- Chấm
+const normA = (s) => String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[’‘`]/g, "'").replace(/[£$€]/g, '')
+  .replace(/[-–—]/g, ' ').replace(/[.,;:!?"]+$/g, '').replace(/^[.,;:!?"]+/g, '').replace(/\s+/g, ' ').trim();
+/** Các cách viết được chấp nhận: "10/ten" → [10, ten]; "metal(s)" → [metal, metals]; "(the) museum" → [museum, the museum]. */
+export function alternatives(text) {
+  const out = new Set();
+  for (const part of String(text).split(/\s*\/\s*|\s+OR\s+/)) {
+    if (!part.trim()) continue;
+    let forms = [''];
+    const re = /\(([^)]*)\)|([^()]+)/g;
+    let m;
+    while ((m = re.exec(part))) {
+      if (m[1] != null) forms = forms.flatMap((f) => [f, f + m[1]]);
+      else forms = forms.map((f) => f + m[2]);
+    }
+    forms.forEach((f) => { const v = normA(f); if (v) out.add(v); });
+  }
+  return [...out];
+}
+function lev(a, b) {
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+const WHY = {
+  blank: 'Bỏ trống',
+  spell: 'Sai chính tả',
+  plural: 'Thiếu hoặc thừa "s"',
+  limit: 'Quá số từ cho phép',
+  wrong: 'Sai đáp án',
+  partial: 'Đúng một phần',
+};
+const TYPE_NAME = { fill: 'Điền từ', mcq: 'Chọn 1 đáp án', multi: 'Chọn nhiều đáp án', match: 'Nối / chọn chữ cái' };
+function gradeFill(g, n, ans, key) {
+  const alts = alternatives(key.text);
+  const a = normA(ans);
+  if (!a) return { ok: false, why: 'blank' };
+  if (alts.includes(a)) return { ok: true };
+  const words = a.split(' ').filter((w) => !/^\d[\d.,:/]*$/.test(w));
+  if (g.limit.words && words.length > g.limit.words) return { ok: false, why: 'limit' };
+  for (const k of alts) {
+    if (a + 's' === k || k + 's' === a || a + 'es' === k || k + 'es' === a) return { ok: false, why: 'plural' };
+  }
+  if (alts.some((k) => k.length > 3 && lev(a, k) <= (k.length > 7 ? 2 : 1))) return { ok: false, why: 'spell' };
+  return { ok: false, why: 'wrong' };
+}
+/** Chấm cả lượt: trả về từng câu { ok, why, your, right, type } và tổng. */
+function gradeAll(test, parts, ans) {
+  const res = {};
+  for (const p of test.parts.filter((x) => parts.includes(x.n))) {
+    for (const g of p.groups) {
+      if (g.t === 'fill') for (const n of g.gaps) { const k = test.key[n]; if (k) res[n] = { ...gradeFill(g, n, ans[n], k), your: ans[n] || '', right: k.text, type: 'fill', part: p.n }; }
+      if (g.t === 'mcq') for (const q of g.qs) { const k = test.key[q.n]; if (k) { const y = ans[q.n] || ''; res[q.n] = { ok: !!y && y === normLetter(k.text), why: y ? 'wrong' : 'blank', your: y, right: normLetter(k.text), type: 'mcq', part: p.n }; } }
+      if (g.t === 'match') for (const x of g.items) { const k = test.key[x.n]; if (k) { const y = ans[x.n] || ''; res[x.n] = { ok: !!y && y === normLetter(k.text), why: y ? 'wrong' : 'blank', your: y, right: normLetter(k.text), type: 'match', part: p.n }; } }
+      if (g.t === 'multi') {
+        const k = test.key[g.nums[0]];
+        if (!k) continue;
+        const sel = ans[g.nums[0]] || [];
+        const hits = sel.filter((x) => k.set.includes(x)).length;
+        g.nums.forEach((n, i) => { res[n] = { ok: i < hits, why: sel.length ? (hits ? 'partial' : 'wrong') : 'blank', your: sel.join(', '), right: k.set.join(', '), type: 'multi', part: p.n }; });
+      }
+    }
+  }
+  for (const r of Object.values(res)) if (r.ok) r.why = '';
+  const list = Object.values(res);
+  return { res, score: list.filter((r) => r.ok).length, total: list.length };
+}
+const normLetter = (s) => (String(s).toUpperCase().match(/\b[A-I]\b/) || [''])[0];
+/** Bảng quy đổi điểm Listening (thang 40 câu) sang band. */
+export function bandOf(score) {
+  const T = [[39, 9], [37, 8.5], [35, 8], [32, 7.5], [30, 7], [26, 6.5], [23, 6], [18, 5.5], [16, 5], [13, 4.5], [10, 4], [8, 3.5], [6, 3], [4, 2.5]];
+  for (const [min, b] of T) if (score >= min) return b;
+  return score > 0 ? 2 : 0;
+}
+
+// ---------------------------------------------------------------- Nhập đề
+const imp = { files: null, preview: null, error: '', busy: false };
+const tests = () => [...S.ltest.values()].filter((r) => r.kind === 'test').sort((a, b) => b.at - a.at);
+const attempts = (id) => [...S.ltest.values()].filter((r) => r.kind === 'attempt' && (!id || r.test === id)).sort((a, b) => b.at - a.at);
+export const ltestCount = () => tests().length;
+
+async function readImport(files) {
+  imp.error = '';
+  imp.preview = null;
+  const html = files.find((f) => /\.html?$/i.test(f.name) || f.type === 'text/html');
+  const audios = files.filter((f) => /^audio\//.test(f.type) || /\.(mp3|m4a|aac|wav|ogg)$/i.test(f.name));
+  if (!html) { imp.error = 'Chưa có file đề (.html). Chọn cùng lúc file đề và các file nghe.'; return; }
+  let parsed;
+  try { parsed = parseTestHtml(await html.text()); } catch (e) { console.error(e); imp.error = 'Không đọc được file đề.'; return; }
+  if (!parsed.parts.length) { imp.error = 'Không tìm thấy phần câu hỏi trong file (cần có tiêu đề "PART 1" và "Questions 1-10").'; return; }
+  // Ghép file nghe với Part theo tên file ("…Part1.mp3", "part_2"…), không có thì theo thứ tự tên.
+  const byPart = {};
+  const rest = [];
+  for (const a of audios) { const m = a.name.match(/part\s*[_-]?\s*(\d)/i) || a.name.match(/(?:^|[^\d])([1-4])\.(?:mp3|m4a|aac|wav|ogg)$/i); if (m && !byPart[m[1]]) byPart[m[1]] = a; else rest.push(a); }
+  rest.sort((a, b) => a.name.localeCompare(b.name));
+  for (const p of parsed.parts) if (!byPart[p.n] && rest.length) byPart[p.n] = rest.shift();
+  const cnt = countQs(parsed.parts, parsed.key);
+  imp.preview = { ...parsed, audio: byPart, cnt, file: html.name };
+}
+async function saveImport() {
+  const pv = imp.preview;
+  if (!pv) return;
+  imp.busy = true;
+  rerender();
+  try {
+    const id = 'X:' + uid();
+    const audio = {};
+    for (const [n, f] of Object.entries(pv.audio)) audio[n] = { blob: new Blob([await f.arrayBuffer()], { type: f.type || 'audio/mpeg' }), name: f.name, size: f.size };
+    await ltPut({ id, kind: 'test', title: pv.title, at: Date.now(), parts: pv.parts, key: pv.key, audio, n: pv.cnt.n });
+    imp.preview = null;
+    toast('Đã lưu đề trên máy');
+    go(`#/ltest/${encodeURIComponent(id)}`);
+  } catch (e) {
+    console.error(e);
+    toast('Không lưu được: ' + (e?.message || e), 'bad');
+  } finally { imp.busy = false; }
+}
+on('lt-pick-files', async () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.multiple = true;
+  input.accept = '.html,.htm,text/html,audio/*,.mp3,.m4a';
+  input.onchange = async () => { await readImport([...input.files]); rerender(); };
+  input.click();
+});
+on('lt-files', async (el) => { await readImport([...el.files]); rerender(); }); // dùng cho kiểm thử
+on('lt-save', saveImport);
+on('lt-del', async (el) => {
+  const t = S.ltest.get(el.dataset.id);
+  if (!t || !(await confirmSheet({ title: 'Xoá đề này?', body: `${t.title}: xoá đề và file nghe trên máy. Kết quả các lần làm vẫn giữ.`, okLabel: 'Xoá', danger: true }))) return;
+  await ltDel(t.id);
+  toast('Đã xoá đề');
+  go('#/listening');
+});
+
+export function importView() {
+  const pv = imp.preview;
+  const nav = navBar('Nhập đề Listening', { fallback: '#/listening' });
+  let body = `<div class="card"><p>Chọn <b>cùng lúc</b> file đề (.html, có câu hỏi và đáp án) và các file nghe của từng Part (.mp3).</p>
+    <p class="small muted" style="margin-top:6px">Tên file nghe nên có "Part1", "Part2"… để app tự ghép đúng Part. Đề và file nghe chỉ lưu trên máy này, không gửi đi đâu và không có trong file sao lưu.</p>
+    <button class="btn" style="margin-top:14px" data-act="lt-pick-files">${icon('folder', 'sm')} Chọn file</button>
+    <input type="file" id="lt-files" data-change="lt-files" multiple hidden accept=".html,.htm,audio/*"></div>`;
+  if (imp.error) body += `<div class="banner" style="margin-top:12px">${icon('info')}<span>${esc(imp.error)}</span></div>`;
+  if (pv) {
+    const rows = pv.parts.map((p) => {
+      const nums = p.groups.flatMap(groupNums);
+      const a = pv.audio[p.n];
+      return `<div class="row-between ls-catline"><span><b>Part ${p.n}</b> · ${nums.length} câu · ${p.groups.map((g) => TYPE_NAME[g.t]).filter((v, i, x) => x.indexOf(v) === i).join(', ')}</span><span class="small ${a ? 'muted' : 'lt-bad'}">${a ? esc(a.name.replace(/^[0-9a-f]{8}-/, '')) : 'thiếu file nghe'}</span></div>`;
+    }).join('');
+    const miss = pv.cnt.nums.filter((n) => !pv.key[n]);
+    const ok = pv.cnt.keyed >= Math.ceil(pv.cnt.n * 0.8);
+    body += `<h2>Xem trước</h2><div class="card"><b>${esc(pv.title)}</b><p class="small muted" style="margin-top:2px">${pv.cnt.n} câu · đáp án ${pv.cnt.keyed}/${pv.cnt.n}</p>${rows}
+      ${miss.length ? `<p class="small lt-bad" style="margin-top:8px">Thiếu đáp án câu ${miss.slice(0, 12).join(', ')}${miss.length > 12 ? '…' : ''}${ok ? ' (các câu này sẽ không được chấm)' : ''}.</p>` : ''}
+      ${pv.parts.some((p) => !pv.audio[p.n]) ? '<p class="small lt-bad" style="margin-top:8px">Part thiếu file nghe vẫn làm được nhưng không có âm thanh.</p>' : ''}
+      <button class="btn" style="margin-top:14px" data-act="lt-save" ${ok && !imp.busy ? '' : 'disabled'}>${imp.busy ? 'Đang lưu…' : 'Lưu đề'}</button>
+      ${ok ? '' : '<p class="small muted" style="margin-top:6px">Không tìm thấy đủ đáp án trong file nên chưa lưu được.</p>'}</div>`;
+  }
+  return `<div class="page">${nav}${body}</div>`;
+}
+
+// ---------------------------------------------------------------- Trang một đề
+const ui = { mode: 'exam' };
+const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+export function testView(id) {
+  const t = S.ltest.get(id);
+  const nav = navBar(t?.title || 'Đề Listening', { fallback: '#/listening' });
+  if (!t) return `<div class="page">${nav}<div class="card empty"><h3>Không tìm thấy đề</h3><p>Đề có thể đã bị xoá.</p></div></div>`;
+  const att = attempts(id);
+  const best = att.filter((a) => a.total === 40).reduce((m, a) => Math.max(m, a.band), 0);
+  const parts = t.parts.map((p) => {
+    const nums = p.groups.flatMap(groupNums);
+    const last = att.find((a) => a.parts.length === 1 && a.parts[0] === p.n);
+    return `<div class="wrow" data-act="lt-start" data-id="${esc(id)}" data-parts="${p.n}" role="button"><span class="num">${p.n}</span><div class="body"><span style="font-weight:600">Part ${p.n} · câu ${nums[0]}–${nums[nums.length - 1]}</span><p>${p.groups.map((g) => TYPE_NAME[g.t]).filter((v, i, x) => x.indexOf(v) === i).join(', ')}${last ? ` · lần trước ${last.score}/${last.total}` : ''}</p></div>${icon('chev')}</div>`;
+  }).join('');
+  return `<div class="page">${nav}
+    <div class="card"><div class="row-between"><div><b>${t.n} câu · 4 Part</b><p class="small muted">${best ? `Band cao nhất: ${best}` : 'Chưa làm cả đề'} · nhập ${fmtDate(dateStr(new Date(t.at)))}</p></div></div>
+      <div class="seg" style="margin-top:12px"><button class="${ui.mode === 'exam' ? 'on' : ''}" data-act="lt-mode" data-v="exam">Như thi</button><button class="${ui.mode === 'practice' ? 'on' : ''}" data-act="lt-mode" data-v="practice">Luyện</button></div>
+      <p class="small muted" style="margin-top:8px">${ui.mode === 'exam' ? 'Mỗi Part chỉ nghe 1 lần, không tua lại. Nộp bài mới xem đáp án.' : 'Được tạm dừng, tua lại 5 giây, nghe chậm. Nộp bài để xem đáp án.'}</p>
+      <button class="btn" style="margin-top:12px" data-act="lt-start" data-id="${esc(id)}" data-parts="1,2,3,4">Làm cả đề · khoảng 30 phút</button></div>
+    <h2>Từng Part</h2><div class="wlist">${parts}</div>
+    ${att.length ? `<h2>Các lần làm</h2><div class="card">${att.slice(0, 8).map((a) => `<div class="row-between ls-catline" data-act="lt-open-att" data-id="${a.id}" role="button"><span>${a.parts.length === 4 ? 'Cả đề' : `Part ${a.parts.join(', ')}`} · ${a.mode === 'exam' ? 'như thi' : 'luyện'} <span class="small muted">· ${fmtDate(a.date)}</span></span><b>${a.score}/${a.total}${a.total === 40 ? ` · ${a.band}` : ''}</b></div>`).join('')}</div>` : ''}
+    <button class="btn ghost danger-text" style="margin-top:18px" data-act="lt-del" data-id="${esc(id)}">${icon('trash', 'sm')} Xoá đề khỏi máy</button>
+  </div>`;
+}
+on('lt-mode', (el) => { ui.mode = el.dataset.v; rerender(); });
+
+// ---------------------------------------------------------------- Làm bài
+let R = null; // { test, parts: [1..4], pi, mode, ans, played: {}, ended: {}, stage: 'do' | 'done', result }
+const A = { el: null, url: '', n: 0, lock: null };
+function audio() {
+  if (A.el) return A.el;
+  const el = new Audio();
+  el.preload = 'auto';
+  el.addEventListener('timeupdate', syncBar);
+  el.addEventListener('loadedmetadata', syncBar);
+  el.addEventListener('play', syncBtn);
+  el.addEventListener('pause', syncBtn);
+  el.addEventListener('ended', () => { if (R) { R.ended[A.n] = true; releaseLock(); rerender(); } });
+  A.el = el;
+  return el;
+}
+function loadPart(n) {
+  const t = R.test, a = t.audio?.[n];
+  const el = audio();
+  el.pause();
+  if (A.url) URL.revokeObjectURL(A.url);
+  A.url = a ? URL.createObjectURL(a.blob) : '';
+  A.n = n;
+  if (A.url) { el.src = A.url; el.load(); } else el.removeAttribute('src');
+  el.playbackRate = 1;
+}
+async function holdLock() { try { A.lock = await navigator.wakeLock?.request('screen'); } catch { A.lock = null; } }
+function releaseLock() { try { A.lock?.release?.(); } catch { /* bỏ qua */ } A.lock = null; }
+function stopAudio() { A.el?.pause(); releaseLock(); }
+function syncBar() {
+  const el = A.el;
+  if (!el) return;
+  const bar = document.querySelector('#lt-bar i'), tm = document.getElementById('lt-time');
+  const d = el.duration || 0;
+  if (bar) bar.style.width = d ? `${(el.currentTime / d) * 100}%` : '0%';
+  if (tm) tm.textContent = `${mmss(el.currentTime || 0)} / ${d ? mmss(d) : '–:––'}`;
+}
+function playLabel() {
+  if (A.el && !A.el.paused) return 'Tạm dừng';
+  return `${icon('speaker', 'sm')} ${R?.played[A.n] ? 'Nghe tiếp' : R?.review ? 'Nghe lại' : 'Bắt đầu nghe'}`;
+}
+function syncBtn() {
+  const b = document.getElementById('lt-play');
+  if (b && A.el) b.innerHTML = playLabel();
+}
+window.addEventListener('hashchange', () => { if (!location.hash.startsWith('#/lrun')) stopAudio(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) syncBtn(); });
+
+on('lt-start', (el) => {
+  const t = S.ltest.get(el.dataset.id);
+  if (!t) return;
+  const parts = el.dataset.parts.split(',').map(Number).filter((n) => t.parts.some((p) => p.n === n));
+  R = { test: t, parts, pi: 0, mode: ui.mode, ans: {}, played: {}, ended: {}, stage: 'do', result: null, review: false };
+  loadPart(parts[0]);
+  go('#/lrun');
+});
+on('lt-play', async () => {
+  const el = audio();
+  if (!A.url) { toast('Part này không có file nghe'); return; }
+  if (!el.paused) { el.pause(); releaseLock(); return; }
+  if (R.mode === 'exam' && R.ended[A.n] && !R.review) { toast('Chế độ thi: mỗi Part chỉ nghe 1 lần'); return; }
+  try { await el.play(); R.played[A.n] = true; holdLock(); } catch (e) { console.error(e); toast('Không phát được file nghe'); }
+});
+on('lt-seek', (el) => {
+  if (!A.el || (R.mode === 'exam' && !R.review)) return;
+  A.el.currentTime = Math.max(0, Math.min((A.el.duration || 0), A.el.currentTime + Number(el.dataset.d)));
+  syncBar();
+});
+on('lt-rate', () => {
+  if (!A.el || (R.mode === 'exam' && !R.review)) return;
+  A.el.playbackRate = A.el.playbackRate === 1 ? 0.85 : 1;
+  rerender();
+});
+on('lt-in', (el) => { if (R && R.stage === 'do') R.ans[el.dataset.n] = el.value; });
+on('lt-choose', (el) => {
+  if (!R || R.stage !== 'do') return;
+  const n = el.dataset.n, k = el.dataset.k;
+  R.ans[n] = R.ans[n] === k ? '' : k;
+  rerender();
+});
+on('lt-multi', (el) => {
+  if (!R || R.stage !== 'do') return;
+  const n = el.dataset.n, k = el.dataset.k, pick = Number(el.dataset.pick);
+  const cur = R.ans[n] || [];
+  R.ans[n] = cur.includes(k) ? cur.filter((x) => x !== k) : cur.length >= pick ? [...cur.slice(1), k] : [...cur, k];
+  rerender();
+});
+on('lt-next-part', async () => {
+  if (R.mode === 'exam' && A.url && !R.ended[A.n] && !(await confirmSheet({ title: 'Sang Part tiếp?', body: 'Part này chưa nghe hết. Khi đã sang Part sau thì không quay lại nghe được.', okLabel: 'Sang Part tiếp' }))) return;
+  stopAudio();
+  R.pi++;
+  loadPart(R.parts[R.pi]);
+  rerender(true);
+});
+on('lt-prev-part', () => { if (R.mode === 'exam' && !R.review) return; stopAudio(); R.pi--; loadPart(R.parts[R.pi]); rerender(true); });
+on('lt-submit', async () => {
+  // Câu chọn nhiều đáp án lưu ở số đầu nhóm: thiếu bao nhiêu chữ cái thì tính bấy nhiêu câu trống.
+  let blank = 0;
+  for (const pn of R.parts) for (const g of R.test.parts.find((p) => p.n === pn).groups) {
+    if (g.t === 'multi') blank += Math.max(0, g.pick - (R.ans[g.nums[0]] || []).length);
+    else blank += groupNums(g).filter((n) => !String(R.ans[n] || '').trim()).length;
+  }
+  if (!(await confirmSheet({ title: 'Nộp bài?', body: blank ? `Còn ${blank} câu bỏ trống. Trong bài thi không bị trừ điểm khi đoán, nên điền hết.` : 'Nộp để xem điểm và chữa bài.', okLabel: 'Nộp bài' }))) return;
+  stopAudio();
+  const g = gradeAll(R.test, R.parts, R.ans);
+  const byType = {}, whys = {};
+  for (const r of Object.values(g.res)) {
+    const b = byType[r.type] || (byType[r.type] = { n: 0, ok: 0 });
+    b.n++; if (r.ok) b.ok++; else whys[r.why] = (whys[r.why] || 0) + 1;
+  }
+  const full = g.total >= 38 && R.parts.length === 4;
+  R.result = { ...g, byType, whys, band: full ? bandOf(g.score) : 0 };
+  R.stage = 'done';
+  R.review = true;
+  R.played = {};
+  R.pi = 0;
+  loadPart(R.parts[0]);
+  const id = 'R:' + uid();
+  await ltPut({ id, kind: 'attempt', test: R.test.id, title: R.test.title, date: today(), at: Date.now(), mode: R.mode, parts: R.parts, score: g.score, total: g.total, band: R.result.band, ans: R.ans, byType, whys });
+  await logGrammarDay('lSets', id);
+  rerender(true);
+});
+on('lt-review-part', (el) => { stopAudio(); R.played = {}; R.pi = Number(el.dataset.i); loadPart(R.parts[R.pi]); rerender(true); });
+on('lt-quit', async () => {
+  if (R && R.stage === 'do' && Object.keys(R.ans).length && !(await confirmSheet({ title: 'Thoát bài đang làm?', body: 'Các câu đã trả lời sẽ không được lưu.', okLabel: 'Thoát', danger: true }))) return;
+  stopAudio();
+  const id = R?.test.id;
+  R = null;
+  back(id ? `#/ltest/${encodeURIComponent(id)}` : '#/listening');
+});
+on('lt-open-att', (el) => {
+  const a = S.ltest.get(el.dataset.id), t = a && S.ltest.get(a.test);
+  if (!t) { toast('Đề của lần làm này không còn trên máy'); return; }
+  R = { test: t, parts: a.parts, pi: 0, mode: a.mode, ans: a.ans || {}, played: {}, ended: {}, stage: 'done', review: true, result: null };
+  const g = gradeAll(t, a.parts, R.ans);
+  R.result = { ...g, byType: a.byType, whys: a.whys, band: a.band };
+  loadPart(a.parts[0]);
+  go('#/lrun');
+});
+
+function audioBox() {
+  const free = R.mode === 'practice' || R.review;
+  const done = R.mode === 'exam' && !R.review && R.ended[A.n];
+  if (!A.url) return '<div class="card lt-audio"><p class="small muted">Part này không có file nghe.</p></div>';
+  return `<div class="card lt-audio">
+    <div class="row-between" style="gap:8px">${done ? '<b class="small">Đã nghe xong Part này</b>' : `<button class="btn soft lt-playbtn" id="lt-play" data-act="lt-play">${playLabel()}</button>`}
+      ${free ? `<button class="btn ghost lt-sm" data-act="lt-seek" data-d="-5" aria-label="Lùi 5 giây">−5″</button><button class="btn ghost lt-sm" data-act="lt-seek" data-d="5" aria-label="Tới 5 giây">+5″</button><button class="btn ghost lt-sm" data-act="lt-rate">${A.el?.playbackRate === 0.85 ? '0.85×' : '1×'}</button>` : ''}</div>
+    <div class="progress lt-bar" id="lt-bar"><i style="width:0%"></i></div><p class="small muted" id="lt-time">0:00 / –:––</p>
+    ${R.mode === 'exam' && !R.review ? '<p class="small faint">Như thi: nghe 1 lần, không tua. Đọc trước câu hỏi trong lúc chờ.</p>' : ''}</div>`;
+}
+function gapInput(n) {
+  const r = R.result?.res[n];
+  const v = R.ans[n] || '';
+  if (!r) return `<input class="lt-gap" data-in="lt-in" data-n="${n}" value="${esc(v)}" placeholder="${n}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" ${R.stage === 'done' ? 'readonly' : ''}>`;
+  return `<span class="lt-ans ${r.ok ? 'ok' : 'no'}"><b class="lt-n">${n}</b>${v ? esc(v) : '<i>trống</i>'}${r.ok ? '' : ` <span class="lt-right">→ ${esc(r.right)}</span>`}</span>`;
+}
+function markOf(n) {
+  const r = R.result?.res[n];
+  if (!r) return '';
+  return r.ok ? `<span class="lt-mark ok">${icon('check', 'sm')}</span>` : `<span class="lt-mark no">${esc(WHY[r.why] || '')}${r.right ? ` · đáp án ${esc(r.right)}` : ''}</span>`;
+}
+function groupHtml(g) {
+  const head = `<p class="lt-qhead">Câu ${g.from}–${g.to}</p>${g.instr.length ? `<div class="lt-instr">${g.instr.map((x) => `<p>${esc(x)}</p>`).join('')}</div>` : ''}`;
+  const done = R.stage === 'done';
+  if (g.t === 'fill') {
+    const html = g.html.replace(/<span data-gap="(\d+)"><\/span>/g, (_, n) => gapInput(Number(n)));
+    const whyList = done ? g.gaps.map((n) => R.result.res[n]).filter((r) => r && !r.ok && ['spell', 'plural', 'limit'].includes(r.why)) : [];
+    return `<div class="lt-group">${head}<div class="lt-fill">${html}</div>${whyList.length ? `<p class="small lt-bad" style="margin-top:6px">${g.gaps.filter((n) => { const r = R.result.res[n]; return r && !r.ok && ['spell', 'plural', 'limit'].includes(r.why); }).map((n) => `Câu ${n}: ${WHY[R.result.res[n].why]}`).join(' · ')}</p>` : ''}</div>`;
+  }
+  const chip = (n, k, on, act, extra = '') => {
+    const r = R.result?.res[n];
+    let cls = on ? 'on' : '';
+    if (done && r) { const right = String(r.right).split(', ').includes(k); cls = right ? 'right' : on ? 'wrong' : 'dim'; }
+    return `<button class="lt-chip ${cls}" data-act="${act}" data-n="${n}" data-k="${k}" ${extra} ${done ? 'disabled' : ''}>${k}</button>`;
+  };
+  if (g.t === 'mcq') {
+    return `<div class="lt-group">${head}${g.title ? `<h4 class="lt-title">${esc(g.title)}</h4>` : ''}${g.qs.map((q) => `<div class="lt-q"><p><b>${q.n}</b> ${esc(q.q)} ${markOf(q.n)}</p>
+      ${q.opts.map((o) => `<div class="lt-opt">${chip(q.n, o.k, R.ans[q.n] === o.k, 'lt-choose')}<span>${esc(o.t)}</span></div>`).join('')}</div>`).join('')}</div>`;
+  }
+  if (g.t === 'multi') {
+    const n = g.nums[0], sel = R.ans[n] || [];
+    const r = R.result?.res[n];
+    return `<div class="lt-group">${head}<div class="lt-q">${g.opts.map((o) => `<div class="lt-opt">${chip(n, o.k, sel.includes(o.k), 'lt-multi', `data-pick="${g.pick}"`)}<span>${esc(o.t)}</span></div>`).join('')}
+      <p class="small muted" style="margin-top:6px">Chọn ${g.pick} chữ cái · đã chọn ${sel.length}${done && r ? ` · đúng ${g.nums.filter((x) => R.result.res[x]?.ok).length}/${g.pick} (đáp án ${esc(r.right)})` : ''}</p></div></div>`;
+  }
+  // nối: chọn chữ cái cho từng mục
+  const hs = (at) => g.heads.filter((h) => h.at === at).map((h) => `<p class="lt-sub">${esc(h.t)}</p>`).join('');
+  return `<div class="lt-group">${head}${hs('top')}<div class="lt-optbox">${g.opts.map((o) => `<p><b>${o.k}</b> ${esc(o.t)}</p>`).join('')}</div>${hs('mid')}
+    ${g.items.map((x) => `<div class="lt-q"><p><b>${x.n}</b> ${esc(x.t)} ${markOf(x.n)}</p><div class="lt-chips">${g.opts.map((o) => chip(x.n, o.k, R.ans[x.n] === o.k, 'lt-choose')).join('')}</div></div>`).join('')}</div>`;
+}
+export function runView() {
+  if (!R) return `<div class="page">${navBar('Listening', { fallback: '#/listening' })}<div class="card empty"><h3>Bài đã kết thúc</h3><p>Mở lại đề từ trang Listening.</p></div></div>`;
+  const n = R.parts[R.pi], part = R.test.parts.find((p) => p.n === n);
+  const top = `<div class="ses-top"><button class="iconbtn" data-act="lt-quit" aria-label="Thoát">${icon('x')}</button><b class="sp-title">${esc(R.test.title)} · Part ${n}</b>${R.parts.length > 1 ? `<span class="count">${R.pi + 1}/${R.parts.length}</span>` : ''}</div>`;
+  let summary = '';
+  if (R.stage === 'done') {
+    const res = R.result;
+    const types = Object.entries(res.byType || {}).map(([k, v]) => `<div class="row-between ls-catline"><span>${TYPE_NAME[k] || k}</span><b>${v.ok}/${v.n}</b></div>`).join('');
+    const whys = Object.entries(res.whys || {}).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${WHY[k] || k} ${v}`).join(' · ');
+    const perPart = R.parts.map((pn, i) => { const l = Object.values(res.res).filter((r) => r.part === pn); return `<button class="lt-pchip ${i === R.pi ? 'on' : ''}" data-act="lt-review-part" data-i="${i}">Part ${pn}<b>${l.filter((r) => r.ok).length}/${l.length}</b></button>`; }).join('');
+    summary = `<div class="tiles sp-tiles"><div class="tile"><b>${res.score}/${res.total}</b><span>câu đúng</span></div>${res.band ? `<div class="tile"><b>${res.band}</b><span>band ước lượng</span></div>` : `<div class="tile"><b>${Math.round((res.score / Math.max(1, res.total)) * 100)}%</b><span>đúng</span></div>`}</div>
+      ${res.band ? '' : '<p class="small faint" style="margin-top:6px">Band chỉ tính khi làm cả đề 40 câu.</p>'}
+      ${whys ? `<p class="small muted" style="margin-top:8px">Câu sai: ${esc(whys)}</p>` : ''}
+      ${types ? `<div class="card" style="margin-top:10px">${types}</div>` : ''}
+      ${R.parts.length > 1 ? `<div class="lt-pchips">${perPart}</div>` : ''}
+      <p class="small muted" style="margin-top:10px">Nghe lại Part ${n} (tua được) và xem đáp án từng câu bên dưới.</p>`;
+  }
+  const body = `${summary}${audioBox()}${part.groups.map(groupHtml).join('')}`;
+  let actions;
+  if (R.stage === 'done') actions = `<div class="btn-row"><button class="btn ghost" data-act="lt-quit">Xong</button>${R.pi + 1 < R.parts.length ? `<button class="btn" data-act="lt-review-part" data-i="${R.pi + 1}">Xem Part ${R.parts[R.pi + 1]}</button>` : ''}</div>`;
+  else if (R.pi + 1 < R.parts.length) actions = `<div class="btn-row">${R.mode === 'practice' && R.pi ? '<button class="btn ghost" data-act="lt-prev-part" style="flex:.6">Part trước</button>' : ''}<button class="btn" data-act="lt-next-part">Sang Part ${R.parts[R.pi + 1]}</button></div>`;
+  else actions = `<div class="btn-row">${R.mode === 'practice' && R.pi ? '<button class="btn ghost" data-act="lt-prev-part" style="flex:.6">Part trước</button>' : ''}<button class="btn" data-act="lt-submit">Nộp bài</button></div>`;
+  setTimeout(syncBar, 0);
+  return { html: `<div class="page session lt-page">${top}<div class="ses-body">${body}</div><div class="ses-actions">${actions}</div></div>` };
+}
+
+// ---------------------------------------------------------------- Mục trên trang Listening
+export function ltestCard() {
+  const list = tests();
+  const rows = list.map((t) => {
+    const att = attempts(t.id);
+    const best = att.filter((a) => a.total === 40).reduce((m, a) => Math.max(m, a.band), 0);
+    return `<div class="wrow" data-act="go" data-to="#/ltest/${encodeURIComponent(t.id)}" role="button"><span class="num ${best ? 'done' : ''}">${best || '–'}</span><div class="body"><span style="font-weight:600">${esc(t.title)}</span><p>${t.n} câu · ${att.length ? `đã làm ${att.length} lần` : 'chưa làm'}</p></div>${icon('chev')}</div>`;
+  }).join('');
+  return `<h2>Đề thật của bạn</h2>${list.length ? `<div class="wlist">${rows}</div>` : ''}
+    <button class="listlink" style="margin-top:${list.length ? 8 : 0}px" data-act="go" data-to="#/limport"><span class="lead">${icon('plus')}</span><span class="body"><b>Nhập đề</b><small>File đề .html (câu hỏi + đáp án) và file nghe từng Part · chỉ lưu trên máy</small></span>${icon('chev')}</button>`;
+}

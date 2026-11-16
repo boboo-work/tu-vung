@@ -4,7 +4,7 @@ import { uid, today, addDays, dayDiff, parseDate, dateStr } from './util.js';
 import { newSrs, schedule, isNew, isDue, isMastered } from './srs.js';
 
 const DB_NAME = 'vocab-app';
-const DB_VERSION = 5; // v2: kho 'grammar' (tiến độ bài, thẻ mẫu câu, sổ lỗi) · v3: kho 'writing' (bài viết, bản nháp) · v4: kho 'reading' (kết quả bài đọc, bài đang làm) · v5: kho 'speaking' (bản ghi âm, lượt luyện, tự chấm)
+const DB_VERSION = 6; // v6: kho 'ltest' (đề Listening người học tự nhập, kèm file nghe; kết quả làm bài) · v2: kho 'grammar' (tiến độ bài, thẻ mẫu câu, sổ lỗi) · v3: kho 'writing' (bài viết, bản nháp) · v4: kho 'reading' (kết quả bài đọc, bài đang làm) · v5: kho 'speaking' (bản ghi âm, lượt luyện, tự chấm)
 let db;
 
 function openDB() {
@@ -20,6 +20,7 @@ function openDB() {
       if (!d.objectStoreNames.contains('writing')) d.createObjectStore('writing', { keyPath: 'id' });
       if (!d.objectStoreNames.contains('reading')) d.createObjectStore('reading', { keyPath: 'id' });
       if (!d.objectStoreNames.contains('speaking')) d.createObjectStore('speaking', { keyPath: 'id' });
+      if (!d.objectStoreNames.contains('ltest')) d.createObjectStore('ltest', { keyPath: 'id' });
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
@@ -99,6 +100,7 @@ export const S = {
   speaking: new Map(), // id → T:<…> một bản ghi âm (kind: take) · S:<…> một lượt luyện kèm tự chấm (kind: session)
   grammar: new Map(), // id → bản ghi: L:<bài> tiến độ · C:<thẻ> lịch ôn · E:<nhãn lỗi> sổ lỗi · placement
   settings: structuredClone(DEFAULT_SETTINGS),
+  ltest: new Map(), // id → X:<…> đề Listening tự nhập (kind: test, kèm file nghe) · R:<…> một lần làm đề (kind: attempt)
   listening: null, // thống kê Listening: các bộ đã làm, tỉ lệ đúng theo dạng, lỗi hay gặp, từ hay nghe sót
   game: null, // dữ liệu mini game (vòng chơi, thống kê, kỷ lục) — tách riêng, không tính vào tiến độ học
   persisted: false,
@@ -106,7 +108,8 @@ export const S = {
 
 export async function init() {
   db = await openDB();
-  const [words, decks, days, kv, grammar, writing, reading, speaking] = await Promise.all([getAll('words'), getAll('decks'), getAll('days'), getAll('kv'), getAll('grammar'), getAll('writing'), getAll('reading'), getAll('speaking')]);
+  const [words, decks, days, kv, grammar, writing, reading, speaking, ltest] = await Promise.all([getAll('words'), getAll('decks'), getAll('days'), getAll('kv'), getAll('grammar'), getAll('writing'), getAll('reading'), getAll('speaking'), getAll('ltest')]);
+  S.ltest = new Map(ltest.map((r) => [r.id, r]));
   S.speaking = new Map(speaking.map((r) => [r.id, r]));
   S.writing = new Map(writing.map((w) => [w.id, w]));
   S.reading = new Map(reading.map((r) => [r.id, r]));
@@ -447,6 +450,14 @@ export function cleanListening(l) {
   const seen = (Array.isArray(o.seen) ? o.seen : []).filter((x) => typeof x === 'string' && x.length < 80).slice(-300);
   return { sets, cat, err, miss, seen };
 }
+export async function ltPut(...recs) {
+  await tx(['ltest'], 'readwrite', (t) => recs.forEach((r) => t.objectStore('ltest').put(r)));
+  recs.forEach((r) => S.ltest.set(r.id, r));
+}
+export async function ltDel(...ids) {
+  await tx(['ltest'], 'readwrite', (t) => ids.forEach((id) => t.objectStore('ltest').delete(id)));
+  ids.forEach((id) => S.ltest.delete(id));
+}
 export async function saveListening() {
   await put('kv', { key: 'listening', value: S.listening });
 }
@@ -488,6 +499,8 @@ export function exportData({ withWriting = true } = {}) {
     reading: readingBackup(),
     speaking: [...S.speaking.values()].map(({ audio, ...r }) => ({ ...r, hasAudio: !!audio })),
     listening: S.listening,
+    // Đề tự nhập (có bản quyền, file nghe nặng) không đưa vào file sao lưu; chỉ giữ kết quả làm bài.
+    ltestResults: [...S.ltest.values()].filter((r) => r.kind === 'attempt'),
   };
 }
 
@@ -692,17 +705,35 @@ function cleanBackup(data) {
     grammarReviewPerDay: int(st.grammarReviewPerDay, 5, 50, DEFAULT_SETTINGS.grammarReviewPerDay),
   };
   const listening = data.listening && typeof data.listening === 'object' ? cleanListening(data.listening) : null;
-  return { decks, words, days, settings, game: cleanGame(data.game), grammar, writing, reading, speaking, listening };
+  const ltestResults = Array.isArray(data.ltestResults) ? data.ltestResults.map(cleanLtAttempt).filter(Boolean) : null;
+  return { decks, words, days, settings, game: cleanGame(data.game), grammar, writing, reading, speaking, listening, ltestResults };
 }
 
+function cleanLtAttempt(r) {
+  if (!r || r.kind !== 'attempt' || !/^R:[A-Za-z0-9_-]{1,40}$/.test(str(r.id)) || !DATE_RE.test(str(r.date))) return null;
+  const n = (v) => (Number.isFinite(Number(v)) && Number(v) >= 0 ? Math.round(Number(v)) : 0);
+  const ans = {};
+  if (r.ans && typeof r.ans === 'object') for (const [k, v] of Object.entries(r.ans)) if (/^\d{1,2}$/.test(k)) ans[k] = Array.isArray(v) ? v.map(str).slice(0, 5) : str(v).slice(0, 80);
+  return {
+    id: r.id, kind: 'attempt', test: str(r.test).slice(0, 60), title: str(r.title).slice(0, 120), date: r.date, at: n(r.at), mode: r.mode === 'practice' ? 'practice' : 'exam',
+    parts: Array.isArray(r.parts) ? r.parts.map(n).filter((x) => x >= 1 && x <= 4) : [], score: n(r.score), total: n(r.total), band: Number(r.band) || 0, ans,
+    byType: r.byType && typeof r.byType === 'object' ? Object.fromEntries(Object.entries(r.byType).filter(([k]) => /^[a-z]{2,8}$/.test(k)).map(([k, v]) => [k, { n: n(v?.n), ok: n(v?.ok) }])) : {},
+    whys: r.whys && typeof r.whys === 'object' ? Object.fromEntries(Object.entries(r.whys).filter(([k]) => /^[a-z]{2,12}$/.test(k)).map(([k, v]) => [k, n(v)])) : {},
+  };
+}
 export async function restoreData(data) {
   validateBackup(data);
   const clean = cleanBackup(data);
   const ai = S.settings.ai;
   // File không kèm âm thanh → giữ âm thanh đang có trên máy của những bản ghi trùng id (không làm mất bản ghi khi khôi phục).
   if (clean.speaking) for (const r of clean.speaking) if (r.kind === 'take' && !r.audio && S.speaking.get(r.id)?.audio) Object.assign(r, { audio: S.speaking.get(r.id).audio, dropped: false });
-  await tx(['words', 'decks', 'days', 'kv', 'grammar', 'writing', 'reading', 'speaking'], 'readwrite', (t) => {
+  await tx(['words', 'decks', 'days', 'kv', 'grammar', 'writing', 'reading', 'speaking', 'ltest'], 'readwrite', (t) => {
     for (const s of ['words', 'decks', 'days', 'grammar']) t.objectStore(s).clear();
+    // Kết quả đề Listening: thay bằng bản trong file (đề và file nghe trên máy giữ nguyên).
+    if (clean.ltestResults) {
+      for (const r of S.ltest.values()) if (r.kind === 'attempt') t.objectStore('ltest').delete(r.id);
+      clean.ltestResults.forEach((r) => t.objectStore('ltest').put(r));
+    }
     // File sao lưu cũ (chưa có Speaking) → giữ nguyên dữ liệu Speaking trên máy.
     if (clean.speaking) {
       t.objectStore('speaking').clear();
@@ -732,8 +763,8 @@ export async function restoreData(data) {
 }
 
 export async function wipeAll() {
-  await tx(['words', 'decks', 'days', 'kv', 'grammar', 'writing', 'reading', 'speaking'], 'readwrite', (t) => {
-    for (const s of ['words', 'decks', 'days', 'kv', 'grammar', 'writing', 'reading', 'speaking']) t.objectStore(s).clear();
+  await tx(['words', 'decks', 'days', 'kv', 'grammar', 'writing', 'reading', 'speaking', 'ltest'], 'readwrite', (t) => {
+    for (const s of ['words', 'decks', 'days', 'kv', 'grammar', 'writing', 'reading', 'speaking', 'ltest']) t.objectStore(s).clear();
   });
   S.settings = structuredClone(DEFAULT_SETTINGS);
   await init();

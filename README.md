@@ -34,6 +34,7 @@ Dữ liệu gắn với địa chỉ (origin) của trang. Khi đổi địa ch�
 | `js/games2.js` | Mini game “Nối Cụm” (hoàn thành collocation) và “Nghe & Chạm” (nghe, chạm bong bóng nghĩa đúng) |
 | `js/speak.js` | Luyện IELTS Speaking: kho đề theo quý, ghi âm/nghe lại/bản 2, đồng hồ Part 2, số liệu thời gian nói và khoảng dừng, tự chấm |
 | `js/listening.js` | Luyện IELTS Listening: nghe số và chính tả (7 dạng của Part 1, câu sinh ngẫu nhiên, có câu gây nhiễu), nghe chép có so từng từ |
+| `js/ltest.js` | Listening đề thật tự nhập: đọc file đề HTML, ghép file nghe, làm bài như thi / luyện, chấm theo luật, band, chữa |
 | `js/lookup.js` | “Tự điền” ở form thêm từ (tự chạy khi gõ xong từ, bật/tắt ở Cài đặt): từ điển Wiktionary, dịch MyMemory, gợi ý Datamuse và Trợ lý AI để điền IPA, định nghĩa, ví dụ, nghĩa tiếng Việt, collocations… |
 | `js/views.js`, `js/views2.js` | Các màn hình |
 | `js/io.js` | Import CSV/XLSX, export CSV, sao lưu JSON, bộ từ mẫu |
@@ -92,6 +93,7 @@ Tab **Học** → *IELTS* → *Listening* (mục IELTS gồm 4 kỹ năng Listen
 - **Nghe chép:** mỗi bộ 6 câu (Part 1–2, Part 3–4 trong `content/listening/dictation.json`, hoặc câu ví dụ trong từ vựng của bạn). Nghe lại, nghe chậm, nghe từng đoạn; gõ lại rồi app so từng từ và chỉ ra từ thiếu, từ sai, từ thừa, loại lỗi (từ nhỏ bị nuốt, đuôi -s/-ed, chính tả). Chính tả Anh và Mỹ đều được chấp nhận, số viết bằng chữ hay bằng số đều được.
 - **Lỗi hay gặp và từ hay nghe sót** hiện ở trang Listening; thống kê có trong file sao lưu.
 - **Mục tiêu ngày:** 1 lượt = 1 bộ (làm được quá nửa bộ cũng tính); Cài đặt → Lượt Listening.
+- **Đề thật của bạn:** *Nhập đề* → chọn cùng lúc file đề `.html` (câu hỏi + đáp án, ví dụ trang đề lưu từ web) và file nghe từng Part (`…Part1.mp3`…). App tự đọc 4 Part, các dạng điền từ (bảng, ghi chú), chọn 1, chọn 2 đáp án, nối chữ cái, giới hạn số từ và đáp án (kể cả kiểu `10/ten`, `metal(s)`). Đề và file nghe **chỉ lưu trên máy**, không có trong file sao lưu (chỉ sao lưu kết quả). Làm *Như thi* (mỗi Part nghe 1 lần, không tua) hoặc *Luyện* (tua ±5 giây, 0.85×), cả đề hoặc từng Part; nộp bài ra điểm, band ước lượng (đủ 40 câu), lý do sai từng câu (chính tả, thiếu "s", quá số từ…), tỉ lệ đúng theo dạng câu; nghe lại từng Part khi chữa.
 
 ## Speaking
 
