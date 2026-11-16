@@ -7,6 +7,7 @@
 import { S, ltPut, ltDel, logGrammarDay } from './store.js';
 import { esc, toast, uid, today, fmtDate, dateStr } from './util.js';
 import { icon, on, go, back, rerender, navBar, confirmSheet } from './ui.js';
+import { aiReady, askAI } from './ai.js';
 
 // ---------------------------------------------------------------- Đọc đề HTML
 const BLOCK = new Set(['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'TABLE', 'UL', 'OL']);
@@ -28,6 +29,7 @@ function cleanHtml(node) {
   const map = { B: 'b', STRONG: 'b', I: 'i', EM: 'i', U: 'u', P: 'p', LI: 'li', UL: 'ul', OL: 'ol', TD: 'td', TH: 'td', TR: 'tr', H1: 'h4', H2: 'h4', H3: 'h4', H4: 'h4', H5: 'h4', H6: 'h4' };
   if (tag === 'BR') return '<br>';
   if (tag === 'TABLE') return tableHtml(node);
+  if (tag === 'SPAN' && /underline/.test(node.getAttribute('style') || '')) return `<u>${inner}</u>`;
   const t = map[tag];
   return t ? `<${t}>${inner}</${t}>` : inner;
 }
@@ -174,6 +176,103 @@ function groupNums(g) {
   return g.nums;
 }
 
+// ---------------------------------------------------------------- Lời thoại (transcript)
+// File lời thoại: chia theo "PART n"; mỗi đoạn giữ chữ in đậm/gạch chân (chỗ chứa đáp án) và mốc "(Q1)", "(Q21/Q22)".
+const RE_QMARK = /\((Q\d{1,2}(?:\s*[/,&]\s*Q?\d{1,2})*)\)/g;
+const isTranscriptDoc = (html) => /<title>[^<]*(transcript|audioscript|tapescript)/i.test(html) || ((html.match(/\(Q\d{1,2}/g) || []).length >= 8 && !/Questions?\s+\d{1,2}\s*[-–]/i.test(html));
+function underlined(node) {
+  for (let x = node.parentElement; x && x.tagName !== 'P'; x = x.parentElement) if (x.tagName === 'U' || /underline/.test(x.getAttribute?.('style') || '')) return true;
+  return false;
+}
+/** Câu chứa đáp án cho mốc (Qn): phần gạch chân ngay trước mốc, kèm phần đầu câu; không có gạch chân thì lấy câu đứng trước mốc. */
+function evidence(segs, k) {
+  // Tìm phần gạch chân gần nhất trước mốc (bỏ qua phần đuôi câu sau đáp án, tối đa ~220 ký tự).
+  let i = k - 1, gap = 0;
+  while (i >= 0 && !segs[i].q && !segs[i].u) { gap += segs[i].t.length; if (gap > 450) break; i--; }
+  let html = '';
+  if (i >= 0 && segs[i].u) {
+    let j = i;
+    while (j - 1 >= 0 && (segs[j - 1].u || !segs[j - 1].t.trim())) j--;
+    const ans = segs.slice(j, i + 1).map((x) => x.t).join('');
+    let after = segs.slice(i + 1, k).map((x) => x.t).join('');
+    if (after.length > 170) after = after.slice(0, 170).replace(/\s+\S*$/, '') + ' …';
+    let before = '';
+    for (let b = j - 1; b >= 0 && !segs[b].q; b--) { before = segs[b].t + before; if (before.length > 260) break; }
+    const cut = Math.max(before.lastIndexOf('. '), before.lastIndexOf('? '), before.lastIndexOf('! '), before.lastIndexOf('– '));
+    before = (cut >= 0 ? before.slice(cut + 2) : before).replace(/^\s*[A-Z][A-Z ]{1,20}:\s*/, '').slice(-240);
+    html = `${esc(before)}<u>${esc(ans)}</u>${esc(after)}`;
+  } else {
+    let before = '';
+    for (let b = k - 1; b >= 0 && !segs[b].q; b--) { before = segs[b].t + before; if (before.length > 400) break; }
+    const ss = before.trim().split(/(?<=[.?!])\s+/);
+    html = esc(ss.slice(-2).join(' ').replace(/^\s*[A-Z][A-Z ]{1,20}:\s*/, ''));
+  }
+  return html.replace(/\s+/g, ' ').trim();
+}
+export function parseTranscriptHtml(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  doc.querySelectorAll('script, style, ins, iframe, noscript, .ielts-manual-ads, .ielts-adlabel').forEach((e) => e.remove());
+  readKey(doc); // file lời thoại có thể kèm khối đáp án: bỏ đi
+  const blocks = [];
+  const walk = (el) => { for (const c of el.children) { if (BLOCK.has(c.tagName)) { if (c.tagName !== 'H1') blocks.push(c); } else walk(c); } };
+  walk(doc.body);
+  const parts = {}, ev = {};
+  let cur = null, pn = 0;
+  for (const el of blocks) {
+    const t = txt(el);
+    if (!t) continue;
+    const pm = t.match(RE_PART);
+    if (pm && t.length < 30) { pn = Number(pm[1]); cur = parts[pn] = []; continue; }
+    if (!cur) continue;
+    if (/^(Answer|Audioscript|Transcript)\b/i.test(t) || (el.querySelector('a[href]') && /Test\s*\d/i.test(t))) { cur = null; continue; }
+    if (/^[—–\-_.\s]{5,}$/.test(t)) { cur.push({ sep: true }); continue; }
+    // Các mảnh chữ theo thứ tự: chữ thường / chữ gạch chân / mốc câu hỏi.
+    const segs = [];
+    const tw = doc.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+      const v = n.nodeValue.replace(/\u00a0/g, ' ');
+      const u = underlined(n);
+      let last = 0;
+      for (const m of v.matchAll(RE_QMARK)) {
+        if (m.index > last) segs.push({ t: v.slice(last, m.index), u });
+        segs.push({ q: [...m[1].matchAll(/\d{1,2}/g)].map((x) => Number(x[0])), t: '' });
+        last = m.index + m[0].length;
+      }
+      if (last < v.length) segs.push({ t: v.slice(last), u });
+    }
+    const qs = [];
+    segs.forEach((sg, k) => { if (sg.q) for (const q of sg.q) { qs.push(q); (ev[q] = ev[q] || []).push({ part: pn, i: cur.length, html: evidence(segs, k) }); } });
+    const h = [...el.childNodes].map(cleanHtml).join('').replace(/(<i>\s*)?\((Q\d{1,2}(?:\s*[/,&]\s*Q?\d{1,2})*)\)(\s*<\/i>)?/g, (m, a, q) => `<span class="lt-qb">${q.replace(/\s+/g, '')}</span>`);
+    cur.push({ html: h, qs });
+  }
+  return { parts, ev, n: Object.keys(ev).length };
+}
+
+// ---------------------------------------------------------------- Giải thích (vì sao chọn, bẫy, paraphrase)
+// File .json: { "type": "ltest-notes", "title": "…", "notes": { "1": { "why", "trap", "para": [["đề", "bài nghe"]], "tip" }, "21-22": {…} } }
+const clip = (v, n) => String(v ?? '').slice(0, n);
+function cleanNote(x) {
+  if (!x || typeof x !== 'object') return null;
+  const para = Array.isArray(x.para) ? x.para.filter((p) => Array.isArray(p) && p.length >= 2).slice(0, 8).map((p) => [clip(p[0], 200), clip(p[1], 300)]) : [];
+  const o = { why: clip(x.why, 1500), trap: clip(x.trap, 1500), tip: clip(x.tip, 800), para, ai: !!x.ai };
+  return o.why || o.trap || para.length ? o : null;
+}
+export function parseNotes(text) {
+  const d = JSON.parse(text);
+  if (!d || d.type !== 'ltest-notes' || typeof d.notes !== 'object') throw new Error('Không phải file giải thích');
+  const notes = {};
+  for (const [k, v] of Object.entries(d.notes)) if (/^\d{1,2}(-\d{1,2})?$/.test(k)) { const c = cleanNote(v); if (c) notes[k] = c; }
+  return { title: clip(d.title, 120), notes };
+}
+/** Số câu được giải thích ("21-22" tính 2 câu). */
+export const noteCount = (notes) => Object.keys(notes || {}).reduce((a, k) => { const m = k.match(/^(\d+)-(\d+)$/); return a + (m ? Number(m[2]) - Number(m[1]) + 1 : 1); }, 0);
+function noteOf(t, n) {
+  if (!t.notes) return null;
+  if (t.notes[n]) return t.notes[n];
+  for (const [k, v] of Object.entries(t.notes)) { const m = k.match(/^(\d+)-(\d+)$/); if (m && n >= Number(m[1]) && n <= Number(m[2])) return v; }
+  return null;
+}
+
 // ---------------------------------------------------------------- Chấm
 const normA = (s) => String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[’‘`]/g, "'").replace(/[£$€]/g, '')
   .replace(/[-–—]/g, ' ').replace(/[.,;:!?"]+$/g, '').replace(/^[.,;:!?"]+/g, '').replace(/\s+/g, ' ').trim();
@@ -262,21 +361,72 @@ export const ltestCount = () => tests().length;
 async function readImport(files) {
   imp.error = '';
   imp.preview = null;
-  const html = files.find((f) => /\.html?$/i.test(f.name) || f.type === 'text/html');
-  const audios = files.filter((f) => /^audio\//.test(f.type) || /\.(mp3|m4a|aac|wav|ogg)$/i.test(f.name));
-  if (!html) { imp.error = 'Chưa có file đề (.html). Chọn cùng lúc file đề và các file nghe.'; return; }
+  const extra = await readExtras(files);
+  const html = extra.testHtml;
+  const audios = extra.audios;
+  if (!html) { imp.error = 'Chưa có file đề (.html có câu hỏi và đáp án). Chọn cùng lúc file đề và các file nghe.'; return; }
   let parsed;
-  try { parsed = parseTestHtml(await html.text()); } catch (e) { console.error(e); imp.error = 'Không đọc được file đề.'; return; }
+  try { parsed = parseTestHtml(html.text); } catch (e) { console.error(e); imp.error = 'Không đọc được file đề.'; return; }
   if (!parsed.parts.length) { imp.error = 'Không tìm thấy phần câu hỏi trong file (cần có tiêu đề "PART 1" và "Questions 1-10").'; return; }
   // Ghép file nghe với Part theo tên file ("…Part1.mp3", "part_2"…), không có thì theo thứ tự tên.
-  const byPart = {};
-  const rest = [];
+  const byPart = matchAudio(audios, parsed.parts.map((p) => p.n));
+  const cnt = countQs(parsed.parts, parsed.key);
+  imp.preview = { ...parsed, audio: byPart, cnt, file: html.name, tx: extra.tx, notes: extra.notes };
+}
+/** Phân loại file đã chọn: file đề, file lời thoại, file giải thích (.json), file nghe. */
+async function readExtras(files) {
+  const out = { testHtml: null, tx: null, notes: null, audios: [], errors: [] };
+  for (const f of files) {
+    if (/^audio\//.test(f.type) || /\.(mp3|m4a|aac|wav|ogg)$/i.test(f.name)) { out.audios.push(f); continue; }
+    if (/\.json$/i.test(f.name) || f.type === 'application/json') {
+      try { out.notes = parseNotes(await f.text()); } catch (e) { out.errors.push(`${f.name}: không phải file giải thích`); }
+      continue;
+    }
+    if (/\.html?$/i.test(f.name) || f.type === 'text/html') {
+      const text = await f.text();
+      if (isTranscriptDoc(text)) { try { out.tx = parseTranscriptHtml(text); } catch (e) { console.error(e); out.errors.push(`${f.name}: không đọc được lời thoại`); } }
+      else if (!out.testHtml) out.testHtml = { name: f.name, text };
+    }
+  }
+  return out;
+}
+const matchAudio = (audios, partNums, have = {}) => {
+  const byPart = {}, rest = [];
   for (const a of audios) { const m = a.name.match(/part\s*[_-]?\s*(\d)/i) || a.name.match(/(?:^|[^\d])([1-4])\.(?:mp3|m4a|aac|wav|ogg)$/i); if (m && !byPart[m[1]]) byPart[m[1]] = a; else rest.push(a); }
   rest.sort((a, b) => a.name.localeCompare(b.name));
-  for (const p of parsed.parts) if (!byPart[p.n] && rest.length) byPart[p.n] = rest.shift();
-  const cnt = countQs(parsed.parts, parsed.key);
-  imp.preview = { ...parsed, audio: byPart, cnt, file: html.name };
+  for (const n of partNums) if (!byPart[n] && !have[n] && rest.length) byPart[n] = rest.shift();
+  return byPart;
+};
+const toAudio = async (f) => ({ blob: new Blob([await f.arrayBuffer()], { type: f.type || 'audio/mpeg' }), name: f.name, size: f.size });
+/** Bổ sung lời thoại, giải thích hoặc file nghe cho đề đã nhập. */
+async function attachFiles(id, files) {
+  const t = S.ltest.get(id);
+  if (!t) return;
+  const ex = await readExtras(files);
+  const upd = { ...t };
+  const done = [];
+  if (ex.tx?.n) { upd.tx = ex.tx; done.push(`lời thoại (${ex.tx.n} câu có mốc)`); }
+  if (ex.notes) { upd.notes = { ...(t.notes || {}), ...ex.notes.notes }; done.push(`giải thích ${noteCount(ex.notes.notes)} câu`); }
+  if (ex.audios.length) {
+    const m = matchAudio(ex.audios, t.parts.map((p) => p.n));
+    upd.audio = { ...(t.audio || {}) };
+    for (const [n, f] of Object.entries(m)) upd.audio[n] = await toAudio(f);
+    if (Object.keys(m).length) done.push(`file nghe Part ${Object.keys(m).join(', ')}`);
+  }
+  if (!done.length) { toast(ex.errors[0] || 'Không thấy lời thoại, giải thích hay file nghe trong các file đã chọn', 'bad'); return; }
+  await ltPut(upd);
+  toast('Đã thêm ' + done.join(', '));
+  rerender();
 }
+on('lt-attach', (el) => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.multiple = true;
+  input.accept = '.html,.htm,.json,text/html,application/json,audio/*,.mp3,.m4a';
+  input.onchange = () => attachFiles(el.dataset.id, [...input.files]);
+  input.click();
+});
+on('lt-attach-files', (el) => attachFiles(el.dataset.id, [...el.files])); // dùng cho kiểm thử
 async function saveImport() {
   const pv = imp.preview;
   if (!pv) return;
@@ -285,8 +435,8 @@ async function saveImport() {
   try {
     const id = 'X:' + uid();
     const audio = {};
-    for (const [n, f] of Object.entries(pv.audio)) audio[n] = { blob: new Blob([await f.arrayBuffer()], { type: f.type || 'audio/mpeg' }), name: f.name, size: f.size };
-    await ltPut({ id, kind: 'test', title: pv.title, at: Date.now(), parts: pv.parts, key: pv.key, audio, n: pv.cnt.n });
+    for (const [n, f] of Object.entries(pv.audio)) audio[n] = await toAudio(f);
+    await ltPut({ id, kind: 'test', title: pv.title, at: Date.now(), parts: pv.parts, key: pv.key, audio, n: pv.cnt.n, tx: pv.tx || null, notes: pv.notes?.notes || {} });
     imp.preview = null;
     toast('Đã lưu đề trên máy');
     go(`#/ltest/${encodeURIComponent(id)}`);
@@ -299,7 +449,7 @@ on('lt-pick-files', async () => {
   const input = document.createElement('input');
   input.type = 'file';
   input.multiple = true;
-  input.accept = '.html,.htm,text/html,audio/*,.mp3,.m4a';
+  input.accept = '.html,.htm,.json,text/html,application/json,audio/*,.mp3,.m4a';
   input.onchange = async () => { await readImport([...input.files]); rerender(); };
   input.click();
 });
@@ -316,10 +466,10 @@ on('lt-del', async (el) => {
 export function importView() {
   const pv = imp.preview;
   const nav = navBar('Nhập đề Listening', { fallback: '#/listening' });
-  let body = `<div class="card"><p>Chọn <b>cùng lúc</b> file đề (.html, có câu hỏi và đáp án) và các file nghe của từng Part (.mp3).</p>
+  let body = `<div class="card"><p>Chọn <b>cùng lúc</b> file đề (.html, có câu hỏi và đáp án) và các file nghe của từng Part (.mp3). Có thể chọn thêm file lời thoại (.html) và file giải thích (.json).</p>
     <p class="small muted" style="margin-top:6px">Tên file nghe nên có "Part1", "Part2"… để app tự ghép đúng Part. Đề và file nghe chỉ lưu trên máy này, không gửi đi đâu và không có trong file sao lưu.</p>
     <button class="btn" style="margin-top:14px" data-act="lt-pick-files">${icon('folder', 'sm')} Chọn file</button>
-    <input type="file" id="lt-files" data-change="lt-files" multiple hidden accept=".html,.htm,audio/*"></div>`;
+    <input type="file" id="lt-files" data-change="lt-files" multiple hidden accept=".html,.htm,.json,audio/*"></div>`;
   if (imp.error) body += `<div class="banner" style="margin-top:12px">${icon('info')}<span>${esc(imp.error)}</span></div>`;
   if (pv) {
     const rows = pv.parts.map((p) => {
@@ -330,6 +480,8 @@ export function importView() {
     const miss = pv.cnt.nums.filter((n) => !pv.key[n]);
     const ok = pv.cnt.keyed >= Math.ceil(pv.cnt.n * 0.8);
     body += `<h2>Xem trước</h2><div class="card"><b>${esc(pv.title)}</b><p class="small muted" style="margin-top:2px">${pv.cnt.n} câu · đáp án ${pv.cnt.keyed}/${pv.cnt.n}</p>${rows}
+      <div class="row-between ls-catline"><span>Lời thoại</span><span class="small ${pv.tx ? 'muted' : 'faint'}">${pv.tx ? `${Object.keys(pv.tx.parts).length} Part · ${pv.tx.n} câu có mốc` : 'không có (thêm sau được)'}</span></div>
+      <div class="row-between ls-catline"><span>Giải thích</span><span class="small ${pv.notes ? 'muted' : 'faint'}">${pv.notes ? `${noteCount(pv.notes.notes)} câu` : 'không có (thêm sau được)'}</span></div>
       ${miss.length ? `<p class="small lt-bad" style="margin-top:8px">Thiếu đáp án câu ${miss.slice(0, 12).join(', ')}${miss.length > 12 ? '…' : ''}${ok ? ' (các câu này sẽ không được chấm)' : ''}.</p>` : ''}
       ${pv.parts.some((p) => !pv.audio[p.n]) ? '<p class="small lt-bad" style="margin-top:8px">Part thiếu file nghe vẫn làm được nhưng không có âm thanh.</p>' : ''}
       <button class="btn" style="margin-top:14px" data-act="lt-save" ${ok && !imp.busy ? '' : 'disabled'}>${imp.busy ? 'Đang lưu…' : 'Lưu đề'}</button>
@@ -359,6 +511,11 @@ export function testView(id) {
       <button class="btn" style="margin-top:12px" data-act="lt-start" data-id="${esc(id)}" data-parts="1,2,3,4">Làm cả đề · khoảng 30 phút</button></div>
     <h2>Từng Part</h2><div class="wlist">${parts}</div>
     ${att.length ? `<h2>Các lần làm</h2><div class="card">${att.slice(0, 8).map((a) => `<div class="row-between ls-catline" data-act="lt-open-att" data-id="${a.id}" role="button"><span>${a.parts.length === 4 ? 'Cả đề' : `Part ${a.parts.join(', ')}`} · ${a.mode === 'exam' ? 'như thi' : 'luyện'} <span class="small muted">· ${fmtDate(a.date)}</span></span><b>${a.score}/${a.total}${a.total === 40 ? ` · ${a.band}` : ''}</b></div>`).join('')}</div>` : ''}
+    <h2>Lời thoại &amp; giải thích</h2><div class="card"><div class="row-between ls-catline"><span>Lời thoại</span><span class="small muted">${t.tx ? `${Object.keys(t.tx.parts).length} Part · ${t.tx.n} câu có mốc` : 'chưa có'}</span></div>
+      <div class="row-between ls-catline"><span>Giải thích từng câu</span><span class="small muted">${noteCount(t.notes) ? `${noteCount(t.notes)} câu` : 'chưa có'}</span></div>
+      <p class="small muted" style="margin-top:6px">Hiện sau khi nộp bài: câu chứa đáp án trong lời thoại, vì sao chọn, bẫy, paraphrase.</p>
+      <button class="btn soft" style="margin-top:10px" data-act="lt-attach" data-id="${esc(id)}">${icon('plus', 'sm')} Thêm lời thoại / giải thích / file nghe</button>
+      <input type="file" id="lt-attach-files" data-change="lt-attach-files" data-id="${esc(id)}" multiple hidden></div>
     <button class="btn ghost danger-text" style="margin-top:18px" data-act="lt-del" data-id="${esc(id)}">${icon('trash', 'sm')} Xoá đề khỏi máy</button>
   </div>`;
 }
@@ -570,7 +727,7 @@ export function runView() {
       ${R.parts.length > 1 ? `<div class="lt-pchips">${perPart}</div>` : ''}
       <p class="small muted" style="margin-top:10px">Nghe lại Part ${n} (tua được) và xem đáp án từng câu bên dưới.</p>`;
   }
-  const body = `${summary}${audioBox()}${part.groups.map(groupHtml).join('')}`;
+  const body = `${summary}${audioBox()}${part.groups.map(groupHtml).join('')}${R.stage === 'done' ? reviewHtml(part) + transcriptHtml(n) : ''}`;
   let actions;
   if (R.stage === 'done') actions = `<div class="btn-row"><button class="btn ghost" data-act="lt-quit">Xong</button>${R.pi + 1 < R.parts.length ? `<button class="btn" data-act="lt-review-part" data-i="${R.pi + 1}">Xem Part ${R.parts[R.pi + 1]}</button>` : ''}</div>`;
   else if (R.pi + 1 < R.parts.length) actions = `<div class="btn-row">${R.mode === 'practice' && R.pi ? '<button class="btn ghost" data-act="lt-prev-part" style="flex:.6">Part trước</button>' : ''}<button class="btn" data-act="lt-next-part">Sang Part ${R.parts[R.pi + 1]}</button></div>`;
@@ -578,6 +735,128 @@ export function runView() {
   setTimeout(syncBar, 0);
   return { html: `<div class="page session lt-page">${top}<div class="ses-body">${body}</div><div class="ses-actions">${actions}</div></div>` };
 }
+
+// ---------------------------------------------------------------- Chữa bài: lời thoại, vì sao chọn, bẫy, paraphrase
+const plain = (h) => { const d = document.createElement('div'); d.innerHTML = h; return (d.textContent || '').replace(/\s+/g, ' ').trim(); };
+/** Nội dung câu hỏi số n (để hiện khi chữa và để gửi AI). */
+function qInfo(t, n) {
+  for (const p of t.parts) for (const g of p.groups) {
+    if (g.t === 'fill' && g.gaps.includes(n)) {
+      const chunks = g.html.split(/<\/(?:p|li|div|h4)>/);
+      const c = chunks.find((x) => x.includes(`data-gap="${n}"`)) || '';
+      return { part: p.n, g, text: plain(c.replace(/<\/small>/g, ': ').replace(new RegExp(`<span data-gap="${n}"></span>`), ' [ ___ ] ').replace(/<span data-gap="\d+"><\/span>/g, ' … ')), instr: g.instr.join(' ') };
+    }
+    if (g.t === 'mcq') { const q = g.qs.find((x) => x.n === n); if (q) return { part: p.n, g, text: q.q, opts: q.opts, instr: g.instr.join(' ') }; }
+    if (g.t === 'match') { const x = g.items.find((y) => y.n === n); if (x) return { part: p.n, g, text: x.t, opts: g.opts, instr: g.instr.join(' ') }; }
+    if (g.t === 'multi' && g.nums.includes(n)) return { part: p.n, g, text: g.q || g.instr.join(' '), opts: g.opts, instr: g.instr.join(' '), multi: g.nums };
+  }
+  return null;
+}
+const optText = (info, k) => info?.opts?.find((o) => o.k === k)?.t || '';
+function noteHtml(note) {
+  if (!note) return '';
+  return `<div class="lt-note">${note.ai ? '<p class="small faint">AI giải thích · nên đối chiếu với lời thoại</p>' : ''}
+    ${note.why ? `<p><b>Vì sao:</b> ${esc(note.why)}</p>` : ''}
+    ${note.para?.length ? `<div class="lt-para"><b>Paraphrase</b>${note.para.map(([a, b]) => `<div><span>Đề: <i>${esc(a)}</i></span><span>Nghe: <i>${esc(b)}</i></span></div>`).join('')}</div>` : ''}
+    ${note.trap ? `<p><b>Bẫy:</b> ${esc(note.trap)}</p>` : ''}
+    ${note.tip ? `<p class="lt-tip">${icon('info', 'sm')} ${esc(note.tip)}</p>` : ''}</div>`;
+}
+function reviewHtml(part) {
+  const t = R.test;
+  const items = [];
+  for (const g of part.groups) {
+    const nums = groupNums(g);
+    if (g.t === 'multi') items.push(nums); else nums.forEach((n) => items.push([n]));
+  }
+  const busy = R.aiBusy || {};
+  const rows = items.map((nums) => {
+    const n = nums[0];
+    const rs = nums.map((x) => R.result.res[x]).filter(Boolean);
+    if (!rs.length) return '';
+    const okN = rs.filter((r) => r.ok).length;
+    const info = qInfo(t, n);
+    const r = rs[0];
+    const label = nums.length > 1 ? `Câu ${nums[0]}–${nums[nums.length - 1]}` : `Câu ${n}`;
+    const state = okN === rs.length ? `<span class="lt-mark ok">${icon('check', 'sm')} Đúng</span>` : `<span class="lt-mark no">${okN ? `Đúng ${okN}/${rs.length}` : esc(WHY[r.why] || 'Sai')}</span>`;
+    const yours = r.your ? esc(r.your) + (info?.opts && r.your.length === 1 ? ` <span class="faint">(${esc(optText(info, r.your))})</span>` : '') : '<i>trống</i>';
+    const right = esc(r.right) + (info?.opts && String(r.right).length === 1 ? ` <span class="faint">(${esc(optText(info, r.right))})</span>` : '');
+    const ev = (t.tx?.ev?.[n] || []).filter((e) => e.part === part.n);
+    const note = noteOf(t, n);
+    const canAI = !note && aiReady(S.settings.ai);
+    return `<div class="lt-rv ${okN === rs.length ? 'ok' : 'no'}" id="lt-rv-${n}"><div class="row-between"><b>${label}</b>${state}</div>
+      ${info ? `<p class="small muted lt-rvq">${esc(info.text)}</p>` : ''}
+      <p class="small">Bạn: <b>${yours}</b>${okN === rs.length ? '' : ` · Đáp án: <b class="lt-right">${right}</b>`}</p>
+      ${ev.map((e) => `<blockquote class="lt-ev" data-act="lt-goto-tx" data-p="${e.part}" data-i="${e.i}" role="button">${e.html}</blockquote>`).join('')}
+      ${noteHtml(note)}
+      ${canAI ? `<button class="tag lt-aibtn" data-act="lt-ai" data-n="${n}" ${busy[n] ? 'disabled' : ''}>${busy[n] ? 'AI đang giải thích…' : `${icon('sparkle', 'sm')} Nhờ AI giải thích`}</button>` : ''}</div>`;
+  }).join('');
+  const hasTx = !!t.tx?.parts?.[part.n];
+  return `<h4 class="sp-h">Chữa từng câu · Part ${part.n}</h4>
+    ${!hasTx && !Object.keys(t.notes || {}).length ? `<p class="small muted" style="margin:0 2px 8px">Đề này chưa có lời thoại và giải thích. Thêm ở trang đề (nút “Thêm lời thoại / giải thích”).</p>` : ''}
+    <div class="lt-rvlist">${rows}</div>`;
+}
+function transcriptHtml(pn) {
+  const paras = R.test.tx?.parts?.[pn];
+  if (!paras?.length) return '';
+  return `<details class="lt-tx" id="lt-tx" ${R.txOpen ? 'open' : ''}><summary>Lời thoại Part ${pn}</summary>
+    ${paras.map((x, i) => (x.sep ? '<hr>' : `<p id="lt-tp-${pn}-${i}">${x.html}</p>`)).join('')}
+    <p class="small faint">Chữ in đậm/gạch chân: chỗ chứa đáp án. Bấm Q… để xem câu hỏi đó.</p></details>`;
+}
+function flash(el) { el.classList.remove('lt-flash'); void el.offsetWidth; el.classList.add('lt-flash'); el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+on('lt-goto-tx', (el) => {
+  const d = document.getElementById('lt-tx');
+  if (!d) return;
+  R.txOpen = true;
+  d.open = true;
+  const p = document.getElementById(`lt-tp-${el.dataset.p}-${el.dataset.i}`);
+  if (p) flash(p);
+});
+// Bấm mốc "Q12" trong lời thoại → tới câu 12 trong phần chữa.
+document.addEventListener('click', (e) => {
+  const b = e.target.closest?.('.lt-tx .lt-qb');
+  if (!b) return;
+  const n = (b.textContent.match(/\d+/) || [])[0];
+  const el = n && (document.getElementById(`lt-rv-${n}`) || [...document.querySelectorAll('.lt-rv')].reverse().find((x) => Number(x.id.slice(6)) <= Number(n)));
+  if (el) flash(el);
+});
+document.addEventListener('toggle', (e) => { if (e.target.id === 'lt-tx' && R) R.txOpen = e.target.open; }, true);
+on('lt-ai', async (el) => {
+  const n = Number(el.dataset.n), t = R?.test;
+  if (!t) return;
+  const info = qInfo(t, n);
+  const nums = info?.multi || [n];
+  const key = nums.map((x) => t.key[x]?.text ?? t.key[x]?.set?.join(', ')).filter(Boolean)[0] || '';
+  const ev = (t.tx?.ev?.[n] || []).map((e) => plain(e.html));
+  const paras = (t.tx?.parts?.[info?.part] || []).filter((x) => x.qs?.some((q) => nums.includes(q))).map((x) => plain(x.html));
+  const prompt = `IELTS Listening, ${t.title}, Part ${info?.part}, câu ${nums.join(' & ')}.
+Yêu cầu của đề: ${info?.instr || ''}
+Câu hỏi: ${info?.text || ''}
+${info?.opts ? 'Các lựa chọn:\n' + info.opts.map((o) => `${o.k}. ${o.t}`).join('\n') : ''}
+Đáp án đúng: ${key}
+Đoạn lời thoại chứa đáp án:
+${(paras.length ? paras : ev).join('\n').slice(0, 3000) || '(không có lời thoại)'}
+
+Hãy giải thích như một giám khảo IELTS cho người Việt học, bằng tiếng Việt, ngắn gọn. Trả về DUY NHẤT một JSON:
+{"why": "vì sao đáp án đúng (trích câu trong lời thoại)", "para": [["cụm trong đề", "cụm tương ứng trong bài nghe"]], "trap": "bẫy/đáp án gây nhiễu và vì sao sai", "tip": "1 mẹo ngắn cho dạng câu này"}`;
+  R.aiBusy = { ...(R.aiBusy || {}), [n]: true };
+  rerender();
+  try {
+    const text = await askAI(S.settings.ai, prompt, { system: 'Bạn là giám khảo IELTS 10 năm kinh nghiệm, giải thích đáp án Listening cho học viên Việt Nam. Chỉ trả về JSON hợp lệ, không thêm chữ nào khác.' });
+    const json = JSON.parse((text.match(/\{[\s\S]*\}/) || ['{}'])[0]);
+    const note = cleanNote({ ...json, ai: true });
+    if (!note) throw new Error('AI trả về không đúng định dạng');
+    const k = nums.length > 1 ? `${nums[0]}-${nums[nums.length - 1]}` : String(n);
+    const upd = { ...t, notes: { ...(t.notes || {}), [k]: note } };
+    await ltPut(upd);
+    R.test = upd;
+  } catch (e) {
+    console.error(e);
+    toast(e?.message || 'AI chưa giải thích được', 'bad');
+  } finally {
+    delete R.aiBusy[n];
+    rerender();
+  }
+});
 
 // ---------------------------------------------------------------- Mục trên trang Listening
 export function ltestCard() {
