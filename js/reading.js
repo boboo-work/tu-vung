@@ -834,7 +834,7 @@ export function reviewView(pid) {
   const nav = navBar('Ôn từ của bài', { fallback: `#/rpassage/${pid}` });
   if (R.state !== 'ready') return `<div class="page">${nav}${loadingCard()}</div>`;
   const x = passageOf(pid);
-  if (!x) return `<div class="page">${nav}${loadingCard()}</div>`;
+  if (!x) return `<div class="page">${nav}<div class="card empty"><h3>Không tìm thấy bài đọc</h3><p>Mở lại bài từ trang Reading.</p></div></div>`;
   if (!rv || rv.pid !== pid) rv = { pid, items: buildReview(x.p), done: {} };
   if (!rv.items.length) return `<div class="page">${nav}<div class="card empty"><div class="art">${icon('learn')}</div><h3>Chưa có gì để ôn</h3><p>Chạm từ trong bài để lưu, hoặc làm câu hỏi có cặp paraphrase, rồi quay lại đây.</p></div></div>`;
   const ok = Object.values(rv.done).filter(Boolean).length, n = Object.keys(rv.done).length;

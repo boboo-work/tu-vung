@@ -115,6 +115,34 @@ function report(err) {
 //  2. Thu app lại cho vừa vùng nhìn thấy phía trên bàn phím (--app-h) khi bàn phím đã mở xong.
 //  3. Nếu trang vẫn bị đẩy thì kéo về; chỉ khi đã đứng yên mà vẫn lệch mới dời app theo (--vv-top),
 //     không bù vị trí giữa lúc bàn phím đang trượt (đó là nguyên nhân màn hình nhảy xuống rồi bật lại).
+// iOS quyết định đẩy cả trang lên ngay lúc ô nhập được focus, theo vị trí của ô lúc đó (app chưa kịp co lại).
+// Ô nằm ở nửa dưới màn hình → tạm dời ô lên vùng trên trong khoảnh khắc focus để iOS thấy không cần đẩy, rồi trả về chỗ cũ;
+// sau đó app tự co lại vừa phần phía trên bàn phím và tự cuộn khung chứa để ô nhập lộ ra.
+const KB_GUESS = 380; // bàn phím iPhone kèm thanh gợi ý
+function focusNoPan(el) {
+  const r = el.getBoundingClientRect();
+  const lift = r.top + 48 > window.innerHeight - KB_GUESS ? Math.round(r.top - 90) : 0;
+  if (lift <= 0) { el.focus({ preventScroll: true }); return; }
+  const prev = el.style.transform;
+  el.style.transform = `translateY(${-lift}px)`;
+  el.focus({ preventScroll: true });
+  requestAnimationFrame(() => requestAnimationFrame(() => { el.style.transform = prev; }));
+}
+/** Cuộn đúng khung chứa gần nhất (không cuộn cả trang) để ô đang nhập nằm trong vùng nhìn thấy. */
+function ensureVisible(el) {
+  let box = el.parentElement;
+  while (box && box !== document.body) {
+    const oy = getComputedStyle(box).overflowY;
+    if ((oy === 'auto' || oy === 'scroll') && box.scrollHeight > box.clientHeight) break;
+    box = box.parentElement;
+  }
+  if (!box || box === document.body) return;
+  const b = box.getBoundingClientRect(), r = el.getBoundingClientRect();
+  // Ô nhiều dòng cao hơn khung: chỉ cần thấy phần đầu.
+  const bottom = Math.min(r.bottom, r.top + Math.max(60, b.height * 0.5));
+  if (bottom > b.bottom - 12) box.scrollTop += bottom - b.bottom + 12;
+  else if (r.top < b.top + 8) box.scrollTop -= b.top + 8 - r.top;
+}
 function watchKeyboard() {
   const TYPING = 'input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=range]), textarea';
   let tap = null;
@@ -130,7 +158,7 @@ function watchKeyboard() {
     tap = null;
     if (!t || !t.el.isConnected || !e.cancelable) return;
     e.preventDefault(); // chặn cú focus mặc định (kèm việc iOS đẩy trang)
-    t.el.focus({ preventScroll: true });
+    focusNoPan(t.el);
   }, { passive: false });
 
   const vv = window.visualViewport;
@@ -172,7 +200,7 @@ function watchKeyboard() {
       lastH = Math.round(vv.height);
       // Sau khi thu app lại, đưa ô đang nhập vào vùng nhìn thấy nếu nó đang bị khuất (form thêm từ, cài đặt, màn hình thấp…).
       const el = document.activeElement;
-      if (open && el && el !== document.body && view.contains(el)) requestAnimationFrame(() => el.scrollIntoView({ block: 'nearest' }));
+      if (open && el && el !== document.body && view.contains(el)) requestAnimationFrame(() => ensureVisible(el));
     }
   };
   vv.addEventListener('resize', sync);

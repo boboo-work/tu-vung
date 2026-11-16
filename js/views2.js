@@ -154,7 +154,7 @@ function aiFields(ai) {
 
 export function settingsView() {
   const s = S.settings;
-  const seg = (name, cur, opts) => `<div class="seg" style="min-width:190px">${opts.map(([v, l]) => `<button class="${String(cur) === String(v) ? 'on' : ''}" data-act="set" data-key="${name}" data-value="${v}">${l}</button>`).join('')}</div>`;
+  const seg = (name, cur, opts) => `<div class="seg set-seg">${opts.map(([v, l]) => `<button class="${String(cur) === String(v) ? 'on' : ''}" data-act="set" data-key="${name}" data-value="${v}">${l}</button>`).join('')}</div>`;
   const stepper = (key, val) => `<div class="stepper"><button data-act="step" data-key="${key}" data-d="-5" aria-label="Giảm">−</button><b>${val}</b><button data-act="step" data-key="${key}" data-d="5" aria-label="Tăng">+</button></div>`;
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
   const ready = aiReady(s.ai);
@@ -180,8 +180,8 @@ export function settingsView() {
       <div class="setrow"><div style="min-width:0"><b>Giọng</b><small>${voiceList.length ? `${voiceList.length} giọng trên máy này` : 'Chưa tải được danh sách giọng'}</small></div>
         <select class="input" style="max-width:190px" data-change="voice-name" aria-label="Giọng đọc"><option value="">Tự động (tốt nhất)</option>${voiceList.map((v) => `<option value="${esc(v.name)}" ${v.name === s.voiceName ? 'selected' : ''}>${esc(v.name)}</option>`).join('')}</select></div>
       <div class="setrow"><b>Tốc độ đọc</b>${seg('rate', s.rate, [[0.75, 'Chậm'], [0.95, 'Vừa'], [1.1, 'Nhanh']])}</div>
-      <div class="setrow"><div><b>Tự phát âm khi lật thẻ</b><small>Đọc từ ngay khi lật sang mặt đáp án</small></div>${seg('autoSpeak', s.autoSpeak !== false, [['true', 'Bật'], ['false', 'Tắt']]).replace('min-width:190px', 'min-width:120px')}</div>
-      <div class="setrow"><div><b>Tự điền khi gõ xong từ mới</b><small>Tự tra IPA, nghĩa, ví dụ… ngay khi bạn gõ xong từ (gửi từ đó tới dịch vụ tra cứu; nếu đã kết nối AI thì gọi AI một lần mỗi từ)</small></div>${seg('autoFill', s.autoFill !== false, [['true', 'Bật'], ['false', 'Tắt']]).replace('min-width:190px', 'min-width:120px')}</div>
+      <div class="setrow"><div><b>Tự phát âm khi lật thẻ</b><small>Đọc từ ngay khi lật sang mặt đáp án</small></div>${seg('autoSpeak', s.autoSpeak !== false, [['true', 'Bật'], ['false', 'Tắt']]).replace('set-seg', 'set-seg two')}</div>
+      <div class="setrow"><div><b>Tự điền khi gõ xong từ mới</b><small>Tự tra IPA, nghĩa, ví dụ… ngay khi bạn gõ xong từ (gửi từ đó tới dịch vụ tra cứu; nếu đã kết nối AI thì gọi AI một lần mỗi từ)</small></div>${seg('autoFill', s.autoFill !== false, [['true', 'Bật'], ['false', 'Tắt']]).replace('set-seg', 'set-seg two')}</div>
       <div class="setrow"><div><b>Nghe thử</b>${canSpeak() ? '' : '<small>Thiết bị này không hỗ trợ phát âm</small>'}</div><button class="speakbtn" data-act="test-voice" aria-label="Nghe thử">${icon('speaker')}</button></div>
       <p class="small faint" style="margin-top:10px">Muốn giọng tự nhiên hơn: mở Cài đặt của iPhone → Trợ năng → Nội dung được đọc → Giọng nói → Tiếng Anh, tải một giọng “Nâng cao” hoặc “Cao cấp” (ví dụ Ava, Zoe, Daniel), rồi quay lại đây chọn giọng đó.</p>
     </div>
