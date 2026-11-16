@@ -91,7 +91,9 @@ Tab **Học** → *Speaking*. Đề lấy theo quý (forecast), mỗi quý có P
 - **Part 2:** thẻ đề → 1 phút chuẩn bị (ô ghi từ khoá) → tự bắt đầu ghi, 2 phút nói, nhắc khi còn 30 giây, tự dừng ở 2:00. Đồng hồ tính theo giờ thật.
 - **Tự chấm:** cuối lượt, 10 câu Có/Chưa cho 4 tiêu chí; không quy đổi ra band. Mục *Tiến bộ* ở trang Speaking.
 - **Mục tiêu ngày:** 1 lượt = 1 chủ đề Part 1 hoặc 1 đề Part 2 (Cài đặt → Lượt Speaking); tính vào chuỗi ngày học và vòng trên Trang chủ.
-- **Bản ghi:** lưu trên máy, tự xoá âm thanh sau 30 ngày trừ bản bấm "Giữ lại" (số liệu giữ lại). Sao lưu mặc định không kèm âm thanh, có hỏi khi tạo file. Không có micro thì chọn "Nói thầm": vẫn bấm giờ và tự chấm.
+- **Micro:** chỉ bật khi đang nói (Part 2: micro tắt suốt 1 phút chuẩn bị, hết giờ mới bật và ghi); màn hình được giữ sáng khi ghi. Rời app khi đang ghi → app dừng và lưu phần đã ghi.
+- **Chữ khi nói:** nhận dạng giọng nói của trình duyệt (trên iPhone do Apple xử lý) hiện chữ ngay khi nói; sau khi dừng, sửa được, sao chép câu trả lời hoặc sao chép kèm câu hỏi và yêu cầu chấm (từng câu hoặc cả lượt). Bật/tắt ở trang Speaking.
+- **Bản ghi:** lưu trên máy, tự xoá âm thanh sau 7 / 30 / 90 ngày (Cài đặt) trừ bản bấm "Giữ lại"; xoá từng bản hoặc hàng loạt ở trang Speaking (số liệu và chữ giữ lại). Sao lưu mặc định không kèm âm thanh, có hỏi khi tạo file. Không có micro thì chọn "Nói thầm": vẫn bấm giờ và tự chấm.
 
 Thêm đề quý mới từ thư mục Markdown (`Part 1/Forecast Qn-YYYY/*.md`, `Part 2&3/Forecast Qn-YYYY/*.md`):
 
