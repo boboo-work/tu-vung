@@ -164,7 +164,8 @@ function genSpell() {
 function checkSpell(item, inp) {
   const got = letters(String(inp).replace(/\b(the|road|hotel|mrs|mr|ms|doctor|dr)\b/gi, ''));
   const ans = letters(item.ans);
-  if (!got) return { ok: false, why: 'blank' };
+  if (!String(inp).trim()) return { ok: false, why: 'blank' };
+  if (!got) return { ok: false, why: 'other' };
   if (got === ans) return { ok: true };
   return { ok: false, why: charReason(got.toUpperCase(), ans.toUpperCase()) };
 }
@@ -181,7 +182,8 @@ function genPhone(voice) {
 }
 function checkPhone(item, inp) {
   const got = String(inp).replace(/\D/g, ''), ans = item.ans.replace(/\D/g, '');
-  if (!got) return { ok: false, why: 'blank' };
+  if (!String(inp).trim()) return { ok: false, why: 'blank' };
+  if (!got) return { ok: false, why: 'format' };
   return got === ans ? { ok: true } : { ok: false, why: 'digit' };
 }
 
@@ -342,7 +344,8 @@ function genCode() {
 }
 function checkCode(item, inp) {
   const got = alnum(inp), ans = alnum(item.ans);
-  if (!got) return { ok: false, why: 'blank' };
+  if (!String(inp).trim()) return { ok: false, why: 'blank' };
+  if (!got) return { ok: false, why: 'other' };
   return got === ans ? { ok: true } : { ok: false, why: charReason(got, ans) };
 }
 
