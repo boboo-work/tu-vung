@@ -537,9 +537,12 @@ function playNum(it, rate = 0) {
 const playsText = (it) => (it.plays ? `Đã nghe ${it.plays} lần` : 'Chưa nghe');
 
 /** Lưu bộ đã làm (khi xong, hoặc khi thoát giữa chừng mà đã làm được quá nửa) và tính một lượt trong ngày. */
+// Câu đã trả lời thật: bỏ qua câu bấm "Kiểm tra" khi ô còn trống (bấm nhầm, bỏ qua).
+const answered = (x) => x.res && x.res.why !== 'blank';
 async function saveSet(P) {
   if (!P || P.saved) return;
-  const done = P.items.filter((x) => x.res);
+  const done = P.items.filter(answered);
+  if (!done.length) { if (P.stage === 'done') toast('Bạn chưa trả lời câu nào nên bài này không được lưu'); return; }
   if (done.length < Math.ceil(P.items.length / 2)) return;
   P.saved = true;
   const st = stats();
@@ -599,10 +602,13 @@ on('ls-check', async () => {
     hush();
     it.res = CHECK[it.cat](it, it.input);
     const st = stats();
-    const c = st.cat[it.cat] || (st.cat[it.cat] = { n: 0, ok: 0 });
-    c.n++;
-    if (it.res.ok) c.ok++; else st.err[it.res.why] = (st.err[it.res.why] || 0) + 1;
-    await saveListening();
+    // Ô trống (bấm nhầm / bỏ qua) không tính vào thống kê.
+    if (it.res.why !== 'blank') {
+      const c = st.cat[it.cat] || (st.cat[it.cat] = { n: 0, ok: 0 });
+      c.n++;
+      if (it.res.ok) c.ok++; else st.err[it.res.why] = (st.err[it.res.why] || 0) + 1;
+      await saveListening();
+    }
     rerender();
     return;
   }
@@ -639,7 +645,7 @@ on('ls-quit', async () => {
   const P = location.hash.startsWith('#/lnum') ? N : D;
   hush();
   if (P && P.stage !== 'done') {
-    const done = P.items.filter((x) => x.res).length;
+    const done = P.items.filter(answered).length;
     const half = Math.ceil(P.items.length / 2);
     if (done && !(await confirmSheet({ title: 'Dừng bộ này?', body: done >= half ? 'Phần đã làm được lưu và tính một lượt hôm nay.' : `Làm được ${done}/${P.items.length} câu. Cần làm ít nhất ${half} câu mới được tính một lượt.`, okLabel: 'Dừng' }))) return;
     await saveSet(P);

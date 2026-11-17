@@ -528,6 +528,8 @@ on('sp-self', (el) => {
 on('sp-save', async () => {
   const g = getItem(P.id);
   const takes = Object.values(P.ans).map((ids) => S.speaking.get(ids[ids.length - 1])).filter(Boolean);
+  // Không còn bản ghi nào (chưa nói, hoặc đã xoá hết): không lưu lượt này vào lịch sử.
+  if (!takes.length) { toast('Bạn chưa trả lời câu nào nên lượt này không được lưu'); P = null; replaceBack(); return; }
   const self = {};
   for (const c of Object.keys(SELF)) self[c] = SELF[c].items.map((_, i) => P.self[c]?.[i] ?? 0);
   await spPut({
