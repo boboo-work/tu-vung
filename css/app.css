@@ -1150,3 +1150,4 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 .lt-qb { display: inline-block; font-size: 11.5px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border-radius: 6px; padding: 0 6px; margin-left: 2px; cursor: pointer; }
 .lt-flash { animation: ltflash 1.6s ease; }
 @keyframes ltflash { 0%, 40% { background: var(--amber-soft); } 100% { background: transparent; } }
+.lt-pv + .lt-pv { margin-top: 10px; }
