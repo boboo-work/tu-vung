@@ -112,7 +112,7 @@ canvas.confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-
 #tabbar {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 20;
   height: calc(var(--tab-h) + var(--safe-b)); padding-bottom: var(--safe-b);
-  display: grid; grid-template-columns: repeat(5, 1fr);
+  display: grid; grid-template-columns: repeat(6, 1fr);
   background: color-mix(in srgb, var(--bg) 82%, transparent);
   -webkit-backdrop-filter: saturate(1.6) blur(18px); backdrop-filter: saturate(1.6) blur(18px);
   border-top: 1px solid var(--line);
@@ -1151,3 +1151,141 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 .lt-flash { animation: ltflash 1.6s ease; }
 @keyframes ltflash { 0%, 40% { background: var(--amber-soft); } 100% { background: transparent; } }
 .lt-pv + .lt-pv { margin-top: 10px; }
+
+/* ===== Tab Game & Săn từ: kiểu sticker hoạt hình (viền đậm, bóng khối, màu kẹo, chữ tròn) ===== */
+:root { --hn-ink: #2B2240; --hn-font: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, sans-serif; }
+#view:has(> .hn-scr) { background-color: #FFF6E6; background-image: radial-gradient(#F1DDBB 1.6px, transparent 1.8px); background-size: 22px 22px; }
+#view:has(> .hn-play.win) { background-color: #E8FAF2; background-image: radial-gradient(#C3EBD9 1.6px, transparent 1.8px); }
+#view:has(> .hn-play.lose) { background-color: #FFEEF3; background-image: radial-gradient(#F7CFDC 1.6px, transparent 1.8px); }
+#view:has(> .hn-res) { background-color: #F1ECFF; background-image: radial-gradient(#DCD2FF 1.6px, transparent 1.8px); }
+.hn-scr { font-family: var(--hn-font); color: var(--hn-ink); }
+.hn-scr .faint { color: #6B6080; }
+.hn-h { font-family: var(--hn-font); font-size: 34px; font-weight: 800; letter-spacing: -.01em; margin: 0; line-height: 1.05; }
+.hn-h2 { font-family: var(--hn-font); font-size: 21px; font-weight: 800; margin: 22px 2px 10px; color: var(--hn-ink); text-transform: none; letter-spacing: 0; }
+.hn-eyebrow { margin: 0; font-size: 13px; font-weight: 800; color: #8B7FA3; }
+.hn-head { display: flex; justify-content: space-between; align-items: center; padding-top: 6px; }
+.hn-sub { margin: 4px 0 0; font-size: 13.5px; font-weight: 700; }
+.hn-scr .center { text-align: center; }
+.hn-card { position: relative; background: #FFFFFF; border: 2.5px solid var(--hn-ink); border-radius: 24px; box-shadow: 0 5px 0 var(--hn-ink); padding: 16px; margin-top: 16px; }
+.hn-tag { position: absolute; top: -14px; left: 14px; padding: 1px 10px; border: 2.5px solid var(--hn-ink); border-radius: 999px; font-weight: 800; font-size: 13.5px; max-width: calc(100% - 28px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hn-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border: 2.5px solid var(--hn-ink); border-radius: 999px; background: #FFFFFF; box-shadow: 0 3px 0 var(--hn-ink); font-weight: 800; font-size: 15.5px; color: var(--hn-ink); white-space: nowrap; }
+.hn-pill.sm { font-size: 13px; padding: 1px 9px; box-shadow: 0 2px 0 var(--hn-ink); }
+.hn-pill.xs { font-size: 11px; padding: 0 7px; border-width: 2px; box-shadow: none; vertical-align: 2px; }
+.hn-pill.peach { background: #FFC9A8; } .hn-pill.mint { background: #8EE3C8; } .hn-pill.pink { background: #FFB3CB; }
+.hn-btn { display: grid; place-items: center; width: 100%; min-height: 56px; margin-top: 12px; border: 2.5px solid var(--hn-ink); border-radius: 20px; background: #FFD84D; box-shadow: 0 5px 0 var(--hn-ink); font-family: var(--hn-font); font-size: 20px; font-weight: 800; color: var(--hn-ink); text-decoration: none; }
+.hn-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--hn-ink); }
+.hn-btn.ghost { background: #FFFFFF; font-size: 17px; min-height: 50px; }
+.hn-x { flex: none; width: 42px; height: 42px; border: 2.5px solid var(--hn-ink); border-radius: 14px; background: #FFFFFF; box-shadow: 0 3px 0 var(--hn-ink); display: grid; place-items: center; color: var(--hn-ink); }
+.hn-x .ic { width: 20px; height: 20px; stroke-width: 2.8; }
+/* Tab Game */
+.hn-daily { background: #C7B8FF; margin-top: 18px; }
+.hn-dtop { display: flex; align-items: flex-end; gap: 6px; }
+.hn-dtop > div { flex: 1; min-width: 0; }
+.hn-dtop .hn-mascot { flex: none; margin: -34px -6px -8px 0; }
+.hn-dtitle { margin: 8px 0 0; font-size: 23px; line-height: 1.12; font-weight: 800; }
+.hn-games { display: grid; gap: 12px; }
+.hn-game { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border: 2.5px solid var(--hn-ink); border-radius: 22px; box-shadow: 0 5px 0 var(--hn-ink); text-align: left; color: var(--hn-ink); font-family: var(--hn-font); }
+.hn-gi { flex: none; width: 52px; height: 52px; border: 2.5px solid var(--hn-ink); border-radius: 16px; background: #FFFFFF; display: grid; place-items: center; }
+.hn-gb { flex: 1; min-width: 0; }
+.hn-gb b { display: block; font-size: 19px; font-weight: 800; }
+.hn-gb small { display: block; font-size: 13.5px; font-weight: 700; }
+.hn-gr { font-size: 19px; font-weight: 800; }
+.hn-minis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.hn-mini { min-height: 64px; padding: 8px 4px; border: 2.5px solid var(--hn-ink); border-radius: 18px; box-shadow: 0 4px 0 var(--hn-ink); font-family: var(--hn-font); font-weight: 800; font-size: 13.5px; line-height: 1.2; color: var(--hn-ink); }
+/* Chọn lượt chơi */
+.hn-nav { display: flex; align-items: center; gap: 12px; padding-top: 4px; }
+.hn-nav .hn-pill { margin-left: auto; }
+.hn-stp { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
+.hn-stp span { flex: none; width: 32px; height: 32px; border: 2.5px solid var(--hn-ink); border-radius: 11px; background: #FFFFFF; display: grid; place-items: center; font-weight: 800; }
+.hn-stp p { margin: 0; font-weight: 700; font-size: 15px; }
+.hn-lab { margin: 18px 2px 8px; font-size: 17px; font-weight: 800; }
+.hn-seg { display: flex; gap: 8px; }
+.hn-seg button { flex: 1; min-height: 46px; border: 2.5px solid var(--hn-ink); border-radius: 16px; background: #FFFFFF; box-shadow: 0 4px 0 var(--hn-ink); font-family: var(--hn-font); font-size: 14.5px; font-weight: 800; color: var(--hn-ink); }
+.hn-seg button.on { background: #8EE3C8; transform: translateY(2px); box-shadow: 0 2px 0 var(--hn-ink); }
+.hn-src { padding: 6px 10px; margin-top: 0; }
+.hn-select { width: 100%; min-height: 42px; border: 0; background: transparent; font-family: var(--hn-font); font-size: 16px; font-weight: 800; color: var(--hn-ink); }
+.hn-toggle { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; }
+.hn-sw { width: 58px; height: 34px; flex: none; border: 2.5px solid var(--hn-ink); border-radius: 17px; background: #E8E0D2; position: relative; }
+.hn-sw i { position: absolute; top: 2px; left: 2px; width: 24px; height: 24px; border: 2px solid var(--hn-ink); border-radius: 50%; background: #FFFFFF; transition: left .15s; }
+.hn-sw.on { background: #8EE3C8; } .hn-sw.on i { left: 26px; }
+.hn-sw:disabled { opacity: .5; }
+.hn-bottom { margin-top: 18px; }
+/* Đang chơi */
+.hn-play .ses-body { padding-top: 12px; }
+.hn-top { display: flex; align-items: center; gap: 10px; }
+.hn-timer { flex: 1; height: 16px; border: 2.5px solid var(--hn-ink); border-radius: 999px; background: #FFFFFF; overflow: hidden; }
+.hn-timer i { display: block; height: 100%; background: #8EE3C8; border-right: 2.5px solid var(--hn-ink); transition: width .2s linear; }
+.hn-dots { flex: 1; display: flex; justify-content: space-between; align-items: center; }
+.hn-dot { width: 14px; height: 14px; border: 2px solid var(--hn-ink); border-radius: 50%; background: #FFFFFF; }
+.hn-dot.ok { background: #8EE3C8; } .hn-dot.no { background: #FFB3CB; } .hn-dot.cur { width: 18px; height: 18px; background: #FFD84D; }
+.hn-hud { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; }
+.hn-meta { font-size: 12px; font-weight: 800; color: #6B6080; text-align: center; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hn-q { margin: 6px 0 0; font-size: 21px; line-height: 1.4; font-weight: 700; }
+.hn-gap { display: inline-block; min-width: 70px; padding: 0 8px; border: 2.5px dashed var(--hn-ink); border-radius: 12px; background: #FFF0B8; text-align: center; font-weight: 800; }
+.hn-gap.sm { min-width: 0; padding: 0 6px; border-width: 2px; border-radius: 8px; }
+.hn-lim { display: inline-block; margin-top: 10px; padding: 1px 9px; border: 2px solid var(--hn-ink); border-radius: 999px; font-size: 11.5px; font-weight: 800; }
+.hn-say { display: flex; align-items: flex-end; gap: 6px; margin-top: 14px; }
+.hn-say .hn-mascot { flex: none; }
+.hn-bub { flex: 1; margin-bottom: 8px; background: #FFFFFF; border: 2.5px solid var(--hn-ink); border-radius: 18px; padding: 9px 13px; font-weight: 800; font-size: 15px; }
+.hn-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.hn-tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 86px; border: 2.5px solid var(--hn-ink); border-radius: 22px; box-shadow: 0 5px 0 var(--hn-ink); font-family: var(--hn-font); font-size: 20px; font-weight: 800; color: var(--hn-ink); }
+.hn-tile small { font-size: 12.5px; font-weight: 700; opacity: .8; }
+.hn-tile.dim, .hn-tf.dim { opacity: .4; }
+.hn-tile.right, .hn-tf.right { outline: 4px solid #1B9E6B; outline-offset: 3px; }
+.hn-tile.wrong, .hn-tf.wrong { outline: 4px solid #E5484D; outline-offset: 3px; transform: rotate(-2deg); }
+.hn-panel { margin-top: 18px; border: 2.5px solid var(--hn-ink); border-radius: 26px; box-shadow: 0 5px 0 var(--hn-ink); padding: 14px 16px 16px; animation: hnpop .28s cubic-bezier(.2, .9, .3, 1.3) both; }
+@keyframes hnpop { from { transform: translateY(16px) scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+.hn-ptitle { display: flex; align-items: center; gap: 10px; }
+.hn-ptitle b { font-size: 21px; line-height: 1.15; font-weight: 800; }
+.hn-panel p { margin: 6px 0 0; font-size: 14.5px; font-weight: 700; line-height: 1.45; }
+.hn-strip { margin-top: 14px; border: 2.5px solid var(--hn-ink); border-radius: 18px; background: #FFF0B8; padding: 9px 13px; font-weight: 800; font-size: 15px; line-height: 1.45; }
+.hn-para { margin: 6px 0 0; font-size: 17px; line-height: 1.9; font-weight: 600; }
+.hn-w { padding: 1px 0; border-radius: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.hn-w:not(.off):active { background: #FFF0B8; }
+.hn-w.off { cursor: default; }
+.hn-w.right, .hn-w.trap, .hn-w.miss, .hn-w.trapmark { padding: 1px 3px; }
+.hn-w.right { background: #8EE3C8; box-shadow: 0 0 0 2.5px var(--hn-ink); font-weight: 800; }
+.hn-w.trap { background: #FFB3CB; box-shadow: 0 0 0 2.5px var(--hn-ink); font-weight: 800; }
+.hn-w.trapmark { background: #FFE1EC; }
+.hn-w.miss { background: #E8E0D2; text-decoration: line-through; }
+.hn-step { margin: 14px 0 0; text-align: center; font-size: 18px; font-weight: 800; min-height: 4px; }
+.hn-tfs { display: flex; gap: 10px; margin-top: 16px; }
+.hn-tf { flex: 1; min-height: 58px; border: 2.5px solid var(--hn-ink); border-radius: 18px; box-shadow: 0 5px 0 var(--hn-ink); font-family: var(--hn-font); font-size: 16px; font-weight: 800; color: var(--hn-ink); line-height: 1.05; }
+.hn-why, .hn-more { margin-top: 10px; font-size: 14.5px; }
+.hn-why summary, .hn-more summary { font-weight: 800; cursor: pointer; }
+.hn-why .md, .hn-more .md, .hn-note .md { font-family: -apple-system, system-ui, sans-serif; font-size: 14.5px; line-height: 1.5; margin-top: 6px; }
+.hn-more { margin-top: 18px; }
+/* Giải thích sau khi chạm */
+.hn-hero { display: flex; align-items: center; gap: 12px; }
+.hn-hero p { margin: 4px 0 0; display: flex; gap: 6px; flex-wrap: wrap; }
+.hn-big { margin: 0; font-size: 31px; line-height: 1.05; font-weight: 800; }
+.hn-sent { margin: 6px 0 0; font-size: 17.5px; line-height: 1.65; font-weight: 600; }
+.hn-hl { padding: 0 4px; border-radius: 6px; }
+.hn-hl.ans { background: #8EE3C8; box-shadow: 0 0 0 2px var(--hn-ink); }
+.hn-hl.trap { background: #FFB3CB; text-decoration: line-through; }
+.hn-hl.para { background: #FFF0B8; }
+.hn-pairs { display: grid; gap: 6px; margin-top: 12px; }
+.hn-pairs div { display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 800; }
+.hn-pairs span { flex: 1; padding: 5px 9px; border: 2px solid var(--hn-ink); border-radius: 12px; background: #FFF6E6; }
+.hn-pairs span + .ic + span, .hn-pairs .ic + span { background: #FFF0B8; }
+.hn-pairs .ic { flex: none; width: 18px; height: 18px; stroke-width: 3; }
+.hn-wordrow { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.hn-word { margin: 0; font-size: 30px; line-height: 1.1; font-weight: 800; }
+.hn-wordrow p.faint { margin: 2px 0 0; font-size: 13.5px; font-weight: 700; }
+.hn-sq { flex: none; width: 50px; height: 50px; border: 2.5px solid var(--hn-ink); border-radius: 16px; background: #BFE3FF; box-shadow: 0 4px 0 var(--hn-ink); display: grid; place-items: center; color: var(--hn-ink); }
+/* Kết quả */
+.hn-res { padding-top: 6px; }
+.hn-trophy { display: flex; justify-content: center; align-items: flex-end; gap: 2px; }
+.hn-tiles3 { display: flex; gap: 8px; margin-top: 14px; }
+.hn-tiles3 div { flex: 1; text-align: center; padding: 10px 4px; border: 2.5px solid var(--hn-ink); border-radius: 18px; box-shadow: 0 4px 0 var(--hn-ink); }
+.hn-tiles3 b { display: block; font-size: 25px; line-height: 1.1; font-weight: 800; }
+.hn-tiles3 span { font-size: 12px; font-weight: 800; }
+.hn-barrow { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 14px; margin-top: 8px; }
+.hn-barrow span:first-child { width: 72px; }
+.hn-bar { flex: 1; height: 14px; border: 2px solid var(--hn-ink); border-radius: 999px; background: #FFFFFF; overflow: hidden; }
+.hn-bar i { display: block; height: 100%; border-right: 2px solid var(--hn-ink); }
+.hn-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.hn-chips span { padding: 3px 12px; border: 2.5px solid var(--hn-ink); border-radius: 999px; background: #D9F7EC; font-weight: 800; }
+.hn-res .hn-card p { margin: 6px 0 0; font-size: 14.5px; font-weight: 700; }
+.hn-row2 { display: flex; gap: 10px; margin-top: 20px; }
+.hn-row2 .hn-btn { margin-top: 0; font-size: 18px; }

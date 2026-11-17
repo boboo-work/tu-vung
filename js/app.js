@@ -13,6 +13,7 @@ import { micTestView } from './speaking.js';
 import { loadSpeaking, speakingView, sp1View, sp2View } from './speak.js';
 import { loadListening, listeningView, numView as lNumView, dictView as lDictView } from './listening.js';
 import { importView as lImportView, testView as lTestView, runView as lRunView } from './ltest.js';
+import { gamesView, setupView as hSetupView, playView as hPlayView, resultView as hResultView } from './hunt.js';
 import { loadGrammar, grammarView, unitView, lessonView, cardsView, errorsView, testView, gDueCount } from './grammar.js';
 import { countUp } from './fx.js';
 
@@ -24,10 +25,11 @@ const routes = {
   reading: readingView, rpassage: rPassageView, rrun: rRunView, rresult: rResultView, rstudy: rStudyView,
   mictest: micTestView, speaking: speakingView, sp1: sp1View, sp2: sp2View,
   listening: listeningView, lnum: lNumView, ldict: lDictView, limport: lImportView, ltest: lTestView, lrun: lRunView,
+  games: gamesView, hunt: hSetupView, hplay: hPlayView, hres: hResultView,
   rfull: rFullView, rvocab: rReviewView, rpatterns: rPatternsView, rown: rOwnListView, rownv: rOwnView, rstats: rStatsView,
   grammar: grammarView, gunit: unitView, glesson: lessonView, gcards: cardsView, gerrors: errorsView, gtest: testView,
 };
-const TAB_META = [['home', 'Trang chủ', 'home'], ['learn', 'Học', 'learn'], ['review', 'Ôn tập', 'review'], ['vocab', 'Từ vựng', 'vocab'], ['stats', 'Thống kê', 'stats']];
+const TAB_META = [['home', 'Trang chủ', 'home'], ['learn', 'Học', 'learn'], ['review', 'Ôn tập', 'review'], ['vocab', 'Từ vựng', 'vocab'], ['games', 'Game', 'game'], ['stats', 'Thống kê', 'stats']];
 
 const view = document.getElementById('view');
 let lastHash = null;
@@ -100,7 +102,7 @@ function bindEvents() {
   matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', applyTheme);
   // Sang ngày mới khi app đang mở nền → vẽ lại để cập nhật danh sách đến hạn.
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && !['session', 'game', 'drop', 'match', 'pop', 'edit', 'new', 'ai', 'settings', 'glesson', 'gcards', 'gtest', 'wwrite', 'rrun', 'mictest', 'sp1', 'sp2', 'lnum', 'ldict', 'lrun', 'limport'].includes(location.hash.split('/')[1])) render();
+    if (!document.hidden && !['session', 'game', 'drop', 'match', 'pop', 'edit', 'new', 'ai', 'settings', 'glesson', 'gcards', 'gtest', 'wwrite', 'rrun', 'mictest', 'sp1', 'sp2', 'lnum', 'ldict', 'lrun', 'limport', 'hplay'].includes(location.hash.split('/')[1])) render();
   });
 }
 
@@ -239,7 +241,7 @@ async function boot() {
   bindEvents();
   watchKeyboard();
   setRenderer(render);
-  if (!location.hash || /^#\/(session|glesson|gcards|gtest|wwrite|rrun|lnum|ldict|lrun)\b/.test(location.hash)) history.replaceState(null, '', '#/home');
+  if (!location.hash || /^#\/(session|glesson|gcards|gtest|wwrite|rrun|lnum|ldict|lrun|hplay|hres)\b/.test(location.hash)) history.replaceState(null, '', '#/home');
   render();
   // Nội dung ngữ pháp tải sau, không chặn lần mở app đầu tiên.
   // Writing dùng nhãn lỗi của ngữ pháp, nên tải ngữ pháp trước.
@@ -251,7 +253,7 @@ async function boot() {
     let reloading = false;
     const reloadWhenIdle = () => {
       if (reloading) return;
-      if (/^#\/(session|game|drop|match|pop|glesson|gcards|gtest|wwrite|rrun|sp1|sp2|lnum|ldict|lrun)\b/.test(location.hash)) { addEventListener('hashchange', reloadWhenIdle, { once: true }); return; }
+      if (/^#\/(session|game|drop|match|pop|glesson|gcards|gtest|wwrite|rrun|sp1|sp2|lnum|ldict|lrun|hplay)\b/.test(location.hash)) { addEventListener('hashchange', reloadWhenIdle, { once: true }); return; }
       reloading = true;
       location.reload();
     };

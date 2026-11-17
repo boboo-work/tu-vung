@@ -329,7 +329,7 @@ on('r-word', (el, e) => {
   if (!word) return;
   openWordSheet(word, sent ? sent.textContent.replace(/^[①-⑳]/, '').trim() : '', pa?.dataset.title || pa?.querySelector('.r-title')?.textContent || '');
 });
-function openWordSheet(word, sentence, title, extra = {}) {
+export function openWordSheet(word, sentence, title, extra = {}) {
   const have = findByText(word);
   saving = { sentence, title, have, extra };
   openSheet(`<h3>${have ? 'Từ đã có trong kho' : 'Lưu từ vào kho'}</h3>

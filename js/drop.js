@@ -163,7 +163,7 @@ on('drop-start', () => {
   D.raf = requestAnimationFrame(frame);
 });
 on('drop-focus', () => $('.d-input')?.focus({ preventScroll: true }));
-on('drop-quit', () => { if (D?.raf) cancelAnimationFrame(D.raf); D = null; back('#/learn'); });
+on('drop-quit', () => { if (D?.raf) cancelAnimationFrame(D.raf); D = null; back('#/games'); });
 
 // ---- Màn hình ----
 export function dropView() {
@@ -186,7 +186,7 @@ export function dropView() {
   }
   if (D && D.phase === 'over') {
     const missed = D.missed.map((id) => S.words.get(id)).filter(Boolean);
-    return `<div class="page game">${navBar('Bắn Từ', { fallback: '#/learn' })}
+    return `<div class="page game">${navBar('Bắn Từ', { fallback: '#/games' })}
       <div class="card g-over">
         <p class="eyebrow">${D.newBest ? 'Kỷ lục mới!' : 'Hoàn thành'}</p>
         <b class="g-final">${D.total - D.missed.length}/${D.total}</b>
@@ -199,7 +199,7 @@ export function dropView() {
   }
   const n = gamePool().length;
   const best = bestDrop();
-  return `<div class="page game">${navBar('Bắn Từ', { fallback: '#/learn' })}
+  return `<div class="page game">${navBar('Bắn Từ', { fallback: '#/games' })}
     <div class="card">
       <div class="d-duo"><span class="g-hero big">${HEROES.mochi.svg}</span><span class="g-hero big">${HEROES.bolt.svg}</span></div>
       <b>Cách chơi</b>
