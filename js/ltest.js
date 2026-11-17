@@ -460,64 +460,112 @@ export function bandOf(score) {
 }
 
 // ---------------------------------------------------------------- Nhập đề
-const imp = { files: null, preview: null, error: '', busy: false };
+const imp = { previews: [], skipped: [], error: '', busy: false };
 const tests = () => [...S.ltest.values()].filter((r) => r.kind === 'test').sort((a, b) => b.at - a.at);
 const attempts = (id) => [...S.ltest.values()].filter((r) => r.kind === 'attempt' && (!id || r.test === id)).sort((a, b) => b.at - a.at);
 export const ltestCount = () => tests().length;
 
-async function readImport(files) {
-  imp.error = '';
-  imp.preview = null;
-  const extra = await readExtras(files);
-  if (extra.pack) {
-    const pk = extra.pack;
-    imp.preview = { title: pk.title, parts: pk.parts, key: pk.key, audio: pk.audio, cnt: countQs(pk.parts, pk.key), file: 'gói đề', tx: pk.tx, notes: pk.notes ? { notes: pk.notes } : null };
-    return;
-  }
-  if (extra.errors.length && !extra.testHtml) { imp.error = extra.errors[0]; return; }
-  const html = extra.testHtml;
-  const audios = extra.audios;
-  if (!html) { imp.error = 'Chưa có file đề (.html có câu hỏi và đáp án). Chọn cùng lúc file đề và các file nghe.'; return; }
-  let parsed;
-  try { parsed = parseTestHtml(html.text); } catch (e) { console.error(e); imp.error = 'Không đọc được file đề.'; return; }
-  if (!parsed.parts.length) { imp.error = 'Không tìm thấy phần câu hỏi trong file (cần có tiêu đề "PART 1" và "Questions 1-10").'; return; }
-  // Ghép file nghe với Part theo tên file ("…Part1.mp3", "part_2"…), không có thì theo thứ tự tên.
-  const byPart = matchAudio(audios, parsed.parts.map((p) => p.n));
-  const cnt = countQs(parsed.parts, parsed.key);
-  imp.preview = { ...parsed, audio: byPart, cnt, file: html.name, tx: extra.tx, notes: extra.notes };
+// Nhập nhiều đề một lần (ví dụ cả cuốn Cam 21 gồm Test 1–4): mỗi file được ghép vào đúng đề theo
+// (1) mã sách + số Test trong tên file / thư mục / tiêu đề ("Cam21_Test02_Part3.mp3", "Cam 21 Listening Test 02 - Transcripts"),
+// (2) tên file trùng nhau sau khi bỏ phần đuôi (…_DeBai, …_Transcript, …_Part1), (3) nếu chỉ có một đề thì ghép hết vào đề đó.
+/** "21-2" từ "Cam21_Test02…" / "Cambridge IELTS 21 … Test 2"; chỉ có số Test thì "-2"; không có thì "". */
+export function sigOf(s) {
+  const t = String(s || '').replace(/_/g, ' ');
+  const test = t.match(/test\s*[-#]?\s*0*(\d{1,2})(?!\d)/i);
+  if (!test) return '';
+  const book = t.match(/cam(?:bridge)?\s*(?:ielts)?\s*[-]?\s*0*(\d{1,2})(?!\d)/i);
+  return `${book ? book[1] : ''}-${test[1]}`;
 }
-/** Phân loại file đã chọn: file đề, file lời thoại, file giải thích (.json), file nghe. */
-async function readExtras(input) {
-  const out = { testHtml: null, tx: null, notes: null, audios: [], errors: [], pack: null };
-  const files = [];
+const SUFFIX = /[\s_-]*(de[\s_-]?bai|đề[\s_-]?bài|questions?|transcripts?|audio[\s_-]?scripts?|tape[\s_-]?scripts?|giai[\s_-]?thich|giải[\s_-]?thích|notes?|answers?|part[\s_-]?\d)$/i;
+/** Khoá nhóm: thư mục trong file nén + tên file bỏ phần đuôi loại file và số Part. */
+export function keyOf(path) {
+  const segs = String(path).split('/');
+  let base = segs.pop().replace(/\.[a-z0-9]+$/i, '').replace(/^[0-9a-f]{8}-/i, '');
+  for (let i = 0; i < 4 && SUFFIX.test(base); i++) base = base.replace(SUFFIX, '');
+  return `${segs.join('/')}|${base}`.toLowerCase().replace(/[^a-z0-9|/]/g, '');
+}
+const sameSig = (a, b) => a && b && (a === b || (a.startsWith('-') || b.startsWith('-')) && a.split('-')[1] === b.split('-')[1]);
+const titleOf = (html) => (html.match(/<title>([^<]*)<\/title>/i) || ['', ''])[1];
+
+/** Mở file nén (nếu có) và phân loại từng file: đề, lời thoại, giải thích, file nghe, gói đề của app. */
+async function readFiles(input) {
+  const items = [], errors = [], packs = [];
+  const list = [];
   for (const f of input) {
-    if (!/\.zip$/i.test(f.name) && !/zip/.test(f.type)) { files.push(f); continue; }
+    if (!/\.zip$/i.test(f.name) && !/zip/.test(f.type)) { list.push({ f, path: f.name }); continue; }
     try {
       const z = await unzip(await f.arrayBuffer());
-      if (z.names.includes('ltest.json')) { out.pack = await readPack(z); continue; }
-      // File zip tự nén các file đề: mở ra rồi xử lý như chọn từng file.
+      if (z.names.includes('ltest.json')) { packs.push(await readPack(z)); continue; }
       for (const name of z.names) {
         if (name.endsWith('/') || /(^|\/)(__MACOSX|\.)/.test(name)) continue;
         const base = name.split('/').pop();
-        const type = /\.mp3$/i.test(base) ? 'audio/mpeg' : /\.m4a$/i.test(base) ? 'audio/mp4' : /\.html?$/i.test(base) ? 'text/html' : /\.json$/i.test(base) ? 'application/json' : '';
+        const type = /\.mp3$/i.test(base) ? 'audio/mpeg' : /\.m4a$/i.test(base) ? 'audio/mp4' : /\.html?$/i.test(base) ? 'text/html' : /\.json$/i.test(base) ? 'application/json' : /\.zip$/i.test(base) ? 'application/zip' : '';
         if (!type) continue;
-        files.push(new File([await z.bytes(name)], base, { type }));
+        const file = new File([await z.bytes(name)], base, { type });
+        // Gói đề nằm trong file nén lớn: đọc tiếp.
+        if (type === 'application/zip') { const inner = await readFiles([file]); items.push(...inner.items); errors.push(...inner.errors); packs.push(...inner.packs); continue; }
+        list.push({ f: file, path: `${f.name.replace(/\.zip$/i, '')}/${name}` });
       }
-    } catch (e) { console.error(e); out.errors.push(`${f.name}: không mở được file nén`); }
+    } catch (e) { console.error(e); errors.push(`${f.name}: không mở được file nén`); }
   }
-  for (const f of files) {
-    if (/^audio\//.test(f.type) || /\.(mp3|m4a|aac|wav|ogg)$/i.test(f.name)) { out.audios.push(f); continue; }
+  for (const { f, path } of list) {
+    const key = keyOf(path);
+    if (/^audio\//.test(f.type) || /\.(mp3|m4a|aac|wav|ogg)$/i.test(f.name)) { items.push({ kind: 'audio', f, path, key, sig: sigOf(path) }); continue; }
     if (/\.json$/i.test(f.name) || f.type === 'application/json') {
-      try { out.notes = parseNotes(await f.text()); } catch (e) { out.errors.push(`${f.name}: không phải file giải thích`); }
+      try { const notes = parseNotes(await f.text()); items.push({ kind: 'notes', notes, path, key, sig: sigOf(path) || sigOf(notes.title) }); } catch { errors.push(`${f.name}: không phải file giải thích`); }
       continue;
     }
     if (/\.html?$/i.test(f.name) || f.type === 'text/html') {
       const text = await f.text();
-      if (isTranscriptDoc(text)) { try { out.tx = parseTranscriptHtml(text); } catch (e) { console.error(e); out.errors.push(`${f.name}: không đọc được lời thoại`); } }
-      else if (!out.testHtml) out.testHtml = { name: f.name, text };
+      const sig = sigOf(path) || sigOf(titleOf(text));
+      if (isTranscriptDoc(text)) {
+        try { items.push({ kind: 'tx', tx: parseTranscriptHtml(text), path, key, sig }); } catch (e) { console.error(e); errors.push(`${f.name}: không đọc được lời thoại`); }
+      } else {
+        try {
+          const parsed = parseTestHtml(text);
+          if (parsed.parts.length) items.push({ kind: 'test', parsed, path, key, sig: sigOf(path) || sigOf(parsed.title) });
+          else errors.push(`${f.name}: không thấy câu hỏi (cần "PART 1" và "Questions 1-10")`);
+        } catch (e) { console.error(e); errors.push(`${f.name}: không đọc được file đề`); }
+      }
     }
   }
-  return out;
+  return { items, errors, packs };
+}
+/** Chọn đề cho một file: cùng mã sách + số Test → cùng tên file → chỉ có một đề. */
+function pickTarget(item, targets) {
+  if (item.sig) { const m = targets.filter((t) => sameSig(item.sig, t.sig)); if (m.length === 1) return m[0]; if (m.length > 1) { const k = m.find((t) => t.key === item.key); if (k) return k; } }
+  const byKey = targets.filter((t) => t.key === item.key);
+  if (byKey.length === 1) return byKey[0];
+  if (targets.length === 1 && !(item.sig && targets[0].sig && !sameSig(item.sig, targets[0].sig))) return targets[0];
+  return null;
+}
+async function readImport(files) {
+  imp.error = '';
+  imp.previews = [];
+  imp.skipped = [];
+  const { items, errors, packs } = await readFiles(files);
+  const previews = packs.map((pk) => ({ title: pk.title, parts: pk.parts, key: pk.key, audio: pk.audio, cnt: countQs(pk.parts, pk.key), tx: pk.tx, notes: pk.notes ? { notes: pk.notes } : null, from: 'gói đề', warn: [] }));
+  const targets = items.filter((x) => x.kind === 'test').map((x) => ({ ...x, audios: [], txs: [], notesList: [] }));
+  // Nhiều file đề trùng nhau (cùng đề) → giữ một.
+  for (const it of items.filter((x) => x.kind !== 'test')) {
+    const t = pickTarget(it, targets);
+    if (!t) { imp.skipped.push(it.path.split('/').pop()); continue; }
+    if (it.kind === 'audio') t.audios.push(it.f);
+    if (it.kind === 'tx') t.txs.push(it);
+    if (it.kind === 'notes') t.notesList.push(it);
+  }
+  for (const t of targets) {
+    const p = t.parsed;
+    const warn = [];
+    if (t.txs.length > 1) warn.push(`Có ${t.txs.length} file lời thoại cho đề này, dùng file ${t.txs[0].path.split('/').pop()}`);
+    const notes = t.notesList.length ? { notes: Object.assign({}, ...t.notesList.map((x) => x.notes.notes)) } : null;
+    previews.push({ title: p.title, parts: p.parts, key: p.key, audio: matchAudio(t.audios, p.parts.map((x) => x.n)), cnt: countQs(p.parts, p.key), tx: t.txs[0]?.tx || null, notes, from: t.path.split('/').pop(), warn });
+  }
+  // Sắp theo số Test để dễ xem (Test 1, 2, 3, 4).
+  previews.sort((a, b) => (sigOf(a.title) || a.title).localeCompare(sigOf(b.title) || b.title, undefined, { numeric: true }));
+  imp.previews = previews;
+  if (!previews.length) imp.error = errors[0] || 'Chưa có file đề (.html có câu hỏi và đáp án) hoặc gói đề (.zip). Chọn cùng lúc file đề và các file nghe.';
+  else if (errors.length) imp.error = errors.join(' · ');
 }
 const matchAudio = (audios, partNums, have = {}) => {
   const byPart = {}, rest = [];
@@ -527,48 +575,63 @@ const matchAudio = (audios, partNums, have = {}) => {
   return byPart;
 };
 const toAudio = async (f) => ({ blob: new Blob([await f.arrayBuffer()], { type: f.type || 'audio/mpeg' }), name: f.name, size: f.size });
-/** Bổ sung lời thoại, giải thích hoặc file nghe cho đề đã nhập. */
+/** Bổ sung lời thoại, giải thích hoặc file nghe cho đề đã nhập (chỉ nhận file đúng của đề này). */
 async function attachFiles(id, files) {
   const t = S.ltest.get(id);
   if (!t) return;
-  const ex = await readExtras(files);
+  const { items, errors } = await readFiles(files);
+  const me = { sig: sigOf(t.title), key: '' };
+  const mine = items.filter((it) => it.kind !== 'test' && (!it.sig || !me.sig || sameSig(it.sig, me.sig)));
+  const other = items.filter((it) => it.kind !== 'test' && !mine.includes(it));
   const upd = { ...t };
   const done = [];
-  if (ex.tx?.n) { upd.tx = ex.tx; done.push(`lời thoại (${ex.tx.n} câu có mốc)`); }
-  if (ex.notes) { upd.notes = { ...(t.notes || {}), ...ex.notes.notes }; done.push(`giải thích ${noteCount(ex.notes.notes)} câu`); }
-  if (ex.audios.length) {
-    const m = matchAudio(ex.audios, t.parts.map((p) => p.n));
+  const tx = mine.find((x) => x.kind === 'tx' && x.sig) || mine.find((x) => x.kind === 'tx');
+  if (tx?.tx?.n) { upd.tx = tx.tx; done.push(`lời thoại (${tx.tx.n} câu có mốc)`); }
+  const notes = mine.filter((x) => x.kind === 'notes');
+  if (notes.length) { const n = Object.assign({}, ...notes.map((x) => x.notes.notes)); upd.notes = { ...(t.notes || {}), ...n }; done.push(`giải thích ${noteCount(n)} câu`); }
+  const auds = mine.filter((x) => x.kind === 'audio').map((x) => x.f);
+  if (auds.length) {
+    const m = matchAudio(auds, t.parts.map((p) => p.n));
     upd.audio = { ...(t.audio || {}) };
     for (const [n, f] of Object.entries(m)) upd.audio[n] = await toAudio(f);
     if (Object.keys(m).length) done.push(`file nghe Part ${Object.keys(m).join(', ')}`);
   }
-  if (!done.length) { toast(ex.errors[0] || 'Không thấy lời thoại, giải thích hay file nghe trong các file đã chọn', 'bad'); return; }
+  const skipNote = other.length ? ` · bỏ qua ${other.length} file của đề khác` : '';
+  if (!done.length) { toast(other.length ? `Các file đã chọn là của đề khác, không phải ${t.title}` : errors[0] || 'Không thấy lời thoại, giải thích hay file nghe trong các file đã chọn', 'bad'); return; }
   await ltPut(upd);
-  toast('Đã thêm ' + done.join(', '));
+  toast('Đã thêm ' + done.join(', ') + skipNote);
   rerender();
 }
 on('lt-attach', (el) => {
   const input = document.createElement('input');
   input.type = 'file';
   input.multiple = true;
-  input.accept = '.html,.htm,.json,text/html,application/json,audio/*,.mp3,.m4a';
+  input.accept = '.zip,application/zip,.html,.htm,.json,text/html,application/json,audio/*,.mp3,.m4a';
   input.onchange = () => attachFiles(el.dataset.id, [...input.files]);
   input.click();
 });
 on('lt-attach-files', (el) => attachFiles(el.dataset.id, [...el.files])); // dùng cho kiểm thử
+const previewOk = (pv) => pv.cnt.n && pv.cnt.keyed >= Math.ceil(pv.cnt.n * 0.8);
 async function saveImport() {
-  const pv = imp.preview;
-  if (!pv) return;
+  const list = imp.previews.filter(previewOk);
+  if (!list.length) return;
   imp.busy = true;
   rerender();
+  const savedIds = [];
   try {
-    const id = 'X:' + uid();
-    const audio = {};
-    for (const [n, f] of Object.entries(pv.audio)) audio[n] = await toAudio(f);
-    await ltPut({ id, kind: 'test', title: pv.title, at: Date.now(), parts: pv.parts, key: pv.key, audio, n: pv.cnt.n, tx: pv.tx || null, notes: pv.notes?.notes || {} });
-    imp.preview = null;
-    toast('Đã lưu đề trên máy');
-    go(`#/ltest/${encodeURIComponent(id)}`);
+    for (const pv of list) {
+      // Đề cùng tên đã có trên máy (ví dụ lần nhập trước bị ghép sai) → thay bằng bản mới, giữ kết quả các lần làm.
+      const old = tests().find((t) => t.title === pv.title);
+      const id = old?.id || 'X:' + uid();
+      const audio = {};
+      for (const [n, f] of Object.entries(pv.audio)) audio[n] = await toAudio(f);
+      await ltPut({ id, kind: 'test', title: pv.title, at: old?.at || Date.now(), parts: pv.parts, key: pv.key, audio, n: pv.cnt.n, tx: pv.tx || null, notes: pv.notes?.notes || {} });
+      savedIds.push(id);
+    }
+    imp.previews = [];
+    imp.skipped = [];
+    toast(savedIds.length > 1 ? `Đã lưu ${savedIds.length} đề trên máy` : 'Đã lưu đề trên máy');
+    go(savedIds.length > 1 ? '#/listening' : `#/ltest/${encodeURIComponent(savedIds[0])}`);
   } catch (e) {
     console.error(e);
     toast('Không lưu được: ' + (e?.message || e), 'bad');
@@ -579,7 +642,7 @@ on('lt-pick-files', async () => {
   input.type = 'file';
   input.multiple = true;
   input.accept = '.zip,application/zip,.html,.htm,.json,text/html,application/json,audio/*,.mp3,.m4a';
-  input.onchange = async () => { imp.error = 'Đang đọc file…'; rerender(); await readImport([...input.files]); rerender(); };
+  input.onchange = async () => { imp.previews = []; imp.error = 'Đang đọc file…'; rerender(); await readImport([...input.files]); rerender(); };
   input.click();
 });
 on('lt-files', async (el) => { await readImport([...el.files]); rerender(); }); // dùng cho kiểm thử
@@ -592,29 +655,36 @@ on('lt-del', async (el) => {
   go('#/listening');
 });
 
+function previewCard(pv) {
+  const rows = pv.parts.map((p) => {
+    const nums = p.groups.flatMap(groupNums);
+    const a = pv.audio[p.n];
+    return `<div class="row-between ls-catline"><span><b>Part ${p.n}</b> · ${nums.length} câu · ${p.groups.map((g) => TYPE_NAME[g.t]).filter((v, i, x) => x.indexOf(v) === i).join(', ')}</span><span class="small ${a ? 'muted' : 'lt-bad'}">${a ? esc(a.name.replace(/^[0-9a-f]{8}-/, '')) : 'thiếu file nghe'}</span></div>`;
+  }).join('');
+  const miss = pv.cnt.nums.filter((n) => !pv.key[n]);
+  const ok = previewOk(pv);
+  const exists = tests().some((t) => t.title === pv.title);
+  return `<div class="card lt-pv"><b>${esc(pv.title)}</b><p class="small muted" style="margin-top:2px">${pv.cnt.n} câu · đáp án ${pv.cnt.keyed}/${pv.cnt.n}${exists ? ' · <span class="lt-bad">đã có trên máy, sẽ thay bằng bản này (giữ kết quả các lần làm)</span>' : ''}</p>${rows}
+    <div class="row-between ls-catline"><span>Lời thoại</span><span class="small ${pv.tx ? 'muted' : 'faint'}">${pv.tx ? `${Object.keys(pv.tx.parts).length} Part · ${pv.tx.n} câu có mốc` : 'không có (thêm sau được)'}</span></div>
+    <div class="row-between ls-catline"><span>Giải thích</span><span class="small ${pv.notes ? 'muted' : 'faint'}">${pv.notes ? `${noteCount(pv.notes.notes)} câu` : 'không có (thêm sau được)'}</span></div>
+    ${miss.length ? `<p class="small lt-bad" style="margin-top:8px">Thiếu đáp án câu ${miss.slice(0, 12).join(', ')}${miss.length > 12 ? '…' : ''}${ok ? ' (các câu này sẽ không được chấm)' : ''}.</p>` : ''}
+    ${pv.parts.some((p) => !pv.audio[p.n]) ? '<p class="small lt-bad" style="margin-top:8px">Part thiếu file nghe vẫn làm được nhưng không có âm thanh.</p>' : ''}
+    ${pv.warn.map((w) => `<p class="small lt-bad" style="margin-top:6px">${esc(w)}</p>`).join('')}
+    ${ok ? '' : '<p class="small muted" style="margin-top:6px">Không tìm thấy đủ đáp án trong file nên đề này sẽ không được lưu.</p>'}</div>`;
+}
 export function importView() {
-  const pv = imp.preview;
   const nav = navBar('Nhập đề Listening', { fallback: '#/listening' });
-  let body = `<div class="card"><p>Chọn <b>gói đề</b> (.zip) bạn được gửi, hoặc chọn <b>cùng lúc</b> file đề (.html, có câu hỏi và đáp án) và các file nghe của từng Part (.mp3). Có thể chọn thêm file lời thoại (.html) và file giải thích (.json).</p>
-    <p class="small muted" style="margin-top:6px">Tên file nghe nên có "Part1", "Part2"… để app tự ghép đúng Part. Đề và file nghe chỉ lưu trên máy này, không gửi đi đâu và không có trong file sao lưu.</p>
+  let body = `<div class="card"><p>Chọn <b>gói đề</b> (.zip) bạn được gửi, hoặc chọn <b>cùng lúc</b> file đề (.html, có câu hỏi và đáp án) và các file nghe của từng Part (.mp3). Có thể chọn thêm file lời thoại (.html) và file giải thích (.json). Nhập được nhiều đề một lần (ví dụ cả 4 Test của một cuốn).</p>
+    <p class="small muted" style="margin-top:6px">Tên file nên có số Test và số Part (ví dụ Cam21_Test02_Part3.mp3, Cam21_Test02_Transcript.html) hoặc mỗi đề một thư mục, để app ghép đúng. Đề và file nghe chỉ lưu trên máy này, không gửi đi đâu và không có trong file sao lưu.</p>
     <button class="btn" style="margin-top:14px" data-act="lt-pick-files">${icon('folder', 'sm')} Chọn file</button>
     <input type="file" id="lt-files" data-change="lt-files" multiple hidden accept=".zip,.html,.htm,.json,audio/*"></div>`;
   if (imp.error) body += `<div class="banner" style="margin-top:12px">${icon('info')}<span>${esc(imp.error)}</span></div>`;
-  if (pv) {
-    const rows = pv.parts.map((p) => {
-      const nums = p.groups.flatMap(groupNums);
-      const a = pv.audio[p.n];
-      return `<div class="row-between ls-catline"><span><b>Part ${p.n}</b> · ${nums.length} câu · ${p.groups.map((g) => TYPE_NAME[g.t]).filter((v, i, x) => x.indexOf(v) === i).join(', ')}</span><span class="small ${a ? 'muted' : 'lt-bad'}">${a ? esc(a.name.replace(/^[0-9a-f]{8}-/, '')) : 'thiếu file nghe'}</span></div>`;
-    }).join('');
-    const miss = pv.cnt.nums.filter((n) => !pv.key[n]);
-    const ok = pv.cnt.keyed >= Math.ceil(pv.cnt.n * 0.8);
-    body += `<h2>Xem trước</h2><div class="card"><b>${esc(pv.title)}</b><p class="small muted" style="margin-top:2px">${pv.cnt.n} câu · đáp án ${pv.cnt.keyed}/${pv.cnt.n}</p>${rows}
-      <div class="row-between ls-catline"><span>Lời thoại</span><span class="small ${pv.tx ? 'muted' : 'faint'}">${pv.tx ? `${Object.keys(pv.tx.parts).length} Part · ${pv.tx.n} câu có mốc` : 'không có (thêm sau được)'}</span></div>
-      <div class="row-between ls-catline"><span>Giải thích</span><span class="small ${pv.notes ? 'muted' : 'faint'}">${pv.notes ? `${noteCount(pv.notes.notes)} câu` : 'không có (thêm sau được)'}</span></div>
-      ${miss.length ? `<p class="small lt-bad" style="margin-top:8px">Thiếu đáp án câu ${miss.slice(0, 12).join(', ')}${miss.length > 12 ? '…' : ''}${ok ? ' (các câu này sẽ không được chấm)' : ''}.</p>` : ''}
-      ${pv.parts.some((p) => !pv.audio[p.n]) ? '<p class="small lt-bad" style="margin-top:8px">Part thiếu file nghe vẫn làm được nhưng không có âm thanh.</p>' : ''}
-      <button class="btn" style="margin-top:14px" data-act="lt-save" ${ok && !imp.busy ? '' : 'disabled'}>${imp.busy ? 'Đang lưu…' : 'Lưu đề'}</button>
-      ${ok ? '' : '<p class="small muted" style="margin-top:6px">Không tìm thấy đủ đáp án trong file nên chưa lưu được.</p>'}</div>`;
+  const pvs = imp.previews;
+  if (pvs.length) {
+    const okN = pvs.filter(previewOk).length;
+    body += `<h2>Xem trước · ${pvs.length} đề</h2>${pvs.map(previewCard).join('')}
+      ${imp.skipped.length ? `<p class="small lt-bad" style="margin:10px 2px 0">Không ghép được vào đề nào: ${esc(imp.skipped.slice(0, 8).join(', '))}${imp.skipped.length > 8 ? '…' : ''}. Đổi tên file cho có số Test (ví dụ Test02) rồi chọn lại.</p>` : ''}
+      <button class="btn" style="margin-top:14px" data-act="lt-save" ${okN && !imp.busy ? '' : 'disabled'}>${imp.busy ? 'Đang lưu…' : okN > 1 ? `Lưu ${okN} đề` : 'Lưu đề'}</button>`;
   }
   return `<div class="page">${nav}${body}</div>`;
 }
