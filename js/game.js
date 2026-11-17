@@ -270,7 +270,7 @@ on('game-start', () => begin());
 on('game-continue', () => begin({ keepPlace: true }));
 on('game-hero', (el) => { savePrefs({ hero: el.dataset.hero }); rerender(); });
 on('game-focus', () => $('.g-input')?.focus({ preventScroll: true }));
-on('game-quit', () => { if (G?.raf) cancelAnimationFrame(G.raf); G = null; back('#/learn'); });
+on('game-quit', () => { if (G?.raf) cancelAnimationFrame(G.raf); G = null; back('#/games'); });
 
 // ---- Màn hình ----
 export function gameView() {
@@ -296,7 +296,7 @@ export function gameView() {
   }
   if (G && G.phase === 'over') {
     const missed = G.missed.map((id) => S.words.get(id)).filter(Boolean);
-    return `<div class="page game">${navBar('Chạy & Gõ', { fallback: '#/learn' })}
+    return `<div class="page game">${navBar('Chạy & Gõ', { fallback: '#/games' })}
       <div class="card g-over">
         <div class="g-hero big hurt-still">${HEROES[G.hero]?.svg || HEROES.mochi.svg}</div>
         <p class="eyebrow">${G.newBest ? 'Kỷ lục mới!' : 'Hết mạng'}</p>
@@ -310,7 +310,7 @@ export function gameView() {
   }
   const n = gamePool().length;
   const ready = n >= GAME_MIN;
-  return `<div class="page game">${navBar('Chạy & Gõ', { fallback: '#/learn' })}
+  return `<div class="page game">${navBar('Chạy & Gõ', { fallback: '#/games' })}
     <div class="card">
       <p class="muted small" style="margin-bottom:10px">Chọn nhân vật</p>
       <div class="g-pick">${Object.entries(HEROES).map(([id, h]) => `<button class="${prefs.hero === id ? 'on' : ''}" data-act="game-hero" data-hero="${id}" aria-pressed="${prefs.hero === id}"><span class="g-hero big">${h.svg}</span><b>${h.name}</b></button>`).join('')}</div>

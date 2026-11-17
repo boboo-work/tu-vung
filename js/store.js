@@ -101,6 +101,7 @@ export const S = {
   grammar: new Map(), // id → bản ghi: L:<bài> tiến độ · C:<thẻ> lịch ôn · E:<nhãn lỗi> sổ lỗi · placement
   settings: structuredClone(DEFAULT_SETTINGS),
   ltest: new Map(), // id → X:<…> đề Listening tự nhập (kind: test, kèm file nghe) · R:<…> một lần làm đề (kind: attempt)
+  hunt: null, // game Săn từ: số lượt, kỷ lục, câu sai chờ chơi lại, tỉ lệ đoán đúng loại từ
   listening: null, // thống kê Listening: các bộ đã làm, tỉ lệ đúng theo dạng, lỗi hay gặp, từ hay nghe sót
   game: null, // dữ liệu mini game (vòng chơi, thống kê, kỷ lục) — tách riêng, không tính vào tiến độ học
   persisted: false,
@@ -121,6 +122,7 @@ export async function init() {
   if (saved) S.settings = { ...DEFAULT_SETTINGS, ...saved, ai: { ...DEFAULT_SETTINGS.ai, ...(saved.ai || {}) } };
   S.game = cleanGame(kv.find((x) => x.key === 'game')?.value);
   S.listening = cleanListening(kv.find((x) => x.key === 'listening')?.value);
+  S.hunt = cleanHunt(kv.find((x) => x.key === 'hunt')?.value);
   if (!S.decks.length) {
     S.decks = DEFAULT_DECKS.map(([id, name], i) => ({ id, name, builtin: true, order: i }));
     await tx(['decks'], 'readwrite', (t) => S.decks.forEach((d) => t.objectStore('decks').put(d)));
@@ -205,9 +207,9 @@ export async function deleteDeck(id) {
 }
 
 // ---- Nhật ký theo ngày ----
-const blankDay = (date) => ({ date, newIds: [], reviewIds: [], correct: 0, wrong: 0, gLessons: [], gReviews: [], wEssays: [], rPassages: [], sTurns: [], lSets: [] });
+const blankDay = (date) => ({ date, newIds: [], reviewIds: [], correct: 0, wrong: 0, gLessons: [], gReviews: [], wEssays: [], rPassages: [], sTurns: [], lSets: [], hSets: [] });
 /** Ngày có học gì không (từ vựng hoặc ngữ pháp). */
-export const dayActive = (x) => !!x && (x.newIds.length + x.reviewIds.length + x.correct + x.wrong + (x.gLessons?.length || 0) + (x.gReviews?.length || 0) + (x.wEssays?.length || 0) + (x.rPassages?.length || 0) + (x.sTurns?.length || 0) + (x.lSets?.length || 0)) > 0;
+export const dayActive = (x) => !!x && (x.newIds.length + x.reviewIds.length + x.correct + x.wrong + (x.gLessons?.length || 0) + (x.gReviews?.length || 0) + (x.wEssays?.length || 0) + (x.rPassages?.length || 0) + (x.sTurns?.length || 0) + (x.lSets?.length || 0) + (x.hSets?.length || 0)) > 0;
 
 // ---- Writing ----
 export async function wPut(...recs) {
@@ -458,6 +460,20 @@ export async function ltDel(...ids) {
   await tx(['ltest'], 'readwrite', (t) => ids.forEach((id) => t.objectStore('ltest').delete(id)));
   ids.forEach((id) => S.ltest.delete(id));
 }
+// ---- Game Săn từ ----
+// S.hunt = { plays, best, wrong: { "<đề>|<passage>|<câu>": số lần đúng liên tiếp kể từ lần sai }, pos: { n|v|a|num|other: { n, ok } }, seen: { khoá: lần cuối } }
+export function cleanHunt(h) {
+  const o = h && typeof h === 'object' ? h : {};
+  const n = (v) => (Number.isFinite(Number(v)) && Number(v) >= 0 ? Math.round(Number(v)) : 0);
+  const KEY = /^[a-z0-9-]{1,40}\|[a-z0-9-]{1,40}\|\d{1,2}$/;
+  const pick = (m, lim) => Object.fromEntries(Object.entries(m && typeof m === 'object' ? m : {}).filter(([k]) => KEY.test(k)).slice(-lim).map(([k, v]) => [k, n(v)]));
+  const pos = {};
+  for (const k of ['n', 'v', 'a', 'num', 'other']) pos[k] = { n: n(o.pos?.[k]?.n), ok: n(o.pos?.[k]?.ok) };
+  return { plays: n(o.plays), best: n(o.best), wrong: pick(o.wrong, 400), pos, seen: pick(o.seen, 2000) };
+}
+export async function saveHunt() {
+  await put('kv', { key: 'hunt', value: S.hunt });
+}
 export async function saveListening() {
   await put('kv', { key: 'listening', value: S.listening });
 }
@@ -499,6 +515,7 @@ export function exportData({ withWriting = true } = {}) {
     reading: readingBackup(),
     speaking: [...S.speaking.values()].map(({ audio, ...r }) => ({ ...r, hasAudio: !!audio })),
     listening: S.listening,
+    hunt: S.hunt,
     // Đề tự nhập (có bản quyền, file nghe nặng) không đưa vào file sao lưu; chỉ giữ kết quả làm bài.
     ltestResults: [...S.ltest.values()].filter((r) => r.kind === 'attempt'),
   };
@@ -673,6 +690,7 @@ function cleanBackup(data) {
     rPassages: Array.isArray(d.rPassages) ? d.rPassages.filter((x) => typeof x === 'string') : [],
     sTurns: Array.isArray(d.sTurns) ? d.sTurns.filter((x) => typeof x === 'string') : [],
     lSets: Array.isArray(d.lSets) ? d.lSets.filter((x) => typeof x === 'string') : [],
+    hSets: Array.isArray(d.hSets) ? d.hSets.filter((x) => typeof x === 'string') : [],
   }));
   const writing = Array.isArray(data.writing) ? data.writing.map(cleanWriting).filter(Boolean) : null;
   const reading = Array.isArray(data.reading) ? data.reading.map(cleanReading).filter(Boolean) : null;
@@ -706,7 +724,8 @@ function cleanBackup(data) {
   };
   const listening = data.listening && typeof data.listening === 'object' ? cleanListening(data.listening) : null;
   const ltestResults = Array.isArray(data.ltestResults) ? data.ltestResults.map(cleanLtAttempt).filter(Boolean) : null;
-  return { decks, words, days, settings, game: cleanGame(data.game), grammar, writing, reading, speaking, listening, ltestResults };
+  const hunt = data.hunt && typeof data.hunt === 'object' ? cleanHunt(data.hunt) : null;
+  return { decks, words, days, settings, game: cleanGame(data.game), grammar, writing, reading, speaking, listening, ltestResults, hunt };
 }
 
 function cleanLtAttempt(r) {
@@ -757,6 +776,7 @@ export async function restoreData(data) {
     t.objectStore('kv').put({ key: 'game', value: clean.game });
     // File sao lưu cũ (chưa có Listening) → giữ nguyên thống kê Listening trên máy.
     if (clean.listening) t.objectStore('kv').put({ key: 'listening', value: clean.listening });
+    if (clean.hunt) t.objectStore('kv').put({ key: 'hunt', value: clean.hunt });
   });
   await init();
   return clean.words.length;

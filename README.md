@@ -35,6 +35,7 @@ Dữ liệu gắn với địa chỉ (origin) của trang. Khi đổi địa ch�
 | `js/speak.js` | Luyện IELTS Speaking: kho đề theo quý, ghi âm/nghe lại/bản 2, đồng hồ Part 2, số liệu thời gian nói và khoảng dừng, tự chấm |
 | `js/listening.js` | Luyện IELTS Listening: nghe số và chính tả (7 dạng của Part 1, câu sinh ngẫu nhiên, có câu gây nhiễu), nghe chép có so từng từ |
 | `js/ltest.js` | Listening đề thật tự nhập: đọc file đề HTML, ghép file nghe, làm bài như thi / luyện, chấm theo luật, band, chữa |
+| `js/hunt.js` | Tab Game và trò Săn từ (Reading): chọn câu từ các đề, đoán loại từ, chạm từ trong bài, né bẫy, T/F/NG, phục thù câu sai |
 | `js/lookup.js` | “Tự điền” ở form thêm từ (tự chạy khi gõ xong từ, bật/tắt ở Cài đặt): từ điển Wiktionary, dịch MyMemory, gợi ý Datamuse và Trợ lý AI để điền IPA, định nghĩa, ví dụ, nghĩa tiếng Việt, collocations… |
 | `js/views.js`, `js/views2.js` | Các màn hình |
 | `js/io.js` | Import CSV/XLSX, export CSV, sao lưu JSON, bộ từ mẫu |
@@ -84,6 +85,14 @@ python3 tools/reading_import.py one --id cam20-t2 --title "Cambridge 20 · Test 
 ```
 
 Chế độ `dir` tự ghép file đề với file Simplify/giải theo tên bài đọc (tên file đề đặt nhầm cũng không sao), đọc được các kiểu file Simplify (①② nội dòng, bảng "Giữ lại", bảng có câu gốc gạch `~~`), hai kiểu file giải, và file đề chép từ web (mất tiêu đề nhóm câu, đáp án gộp `21&22`, danh sách phương án lẫn cột → lấy từ file giải). Đề nào lỗi nặng thì bỏ qua và in lý do. Kết quả nằm ở `content/reading/<id>.json` và `index.json`; app tải đề khi mở lần đầu rồi lưu lại để dùng offline. Tăng `VERSION` trong `sw.js` sau khi thêm đề.
+
+## Game
+
+Tab **Game** (giữa Từ vựng và Thống kê): thử thách hôm nay, các trò ôn từ đề thật và 4 mini game từ vựng (chuyển từ tab Học sang). Giao diện kiểu sticker, Mochi và Bolt dẫn trò.
+
+- **Săn từ (Reading):** lấy câu từ các đề Reading trong app. Câu điền từ: đoán loại từ cho chỗ trống (chỉ hỏi khi lời giải ghi rõ hoặc suy ra chắc chắn), rồi chạm đúng từ cần điền trong đoạn văn chứa đáp án, né bẫy (lấy từ ghi chú ⚠️ của lời giải); sau đó xem câu chứa đáp án, cặp paraphrase, vì sao là bẫy, lời giải đầy đủ, nghe phát âm và cất từ vào từ vựng. Câu TRUE/FALSE/NOT GIVEN: chọn đáp án rồi chạm cụm làm bằng chứng. Mỗi lượt 10 câu, có giờ (thong thả 30″ / như thi 15″), điểm và chuỗi đúng; câu sai quay lại các lượt sau cho tới khi đúng 2 lần liên tiếp ("phục thù").
+- Mỗi lượt có ít nhất 1 câu trả lời được tính vào chuỗi ngày học, không tính vào mục tiêu Reading. Thống kê game có trong file sao lưu.
+- Sắp có: Bẫy hay Thật (Listening), Nói 30 giây (Speaking), Ý tưởng 60 giây (Writing).
 
 ## Listening
 

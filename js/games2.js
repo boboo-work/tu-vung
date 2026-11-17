@@ -48,7 +48,7 @@ function finishRound(r) {
   rerender(true);
   confetti({ count: r.newBest || !r.missed.length ? 150 : 70 });
 }
-function quit(kind) { R[kind] = null; speechSynthesis?.cancel?.(); back('#/learn'); }
+function quit(kind) { R[kind] = null; speechSynthesis?.cancel?.(); back('#/games'); }
 
 const topBar = (r, quitAct) => `<div class="g-top"><button class="iconbtn" data-act="${quitAct}" aria-label="Thoát">${icon('x')}</button>
   <div class="d-time"><i style="transform:scaleX(${(r.total - r.queue.length) / r.total})"></i></div>
@@ -75,7 +75,7 @@ const STARS = '<i class="str" style="--a:0deg">✦</i><i class="str" style="--a:
 
 function overView(r, title, startAct, quitAct) {
   const missed = r.missed.map((id) => S.words.get(id)).filter(Boolean);
-  return `<div class="page game">${navBar(title, { fallback: '#/learn' })}
+  return `<div class="page game">${navBar(title, { fallback: '#/games' })}
     <div class="card g-over">
       <div class="d-duo" style="margin-bottom:6px"><span class="g-hero big">${HEROES.mochi.svg}</span><span class="g-hero big">${HEROES.bolt.svg}</span></div>
       <p class="eyebrow">${r.newBest ? 'Kỷ lục mới!' : 'Hoàn thành'}</p>
@@ -89,7 +89,7 @@ function overView(r, title, startAct, quitAct) {
 }
 function introView(kind, title, rules, n, startAct, extra = '') {
   const best = bestOf(kind);
-  return `<div class="page game">${navBar(title, { fallback: '#/learn' })}
+  return `<div class="page game">${navBar(title, { fallback: '#/games' })}
     <div class="card">
       <div class="d-duo"><span class="g-hero big">${HEROES.mochi.svg}</span><span class="g-hero big">${HEROES.bolt.svg}</span></div>
       <b>Cách chơi</b>

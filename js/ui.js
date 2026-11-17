@@ -43,7 +43,7 @@ export const actions = {};
 export const on = (name, fn) => (actions[name] = fn);
 
 // ---- Điều hướng ----
-export const TABS = ['home', 'learn', 'grammar', 'writing', 'reading', 'speaking', 'listening', 'review', 'vocab', 'stats']; // ngữ pháp và 4 kỹ năng IELTS nằm trong tab Học
+export const TABS = ['home', 'learn', 'grammar', 'writing', 'reading', 'speaking', 'listening', 'review', 'vocab', 'games', 'stats']; // ngữ pháp và 4 kỹ năng IELTS nằm trong tab Học
 let depth = 0;
 export function go(hash) {
   const name = hash.split('/')[1];
