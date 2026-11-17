@@ -323,3 +323,11 @@ body.no-tabs #view { padding-bottom: calc(var(--safe-b) + 28px); }
 #view.enter .home-mascot { animation: pop .5s .2s both; }
 .top h1 { overflow-wrap: anywhere; }
 .name-in { width: 150px; min-height: 44px; flex: none; }
+
+/* Dải nền dưới thanh tab nổi: che phần nội dung cuộn lộ ra giữa thanh tab và mép dưới màn hình (vùng thanh Home của iPhone). */
+body:not(.no-tabs) #app::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 19; pointer-events: none;
+  height: calc(var(--safe-b) + 10px + var(--tab-h) / 2 + 18px);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 0%, transparent), var(--bg) 18px);
+}
+@media (min-width: 1000px) { body:not(.no-tabs) #app::after { display: none; } }
