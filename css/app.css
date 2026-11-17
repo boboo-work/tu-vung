@@ -1289,3 +1289,76 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 .hn-res .hn-card p { margin: 6px 0 0; font-size: 14.5px; font-weight: 700; }
 .hn-row2 { display: flex; gap: 10px; margin-top: 20px; }
 .hn-row2 .hn-btn { margin-top: 0; font-size: 18px; }
+
+/* ===== Mini game kiểu sticker (cùng phong cách tab Game) ===== */
+#view:has(> .page.game) { background-color: #FFF6E6; background-image: radial-gradient(#F1DDBB 1.6px, transparent 1.8px); background-size: 22px 22px; }
+.page.game { font-family: var(--hn-font); color: var(--hn-ink); }
+.page.game .nav h3 { font-family: var(--hn-font); font-size: 21px; font-weight: 800; }
+.page.game .nav .iconbtn, .page.game .g-top > .iconbtn { width: 42px; height: 42px; border: 2.5px solid var(--hn-ink); border-radius: 14px; background: #FFFFFF; box-shadow: 0 3px 0 var(--hn-ink); color: var(--hn-ink); }
+.page.game .g-top { margin: 0 0 12px; }
+.page.game .card { border: 2.5px solid var(--hn-ink); border-radius: 24px; box-shadow: 0 5px 0 var(--hn-ink); background: #FFFFFF; }
+.page.game .card + .card, .page.game h2 + .card { margin-top: 16px; }
+.page.game h2 { font-family: var(--hn-font); font-size: 19px; font-weight: 800; color: var(--hn-ink); text-transform: none; letter-spacing: 0; }
+.page.game .muted, .page.game .g-rules { color: #5B5070; }
+.page.game .g-rules { font-weight: 600; }
+.page.game .btn { min-height: 56px; border: 2.5px solid var(--hn-ink); border-radius: 20px; background: #FFD84D; color: var(--hn-ink); box-shadow: 0 5px 0 var(--hn-ink); font-family: var(--hn-font); font-size: 19px; font-weight: 800; }
+.page.game .btn.ghost { background: #FFFFFF; }
+.page.game .btn.soft { background: #8EE3C8; }
+.page.game .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--hn-ink); }
+.page.game .eyebrow { color: #8B7FA3; font-weight: 800; }
+.page.game .g-final { font-family: var(--hn-font); font-weight: 800; }
+.page.game .g-over { background: #C7B8FF; }
+.page.game .g-over .muted { color: var(--hn-ink); font-weight: 700; }
+/* Chọn nhân vật */
+.page.game .g-pick button { border: 2.5px solid var(--hn-ink); border-radius: 20px; background: #FFFFFF; box-shadow: 0 4px 0 var(--hn-ink); font-family: var(--hn-font); font-weight: 800; color: var(--hn-ink); }
+.page.game .g-pick button.on { background: #8EE3C8; transform: translateY(2px); box-shadow: 0 2px 0 var(--hn-ink); }
+/* Sân chơi */
+.page.game .g-stage { border: 2.5px solid var(--hn-ink); border-radius: 24px; box-shadow: 0 5px 0 var(--hn-ink); background: #DFF2FF; }
+.page.game .g-ground { background: #8EE3C8; border-top: 2.5px solid var(--hn-ink); }
+.page.game .g-ground::after { background: repeating-linear-gradient(90deg, rgba(43, 34, 64, .35) 0 18px, transparent 18px 60px); }
+.page.game .g-cloud { background: #FFFFFF; border: 2px solid var(--hn-ink); }
+.page.game .g-hearts { color: #E3D6C3; -webkit-text-stroke: 1.5px var(--hn-ink); }
+.page.game .g-hearts .on { color: #FF6B8B; }
+.page.game .g-score b { font-weight: 800; }
+.page.game .g-score small { color: #6B6080; font-weight: 800; }
+.page.game .g-meaning, .page.game .d-meaning { font-family: var(--hn-font); font-weight: 800; }
+.page.game .tag { border: 2px solid var(--hn-ink); background: #C7B8FF; color: var(--hn-ink); font-weight: 800; }
+.page.game .g-slots i { border-bottom-color: var(--hn-ink); color: var(--hn-ink); font-family: var(--hn-font); font-weight: 700; }
+.page.game .g-slots i.ok { color: #1B7F55; border-color: #1B9E6B; }
+.page.game .g-note { color: #6B6080; font-weight: 700; }
+.page.game .answer-input { border: 2.5px solid var(--hn-ink); border-radius: 18px; background: #FFFFFF; box-shadow: 0 4px 0 var(--hn-ink); font-family: var(--hn-font); font-weight: 800; color: var(--hn-ink); }
+.page.game .answer-input:focus { outline: none; border-color: var(--hn-ink); box-shadow: 0 4px 0 var(--hn-ink), 0 0 0 4px #FFD84D; }
+/* Bắn Từ */
+.page.game .d-time { height: 14px; border: 2.5px solid var(--hn-ink); border-radius: 999px; background: #FFFFFF; }
+.page.game .d-time i { background: #8EE3C8; }
+.page.game .d-tile { background: #FFFFFF; border: 2.5px solid var(--hn-ink); border-radius: 14px; box-shadow: 0 4px 0 var(--hn-ink); }
+.page.game .d-tile .g-slots i { color: var(--hn-ink); border-bottom-color: var(--hn-ink); }
+.page.game .d-tile.hit { background: #8EE3C8; border-color: var(--hn-ink); }
+.page.game .d-tile.smash { box-shadow: none; }
+.page.game .d-tile .shard { background: #FFB3CB; border: 1.5px solid var(--hn-ink); }
+.page.game .d-badge { background: #8EE3C8; color: var(--hn-ink); border: 2.5px solid var(--hn-ink); box-shadow: 0 3px 0 var(--hn-ink); font-family: var(--hn-font); }
+.page.game .d-answer { background: #FFB3CB; color: var(--hn-ink); border: 2.5px solid var(--hn-ink); box-shadow: 0 4px 0 var(--hn-ink); }
+.page.game .d-answer b { color: var(--hn-ink); font-family: var(--hn-font); }
+.page.game .d-shot { background: #FFD84D; box-shadow: 0 0 0 3px var(--hn-ink); }
+/* Nối Cụm */
+.page.game .m-text { font-family: var(--hn-font); font-weight: 800; }
+.page.game .m-blank { border-bottom: 3px dashed var(--hn-ink); }
+.page.game .m-blank.ok { color: #1B7F55; border-color: #1B9E6B; }
+.page.game .m-blank.no { color: #C2412D; border-color: #E5484D; }
+.page.game .m-opt { border: 2.5px solid var(--hn-ink); border-radius: 20px; box-shadow: 0 5px 0 var(--hn-ink); font-family: var(--hn-font); font-size: 17px; font-weight: 800; color: var(--hn-ink); }
+.page.game .m-opts .m-opt:nth-child(1) { background: #D9F7EC; } .page.game .m-opts .m-opt:nth-child(2) { background: #FFE4D4; }
+.page.game .m-opts .m-opt:nth-child(3) { background: #FFE1EC; } .page.game .m-opts .m-opt:nth-child(4) { background: #E4EEFF; }
+.page.game .m-opts .m-opt.ok { background: #8EE3C8; color: var(--hn-ink); border-color: var(--hn-ink); outline: 4px solid #1B9E6B; outline-offset: 2px; }
+.page.game .m-opts .m-opt.no { background: #FFB3CB; color: var(--hn-ink); border-color: var(--hn-ink); }
+.page.game .m-note { color: #5B5070; font-weight: 700; }
+/* Nghe & Chạm */
+.page.game .p-band { background: #FFF6E6; border-top: 2.5px solid var(--hn-ink); }
+.page.game .p-bub { border: 2.5px solid var(--hn-ink); box-shadow: 0 4px 0 var(--hn-ink); background: #FFF0B8; color: var(--hn-ink); font-family: var(--hn-font); font-weight: 800; }
+.page.game .p-bub.c1 { background: #E4EEFF; }
+.page.game .p-bub::after { background: var(--hn-ink); }
+.page.game .p-bub.right { background: #8EE3C8; color: var(--hn-ink); border-color: var(--hn-ink); box-shadow: 0 4px 0 var(--hn-ink), 0 0 0 5px #D9F7EC; }
+.page.game .p-bub.wrong { background: #FFB3CB; color: var(--hn-ink); border-color: var(--hn-ink); }
+.page.game .p-answer { border: 2.5px solid var(--hn-ink); box-shadow: 0 4px 0 var(--hn-ink); }
+.page.game .p-answer.ok { background: #8EE3C8; color: var(--hn-ink); } .page.game .p-answer.no { background: #FFB3CB; color: var(--hn-ink); }
+.page.game .p-answer b, .page.game .p-answer span:last-child { color: var(--hn-ink); }
+.page.game .p-speak { border: 2.5px solid var(--hn-ink); box-shadow: 0 3px 0 var(--hn-ink); background: #FFD84D; color: var(--hn-ink); }

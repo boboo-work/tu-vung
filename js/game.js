@@ -15,23 +15,24 @@ export const HEROES = {
   mochi: {
     name: 'Mochi',
     svg: `<svg viewBox="0 0 64 64" aria-hidden="true">
-      <path d="M32 12c-1-6 3-9 8-9-1 5-3 8-8 9z" fill="#3E9B6B"/>
-      <rect class="leg a" x="21" y="52" width="8" height="10" rx="4" fill="#C9603A"/>
-      <rect class="leg b" x="35" y="52" width="8" height="10" rx="4" fill="#C9603A"/>
-      <ellipse cx="32" cy="34" rx="23" ry="22" fill="#F08A5D"/>
+      <path d="M32 12c-1-6 3-9 8-9-1 5-3 8-8 9z" fill="#3E9B6B" stroke="#2B2240" stroke-width="1.8" stroke-linejoin="round"/>
+      <rect class="leg a" x="21" y="52" width="8" height="10" rx="4" fill="#C9603A" stroke="#2B2240" stroke-width="1.6"/>
+      <rect class="leg b" x="35" y="52" width="8" height="10" rx="4" fill="#C9603A" stroke="#2B2240" stroke-width="1.6"/>
+      <ellipse cx="32" cy="34" rx="23" ry="22" fill="#F08A5D" stroke="#2B2240" stroke-width="2.4"/>
       <ellipse cx="34" cy="42" rx="13" ry="10" fill="#FBD3B8"/>
-      <circle cx="27" cy="29" r="6" fill="#fff"/><circle cx="43" cy="29" r="6" fill="#fff"/>
+      <circle cx="27" cy="29" r="6" fill="#fff" stroke="#2B2240" stroke-width="1.5"/><circle cx="43" cy="29" r="6" fill="#fff" stroke="#2B2240" stroke-width="1.5"/>
       <circle cx="29" cy="30" r="2.8" fill="#1B1B1F"/><circle cx="45" cy="30" r="2.8" fill="#1B1B1F"/>
       <path d="M31 40q5 4 10 0" fill="none" stroke="#7A2E14" stroke-width="2.2" stroke-linecap="round"/>
+      <ellipse cx="19" cy="37" rx="3.5" ry="2.2" fill="#FF8FB1"/><ellipse cx="49" cy="37" rx="3.5" ry="2.2" fill="#FF8FB1"/>
     </svg>`,
   },
   bolt: {
     name: 'Bolt',
     svg: `<svg viewBox="0 0 64 64" aria-hidden="true">
-      <path d="M32 12V5" stroke="#5A6B8C" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="4" r="3.5" fill="#F2B632"/>
-      <rect class="leg a" x="20" y="52" width="9" height="10" rx="3" fill="#2B3F6B"/>
-      <rect class="leg b" x="35" y="52" width="9" height="10" rx="3" fill="#2B3F6B"/>
-      <rect x="10" y="12" width="44" height="42" rx="12" fill="#4A6FB5"/>
+      <path d="M32 12V5" stroke="#2B2240" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="4" r="3.5" fill="#FFD84D" stroke="#2B2240" stroke-width="1.6"/>
+      <rect class="leg a" x="20" y="52" width="9" height="10" rx="3" fill="#2B3F6B" stroke="#2B2240" stroke-width="1.6"/>
+      <rect class="leg b" x="35" y="52" width="9" height="10" rx="3" fill="#2B3F6B" stroke="#2B2240" stroke-width="1.6"/>
+      <rect x="10" y="12" width="44" height="42" rx="13" fill="#4A6FB5" stroke="#2B2240" stroke-width="2.4"/>
       <rect x="16" y="20" width="34" height="17" rx="8.5" fill="#12203D"/>
       <circle cx="28" cy="28.5" r="4" fill="#7FE3C4"/><circle cx="42" cy="28.5" r="4" fill="#7FE3C4"/>
       <rect x="24" y="43" width="18" height="4" rx="2" fill="#C9D6F2"/>
@@ -39,9 +40,9 @@ export const HEROES = {
   },
 };
 const OBSTACLES = [
-  `<svg viewBox="0 0 48 40" aria-hidden="true"><rect x="2" y="27" width="44" height="12" rx="2.5" fill="#2A78D6"/><rect x="6" y="15" width="38" height="12" rx="2.5" fill="#EB6834"/><rect x="4" y="3" width="36" height="12" rx="2.5" fill="#1BAF7A"/><path d="M8 33h14M12 21h12M9 9h10" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".75"/></svg>`,
-  `<svg viewBox="0 0 48 40" aria-hidden="true"><path d="M3 39 10 18l9-9 12-3 11 12 4 21z" fill="#8C8A80"/><path d="M19 9l4 12-7 8M31 6l-2 14 8 9" fill="none" stroke="#6C6A62" stroke-width="2" stroke-linecap="round"/></svg>`,
-  `<svg viewBox="0 0 48 40" aria-hidden="true"><rect x="5" y="14" width="38" height="25" rx="3" fill="#B7793A"/><path d="M5 22h38M24 14v25" stroke="#8A5622" stroke-width="2.5"/><rect x="18" y="5" width="12" height="9" rx="2" fill="none" stroke="#8A5622" stroke-width="2.5"/></svg>`,
+  `<svg viewBox="0 0 48 40" aria-hidden="true"><rect x="2" y="27" width="44" height="12" rx="2.5" fill="#2A78D6" stroke="#2B2240" stroke-width="2"/><rect x="6" y="15" width="38" height="12" rx="2.5" fill="#EB6834" stroke="#2B2240" stroke-width="2"/><rect x="4" y="3" width="36" height="12" rx="2.5" fill="#1BAF7A" stroke="#2B2240" stroke-width="2"/><path d="M8 33h14M12 21h12M9 9h10" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".75"/></svg>`,
+  `<svg viewBox="0 0 48 40" aria-hidden="true"><path d="M3 39 10 18l9-9 12-3 11 12 4 21z" fill="#8C8A80" stroke="#2B2240" stroke-width="2"/><path d="M19 9l4 12-7 8M31 6l-2 14 8 9" fill="none" stroke="#6C6A62" stroke-width="2" stroke-linecap="round"/></svg>`,
+  `<svg viewBox="0 0 48 40" aria-hidden="true"><rect x="5" y="14" width="38" height="25" rx="3" fill="#B7793A" stroke="#2B2240" stroke-width="2"/><path d="M5 22h38M24 14v25" stroke="#8A5622" stroke-width="2.5"/><rect x="18" y="5" width="12" height="9" rx="2" fill="none" stroke="#8A5622" stroke-width="2.5"/></svg>`,
 ];
 
 // ---- Lưu kỷ lục & nhân vật đã chọn (theo máy) ----
