@@ -1394,3 +1394,11 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 .tp-in:focus { outline: none; box-shadow: 0 4px 0 var(--hn-ink), 0 0 0 4px #FFD84D; }
 .tp-replay { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 6px 12px; border: 2px solid var(--hn-ink); border-radius: 999px; background: #BFE3FF; box-shadow: 0 3px 0 var(--hn-ink); font-family: var(--hn-font); font-size: 14px; font-weight: 800; color: var(--hn-ink); }
 .hn-setup .hn-say { align-items: center; }
+.tp-para { line-height: 1.85; }
+.tp-sp { display: inline-block; margin: 6px 4px 0 0; padding: 0 7px; border: 2px solid var(--hn-ink); border-radius: 8px; background: #FFF0B8; font-size: 11.5px; font-weight: 800; letter-spacing: .3px; line-height: 1.5; vertical-align: 2px; }
+.tp-replayrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.tp-shift { display: inline-flex; gap: 6px; margin-top: 10px; }
+.tp-shift button { min-width: 48px; height: 32px; border: 2px solid var(--hn-ink); border-radius: 10px; background: #fff; box-shadow: 0 3px 0 var(--hn-ink); font-family: var(--hn-font); font-size: 14px; font-weight: 800; color: var(--hn-ink); }
+.tp-shift button:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--hn-ink); }
+.tp-adjnote { margin: 6px 0 0; font-size: 12.5px; font-weight: 600; color: #6B6280; }
+.tp-para .hn-w.right { box-shadow: none; padding: 1px 2px; border-radius: 5px; }
