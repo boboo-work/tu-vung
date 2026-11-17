@@ -715,7 +715,7 @@ function cleanLtAttempt(r) {
   const ans = {};
   if (r.ans && typeof r.ans === 'object') for (const [k, v] of Object.entries(r.ans)) if (/^\d{1,2}$/.test(k)) ans[k] = Array.isArray(v) ? v.map(str).slice(0, 5) : str(v).slice(0, 80);
   return {
-    id: r.id, kind: 'attempt', test: str(r.test).slice(0, 60), title: str(r.title).slice(0, 120), date: r.date, at: n(r.at), mode: r.mode === 'practice' ? 'practice' : 'exam',
+    id: r.id, kind: 'attempt', test: str(r.test).slice(0, 60), title: str(r.title).slice(0, 120), date: r.date, at: n(r.at), mode: r.mode === 'practice' ? 'practice' : 'exam', rate: [0.85, 1, 1.1, 1.25].includes(Number(r.rate)) ? Number(r.rate) : 1,
     parts: Array.isArray(r.parts) ? r.parts.map(n).filter((x) => x >= 1 && x <= 4) : [], score: n(r.score), total: n(r.total), band: Number(r.band) || 0, ans,
     byType: r.byType && typeof r.byType === 'object' ? Object.fromEntries(Object.entries(r.byType).filter(([k]) => /^[a-z]{2,8}$/.test(k)).map(([k, v]) => [k, { n: n(v?.n), ok: n(v?.ok) }])) : {},
     whys: r.whys && typeof r.whys === 'object' ? Object.fromEntries(Object.entries(r.whys).filter(([k]) => /^[a-z]{2,12}$/.test(k)).map(([k, v]) => [k, n(v)])) : {},
