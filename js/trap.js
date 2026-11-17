@@ -63,6 +63,36 @@ function findAlt(T, alt, from = 0, to = T.length) {
   }
   return hits.filter((h) => h.some((i) => T[i].u)).pop() || hits.pop() || null;
 }
+/** Mọi chỗ khớp cụm `alt` trong T[from..to). */
+function allAlt(T, alt, from, to) {
+  const len = alt.split(' ').filter(Boolean).length, out = [];
+  for (let i = Math.max(0, from); i + len <= Math.min(to, T.length); i++) {
+    if (T[i].sp) continue;
+    if (T.slice(i, i + len).map((x) => x.n).join(' ') === alt) out.push(Array.from({ length: len }, (_, j) => i + j));
+  }
+  return out;
+}
+/** Chỗ khớp đáp án gần mốc nhất trong khoảng [m - back, m + fwd); chỗ gạch chân được ưu tiên. */
+function nearestAlt(T, alts, m, back, fwd) {
+  let best = null, bestScore = Infinity;
+  for (const a of alts) for (const h of allAlt(T, a, m - back, m + fwd)) {
+    const dist = h[0] >= m ? h[0] - m : m - h[h.length - 1] - 1;
+    const score = dist - (h.some((i) => T[i].u) ? 1000 : 0);
+    if (score < bestScore) { best = h; bestScore = score; }
+  }
+  return best;
+}
+/** Phần gạch chân ngay sau mốc (bỏ qua tối đa 3 từ không gạch chân). */
+function forwardRun(T, m) {
+  let s = m;
+  while (s < Math.min(T.length, m + 4) && !T[s].u) s++;
+  if (s >= T.length || !T[s]?.u) return [];
+  const out = [];
+  for (let k = s, gap = 0; k < Math.min(T.length, s + 40); k++) {
+    if (T[k].u) { out.push(k); gap = 0; } else if (++gap > 2) break;
+  }
+  return out;
+}
 /** Phần gạch chân gần nhất trước mốc (gộp các mẩu cách nhau ≤ 2 từ). */
 function underRun(T, m, back = 35) {
   let e = m - 1;
@@ -101,6 +131,33 @@ function altsOf(text) {
 /** Cụm trong ngoặc kép ở phần "Bẫy" của giải thích: "eight", "lots of pictures". */
 const quoted = (s) => [...String(s || '').matchAll(/["“]([^"”]{1,50})["”]/g)].map((m) => nt(m[1].replace(/\s+/g, ' ')).replace(/[^a-z0-9' %]/g, ' ').replace(/\s+/g, ' ').trim()).filter(Boolean);
 
+/** Lời thoại không có mốc câu hỏi (Cam 20): dò lần lượt đáp án các câu điền từ theo thứ tự trong lời thoại,
+ *  đặt mốc ngay sau đáp án và đánh dấu đáp án như chữ gạch chân. Câu chọn/nối không dò được vị trí nên bỏ qua. */
+function inferMarks(S0, t, p) {
+  let pos = 0;
+  for (const g of p.groups) {
+    if (g.t !== 'fill') continue;
+    for (const n of g.gaps) {
+      const k = t.key[n];
+      if (!k?.text) continue;
+      let hit = null;
+      // Lấy lần xuất hiện ĐẦU TIÊN sau câu trước (findAlt lấy lần cuối, hợp với mốc có sẵn chứ không hợp ở đây).
+      let best = null;
+      for (const a of altsOf(k.text)) {
+        const len = a.split(' ').length;
+        for (let i = pos; i + len <= Math.min(S0.T.length, pos + 900); i++) {
+          if (best && i >= best[0]) break;
+          if (S0.T.slice(i, i + len).map((x) => x.n).join(' ') === a && !S0.T[i].sp) { best = Array.from({ length: len }, (_, j) => i + j); break; }
+        }
+      }
+      hit = best;
+      if (!hit) continue;
+      hit.forEach((i) => { S0.T[i].u = true; });
+      S0.marks[n] = hit[hit.length - 1] + 1;
+      pos = hit[hit.length - 1] + 1;
+    }
+  }
+}
 function buildCards(t) {
   const out = [];
   if (!t.tx?.parts) return out;
@@ -110,6 +167,7 @@ function buildCards(t) {
   for (const p of t.parts) {
     const S0 = stream(t.tx.parts[p.n]);
     if (!S0.T.length) continue;
+    if (!Object.keys(S0.marks).length) inferMarks(S0, t, p);
     for (const g of p.groups) {
       const nums = g.t === 'fill' ? g.gaps : g.t === 'mcq' ? g.qs.map((q) => q.n) : g.t === 'match' ? g.items.map((x) => x.n) : [g.nums[0]];
       for (const n of nums) {
@@ -119,17 +177,20 @@ function buildCards(t) {
         let ansAbs = null, goodAbs = [];
         if (g.t === 'fill') {
           const alts = altsOf(k.text);
-          // Đáp án thường ngay trước mốc; đôi khi mốc đặt cuối đoạn, cách đáp án khá xa.
-          for (const back of [45, 110]) {
-            for (const a of alts) { ansAbs = findAlt(S0.T, a, m - back, m); if (ansAbs) break; }
-            if (!ansAbs) { const u = underRun(S0.T, m, back === 45 ? 30 : back); if (u.length && u.length <= 4) ansAbs = u; }
-            if (ansAbs) break;
-          }
+          // Mốc có thể đứng sau đáp án ("… <u>69</u> (Q1)") hoặc trước đáp án ("(Q32) <u>constant</u>", Cam 14):
+          // xét cả hai phía, ưu tiên chỗ gạch chân rồi chỗ gần mốc nhất.
+          ansAbs = nearestAlt(S0.T, alts, m, 45, 30) || nearestAlt(S0.T, alts, m, 110, 30);
+          if (!ansAbs) { const u = underRun(S0.T, m, 30); if (u.length && u.length <= 4) ansAbs = u; }
+          if (!ansAbs) { const f = forwardRun(S0.T, m); if (f.length && f.length <= 4) ansAbs = f; }
           if (!ansAbs) continue;
         } else if (g.t === 'multi') {
           // Chọn 2: mỗi đáp án có mốc riêng; phát trọn từ đáp án đầu tới đáp án sau.
           goodAbs = [...new Set(g.nums.flatMap((x) => (S0.marks[x] != null ? underRun(S0.T, S0.marks[x]) : [])))].sort((x, y) => x - y);
-        } else goodAbs = underRun(S0.T, m);
+        } else {
+          // Bằng chứng gạch chân thường ngay trước mốc; nếu ngay sau mốc có gạch chân mà phía trước thì xa, lấy phía sau.
+          const bk = underRun(S0.T, m), fw = forwardRun(S0.T, m);
+          goodAbs = fw.length && (!bk.length || m - bk[bk.length - 1] > 12) ? fw : bk;
+        }
         const mEnd = g.t === 'multi' ? Math.max(...g.nums.map((x) => S0.marks[x] ?? m)) : m;
         const hit = ansAbs || goodAbs;
         const a = hit[0] ?? Math.max(0, m - 1);
@@ -162,7 +223,8 @@ function buildCards(t) {
   }
   return out;
 }
-const tests = () => [...S.ltest.values()].filter((r) => r.kind === 'test' && r.tx?.parts && Object.keys(r.tx.ev || {}).length).sort((a, b) => b.at - a.at);
+// Đề có lời thoại là đủ: lời thoại không có mốc (Qn) thì buildCards tự dò vị trí đáp án (xem inferMarks).
+const tests = () => [...S.ltest.values()].filter((r) => r.kind === 'test' && r.tx?.parts && Object.values(r.tx.parts).some((x) => x?.length)).sort((a, b) => b.at - a.at);
 const CACHE = new Map();
 function cardsOf(t) {
   const sig = `${t.at}|${Object.keys(t.notes || {}).length}|${t.tx?.n}|2`;
