@@ -110,7 +110,8 @@ on('stats-sel', (el) => { ui.statsSel = Number(el.dataset.i); rerender(); });
 
 // ================= SETTINGS =================
 // Màu chủ đạo: [id, tên, màu mẫu hiển thị trên nút chọn]. Giá trị thật cho sáng/tối nằm trong css/app.css.
-const ACCENTS = [['green', 'Xanh lá', '#1F6F54'], ['blue', 'Xanh dương', '#1F5FBF'], ['purple', 'Tím', '#6B3FB8'], ['teal', 'Xanh ngọc', '#0F7480'], ['orange', 'Cam', '#B4530F'], ['pink', 'Hồng', '#B8336F']];
+// Giao diện sticker: màu này là màu nút chính và thanh điều hướng (xem css/sticker.css).
+const ACCENTS = [['green', 'Vàng', '#FFD84D'], ['blue', 'Xanh trời', '#BFE3FF'], ['purple', 'Oải hương', '#C7B8FF'], ['teal', 'Bạc hà', '#8EE3C8'], ['orange', 'Đào', '#FFC9A8'], ['pink', 'Hồng', '#FFB3CB']];
 export function applyTheme() {
   let t = S.settings.theme;
   try { localStorage.setItem('theme', t); } catch {}
@@ -119,7 +120,7 @@ export function applyTheme() {
   const accent = ACCENTS.some(([id]) => id === S.settings.accent) ? S.settings.accent : 'green';
   try { localStorage.setItem('accent', accent); } catch {}
   document.documentElement.dataset.accent = accent;
-  document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'dark' ? '#0F1110' : '#F5F4EF');
+  document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'dark' ? '#1C1828' : '#FFF6E6');
 }
 
 // Số bản đang chạy = tên cache của service worker (VERSION trong sw.js).
