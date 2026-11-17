@@ -824,6 +824,9 @@ on('lt-next-part', async () => {
 });
 on('lt-prev-part', () => { if (R.mode === 'exam' && !R.review) return; stopAudio(); R.pi--; loadPart(R.parts[R.pi]); rerender(true); });
 on('lt-submit', async () => {
+  // Chưa trả lời câu nào (bấm nhầm): không nộp, không lưu vào lịch sử.
+  const any = Object.values(R.ans).some((v) => (Array.isArray(v) ? v.length : String(v || '').trim()));
+  if (!any) { toast('Bạn chưa trả lời câu nào. Bài chỉ được nộp và lưu khi có ít nhất 1 câu trả lời.'); return; }
   // Câu chọn nhiều đáp án lưu ở số đầu nhóm: thiếu bao nhiêu chữ cái thì tính bấy nhiêu câu trống.
   let blank = 0;
   for (const pn of R.parts) for (const g of R.test.parts.find((p) => p.n === pn).groups) {

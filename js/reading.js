@@ -274,8 +274,11 @@ on('r-next', async () => {
     rerender(true);
   } else await finish();
 });
+const anyAnswer = () => rs.items.some(({ it }) => String(rs.answers[it.n]?.v || '').trim());
 on('r-submit', async () => {
   if (!rs) return;
+  // Chưa trả lời câu nào (bấm nhầm): không nộp, không lưu vào lịch sử.
+  if (!anyAnswer()) { toast('Bạn chưa trả lời câu nào. Bài chỉ được nộp và lưu khi có ít nhất 1 câu trả lời.'); return; }
   const left = rs.items.filter(({ it }) => !String(rs.answers[it.n]?.v || '').trim()).length;
   if (left && !(await confirmSheet({ title: `Còn ${left} câu chưa trả lời`, body: 'Nộp bài luôn? Câu bỏ trống tính là sai.', okLabel: 'Nộp bài' }))) return;
   for (const { g, it } of rs.items) {
@@ -286,6 +289,16 @@ on('r-submit', async () => {
   await finish();
 });
 async function finish() {
+  if (!anyAnswer()) {
+    // Đi hết bài mà không trả lời câu nào: không lưu kết quả, không tính lượt.
+    const pid = rs.pid;
+    await rDel(`draft:${pid}`).catch(() => {});
+    clearInterval(tick); tick = null;
+    rs = null;
+    toast('Bạn chưa trả lời câu nào nên bài này không được lưu');
+    replace(pid.startsWith('full:') ? '#/reading' : `#/rpassage/${pid}`);
+    return;
+  }
   if (rs.full) return finishFull();
   const x = passageOf(rs.pid);
   const answers = {};
