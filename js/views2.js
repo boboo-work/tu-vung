@@ -175,6 +175,7 @@ export function settingsView() {
     </div>
     <h2>Giao diện & phát âm</h2>
     <div class="card">
+      <div class="setrow"><div style="min-width:0"><label for="set-name"><b>Tên của bạn</b></label><small>Hiện trong lời chào ở Trang chủ</small></div><input id="set-name" class="input name-in" type="text" maxlength="30" value="${esc(s.userName || '')}" placeholder="Ví dụ: Boo" autocomplete="nickname" data-change="set-name"></div>
       <div class="setrow"><b>Chế độ</b>${seg('theme', s.theme, [['auto', 'Tự động'], ['light', 'Sáng'], ['dark', 'Tối']])}</div>
       <div class="setrow" style="flex-wrap:wrap;row-gap:10px"><b style="flex:1 0 100%">Màu chủ đạo</b><div class="swatches" role="radiogroup" aria-label="Màu chủ đạo">${ACCENTS.map(([id, name, c]) => `<button class="swatch ${(s.accent || 'green') === id ? 'on' : ''}" style="--c:${c}" data-act="set" data-key="accent" data-value="${id}" role="radio" aria-checked="${(s.accent || 'green') === id}" aria-label="${name}" title="${name}">${(s.accent || 'green') === id ? icon('check') : ''}</button>`).join('')}</div></div>
       <div class="setrow"><b>Giọng đọc</b>${seg('voice', s.voice, [['en-US', 'Anh-Mỹ'], ['en-GB', 'Anh-Anh']])}</div>
@@ -227,6 +228,12 @@ on('set', async (el) => {
   if (key === 'speakingKeepDays') { const n = await spCleanup(); if (n) toast(`Đã xoá âm thanh của ${n} bản ghi quá hạn`); }
   if (key === 'theme' || key === 'accent') applyTheme();
   rerender();
+});
+on('set-name', async (el) => {
+  const name = el.value.trim().slice(0, 30);
+  if (name === (S.settings.userName || '')) return;
+  await saveSettings({ userName: name });
+  toast(name ? `Đã lưu tên: ${name}` : 'Đã xoá tên');
 });
 on('test-voice', () => speak('Practice makes perfect. This is how your words will sound.', { lang: S.settings.voice, rate: S.settings.rate, name: S.settings.voiceName }));
 on('voice-name', async (el) => { await saveSettings({ voiceName: el.value }); speak('Practice makes perfect.', { lang: S.settings.voice, rate: S.settings.rate, name: el.value }); });

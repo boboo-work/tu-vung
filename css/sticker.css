@@ -315,3 +315,11 @@ body.no-tabs #view { padding-bottom: calc(var(--safe-b) + 28px); }
   .listlink:hover { transform: translateY(-1px); box-shadow: 0 5px 0 var(--ink); }
   .ses-body.split > .split-l { border-right: 2.5px dashed var(--line); }
 }
+
+/* Lời chào ở Trang chủ: linh vật theo buổi (Mochi sáng, Bolt tối) cạnh nút Cài đặt. */
+.home-hi { display: flex; align-items: flex-end; gap: 6px; flex: none; }
+.home-mascot { display: block; margin-bottom: -6px; }
+.home-mascot svg { display: block; }
+#view.enter .home-mascot { animation: pop .5s .2s both; }
+.top h1 { overflow-wrap: anywhere; }
+.name-in { width: 150px; min-height: 44px; flex: none; }
