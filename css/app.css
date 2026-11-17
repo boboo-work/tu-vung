@@ -1362,3 +1362,35 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 .page.game .p-answer.ok { background: #8EE3C8; color: var(--hn-ink); } .page.game .p-answer.no { background: #FFB3CB; color: var(--hn-ink); }
 .page.game .p-answer b, .page.game .p-answer span:last-child { color: var(--hn-ink); }
 .page.game .p-speak { border: 2.5px solid var(--hn-ink); box-shadow: 0 3px 0 var(--hn-ink); background: #FFD84D; color: var(--hn-ink); }
+
+/* ---- Bẫy hay Thật (Listening) ---- */
+.tp-play { display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 14px; padding: 12px 14px; border: 2.5px solid var(--hn-ink); border-radius: 20px; background: #FFC9A8; box-shadow: 0 5px 0 var(--hn-ink); color: var(--hn-ink); font-family: var(--hn-font); text-align: left; }
+.tp-play > svg { flex: none; width: 34px; height: 34px; padding: 6px; border: 2.5px solid var(--hn-ink); border-radius: 50%; background: #fff; box-sizing: border-box; }
+.tp-play b { display: block; font-size: 16px; font-weight: 800; }
+.tp-play small { font-size: 13px; font-weight: 700; opacity: .75; }
+.tp-play:active:not([disabled]) { transform: translateY(3px); box-shadow: 0 2px 0 var(--hn-ink); }
+.tp-play[disabled] { opacity: .55; }
+.tp-play.playing > svg { animation: tp-pulse 1s ease-in-out infinite; background: #FFD84D; }
+@keyframes tp-pulse { 50% { transform: scale(1.12); } }
+.tp-blur { letter-spacing: .5px; color: #B9AFC9; user-select: none; word-break: break-word; }
+.tp-blur span { display: inline-block; }
+.tp-form { margin-top: 14px; }
+.tp-in { width: 100%; box-sizing: border-box; }
+.tp-opts { display: flex; flex-direction: column; gap: 9px; margin-top: 14px; }
+.tp-opt { display: flex; align-items: flex-start; gap: 10px; width: 100%; padding: 10px 12px; border: 2.5px solid var(--hn-ink); border-radius: 16px; background: #fff; box-shadow: 0 4px 0 var(--hn-ink); color: var(--hn-ink); font-family: var(--hn-font); font-size: 15px; font-weight: 700; line-height: 1.35; text-align: left; }
+.tp-opt b { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border: 2px solid var(--hn-ink); border-radius: 50%; background: #C7B8FF; font-size: 14px; }
+.tp-opt.on { background: #FFF0B8; }
+.tp-opt.right { background: #D9F7EC; outline: 3px solid #1B9E6B; outline-offset: 2px; }
+.tp-opt.right b { background: #8EE3C8; }
+.tp-opt.wrong { background: #FFE1EC; outline: 3px solid #E5484D; outline-offset: 2px; }
+.tp-opt.wrong b { background: #FFB3CB; }
+.tp-opt.dim { opacity: .45; }
+.tp-note { text-align: left; font-size: 14.5px; line-height: 1.5; }
+.tp-note p { margin: 8px 0 0; }
+.tp-tip { display: flex; gap: 6px; align-items: flex-start; background: #fff; border: 2px solid var(--hn-ink); border-radius: 12px; padding: 7px 9px; }
+.hn-panel .tp-note { margin: 4px 0 12px; }
+.tp-in { min-height: 54px; padding: 12px 16px; border: 2.5px solid var(--hn-ink); border-radius: 18px; background: #fff; box-shadow: 0 4px 0 var(--hn-ink); font-family: var(--hn-font); font-size: 18px; font-weight: 700; color: var(--hn-ink); }
+.tp-in::placeholder { font-family: var(--hn-font); font-weight: 600; color: #9C93AE; }
+.tp-in:focus { outline: none; box-shadow: 0 4px 0 var(--hn-ink), 0 0 0 4px #FFD84D; }
+.tp-replay { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 6px 12px; border: 2px solid var(--hn-ink); border-radius: 999px; background: #BFE3FF; box-shadow: 0 3px 0 var(--hn-ink); font-family: var(--hn-font); font-size: 14px; font-weight: 800; color: var(--hn-ink); }
+.hn-setup .hn-say { align-items: center; }

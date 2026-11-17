@@ -266,7 +266,7 @@ export function parseNotes(text) {
 }
 /** Số câu được giải thích ("21-22" tính 2 câu). */
 export const noteCount = (notes) => Object.keys(notes || {}).reduce((a, k) => { const m = k.match(/^(\d+)-(\d+)$/); return a + (m ? Number(m[2]) - Number(m[1]) + 1 : 1); }, 0);
-function noteOf(t, n) {
+export function noteOf(t, n) {
   if (!t.notes) return null;
   if (t.notes[n]) return t.notes[n];
   for (const [k, v] of Object.entries(t.notes)) { const m = k.match(/^(\d+)-(\d+)$/); if (m && n >= Number(m[1]) && n <= Number(m[2])) return v; }
@@ -951,7 +951,7 @@ export function runView() {
 // ---------------------------------------------------------------- Chữa bài: lời thoại, vì sao chọn, bẫy, paraphrase
 const plain = (h) => { const d = document.createElement('div'); d.innerHTML = h; return (d.textContent || '').replace(/\s+/g, ' ').trim(); };
 /** Nội dung câu hỏi số n (để hiện khi chữa và để gửi AI). */
-function qInfo(t, n) {
+export function qInfo(t, n) {
   for (const p of t.parts) for (const g of p.groups) {
     if (g.t === 'fill' && g.gaps.includes(n)) {
       const chunks = g.html.split(/<\/(?:p|li|div|h4)>/);
