@@ -20,7 +20,7 @@ export function voiceStock() {
   return { gb: voicesFor('en-GB').length, au: voicesFor('en-AU').length, other: ['en-IE', 'en-NZ', 'en-ZA', 'en-US'].reduce((a, l) => a + voicesFor(l).length, 0) };
 }
 /** Chọn một giọng cho một câu: theo cài đặt (trộn: ưu tiên Anh và Úc, thỉnh thoảng giọng khác nếu máy có). */
-function pickVoice() {
+export function pickVoice() {
   const pref = S.settings.listenAccent || 'mix';
   const buckets = pref === 'en-GB' ? [['en-GB', 1]] : pref === 'en-AU' ? [['en-AU', 1], ['en-NZ', 0.01]]
     : [['en-GB', 0.45], ['en-AU', 0.35], ['en-IE', 0.07], ['en-NZ', 0.05], ['en-US', 0.08]];
@@ -32,7 +32,7 @@ function pickVoice() {
 }
 let utter = null;
 /** Đọc một câu; onend chạy khi đọc xong (không chạy nếu bị ngắt bởi câu khác). */
-function say(text, { voice = null, rate = 0, onend } = {}) {
+export function say(text, { voice = null, rate = 0, onend } = {}) {
   if (!canSpeak()) { toast('Thiết bị này không hỗ trợ đọc thành tiếng'); return false; }
   const u = new SpeechSynthesisUtterance(text);
   if (voice) { u.voice = voice; u.lang = langOf(voice); } else u.lang = 'en-GB';
@@ -49,7 +49,7 @@ function say(text, { voice = null, rate = 0, onend } = {}) {
   } else speechSynthesis.speak(u);
   return true;
 }
-function hush() {
+export function hush() {
   utter = null;
   playing(false);
   try { if (canSpeak()) speechSynthesis.cancel(); } catch { /* bỏ qua */ }

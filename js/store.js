@@ -461,6 +461,7 @@ export async function ltDel(...ids) {
   ids.forEach((id) => S.ltest.delete(id));
 }
 // ---- Game Săn từ ----
+// S.hunt.lt = { plays, best, n, ok, trap }: trò Bẫy hay Thật (Listening); câu của trò này có khoá "lt-<đề>|p<part>|<câu>".
 // S.hunt = { plays, best, wrong: { "<đề>|<passage>|<câu>": số lần đúng liên tiếp kể từ lần sai }, pos: { n|v|a|num|other: { n, ok } }, seen: { khoá: lần cuối } }
 export function cleanHunt(h) {
   const o = h && typeof h === 'object' ? h : {};
@@ -469,7 +470,8 @@ export function cleanHunt(h) {
   const pick = (m, lim) => Object.fromEntries(Object.entries(m && typeof m === 'object' ? m : {}).filter(([k]) => KEY.test(k)).slice(-lim).map(([k, v]) => [k, n(v)]));
   const pos = {};
   for (const k of ['n', 'v', 'a', 'num', 'other']) pos[k] = { n: n(o.pos?.[k]?.n), ok: n(o.pos?.[k]?.ok) };
-  return { plays: n(o.plays), best: n(o.best), wrong: pick(o.wrong, 400), pos, seen: pick(o.seen, 2000) };
+  const lt = { plays: n(o.lt?.plays), best: n(o.lt?.best), n: n(o.lt?.n), ok: n(o.lt?.ok), trap: n(o.lt?.trap) };
+  return { plays: n(o.plays), best: n(o.best), wrong: pick(o.wrong, 400), pos, seen: pick(o.seen, 2000), lt };
 }
 export async function saveHunt() {
   await put('kv', { key: 'hunt', value: S.hunt });

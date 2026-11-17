@@ -10,6 +10,7 @@ import { esc, toast, uid, shuffle, speak } from './util.js';
 import { icon, on, go, back, replace, rerender, navBar, confirmSheet } from './ui.js';
 import { md, openWordSheet } from './reading.js';
 import { gamePool, GAME_MIN } from './game.js';
+import { trapStats } from './trap.js';
 
 // ---------------------------------------------------------------- Linh vật (Mochi, Bolt) kiểu sticker
 const INK = '#2B2240';
@@ -163,6 +164,8 @@ function buildItems(t, data) {
   return out;
 }
 
+/** Dùng chung với trò Bẫy hay Thật. */
+export const kit = { STAR: () => STAR, FLAME: () => FLAME, streakDays: () => streakDays() };
 /** Dùng cho kiểm thử. */
 export const _hn = { loadIndex, loadItems };
 
@@ -506,6 +509,7 @@ export function gamesView() {
   const acc = Object.values(h.pos || {}).reduce((a, v) => ({ n: a.n + v.n, ok: a.ok + v.ok }), { n: 0, ok: 0 });
   const nw = wrongKeys().length;
   const ready = gamePool().length >= GAME_MIN;
+  const ts = trapStats();
   const card = (bg, ic, name, sub, right, act = '') => `<${act ? 'button' : 'div'} class="hn-game" style="background:${bg}" ${act}><span class="hn-gi">${ic}</span><span class="hn-gb"><b>${name}</b><small>${sub}</small></span>${right}</${act ? 'button' : 'div'}>`;
   const ICON = {
     hunt: `<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5" fill="#BFE9FF" stroke="${INK}" stroke-width="2"/><path d="M15 15l5.5 5.5" stroke="${INK}" stroke-width="3" stroke-linecap="round"/></svg>`,
@@ -520,8 +524,8 @@ export function gamesView() {
       ${bigBtn('hn-start', 'Chơi ngay!', 'data-src="all" data-kind="mix"')}</div>
     <h2 class="hn-h2">4 trò chơi</h2>
     <div class="hn-games">
-      ${card('#8EE3C8', ICON.hunt, 'Săn từ <span class="hn-pill xs">MỚI</span>', 'Reading · tìm từ cần điền, né bẫy', `<span class="hn-gr">${acc.n ? `${Math.round((acc.ok / acc.n) * 100)}%` : '–'}</span>`, 'data-act="go" data-to="#/hunt"')}
-      ${card('#FFC9A8', ICON.trap, 'Bẫy hay Thật', 'Listening · chạm đáp án thật', '<span class="hn-pill xs">Sắp có</span>')}
+      ${card('#8EE3C8', ICON.hunt, 'Săn từ', 'Reading · tìm từ cần điền, né bẫy', `<span class="hn-gr">${acc.n ? `${Math.round((acc.ok / acc.n) * 100)}%` : '–'}</span>`, 'data-act="go" data-to="#/hunt"')}
+      ${card('#FFC9A8', ICON.trap, 'Bẫy hay Thật <span class="hn-pill xs">MỚI</span>', ts.ready ? 'Listening · nghe đề thật, né bẫy' : 'Listening · cần nhập đề có lời thoại', `<span class="hn-gr">${ts.acc != null ? `${ts.acc}%` : '–'}</span>`, 'data-act="go" data-to="#/trap"')}
       ${card('#FFB3CB', ICON.talk, 'Nói 30 giây', 'Speaking · nói rồi học cụm mẫu', '<span class="hn-pill xs">Sắp có</span>')}
       ${card('#BFE3FF', ICON.pen, 'Ý tưởng 60 giây', 'Writing · ghép lại câu mẫu', '<span class="hn-pill xs">Sắp có</span>')}
     </div>
