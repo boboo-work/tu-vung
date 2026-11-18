@@ -9,6 +9,7 @@ import { icon, on, go, back, replace, rerender, confirmSheet } from './ui.js';
 import { W, loadWriting } from './writing.js';
 import { openWordSheet } from './reading.js';
 import { mochi, bolt, kit } from './hunt.js';
+import { chalReport } from './challenge.js';
 
 // ---------------------------------------------------------------- Dữ liệu
 const TASKS = {
@@ -185,6 +186,7 @@ async function finish() {
     await saveHunt();
     await logGrammarDay('hSets', P.id); // tính vào chuỗi ngày học, không tính vào mục tiêu Writing
   }
+  if (P.chal) { await chalReport('idea', { score: P.score, ok: P.ok, n: done.length }); return; }
   LAST = { score: P.score, n: done.length, ok: P.ok, notes: done.filter((r) => r.note).length, ms: Date.now() - P.t0, wrong: done.filter((r) => !r.ok), learned: P.learned, counted: done.length > 0 };
   replace('#/ires');
 }
@@ -198,11 +200,15 @@ async function ready() {
 const CARDS = { list: null };
 on('id-start', async (el) => {
   const keys = el.dataset.keys ? el.dataset.keys.split(',') : null;
+  const chal = el.dataset.chal === '1', size = Number(el.dataset.size) || 0;
   let all;
   try { all = await ready(); } catch (e) { console.error(e); toast('Chưa tải được đề Writing. Hãy mở app khi có mạng một lần.', 'bad'); return; }
-  const cards = pickCards(all, keys);
+  const saved = { ...ui };
+  if (chal) Object.assign(ui, { type: 'all', part: 'mix', onlyWrong: false });
+  const cards = pickCards(all, chal ? null : keys).slice(0, size || SIZE);
+  Object.assign(ui, saved);
   if (!cards.length) { toast(ui.onlyWrong ? 'Không còn thẻ nào cần ôn lại' : 'Chưa có thẻ phù hợp'); return; }
-  I = { id: 'I:' + uid(), cards, i: 0, score: 0, combo: 0, maxCombo: 0, t0: Date.now(), res: [], n: 0, ok: 0, learned: [] };
+  I = { id: 'I:' + uid(), cards, i: 0, score: 0, combo: 0, maxCombo: 0, t0: Date.now(), res: [], n: 0, ok: 0, learned: [], chal };
   beginCard();
   go('#/iplay');
 });
@@ -244,7 +250,7 @@ on('id-quit', async () => {
   if (!I) { back('#/games'); return; }
   const done = I.res.filter(Boolean).length;
   if (!(await confirmSheet({ title: 'Dừng lượt chơi?', body: done ? `Đã làm ${done} thẻ: kết quả được lưu và tính vào chuỗi ngày học.` : 'Chưa làm xong thẻ nào nên lượt này không được lưu.', okLabel: 'Dừng' }))) return;
-  if (done) await finish(); else { stopTimer(); I = null; back('#/games'); }
+  if (done) await finish(); else { const chal = I.chal; stopTimer(); I = null; if (chal) replace('#/chal'); else back('#/games'); }
 });
 on('id-set', (el) => { ui[el.dataset.k] = el.dataset.v; rerender(); });
 on('id-wrong', () => { ui.onlyWrong = !ui.onlyWrong; rerender(); });

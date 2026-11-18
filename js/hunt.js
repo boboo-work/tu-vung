@@ -12,6 +12,7 @@ import { md, openWordSheet } from './reading.js';
 import { gamePool, GAME_MIN } from './game.js';
 import { trapStats } from './trap.js';
 import { talkStats } from './talk.js';
+import { chalReport, chalStatus } from './challenge.js';
 import { ideaStats } from './idea.js';
 
 // ---------------------------------------------------------------- Linh vật (Mochi, Bolt) kiểu sticker
@@ -301,18 +302,20 @@ async function finish() {
     await saveHunt();
     await logGrammarDay('hSets', P.id); // tính vào chuỗi ngày học
   }
+  if (P.chal) { await chalReport('hunt', { score: P.score, ok: done.filter((r) => r.ok).length, n: done.length }); return; }
   LAST = { score: P.score, ok: done.filter((r) => r.ok).length, n: done.length, maxCombo: P.maxCombo, ms: Date.now() - P.t0, pos: P.posRes, saved: P.saved, wrong: done.filter((r) => !r.ok).map((r) => ({ ...r, card: P.cards.find((c) => c.key === r.key) })), counted: done.length > 0 };
   replace('#/hres');
 }
 
 on('hn-start', async (el) => {
   const keys = el.dataset.keys ? el.dataset.keys.split(',') : null;
-  const opts = { src: el.dataset.src || ui.src, kind: el.dataset.kind || ui.kind, onlyWrong: el.dataset.wrong === '1' || (!el.dataset.kind && ui.onlyWrong), keys };
+  const chal = el.dataset.chal === '1', size = Number(el.dataset.size) || 0;
+  const opts = chal ? { src: 'all', kind: 'mix', onlyWrong: false, keys: null } : { src: el.dataset.src || ui.src, kind: el.dataset.kind || ui.kind, onlyWrong: el.dataset.wrong === '1' || (!el.dataset.kind && ui.onlyWrong), keys };
   toast('Đang chuẩn bị câu hỏi…');
   let cards;
-  try { cards = await pickCards(opts); } catch (e) { console.error(e); toast('Chưa tải được đề Reading. Hãy mở app khi có mạng một lần.', 'bad'); return; }
+  try { cards = (await pickCards(opts)).slice(0, size || SIZE); } catch (e) { console.error(e); toast('Chưa tải được đề Reading. Hãy mở app khi có mạng một lần.', 'bad'); return; }
   if (!cards.length) { toast(opts.onlyWrong ? 'Không còn câu sai nào để phục thù' : 'Chưa có câu phù hợp'); return; }
-  H = { id: 'H:' + uid(), cards, i: 0, score: 0, combo: 0, maxCombo: 0, t0: Date.now(), res: [], posRes: [], saved: [] };
+  H = { id: 'H:' + uid(), cards, i: 0, score: 0, combo: 0, maxCombo: 0, t0: Date.now(), res: [], posRes: [], saved: [], chal };
   beginCard();
   go('#/hplay');
 });
@@ -330,7 +333,7 @@ on('hn-quit', async () => {
   if (!H) { back('#/games'); return; }
   const done = H.res.filter(Boolean).length;
   if (!(await confirmSheet({ title: 'Dừng lượt săn?', body: done ? `Đã làm ${done} câu: kết quả được lưu và tính vào chuỗi ngày học.` : 'Chưa làm câu nào nên lượt này không được lưu.', okLabel: 'Dừng' }))) return;
-  if (done) await finish(); else { stopTimer(); H = null; back('#/games'); }
+  if (done) await finish(); else { const chal = H.chal; stopTimer(); H = null; if (chal) replace('#/chal'); else back('#/games'); }
 });
 on('hn-say', (el) => speak(el.dataset.w, { lang: S.settings.voice, rate: S.settings.rate, name: S.settings.voiceName }));
 on('hn-save', (el) => {
@@ -511,6 +514,7 @@ export function gamesView() {
   const acc = Object.values(h.pos || {}).reduce((a, v) => ({ n: a.n + v.n, ok: a.ok + v.ok }), { n: 0, ok: 0 });
   const nw = wrongKeys().length;
   const ready = gamePool().length >= GAME_MIN;
+  const cs = chalStatus();
   const ts = trapStats();
   const ks = talkStats();
   const is = ideaStats();
@@ -524,8 +528,10 @@ export function gamesView() {
   const mini = (to, bg, name) => `<button class="hn-mini" style="background:${bg}" data-act="go" data-to="${to}" ${ready || to === '#/match' || to === '#/pop' ? '' : ''}>${name}</button>`;
   return `<div class="page hn-scr hn-hub">
     <header class="hn-head"><div><p class="hn-eyebrow">Ôn từ đề thật · 3–5 phút</p><h1 class="hn-h">Game</h1></div>${streakDays() ? `<span class="hn-pill">${FLAME}${streakDays()} ngày</span>` : ''}</header>
-    <div class="hn-card hn-daily"><div class="hn-dtop"><div><span class="hn-pill sm">Thử thách hôm nay</span><p class="hn-dtitle">10 câu Săn từ<br>trộn đề ngẫu nhiên</p><p class="hn-sub">${nw ? `Ưu tiên ${nw} câu bạn từng sai` : 'Điền từ và True/False/Not Given'}</p></div>${mochi('calm', 100)}</div>
-      ${bigBtn('hn-start', 'Chơi ngay!', 'data-src="all" data-kind="mix"')}</div>
+    <div class="hn-card hn-daily"><div class="hn-dtop"><div><span class="hn-pill sm">Thử thách hôm nay</span>
+      <p class="hn-dtitle">${cs.done ? 'Đã xong hôm nay!' : cs.started ? `Đang ở chặng ${cs.i + 1}/${cs.n}` : 'Đọc · Nghe<br>Nói · Viết'}</p>
+      <p class="hn-sub">${cs.done ? `${cs.total} điểm${cs.streak ? ` · chuỗi ${cs.streak} ngày` : ''} · mai quay lại nhé` : cs.streak ? `Chuỗi thử thách ${cs.streak} ngày · khoảng 10 phút` : `${cs.n} chặng, mỗi trò một lượt ngắn · khoảng 10 phút`}</p></div>${mochi(cs.done ? 'happy' : 'calm', 100)}</div>
+      ${bigBtn('go', cs.done ? 'Xem kết quả' : cs.started ? 'Làm tiếp!' : 'Chơi ngay!', 'data-to="#/chal"')}</div>
     <h2 class="hn-h2">4 trò chơi</h2>
     <div class="hn-games">
       ${card('#8EE3C8', ICON.hunt, 'Săn từ', 'Reading · tìm từ cần điền, né bẫy', `<span class="hn-gr">${acc.n ? `${Math.round((acc.ok / acc.n) * 100)}%` : '–'}</span>`, 'data-act="go" data-to="#/hunt"')}

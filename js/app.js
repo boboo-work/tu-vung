@@ -17,6 +17,7 @@ import { gamesView, setupView as hSetupView, playView as hPlayView, resultView a
 import { setupView as tSetupView, playView as tPlayView, resultView as tResultView } from './trap.js';
 import { setupView as kSetupView, playView as kPlayView, resultView as kResultView } from './talk.js';
 import { setupView as iSetupView, playView as iPlayView, resultView as iResultView } from './idea.js';
+import { chalView } from './challenge.js';
 import { loadGrammar, grammarView, unitView, lessonView, cardsView, errorsView, testView, gDueCount } from './grammar.js';
 import { countUp } from './fx.js';
 
@@ -28,7 +29,7 @@ const routes = {
   reading: readingView, rpassage: rPassageView, rrun: rRunView, rresult: rResultView, rstudy: rStudyView,
   mictest: micTestView, speaking: speakingView, sp1: sp1View, sp2: sp2View,
   listening: listeningView, lnum: lNumView, ldict: lDictView, limport: lImportView, ltest: lTestView, lrun: lRunView,
-  games: gamesView, hunt: hSetupView, hplay: hPlayView, hres: hResultView, trap: tSetupView, tplay: tPlayView, tres: tResultView, talk: kSetupView, tkplay: kPlayView, tkres: kResultView, idea: iSetupView, iplay: iPlayView, ires: iResultView,
+  games: gamesView, hunt: hSetupView, hplay: hPlayView, hres: hResultView, trap: tSetupView, tplay: tPlayView, tres: tResultView, talk: kSetupView, tkplay: kPlayView, tkres: kResultView, idea: iSetupView, iplay: iPlayView, ires: iResultView, chal: chalView,
   rfull: rFullView, rvocab: rReviewView, rpatterns: rPatternsView, rown: rOwnListView, rownv: rOwnView, rstats: rStatsView,
   grammar: grammarView, gunit: unitView, glesson: lessonView, gcards: cardsView, gerrors: errorsView, gtest: testView,
 };

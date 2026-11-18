@@ -1465,3 +1465,27 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 .id-line { line-height: 1.5; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .id-chunk { display: inline-block; max-width: 100%; padding: 5px 9px; line-height: 1.35; text-align: left; }
 .id-scr .tk-chip { text-align: left; line-height: 1.35; }
+
+/* ---- Thử thách hôm nay ---- */
+.ch-hero { background: #C7B8FF; }
+.ch-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.ch-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 2.5px solid var(--hn-ink); border-radius: 18px; box-shadow: 0 4px 0 var(--hn-ink); font-size: 15px; line-height: 1.35; }
+.ch-item small { font-size: 13px; font-weight: 600; opacity: .8; }
+.ch-item.off { opacity: .5; }
+.ch-num { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border: 2.5px solid var(--hn-ink); border-radius: 50%; background: #fff; font-family: var(--hn-font); font-weight: 900; }
+.ch-rail { display: flex; align-items: center; margin: 14px 2px 0; }
+.ch-line { flex: 1; height: 3px; background: var(--hn-ink); opacity: .25; margin: 0 4px 16px; }
+.ch-step { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.ch-step span { display: grid; place-items: center; width: 36px; height: 36px; border: 2.5px solid var(--hn-ink); border-radius: 50%; background: #fff; font-family: var(--hn-font); font-weight: 900; }
+.ch-step b { font-size: 11px; font-weight: 800; opacity: .7; }
+.ch-step.done span, .ch-step.cur span { background: var(--bg); }
+.ch-step.cur span { box-shadow: 0 0 0 4px #FFD84D; }
+.ch-step.skip span { opacity: .5; }
+.ch-next { margin-top: 18px; }
+.ch-next .hn-dtitle { margin-top: 10px; }
+.ch-what { margin: 6px 0 0; font-weight: 700; }
+.ch-skip { display: block; margin: 12px auto 0; border: 0; background: none; font-family: var(--hn-font); font-weight: 800; color: #6B6280; text-decoration: underline; }
+.ch-row { display: flex; align-items: center; gap: 10px; padding: 10px 2px; border-bottom: 2px dashed rgba(43,34,64,.15); }
+.ch-row:last-child { border-bottom: 0; }
+.ch-row b { flex: 1; padding-left: 10px; border-left: 6px solid var(--bg); }
+.ch-row > span:not(.hn-pill) { font-weight: 700; color: #6B6280; }

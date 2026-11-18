@@ -10,6 +10,7 @@ import { icon, on, go, back, replace, rerender, confirmSheet } from './ui.js';
 import { qInfo, noteOf, alternatives } from './ltest.js';
 import { say, hush, pickVoice, numWords } from './listening.js';
 import { mochi, bolt, kit } from './hunt.js';
+import { chalReport } from './challenge.js';
 
 // ---------------------------------------------------------------- Dữ liệu: câu hỏi từ đề thật đã nhập
 const nt = (t) => String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[’‘`]/g, "'").replace(/[£$€]/g, '')
@@ -537,6 +538,7 @@ async function finish() {
     await saveHunt();
     await logGrammarDay('hSets', P.id); // tính vào chuỗi ngày học, không tính vào mục tiêu Listening
   }
+  if (P.chal) { await chalReport('trap', { score: P.score, ok: done.filter((r) => r.ok).length, n: done.length }); return; }
   LAST = { score: P.score, ok: done.filter((r) => r.ok).length, n: done.length, maxCombo: P.maxCombo, ms: Date.now() - P.t0, traps: done.filter((r) => r.why === 'trap').length, dodged: done.filter((r) => r.ok && P.cards.find((c) => c.key === r.key)?.trapIdx?.length).length, wrong: done.filter((r) => !r.ok), counted: done.length > 0, level: P.level };
   replace('#/tres');
 }
@@ -545,9 +547,14 @@ let starting = false;
 on('tp-start', async (el) => {
   if (starting) return;
   const keys = el.dataset.keys ? el.dataset.keys.split(',') : null;
+  const chal = el.dataset.chal === '1', size = Number(el.dataset.size) || 0;
   const opts = { src: ui.src, part: ui.part, onlyWrong: ui.onlyWrong, keys };
   if (!tests().length) { go('#/trap'); return; }
-  const cards = pickCards(opts);
+  // Thử thách hôm nay: lấy từ mọi đề, mọi Part, không chỉ câu sai (mức khó giữ như bạn đã chọn).
+  const saved = { ...ui };
+  if (chal) Object.assign(ui, { src: 'all', part: 'all', onlyWrong: false });
+  const cards = pickCards(chal ? { ...opts, src: 'all', part: 'all', onlyWrong: false, keys: null } : opts).slice(0, size || SIZE);
+  Object.assign(ui, saved);
   if (!cards.length) { toast(opts.onlyWrong ? 'Không còn câu sai nào để phục thù' : 'Chưa có câu phù hợp: đề cần có lời thoại'); return; }
   unlockAudio(cards.find((c) => S.ltest.get(c.tid)?.audio?.[c.pn]));
   if (cards.some((c) => { const t = S.ltest.get(c.tid); return t?.audio?.[c.pn] && !t.sil?.[c.pn]; })) {
@@ -555,7 +562,7 @@ on('tp-start', async (el) => {
     toast('Đang dò đoạn nghe trong file gốc (chỉ lần đầu)…');
     try { await ensureAlign(cards); } finally { starting = false; }
   }
-  H = { id: 'T:' + uid(), cards, i: 0, level: ui.level, score: 0, combo: 0, maxCombo: 0, t0: Date.now(), res: [] };
+  H = { id: 'T:' + uid(), cards, i: 0, level: ui.level, score: 0, combo: 0, maxCombo: 0, t0: Date.now(), res: [], chal };
   beginCard();
   go('#/tplay');
 });
@@ -574,7 +581,7 @@ on('tp-quit', async () => {
   const done = H.res.filter(Boolean).length;
   stopAll();
   if (!(await confirmSheet({ title: 'Dừng lượt chơi?', body: done ? `Đã làm ${done} câu: kết quả được lưu và tính vào chuỗi ngày học.` : 'Chưa làm câu nào nên lượt này không được lưu.', okLabel: 'Dừng' }))) return;
-  if (done) await finish(); else { stopTimer(); H = null; back('#/games'); }
+  if (done) await finish(); else { const chal = H.chal; stopTimer(); H = null; if (chal) replace('#/chal'); else back('#/games'); }
 });
 on('tp-replay', () => { const c = H?.cards[H.i]; if (!c) return; stopAll(); if (!playClip(c, 1)) say(c.say, { voice: H.voice, rate: S.settings.listenRate || 0.95 }); });
 /** Đoạn nghe bị lệch: dời sớm/muộn 3 giây, nhớ cho câu này. */
