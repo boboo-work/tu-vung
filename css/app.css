@@ -1449,3 +1449,19 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 .tk-card { position: relative; }
 .tk-card .tk-tools { position: absolute; top: 10px; right: 10px; }
 .tk-card .hn-q { padding-right: 4px; margin-top: 30px; }
+
+/* ---- Ý tưởng 60 giây (Writing) ---- */
+.id-q { font-size: 17px; line-height: 1.5; }
+.id-qs { margin: 6px 0 0; font-size: 14px; line-height: 1.5; font-weight: 600; color: #4A4060; }
+.id-ask { margin: 8px 0 0; font-size: 17px; font-weight: 800; }
+.id-note { width: 100%; box-sizing: border-box; margin-top: 10px; min-height: 84px; padding: 10px 12px; border: 2.5px solid var(--hn-ink); border-radius: 16px; background: #fff; font-family: var(--hn-font); font-size: 16px; font-weight: 600; color: var(--hn-ink); resize: vertical; }
+.id-note:focus { outline: none; box-shadow: 0 0 0 4px #FFD84D; }
+.id-mine { margin: 8px 0 0; font-size: 15px; line-height: 1.5; font-style: italic; }
+.id-line { margin: 8px 0 0; min-height: 44px; line-height: 2.2; }
+.id-chunk { display: inline; padding: 3px 8px; border: 2px solid var(--hn-ink); border-radius: 10px; font-family: var(--hn-font); font-size: 15px; font-weight: 700; color: var(--hn-ink); background: #C7B8FF; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.id-chunk.ok { background: #8EE3C8; }
+.id-chunk.no { background: #FFB3CB; }
+.id-slot { display: inline-grid; place-items: center; min-width: 30px; height: 26px; margin-left: 4px; border: 2px dashed var(--hn-ink); border-radius: 9px; font-size: 13px; font-weight: 800; vertical-align: middle; }
+.id-line { line-height: 1.5; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.id-chunk { display: inline-block; max-width: 100%; padding: 5px 9px; line-height: 1.35; text-align: left; }
+.id-scr .tk-chip { text-align: left; line-height: 1.35; }
