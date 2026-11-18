@@ -1,6 +1,6 @@
 // Các màn hình: Statistics, Cài đặt (mục tiêu, giao diện, dữ liệu, AI), Trợ lý AI.
 import { S, allWords, summary, series, saveSettings, deckName, wipeAll, essays, spCleanup } from './store.js';
-import { esc, toast, pickFile, fmtDate, speak, canSpeak, fold, englishVoices, onVoices, today, addDays, allEnglishVoices, voiceById, voiceQuality, refreshVoices } from './util.js';
+import { esc, toast, pickFile, fmtDate, speak, canSpeak, fold, englishVoices, onVoices, today, addDays, allEnglishVoices, voiceById, voiceQuality, refreshVoices, rawVoices } from './util.js';
 import { isNew, isMastered } from './srs.js';
 import { icon, on, go, rerender, navBar, confirmSheet, promptSheet, chooseSheet, richText } from './ui.js';
 import { importFile, exportCSV, exportBackup, restoreBackup, downloadTemplate, loadSeed } from './io.js';
@@ -189,6 +189,8 @@ export function settingsView() {
         <select class="input" style="max-width:190px" data-change="voice-name" aria-label="Giọng đọc"><option value="">Tự động (tốt nhất)</option>${voiceOpts}</select></div>
       <div class="setrow"><div style="min-width:0"><b>Vừa tải giọng mới?</b><small>Tải trong Cài đặt iPhone → Trợ năng → Nội dung được đọc → Giọng nói, rồi bấm Tải lại. Vẫn chưa thấy thì vuốt tắt hẳn app rồi mở lại.</small></div>
         <button class="btn sm ghost" data-act="voices-reload" style="flex:none">Tải lại</button></div>
+      <div class="setrow"><div style="min-width:0"><b>Toàn bộ giọng máy báo</b><small>Mọi giọng iPhone cho app dùng, kể cả giọng bị ẩn, kèm mã giọng. Chạm để nghe thử</small></div>
+        <button class="btn sm ghost" data-act="go" data-to="#/voices" style="flex:none">Xem</button></div>
       <div class="setrow"><b>Tốc độ đọc</b>${seg('rate', s.rate, [[0.75, 'Chậm'], [0.95, 'Vừa'], [1.1, 'Nhanh']])}</div>
       <div class="setrow"><div><b>Tự phát âm khi lật thẻ</b><small>Đọc từ ngay khi lật sang mặt đáp án</small></div>${seg('autoSpeak', s.autoSpeak !== false, [['true', 'Bật'], ['false', 'Tắt']]).replace('set-seg', 'set-seg two')}</div>
       <div class="setrow"><div><b>Tự điền khi gõ xong từ mới</b><small>Tự tra IPA, nghĩa, ví dụ… ngay khi bạn gõ xong từ (gửi từ đó tới dịch vụ tra cứu; nếu đã kết nối AI thì gọi AI một lần mỗi từ)</small></div>${seg('autoFill', s.autoFill !== false, [['true', 'Bật'], ['false', 'Tắt']]).replace('set-seg', 'set-seg two')}</div>
@@ -430,3 +432,50 @@ on('ai-ask', async () => {
   a.loading = false;
   if (location.hash.startsWith('#/ai')) rerender();
 });
+
+// ---------------------------------------------------------------- Toàn bộ giọng máy báo (để tìm vì sao một giọng đã tải không hiện)
+const vq = (v) => voiceQuality(v) || (/compact/i.test(v.voiceURI) ? 'Thường' : '');
+function voicesText(list) {
+  const ua = navigator.userAgent.match(/OS (\d+[_\d]*)/)?.[1]?.replace(/_/g, '.') || navigator.platform;
+  const head = `Giọng máy báo: ${list.length} · iOS ${ua} · ${matchMedia('(display-mode: standalone)').matches || navigator.standalone ? 'mở từ màn hình chính' : 'mở trong trình duyệt'}`;
+  return [head, ...list.map(({ v, robot }, i) => `${i + 1}. ${v.name} | ${v.lang} | ${v.voiceURI}${v.localService ? '' : ' | mạng'}${v.default ? ' | mặc định' : ''}${robot ? ' | app ẩn' : ''}`)].join('\n');
+}
+export function voicesView() {
+  const list = rawVoices();
+  const mine = voiceById(S.settings.voiceName);
+  const key = (v) => `${v.name}|${v.voiceURI}|${v.lang}`;
+  const count = {};
+  list.forEach(({ v }) => { count[key(v)] = (count[key(v)] || 0) + 1; });
+  const en = list.filter(({ v }) => /^en/i.test(v.lang || ''));
+  const other = list.filter(({ v }) => !/^en/i.test(v.lang || ''));
+  const dupes = Object.values(count).filter((n) => n > 1).length;
+  const row = ({ v, robot }, i) => {
+    const tags = [vq(v), v.localService ? '' : 'qua mạng', v.default ? 'mặc định' : '', robot ? 'app ẩn: giọng robot' : '', count[key(v)] > 1 ? `trùng ×${count[key(v)]}` : '', mine === v ? 'đang dùng' : ''].filter(Boolean);
+    return `<button class="vrow" data-act="voice-try" data-i="${i}"><span class="vrow-main"><b>${esc(v.name)}</b><span class="faint">${esc(v.lang)}</span>${tags.map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</span><code>${esc(v.voiceURI || '(không có mã)')}</code></button>`;
+  };
+  const idx = new Map(list.map((x, i) => [x, i]));
+  return `<div class="page">${navBar('Giọng máy báo', { fallback: '#/settings' })}
+    <div class="card">
+      <p style="margin:0"><b>${list.length}</b> giọng iPhone báo cho app · <b>${en.length}</b> giọng tiếng Anh${dupes ? ` · ${dupes} giọng bị báo trùng` : ''}</p>
+      <p class="small muted" style="margin:6px 0 0">Đây là danh sách nguyên gốc Safari đưa cho app, chưa lọc. Giọng nào không có ở đây thì app không dùng được, dù đã tải trong Cài đặt iPhone.</p>
+      <div class="btn-row" style="margin-top:12px"><button class="btn sm ghost" data-act="voices-reload">Tải lại</button><button class="btn sm" data-act="voices-copy">Sao chép danh sách</button></div>
+    </div>
+    <h2>Tiếng Anh (${en.length})</h2>
+    <div class="card vlist">${en.map((x) => row(x, idx.get(x))).join('') || '<p class="muted">Không có giọng tiếng Anh nào.</p>'}</div>
+    <details class="card"><summary><b>Ngôn ngữ khác (${other.length})</b></summary><div class="vlist">${other.map((x) => row(x, idx.get(x))).join('')}</div></details>
+  </div>`;
+}
+on('voice-try', (el) => {
+  const x = rawVoices()[Number(el.dataset.i)];
+  if (!x || !canSpeak()) return;
+  const u = new SpeechSynthesisUtterance(/^en/i.test(x.v.lang) ? 'The museum is open from nine until half past five.' : 'Xin chào');
+  u.voice = x.v; u.lang = x.v.lang; u.rate = S.settings.rate || 0.95;
+  speechSynthesis.cancel();
+  setTimeout(() => speechSynthesis.speak(u), 80);
+});
+on('voices-copy', async () => {
+  const text = voicesText(rawVoices());
+  try { await navigator.clipboard.writeText(text); toast('Đã sao chép. Dán vào tin nhắn gửi mình nhé'); }
+  catch { toast('Không sao chép được: hãy chụp màn hình'); }
+});
+onVoices(() => { if (location.hash === '#/voices') rerender(); });

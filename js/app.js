@@ -2,7 +2,7 @@
 import { S, init, dueWords } from './store.js';
 import { icon, actions, on, go, back, setRenderer, TABS, closeSheet } from './ui.js';
 import { homeView, learnView, reviewView, vocabView, wordView, formView, decksView } from './views.js';
-import { statsView, settingsView, aiView, applyTheme } from './views2.js';
+import { statsView, settingsView, aiView, applyTheme, voicesView } from './views2.js';
 import { sessionView } from './study.js';
 import { gameView } from './game.js';
 import { dropView } from './drop.js';
@@ -21,7 +21,7 @@ import { countUp } from './fx.js';
 const routes = {
   home: homeView, learn: learnView, review: reviewView, vocab: vocabView, stats: statsView,
   word: wordView, edit: formView, new: () => formView(null), decks: decksView,
-  settings: settingsView, ai: aiView, session: sessionView, game: gameView, drop: dropView, match: matchView, pop: popView,
+  settings: settingsView, voices: voicesView, ai: aiView, session: sessionView, game: gameView, drop: dropView, match: matchView, pop: popView,
   writing: writingView, wtype: wTypeView, wprompt: wPromptView, wwrite: writeView, wessays: essaysView, wessay: essayView, wstats: wStatsView,
   reading: readingView, rpassage: rPassageView, rrun: rRunView, rresult: rResultView, rstudy: rStudyView,
   mictest: micTestView, speaking: speakingView, sp1: sp1View, sp2: sp2View,
