@@ -1,6 +1,6 @@
 // Các màn hình: Statistics, Cài đặt (mục tiêu, giao diện, dữ liệu, AI), Trợ lý AI.
 import { S, allWords, summary, series, saveSettings, deckName, wipeAll, essays, spCleanup } from './store.js';
-import { esc, toast, pickFile, fmtDate, speak, canSpeak, fold, englishVoices, onVoices, today, addDays } from './util.js';
+import { esc, toast, pickFile, fmtDate, speak, canSpeak, fold, englishVoices, onVoices, today, addDays, allEnglishVoices, voiceById, voiceQuality, refreshVoices } from './util.js';
 import { isNew, isMastered } from './srs.js';
 import { icon, on, go, rerender, navBar, confirmSheet, promptSheet, chooseSheet, richText } from './ui.js';
 import { importFile, exportCSV, exportBackup, restoreBackup, downloadTemplate, loadSeed } from './io.js';
@@ -159,7 +159,13 @@ export function settingsView() {
   const stepper = (key, val) => `<div class="stepper"><button data-act="step" data-key="${key}" data-d="-5" aria-label="Giảm">−</button><b>${val}</b><button data-act="step" data-key="${key}" data-d="5" aria-label="Tăng">+</button></div>`;
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
   const ready = aiReady(s.ai);
-  const voiceList = englishVoices(s.voice);
+  const voiceList = allEnglishVoices();
+  const ACC = { 'en-US': 'Mỹ', 'en-GB': 'Anh', 'en-AU': 'Úc', 'en-IE': 'Ireland', 'en-NZ': 'New Zealand', 'en-ZA': 'Nam Phi', 'en-IN': 'Ấn Độ', 'en-CA': 'Canada', 'en-SG': 'Singapore' };
+  const langKey = (v) => (v.lang || '').replace('_', '-');
+  const groups = [...new Set(voiceList.map(langKey))].sort((a, b) => (a === s.voice ? -1 : b === s.voice ? 1 : (ACC[a] ? 0 : 1) - (ACC[b] ? 0 : 1) || a.localeCompare(b)));
+  const mine = voiceById(s.voiceName);
+  const optVoice = (v) => { const q = voiceQuality(v); return `<option value="${esc(v.voiceURI || v.name)}" ${mine === v ? 'selected' : ''}>${esc(v.name)}${q && !v.name.toLowerCase().includes(q.toLowerCase()) && !/enhanced|premium/i.test(v.name) ? ` · ${q}` : ''}</option>`; };
+  const voiceOpts = groups.map((g) => `<optgroup label="${esc(`Giọng ${ACC[g] || g} (${g})`)}">${voiceList.filter((v) => langKey(v) === g).map(optVoice).join('')}</optgroup>`).join('');
   return `<div class="page">${navBar('Cài đặt')}
     <h2 style="margin-top:6px">Mục tiêu mỗi ngày</h2>
     <div class="card">
@@ -179,8 +185,10 @@ export function settingsView() {
       <div class="setrow"><b>Chế độ</b>${seg('theme', s.theme, [['auto', 'Tự động'], ['light', 'Sáng'], ['dark', 'Tối']])}</div>
       <div class="setrow" style="flex-wrap:wrap;row-gap:10px"><b style="flex:1 0 100%">Màu chủ đạo</b><div class="swatches" role="radiogroup" aria-label="Màu chủ đạo">${ACCENTS.map(([id, name, c]) => `<button class="swatch ${(s.accent || 'green') === id ? 'on' : ''}" style="--c:${c}" data-act="set" data-key="accent" data-value="${id}" role="radio" aria-checked="${(s.accent || 'green') === id}" aria-label="${name}" title="${name}">${(s.accent || 'green') === id ? icon('check') : ''}</button>`).join('')}</div></div>
       <div class="setrow"><b>Giọng đọc</b>${seg('voice', s.voice, [['en-US', 'Anh-Mỹ'], ['en-GB', 'Anh-Anh']])}</div>
-      <div class="setrow"><div style="min-width:0"><b>Giọng</b><small>${voiceList.length ? `${voiceList.length} giọng trên máy này` : 'Chưa tải được danh sách giọng'}</small></div>
-        <select class="input" style="max-width:190px" data-change="voice-name" aria-label="Giọng đọc"><option value="">Tự động (tốt nhất)</option>${voiceList.map((v) => `<option value="${esc(v.name)}" ${v.name === s.voiceName ? 'selected' : ''}>${esc(v.name)}</option>`).join('')}</select></div>
+      <div class="setrow"><div style="min-width:0"><b>Giọng</b><small>${voiceList.length ? `${voiceList.length} giọng tiếng Anh trên máy${mine ? ` · đang dùng ${esc(mine.name)} (${esc(langKey(mine))})` : ''}` : 'Chưa tải được danh sách giọng'}</small></div>
+        <select class="input" style="max-width:190px" data-change="voice-name" aria-label="Giọng đọc"><option value="">Tự động (tốt nhất)</option>${voiceOpts}</select></div>
+      <div class="setrow"><div style="min-width:0"><b>Vừa tải giọng mới?</b><small>Tải trong Cài đặt iPhone → Trợ năng → Nội dung được đọc → Giọng nói, rồi bấm Tải lại. Vẫn chưa thấy thì vuốt tắt hẳn app rồi mở lại.</small></div>
+        <button class="btn sm ghost" data-act="voices-reload" style="flex:none">Tải lại</button></div>
       <div class="setrow"><b>Tốc độ đọc</b>${seg('rate', s.rate, [[0.75, 'Chậm'], [0.95, 'Vừa'], [1.1, 'Nhanh']])}</div>
       <div class="setrow"><div><b>Tự phát âm khi lật thẻ</b><small>Đọc từ ngay khi lật sang mặt đáp án</small></div>${seg('autoSpeak', s.autoSpeak !== false, [['true', 'Bật'], ['false', 'Tắt']]).replace('set-seg', 'set-seg two')}</div>
       <div class="setrow"><div><b>Tự điền khi gõ xong từ mới</b><small>Tự tra IPA, nghĩa, ví dụ… ngay khi bạn gõ xong từ (gửi từ đó tới dịch vụ tra cứu; nếu đã kết nối AI thì gọi AI một lần mỗi từ)</small></div>${seg('autoFill', s.autoFill !== false, [['true', 'Bật'], ['false', 'Tắt']]).replace('set-seg', 'set-seg two')}</div>
@@ -236,7 +244,30 @@ on('set-name', async (el) => {
   toast(name ? `Đã lưu tên: ${name}` : 'Đã xoá tên');
 });
 on('test-voice', () => speak('Practice makes perfect. This is how your words will sound.', { lang: S.settings.voice, rate: S.settings.rate, name: S.settings.voiceName }));
-on('voice-name', async (el) => { await saveSettings({ voiceName: el.value }); speak('Practice makes perfect.', { lang: S.settings.voice, rate: S.settings.rate, name: el.value }); });
+on('voice-name', async (el) => { await saveSettings({ voiceName: el.value }); rerender(); speak('Practice makes perfect.', { lang: S.settings.voice, rate: S.settings.rate, name: el.value }); });
+// Tải lại danh sách giọng: hỏi lại hệ điều hành; không thấy giọng mới thì mở lại trang (iOS thường chỉ cập nhật danh sách khi trang được tải lại).
+let voicesReloaded = 0;
+on('voices-reload', () => {
+  const before = allEnglishVoices().length;
+  const n = refreshVoices();
+  if (n > before) { toast(`Đã thấy thêm ${n - before} giọng · tổng ${n} giọng tiếng Anh`); rerender(); return; }
+  if (Date.now() - voicesReloaded < 15000) { toast(`Vẫn ${n} giọng. Hãy vuốt tắt hẳn app rồi mở lại`); return; }
+  try { sessionStorage.setItem('voicesReload', String(before)); } catch { /* bỏ qua */ }
+  toast('Đang tải lại app để đọc danh sách giọng mới…');
+  setTimeout(() => location.reload(), 600);
+});
+// Sau khi tải lại trang: báo kết quả (khi danh sách giọng đã có).
+function afterVoicesReload() {
+  if (!allEnglishVoices().length) return;
+  let was = null;
+  try { was = sessionStorage.getItem('voicesReload'); sessionStorage.removeItem('voicesReload'); } catch { /* bỏ qua */ }
+  if (was == null) return;
+  voicesReloaded = Date.now();
+  const n = allEnglishVoices().length;
+  toast(n > Number(was) ? `Đã thấy thêm ${n - Number(was)} giọng · tổng ${n} giọng tiếng Anh` : `Vẫn ${n} giọng. Hãy vuốt tắt hẳn app rồi mở lại; nếu vẫn không có, có thể iOS chưa cho trang web dùng giọng đó`);
+}
+onVoices(afterVoicesReload);
+setTimeout(afterVoicesReload, 1500);
 // Danh sách giọng thường về trễ sau khi mở app → vẽ lại trang Cài đặt khi có.
 onVoices(() => { if (location.hash === '#/settings' && !document.activeElement?.matches('input, select, textarea')) rerender(); });
 on('backup', async () => {

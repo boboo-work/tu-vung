@@ -111,6 +111,30 @@ export function englishVoices(lang = 'en-US') {
   const natural = list.filter((v) => voiceScore(v) > -10); // ẩn các giọng robot nếu máy có giọng tự nhiên
   return (natural.length ? natural : list).slice().sort((a, b) => voiceScore(b) - voiceScore(a));
 }
+/** Mọi giọng tiếng Anh trên máy (kể cả giọng Úc, Ireland, Ấn Độ…), tốt nhất đứng đầu. */
+export function allEnglishVoices() {
+  const list = voices.filter((v) => (v.lang || '').toLowerCase().startsWith('en'));
+  const natural = list.filter((v) => voiceScore(v) > -10); // ẩn giọng robot/giọng vui của iOS
+  return (natural.length ? natural : list).sort((a, b) => voiceScore(b) - voiceScore(a));
+}
+/** Giọng đã chọn: lưu theo voiceURI (phân biệt bản thường và bản Nâng cao cùng tên); bản cũ lưu theo tên vẫn dùng được. */
+export function voiceById(id) {
+  if (!id) return null;
+  const all = allEnglishVoices();
+  return all.find((v) => v.voiceURI === id) || all.find((v) => v.name === id) || null;
+}
+/** Chất lượng giọng (Apple ghi trong voiceURI: compact / enhanced / premium). */
+export function voiceQuality(v) {
+  const s = `${v.name} ${v.voiceURI}`.toLowerCase();
+  return s.includes('premium') ? 'Cao cấp' : s.includes('enhanced') ? 'Nâng cao' : s.includes('siri') ? 'Siri' : '';
+}
+/** Hỏi lại hệ điều hành danh sách giọng (sau khi tải giọng mới). Trả về số giọng tiếng Anh. */
+export function refreshVoices() {
+  if (!canSpeak()) return 0;
+  voices = speechSynthesis.getVoices();
+  voiceListeners.forEach((fn) => fn());
+  return allEnglishVoices().length;
+}
 export function speak(text, { lang = 'en-US', rate = 0.95, name = '' } = {}) {
   if (!canSpeak()) {
     toast('Thiết bị này không hỗ trợ phát âm');
@@ -122,7 +146,7 @@ export function speak(text, { lang = 'en-US', rate = 0.95, name = '' } = {}) {
   u.lang = lang;
   u.rate = rate;
   const list = englishVoices(lang);
-  const v = (name && list.find((x) => x.name === name)) || list[0];
+  const v = voiceById(name) || list[0];
   if (v) { u.voice = v; u.lang = v.lang.replace('_', '-'); }
   // Trên iOS, gọi cancel() rồi speak() ngay lập tức làm tiếng bị cắt/giật → chỉ cancel khi đang đọc, và chờ một nhịp.
   if (speechSynthesis.speaking || speechSynthesis.pending) {

@@ -6,7 +6,7 @@
 //     (từ nhỏ bị nuốt, đuôi -s/-ed, chính tả, không nghe ra từ).
 // Âm thanh: giọng đọc có sẵn trên máy (Web Speech API), ưu tiên giọng Anh và Úc, chạy được khi offline.
 import { S, saveSettings, saveListening, logGrammarDay, dayOf } from './store.js';
-import { esc, toast, uid, today, fmtDate, englishVoices, onVoices, canSpeak, shuffle } from './util.js';
+import { esc, toast, uid, today, fmtDate, englishVoices, onVoices, canSpeak, shuffle, voiceById } from './util.js';
 import { icon, on, go, back, rerender, learnSwitch, confirmSheet } from './ui.js';
 import { ltestCard } from './ltest.js';
 
@@ -22,6 +22,9 @@ export function voiceStock() {
 /** Chọn một giọng cho một câu: theo cài đặt (trộn: ưu tiên Anh và Úc, thỉnh thoảng giọng khác nếu máy có). */
 export function pickVoice() {
   const pref = S.settings.listenAccent || 'mix';
+  // Giọng bạn chọn trong Cài đặt: dùng luôn nếu hợp chất giọng Listening (Trộn nhận mọi giọng).
+  const mine = voiceById(S.settings.voiceName);
+  if (mine && (pref === 'mix' || langOf(mine).toLowerCase() === pref.toLowerCase() || (pref === 'en-AU' && /en-nz/i.test(langOf(mine))))) return mine;
   const buckets = pref === 'en-GB' ? [['en-GB', 1]] : pref === 'en-AU' ? [['en-AU', 1], ['en-NZ', 0.01]]
     : [['en-GB', 0.45], ['en-AU', 0.35], ['en-IE', 0.07], ['en-NZ', 0.05], ['en-US', 0.08]];
   const avail = buckets.map(([l, w]) => [w, voicesFor(l).slice(0, 3)]).filter((b) => b[1].length);
