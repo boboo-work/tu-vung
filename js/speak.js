@@ -283,8 +283,10 @@ document.addEventListener('visibilitychange', () => {
 });
 // Rời màn hình luyện → dừng ghi, tắt micro.
 window.addEventListener('hashchange', () => {
-  if (!/^#\/(sp1|sp2)\//.test(location.hash) && (Mic.stream || Mic.ctx || rec)) { closeAll(); stopTicker(); if (P && ['rec', 'speak', 'prep', 'starting'].includes(P.stage)) P = null; }
+  if (!/^#\/((sp1|sp2)\/|tkplay)/.test(location.hash) && (Mic.stream || Mic.ctx || rec)) { closeAll(); stopTicker(); if (P && ['rec', 'speak', 'prep', 'starting'].includes(P.stage)) P = null; }
 });
+/** Dùng chung với trò Nói 30 giây (tab Game). */
+export const micKit = { openMic, startRec, stopRec, closeAll, ensureCtx, sttOn, loadFile: (f) => loadFile(f), data: () => SP };
 function interrupted(why) {
   if (!P || !['rec', 'speak'].includes(P.stage)) return;
   P.notice = `${why}, nên app đã dừng và lưu phần ghi được. Để ghi trọn, hãy giữ app mở đến khi bấm Dừng.`;

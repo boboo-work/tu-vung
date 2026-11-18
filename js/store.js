@@ -462,6 +462,7 @@ export async function ltDel(...ids) {
   ids.forEach((id) => S.ltest.delete(id));
 }
 // ---- Game Săn từ ----
+// S.hunt.talk = { plays, best, n, ok, secs }: trò Nói 30 giây (Speaking); khoá câu "sp-<quý>|<chủ đề>|<câu>".
 // S.hunt.lt = { plays, best, n, ok, trap }: trò Bẫy hay Thật (Listening); câu của trò này có khoá "lt-<đề>|p<part>|<câu>".
 // S.hunt = { plays, best, wrong: { "<đề>|<passage>|<câu>": số lần đúng liên tiếp kể từ lần sai }, pos: { n|v|a|num|other: { n, ok } }, seen: { khoá: lần cuối } }
 export function cleanHunt(h) {
@@ -472,7 +473,8 @@ export function cleanHunt(h) {
   const pos = {};
   for (const k of ['n', 'v', 'a', 'num', 'other']) pos[k] = { n: n(o.pos?.[k]?.n), ok: n(o.pos?.[k]?.ok) };
   const lt = { plays: n(o.lt?.plays), best: n(o.lt?.best), n: n(o.lt?.n), ok: n(o.lt?.ok), trap: n(o.lt?.trap) };
-  return { plays: n(o.plays), best: n(o.best), wrong: pick(o.wrong, 400), pos, seen: pick(o.seen, 2000), lt };
+  const talk = { plays: n(o.talk?.plays), best: n(o.talk?.best), n: n(o.talk?.n), ok: n(o.talk?.ok), secs: n(o.talk?.secs) };
+  return { plays: n(o.plays), best: n(o.best), wrong: pick(o.wrong, 400), pos, seen: pick(o.seen, 2000), lt, talk };
 }
 export async function saveHunt() {
   await put('kv', { key: 'hunt', value: S.hunt });

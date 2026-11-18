@@ -1410,3 +1410,42 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 .vrow-main { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .vrow .tag { font-size: 11.5px; padding: 1px 7px; min-height: 0; }
 .vrow code { font-size: 11.5px; color: var(--muted, #777); word-break: break-all; }
+
+/* ---- Nói 30 giây (Speaking) ---- */
+.tk-say, .tk-band { flex: none; height: 32px; min-width: 36px; padding: 0 9px; border: 2px solid var(--hn-ink); border-radius: 10px; background: #fff; box-shadow: 0 3px 0 var(--hn-ink); color: var(--hn-ink); font-family: var(--hn-font); font-size: 13px; font-weight: 800; display: inline-grid; place-items: center; }
+.tk-tools { display: inline-flex; gap: 6px; }
+.tk-vi { margin-top: 8px; font-size: 14px; }
+.tk-vi summary { cursor: pointer; font-weight: 700; color: #6B6280; }
+.tk-vi p { margin: 6px 0 0; }
+.tk-stage { margin: 16px 0; padding: 18px 14px 16px; border: 2.5px solid var(--hn-ink); border-radius: 24px; box-shadow: 0 5px 0 var(--hn-ink); text-align: center; }
+.tk-stage.think { background: #BFE3FF; }
+.tk-stage.talk { background: #FFB3CB; }
+.tk-lab { margin: 0; font-weight: 800; font-size: 16px; }
+.tk-big { display: block; font-family: var(--hn-font); font-size: 72px; line-height: 1.05; font-weight: 900; color: var(--hn-ink); }
+.tk-hint { margin: 6px 0 0; font-size: 14px; font-weight: 700; opacity: .8; }
+.tk-level { height: 12px; margin: 10px auto 0; max-width: 240px; border: 2px solid var(--hn-ink); border-radius: 99px; background: #fff; overflow: hidden; }
+.tk-level i { display: block; height: 100%; width: 0; background: #8EE3C8; transition: width .08s; }
+.tk-said { margin: 8px 0 0; font-size: 14px; line-height: 1.5; text-align: left; }
+.tk-model { font-size: 16.5px; line-height: 1.75; font-weight: 600; }
+.tk-ph { background: #FFD84D; border-radius: 6px; padding: 1px 3px; box-shadow: 0 0 0 2px var(--hn-ink); cursor: pointer; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.tk-note { margin: 8px 0 0; font-size: 13px; font-weight: 600; color: #6B6280; }
+.tk-mean { margin: 6px 0 0; font-size: 14px; }
+.tk-blank { display: inline-block; min-width: 54px; margin: 2px 0; padding: 1px 8px; border: 2px dashed var(--hn-ink); border-radius: 9px; background: #FFF6E6; font-weight: 800; text-align: center; color: var(--hn-ink); font-family: inherit; font-size: inherit; line-height: 1.5; }
+.tk-blank.cur { background: #FFF0B8; border-style: solid; }
+.tk-blank.filled { border-style: solid; background: #C7B8FF; }
+.tk-blank.ok { border-style: solid; background: #8EE3C8; }
+.tk-blank.no { border-style: solid; background: #FFB3CB; }
+.tk-blank s { margin-left: 6px; font-weight: 600; opacity: .7; }
+.tk-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.tk-chip { padding: 8px 12px; border: 2.5px solid var(--hn-ink); border-radius: 14px; background: #fff; box-shadow: 0 4px 0 var(--hn-ink); font-family: var(--hn-font); font-size: 15px; font-weight: 800; color: var(--hn-ink); }
+.tk-chip:active:not([disabled]) { transform: translateY(3px); box-shadow: 0 1px 0 var(--hn-ink); }
+.tk-chip.used { opacity: .35; }
+.tk-self { display: flex; flex-direction: column; gap: 9px; margin-top: 10px; }
+.tk-check { display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 12px; border: 2.5px solid var(--hn-ink); border-radius: 16px; background: #fff; box-shadow: 0 4px 0 var(--hn-ink); font-family: var(--hn-font); font-size: 15.5px; font-weight: 800; color: var(--hn-ink); text-align: left; }
+.tk-check span { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border: 2.5px solid var(--hn-ink); border-radius: 7px; background: #fff; }
+.tk-check.on { background: #D9F7EC; }
+.tk-check.on span { background: #8EE3C8; }
+.tk-scr .hn-btn { margin-top: 14px; }
+.tk-card { position: relative; }
+.tk-card .tk-tools { position: absolute; top: 10px; right: 10px; }
+.tk-card .hn-q { padding-right: 4px; margin-top: 30px; }
