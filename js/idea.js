@@ -222,8 +222,9 @@ on('id-pick', (el) => {
   const k = Number(el.dataset.k);
   if (I.built.includes(k)) return;
   I.built.push(k);
-  if (I.built.length === I.cards[I.i].chunks.length) checkOrder(); else rerender();
+  rerender(); // ghép đủ thì hiện nút Kiểm tra: vẫn sửa được trước khi chấm
 });
+on('id-check', () => { if (I?.phase === 'order' && I.built.length === I.cards[I.i].chunks.length) checkOrder(); });
 on('id-unpick', (el) => { if (I?.phase === 'order') { I.built.splice(Number(el.dataset.pos), 1); rerender(); } });
 on('id-self-go', () => { if (I?.phase === 'orderDone') { I.phase = 'self'; rerender(true); } });
 on('id-self', (el) => { if (I?.phase === 'self') { I.self[el.dataset.k] = !I.self[el.dataset.k]; rerender(); } });
@@ -292,9 +293,10 @@ function orderView(c) {
   const pool = done ? '' : `<div class="tk-chips">${I.pool.map((k) => `<button class="tk-chip ${I.built.includes(k) ? 'used' : ''}" data-act="id-pick" data-k="${k}" ${I.built.includes(k) ? 'disabled' : ''}>${esc(c.chunks[k])}</button>`).join('')}</div>`;
   const n = done ? I.checked.filter(Boolean).length : 0, all = done && n === c.chunks.length;
   return `${hud(c)}
-    <p class="hn-step">${done ? '' : 'Chạm các mảnh theo đúng thứ tự · chạm mảnh đã ghép để bỏ ra'}</p>
+    <p class="hn-step">${done ? '' : I.built.length === c.chunks.length ? 'Đọc lại câu: sai chỗ nào thì chạm mảnh đó để bỏ ra' : 'Chạm các mảnh theo đúng thứ tự · chạm mảnh đã ghép để bỏ ra'}</p>
     <div class="hn-card"><span class="hn-tag" style="background:#C7B8FF">${done ? 'Câu đúng' : `Ghép câu · ${c.chunks.length} mảnh`}</span><p class="id-line">${line}</p></div>
     ${pool}
+    ${!done && I.built.length === c.chunks.length ? bigBtn('id-check', 'Kiểm tra') : ''}
     ${done ? `<div class="hn-panel" style="background:${all ? '#D9F7EC' : '#FFE1EC'}"><div class="hn-ptitle">${all ? mochi('happy', 48) : bolt('dizzy', 48)}<b>${all ? `Chuẩn từng mảnh! +${20 + Math.min(4, I.combo - 1) * 5}` : `Đúng vị trí ${n}/${c.chunks.length} mảnh${n ? ` · +${n * 2}` : ''}`}</b></div>
       ${all ? '' : `<p>Câu đúng: ${sentHtml(c, false)}</p><p class="tk-note">Thẻ này sẽ quay lại ở lượt sau.</p>`}${bigBtn('id-self-go', 'Tự chấm →')}</div>` : ''}`;
 }

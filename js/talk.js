@@ -281,8 +281,9 @@ on('tk-chip', (el) => {
   const k = T.fills.indexOf(null);
   if (k < 0) return;
   T.fills[k] = t;
-  if (!T.fills.includes(null)) checkCloze(); else rerender();
+  rerender(); // điền đủ thì hiện nút Kiểm tra: vẫn sửa được trước khi chấm
 });
+on('tk-check', () => { if (T?.phase === 'cloze' && !T.fills.includes(null)) checkCloze(); });
 on('tk-unfill', (el) => { if (T?.phase === 'cloze') { T.fills[Number(el.dataset.i)] = null; rerender(); } });
 on('tk-self-go', () => { if (T?.phase === 'clozeDone') { T.phase = 'self'; rerender(true); } });
 on('tk-self', (el) => { if (T?.phase === 'self') { T.self[el.dataset.k] = !T.self[el.dataset.k]; rerender(); } });
@@ -375,9 +376,10 @@ function clozeView(c) {
   const chips = done ? '' : `<div class="tk-chips">${T.chips.map((t, i) => `<button class="tk-chip ${T.fills.includes(t) ? 'used' : ''}" data-act="tk-chip" data-i="${i}" ${T.fills.includes(t) ? 'disabled' : ''}>${esc(t)}</button>`).join('')}</div>`;
   const n = done ? T.checked.filter(Boolean).length : 0;
   return `${hud(c)}
-    <p class="hn-step">${done ? '' : 'Chạm cụm đúng để điền vào chỗ trống'}</p>
+    <p class="hn-step">${done ? '' : T.fills.includes(null) ? 'Chạm cụm đúng để điền vào chỗ trống · chạm ô đã điền để bỏ ra' : 'Đọc lại: sai ô nào thì chạm ô đó để bỏ ra'}</p>
     <div class="hn-card"><span class="hn-tag" style="background:#C7B8FF">Điền lại cụm hay · bài 7.0</span><p class="hn-q tk-model">${html}</p></div>
     ${chips}
+    ${!done && !T.fills.includes(null) ? bigBtn('tk-check', 'Kiểm tra') : ''}
     ${done ? `<div class="hn-panel" style="background:${n === c.phrases.length ? '#D9F7EC' : '#FFE1EC'}"><div class="hn-ptitle">${n === c.phrases.length ? mochi('happy', 48) : bolt('dizzy', 48)}<b>Đúng ${n}/${c.phrases.length} cụm${n ? ` · +${n * 10}` : ''}</b></div>
       ${n < c.phrases.length ? '<p>Câu này sẽ quay lại ở lượt sau để bạn ôn tiếp.</p>' : ''}${bigBtn('tk-self-go', 'Tự chấm →')}</div>` : ''}`;
 }
