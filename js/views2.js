@@ -110,7 +110,8 @@ on('stats-sel', (el) => { ui.statsSel = Number(el.dataset.i); rerender(); });
 
 // ================= SETTINGS =================
 // Màu chủ đạo: [id, tên, màu mẫu hiển thị trên nút chọn]. Giá trị thật cho sáng/tối nằm trong css/app.css.
-const ACCENTS = [['green', 'Xanh lá', '#1F6F54'], ['blue', 'Xanh dương', '#1F5FBF'], ['purple', 'Tím', '#6B3FB8'], ['teal', 'Xanh ngọc', '#0F7480'], ['orange', 'Cam', '#B4530F'], ['pink', 'Hồng', '#B8336F']];
+// Giao diện sticker: màu này là màu nút chính và thanh điều hướng (xem css/sticker.css).
+const ACCENTS = [['green', 'Vàng', '#FFD84D'], ['blue', 'Xanh trời', '#BFE3FF'], ['purple', 'Oải hương', '#C7B8FF'], ['teal', 'Bạc hà', '#8EE3C8'], ['orange', 'Đào', '#FFC9A8'], ['pink', 'Hồng', '#FFB3CB']];
 export function applyTheme() {
   let t = S.settings.theme;
   try { localStorage.setItem('theme', t); } catch {}
@@ -119,7 +120,7 @@ export function applyTheme() {
   const accent = ACCENTS.some(([id]) => id === S.settings.accent) ? S.settings.accent : 'green';
   try { localStorage.setItem('accent', accent); } catch {}
   document.documentElement.dataset.accent = accent;
-  document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'dark' ? '#0F1110' : '#F5F4EF');
+  document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'dark' ? '#1C1828' : '#FFF6E6');
 }
 
 // Số bản đang chạy = tên cache của service worker (VERSION trong sw.js).
@@ -180,6 +181,7 @@ export function settingsView() {
     </div>
     <h2>Giao diện & phát âm</h2>
     <div class="card">
+      <div class="setrow"><div style="min-width:0"><label for="set-name"><b>Tên của bạn</b></label><small>Hiện trong lời chào ở Trang chủ</small></div><input id="set-name" class="input name-in" type="text" maxlength="30" value="${esc(s.userName || '')}" placeholder="Ví dụ: Boo" autocomplete="nickname" data-change="set-name"></div>
       <div class="setrow"><b>Chế độ</b>${seg('theme', s.theme, [['auto', 'Tự động'], ['light', 'Sáng'], ['dark', 'Tối']])}</div>
       <div class="setrow" style="flex-wrap:wrap;row-gap:10px"><b style="flex:1 0 100%">Màu chủ đạo</b><div class="swatches" role="radiogroup" aria-label="Màu chủ đạo">${ACCENTS.map(([id, name, c]) => `<button class="swatch ${(s.accent || 'green') === id ? 'on' : ''}" style="--c:${c}" data-act="set" data-key="accent" data-value="${id}" role="radio" aria-checked="${(s.accent || 'green') === id}" aria-label="${name}" title="${name}">${(s.accent || 'green') === id ? icon('check') : ''}</button>`).join('')}</div></div>
       <div class="setrow"><b>Giọng đọc</b>${seg('voice', s.voice, [['en-US', 'Anh-Mỹ'], ['en-GB', 'Anh-Anh']])}</div>
@@ -234,6 +236,12 @@ on('set', async (el) => {
   if (key === 'speakingKeepDays') { const n = await spCleanup(); if (n) toast(`Đã xoá âm thanh của ${n} bản ghi quá hạn`); }
   if (key === 'theme' || key === 'accent') applyTheme();
   rerender();
+});
+on('set-name', async (el) => {
+  const name = el.value.trim().slice(0, 30);
+  if (name === (S.settings.userName || '')) return;
+  await saveSettings({ userName: name });
+  toast(name ? `Đã lưu tên: ${name}` : 'Đã xoá tên');
 });
 on('test-voice', () => speak('Practice makes perfect. This is how your words will sound.', { lang: S.settings.voice, rate: S.settings.rate, name: S.settings.voiceName }));
 on('voice-name', async (el) => { await saveSettings({ voiceName: el.value }); rerender(); speak('Practice makes perfect.', { lang: S.settings.voice, rate: S.settings.rate, name: el.value }); });

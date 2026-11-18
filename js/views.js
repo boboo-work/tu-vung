@@ -9,6 +9,7 @@ import { loadSeed } from './io.js';
 import { aiReady } from './ai.js';
 import { lookupWord, buildFill, POS_LIST } from './lookup.js';
 import { G, nextLesson, todayLessons, gDueCount, grammarReviewCard } from './grammar.js';
+import { mochi, bolt } from './hunt.js';
 import { W, nextPart, todayWriting, essayDraft, essayDraftCta } from './writing.js';
 import { R, nextPassage, todayReading } from './reading.js';
 import { SP, nextSpeaking, todaySpeaking } from './speak.js';
@@ -34,11 +35,14 @@ const deckSelect = (value, act, allLabel = 'Tất cả chủ đề') =>
   `<select class="input" data-change="${act}" aria-label="Chủ đề"><option value="">${allLabel}</option>${S.decks.map((d) => `<option value="${d.id}" ${d.id === value ? 'selected' : ''}>${esc(d.name)}</option>`).join('')}</select>`;
 
 // ================= HOME =================
+// Buổi sáng: 6:00–17:59 (Mochi chào), còn lại là buổi tối (Bolt chào).
+const isMorning = (d) => d.getHours() >= 6 && d.getHours() < 18;
+const greeting = (d) => `Chào buổi ${isMorning(d) ? 'sáng' : 'tối'}${S.settings.userName ? ` ${esc(S.settings.userName)}` : ''}`;
 export function homeView() {
   const sum = summary();
   const now = new Date();
-  const head = `<header class="top"><div><p class="eyebrow">${WEEKDAYS[now.getDay()]}, ${now.getDate()} tháng ${now.getMonth() + 1}</p><h1>Hôm nay</h1></div>
-    <button class="iconbtn tonal" data-act="go" data-to="#/settings" aria-label="Cài đặt">${icon('gear')}</button></header>`;
+  const head = `<header class="top"><div><p class="eyebrow">${WEEKDAYS[now.getDay()]}, ${now.getDate()} tháng ${now.getMonth() + 1}</p><h1>${greeting(now)}</h1></div>
+    <div class="home-hi"><span class="home-mascot">${isMorning(now) ? mochi('happy', 64) : bolt('happy', 64)}</span><button class="iconbtn tonal" data-act="go" data-to="#/settings" aria-label="Cài đặt">${icon('gear')}</button></div></header>`;
 
   // Chưa có từ nào và chưa học ngữ pháp → màn hình bắt đầu. Đã học ngữ pháp thì hiện Trang chủ đầy đủ.
   const learnedGrammar = S.grammar.size > 0; // đã học bài hoặc đã làm kiểm tra đầu vào

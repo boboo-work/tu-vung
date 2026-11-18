@@ -1,10 +1,10 @@
 // Service worker: lưu sẵn toàn bộ app để chạy offline.
 // Chiến lược: ưu tiên mạng (luôn nhận bản mới khi online), rớt mạng hoặc quá 3 giây thì dùng bản đã lưu.
 // Khi phát hành bản mới, tăng VERSION để dọn cache cũ.
-const VERSION = 'v58';
+const VERSION = 'v62';
 const CACHE = `tu-vung-${VERSION}`;
 const ASSETS = [
-  './', './index.html', './manifest.webmanifest', './css/app.css',
+  './', './index.html', './manifest.webmanifest', './css/app.css', './css/sticker.css',
   './js/app.js', './js/ui.js', './js/store.js', './js/srs.js', './js/util.js', './js/study.js', './js/game.js', './js/drop.js', './js/games2.js', './js/lookup.js',
   './js/views.js', './js/views2.js', './js/io.js', './js/ai.js', './js/seed.js', './js/fx.js', './js/grammar.js', './js/writing.js', './js/reading.js', './js/speaking.js', './js/speak.js', './js/listening.js', './js/ltest.js', './js/hunt.js', './js/trap.js',
   './content/grammar/course1.json', './content/grammar/course2.json', './content/grammar/course3.json', './content/grammar/course4.json',

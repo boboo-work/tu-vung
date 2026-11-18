@@ -12,7 +12,8 @@ import { aiReady, askAI } from './ai.js';
 // ---------------------------------------------------------------- Đọc đề HTML
 const BLOCK = new Set(['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'TABLE', 'UL', 'OL']);
 const txt = (el) => (el.textContent || '').replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
-const RE_PART = /^PART\s*(\d)\b/i;
+// Sách cũ (Cam 10–14) ghi "SECTION 1" thay cho "PART 1".
+const RE_PART = /^(?:PART|SECTION)\s*(\d)\b/i;
 const RE_GROUP = /^Questions?\s+(\d{1,2})\s*(?:[-–—]|and|to|&)\s*(\d{1,2})\b/i;
 const RE_INSTR = /^(Complete|Choose|Write|Label|Answer|Match|Look|List|Which|What|Where|Who|How|Why|When)\b/i;
 const RE_OPT = /^([A-I])\s+(\S.*)$/;
@@ -76,7 +77,7 @@ function readKey(doc) {
   const lines = [];
   for (const h of doc.querySelectorAll('h5, h4, h3, p, div')) {
     if (h.tagName !== 'H5' && h.tagName !== 'H4') continue;
-    if (!/^Part\s*\d\b/i.test(txt(h))) continue;
+    if (!/^(?:Part|Section)\s*\d\b/i.test(txt(h))) continue;
     const box = h.nextElementSibling;
     if (!box) continue;
     box.querySelectorAll('i, em').forEach((i) => { if (txt(i) === 'I') i.textContent = ' / '; });
@@ -232,6 +233,9 @@ export function parseTranscriptHtml(html) {
     for (let n = tw.nextNode(); n; n = tw.nextNode()) {
       const v = n.nodeValue.replace(/\u00a0/g, ' ');
       const u = underlined(n);
+      // Mốc không có ngoặc, in đậm/nghiêng riêng một mẩu: "Q1", "Q21/Q22" (Cam 19).
+      const bare = v.trim().match(/^Q(\d{1,2})((?:\s*[/,&]\s*Q?\d{1,2})*)$/);
+      if (bare && n.parentElement && /^(STRONG|B|EM|I)$/.test(n.parentElement.tagName)) { segs.push({ q: [...v.matchAll(/\d{1,2}/g)].map((x) => Number(x[0])), t: '' }); continue; }
       let last = 0;
       for (const m of v.matchAll(RE_QMARK)) {
         if (m.index > last) segs.push({ t: v.slice(last, m.index), u });
@@ -242,7 +246,8 @@ export function parseTranscriptHtml(html) {
     }
     const qs = [];
     segs.forEach((sg, k) => { if (sg.q) for (const q of sg.q) { qs.push(q); (ev[q] = ev[q] || []).push({ part: pn, i: cur.length, html: evidence(segs, k) }); } });
-    const h = [...el.childNodes].map(cleanHtml).join('').replace(/(<i>\s*)?\((Q\d{1,2}(?:\s*[/,&]\s*Q?\d{1,2})*)\)(\s*<\/i>)?/g, (m, a, q) => `<span class="lt-qb">${q.replace(/\s+/g, '')}</span>`);
+    const h = [...el.childNodes].map(cleanHtml).join('').replace(/(<i>\s*)?\((Q\d{1,2}(?:\s*[/,&]\s*Q?\d{1,2})*)\)(\s*<\/i>)?/g, (m, a, q) => `<span class="lt-qb">${q.replace(/\s+/g, '')}</span>`)
+      .replace(/(?:<(?:b|i)>\s*)+(Q\d{1,2}(?:\s*[/,&]\s*Q?\d{1,2})*)\s*(?:<\/(?:b|i)>\s*)+/g, (m, q) => ` <span class="lt-qb">${q.replace(/\s+/g, '')}</span> `);
     cur.push({ html: h, qs });
   }
   return { parts, ev, n: Object.keys(ev).length };
