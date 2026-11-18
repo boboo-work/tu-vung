@@ -462,6 +462,7 @@ export async function ltDel(...ids) {
   ids.forEach((id) => S.ltest.delete(id));
 }
 // ---- Game Săn từ ----
+// S.hunt.daily = { date, plan: [trò…], i, res: [{ g, score, ok, n, skip }], done, total, streak, best, last }: Thử thách hôm nay.
 // S.hunt.idea = { plays, best, n, ok }: trò Ý tưởng 60 giây (Writing); khoá thẻ "wr-<đề>|<phần>|0".
 // S.hunt.talk = { plays, best, n, ok, secs }: trò Nói 30 giây (Speaking); khoá câu "sp-<quý>|<chủ đề>|<câu>".
 // S.hunt.lt = { plays, best, n, ok, trap }: trò Bẫy hay Thật (Listening); câu của trò này có khoá "lt-<đề>|p<part>|<câu>".
@@ -476,7 +477,13 @@ export function cleanHunt(h) {
   const lt = { plays: n(o.lt?.plays), best: n(o.lt?.best), n: n(o.lt?.n), ok: n(o.lt?.ok), trap: n(o.lt?.trap) };
   const talk = { plays: n(o.talk?.plays), best: n(o.talk?.best), n: n(o.talk?.n), ok: n(o.talk?.ok), secs: n(o.talk?.secs) };
   const idea = { plays: n(o.idea?.plays), best: n(o.idea?.best), n: n(o.idea?.n), ok: n(o.idea?.ok) };
-  return { plays: n(o.plays), best: n(o.best), wrong: pick(o.wrong, 400), pos, seen: pick(o.seen, 2000), lt, talk, idea };
+  const dd = o.daily && typeof o.daily === 'object' ? o.daily : {};
+  const DATE = /^\d{4}-\d{2}-\d{2}$/, G = ['hunt', 'trap', 'talk', 'idea'];
+  const plan = (Array.isArray(dd.plan) ? dd.plan : []).filter((g) => G.includes(g)).slice(0, 4);
+  const daily = { date: DATE.test(dd.date) ? dd.date : '', plan, i: Math.min(n(dd.i), plan.length), done: dd.done === true, counted: dd.counted === true,
+    res: (Array.isArray(dd.res) ? dd.res : []).slice(0, 4).map((r) => ({ g: G.includes(r?.g) ? r.g : '', score: n(r?.score), ok: n(r?.ok), n: n(r?.n), skip: r?.skip === true })),
+    total: n(dd.total), streak: n(dd.streak), best: n(dd.best), last: DATE.test(dd.last) ? dd.last : '' };
+  return { plays: n(o.plays), best: n(o.best), wrong: pick(o.wrong, 400), pos, seen: pick(o.seen, 2000), lt, talk, idea, daily };
 }
 export async function saveHunt() {
   await put('kv', { key: 'hunt', value: S.hunt });

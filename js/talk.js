@@ -9,6 +9,7 @@ import { icon, on, go, back, replace, rerender, confirmSheet } from './ui.js';
 import { loadSpeaking, micKit } from './speak.js';
 import { openWordSheet } from './reading.js';
 import { mochi, bolt, kit } from './hunt.js';
+import { chalReport } from './challenge.js';
 
 // ---------------------------------------------------------------- Dữ liệu
 const STOP = new Set(['a', 'an', 'the', 'and', 'or', 'but', 'so', 'of', 'to', 'in', 'on', 'at', 'for', 'with', 'by', 'from', 'as', 'is', 'are', 'was', 'were', 'be', 'been', 'it', 'its', "it's", 'i', "i'm", "i've", "i'd", 'my', 'me', 'we', 'our', 'you', 'your', 'they', 'them', 'their', 'he', 'she', 'his', 'her', 'this', 'that', 'these', 'those', 'there', 'which', 'who', 'what', 'when', 'where', 'how', 'do', 'does', 'did', 'have', 'has', 'had', 'not', "don't", "doesn't", 'very', 'really', 'quite', 'just', 'also', 'too', 'if', 'than', 'then', 'about', 'because', 'can', 'will', 'would', 'could', 'should', 'some', 'any', 'more', 'most', 'much', 'many', 'lot', 'lots', 'like', 'well', 'yes', 'no', 'all', 'one']);
@@ -232,6 +233,7 @@ async function finish() {
     await logGrammarDay('hSets', P.id); // tính vào chuỗi ngày học, không tính vào mục tiêu Speaking
   }
   const secs = Math.round(done.reduce((a, r) => a + (r.spokeMs || 0), 0) / 1000);
+  if (P.chal) { await chalReport('talk', { score: P.score, ok: done.filter((r) => r.ok).length, n: done.length }); return; }
   LAST = { score: P.score, n: done.length, blanks: P.blanks, blanksOk: P.blanksOk, secs, ms: Date.now() - P.t0, wrong: done.filter((r) => !r.ok), phrases: P.learned, counted: done.length > 0 };
   replace('#/tkres');
 }
@@ -240,6 +242,7 @@ let starting = false;
 on('tk-start', async (el) => {
   if (starting) return;
   const keys = el.dataset.keys ? el.dataset.keys.split(',') : null;
+  const chal = el.dataset.chal === '1', size = Number(el.dataset.size) || 0;
   starting = true;
   let all;
   try {
@@ -247,9 +250,12 @@ on('tk-start', async (el) => {
     const mic = ui.rec ? micKit.openMic().then(() => true, (e) => { console.warn(e); toast('Không mở được micro: lượt này không ghi âm', 'bad'); return false; }) : Promise.resolve(false);
     toast('Đang chuẩn bị câu hỏi…');
     all = buildCards(await loadAll());
-    const cards = pickCards(all, { keys });
+    const saved = { ...ui };
+    if (chal) Object.assign(ui, { src: 'new', part: 'mix', onlyWrong: false });
+    const cards = pickCards(all, { keys: chal ? null : keys }).slice(0, size || SIZE);
+    Object.assign(ui, saved);
     if (!cards.length) { toast(ui.onlyWrong ? 'Không còn câu nào cần ôn lại' : 'Chưa có câu phù hợp'); micKit.closeAll(); return; }
-    T = { id: 'K:' + uid(), cards, i: 0, score: 0, combo: 0, maxCombo: 0, t0: Date.now(), res: [], blanks: 0, blanksOk: 0, learned: [], rec: ui.rec, micOk: await mic };
+    T = { id: 'K:' + uid(), cards, i: 0, score: 0, combo: 0, maxCombo: 0, t0: Date.now(), res: [], blanks: 0, blanksOk: 0, learned: [], rec: ui.rec, micOk: await mic, chal };
     beginCard();
     go('#/tkplay');
   } catch (e) { console.error(e); toast('Chưa tải được đề Speaking. Hãy mở app khi có mạng một lần.', 'bad'); }
@@ -306,7 +312,7 @@ on('tk-quit', async () => {
   if (!T) { back('#/games'); return; }
   const done = T.res.filter(Boolean).length;
   if (!(await confirmSheet({ title: 'Dừng lượt chơi?', body: done ? `Đã làm ${done} câu: kết quả được lưu và tính vào chuỗi ngày học.` : 'Chưa làm xong câu nào nên lượt này không được lưu.', okLabel: 'Dừng' }))) return;
-  if (done) await finish(); else { stopTimer(); clearAudio(); if (T.recording) await micKit.stopRec(); micKit.closeAll(); T = null; back('#/games'); }
+  if (done) await finish(); else { stopTimer(); clearAudio(); if (T.recording) await micKit.stopRec(); micKit.closeAll(); const chal = T.chal; T = null; if (chal) replace('#/chal'); else back('#/games'); }
 });
 on('tk-set', (el) => { ui[el.dataset.k] = el.dataset.v === 'true' ? true : el.dataset.v === 'false' ? false : el.dataset.v; rerender(); });
 on('tk-wrong', () => { ui.onlyWrong = !ui.onlyWrong; rerender(); });
