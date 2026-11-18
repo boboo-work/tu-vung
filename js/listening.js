@@ -6,7 +6,7 @@
 //     (từ nhỏ bị nuốt, đuôi -s/-ed, chính tả, không nghe ra từ).
 // Âm thanh: giọng đọc có sẵn trên máy (Web Speech API), ưu tiên giọng Anh và Úc, chạy được khi offline.
 import { S, saveSettings, saveListening, logGrammarDay, dayOf } from './store.js';
-import { esc, toast, uid, today, fmtDate, englishVoices, onVoices, canSpeak, shuffle, voiceById } from './util.js';
+import { esc, toast, uid, today, fmtDate, englishVoices, onVoices, canSpeak, shuffle, voiceById, freshVoice } from './util.js';
 import { icon, on, go, back, rerender, learnSwitch, confirmSheet } from './ui.js';
 import { ltestCard } from './ltest.js';
 
@@ -22,9 +22,9 @@ export function voiceStock() {
 /** Chọn một giọng cho một câu: theo cài đặt (trộn: ưu tiên Anh và Úc, thỉnh thoảng giọng khác nếu máy có). */
 export function pickVoice() {
   const pref = S.settings.listenAccent || 'mix';
-  // Giọng bạn chọn trong Cài đặt: dùng luôn nếu hợp chất giọng Listening (Trộn nhận mọi giọng).
+  // Giọng bạn chọn trong Cài đặt luôn được dùng; chất giọng Listening (Trộn/Anh/Úc) chỉ áp dụng khi để "Tự động".
   const mine = voiceById(S.settings.voiceName);
-  if (mine && (pref === 'mix' || langOf(mine).toLowerCase() === pref.toLowerCase() || (pref === 'en-AU' && /en-nz/i.test(langOf(mine))))) return mine;
+  if (mine) return mine;
   const buckets = pref === 'en-GB' ? [['en-GB', 1]] : pref === 'en-AU' ? [['en-AU', 1], ['en-NZ', 0.01]]
     : [['en-GB', 0.45], ['en-AU', 0.35], ['en-IE', 0.07], ['en-NZ', 0.05], ['en-US', 0.08]];
   const avail = buckets.map(([l, w]) => [w, voicesFor(l).slice(0, 3)]).filter((b) => b[1].length);
@@ -38,6 +38,8 @@ let utter = null;
 export function say(text, { voice = null, rate = 0, onend } = {}) {
   if (!canSpeak()) { toast('Thiết bị này không hỗ trợ đọc thành tiếng'); return false; }
   const u = new SpeechSynthesisUtterance(text);
+  // Lấy giọng lúc đọc (không dùng giọng đã ghi lúc bắt đầu lượt): đổi giọng trong Cài đặt là có tác dụng ngay.
+  voice = freshVoice(voiceById(S.settings.voiceName) || voice);
   if (voice) { u.voice = voice; u.lang = langOf(voice); } else u.lang = 'en-GB';
   u.rate = rate || S.settings.listenRate || 0.95;
   const done = () => { if (utter === u) { utter = null; playing(false); onend?.(); } };
@@ -816,7 +818,7 @@ function settingsCard() {
   else if (!vs.au) tip = 'Máy chưa có giọng Úc.';
   else if (!vs.gb) tip = 'Máy chưa có giọng Anh.';
   return `<h2>Cài đặt Listening</h2><div class="card">
-    <div class="setrow col"><div><b>Giọng</b><small>Đề thi ở Việt Nam chủ yếu là giọng Anh và Úc</small></div>${seg('listenAccent', s.listenAccent || 'mix', [['mix', 'Trộn'], ['en-GB', 'Anh'], ['en-AU', 'Úc']])}</div>
+    <div class="setrow col"><div><b>Giọng</b><small>${voiceById(s.voiceName) ? `Đang dùng giọng ${esc(voiceById(s.voiceName).name)} (${esc(langOf(voiceById(s.voiceName)))}) (chọn trong Cài đặt → Giọng). Muốn trộn giọng Anh và Úc như đề thi, để Giọng là "Tự động"` : 'Đề thi ở Việt Nam chủ yếu là giọng Anh và Úc'}</small></div>${seg('listenAccent', s.listenAccent || 'mix', [['mix', 'Trộn'], ['en-GB', 'Anh'], ['en-AU', 'Úc']])}</div>
     <div class="setrow col"><div><b>Tốc độ</b></div>${seg('listenRate', s.listenRate || 0.95, [[0.8, 'Chậm'], [0.95, 'Thường'], [1.05, 'Nhanh']])}</div>
     <div class="setrow"><div><b>Chỉ nghe 1 lần</b><small>Như khi thi: không nghe lại trước khi kiểm tra (nghe số &amp; chính tả)</small></div><button class="tag ${s.listenOnce ? 'on' : ''}" data-act="ls-set" data-key="listenOnce">${s.listenOnce ? 'Bật' : 'Tắt'}</button></div>
     <div class="setrow"><div><b>Giọng trên máy</b><small>${vs.gb} giọng Anh · ${vs.au} giọng Úc${vs.other ? ` · ${vs.other} giọng khác` : ''}${tip ? `. ${tip} Có thể tải thêm: Cài đặt iPhone → Trợ năng → Nội dung được đọc → Giọng nói → Tiếng Anh.` : ''}</small></div><button class="tag" data-act="ls-hear" data-text="The museum is open from nine until half past five, Tuesday to Sunday.">Nghe thử</button></div>
