@@ -12,6 +12,7 @@ import { md, openWordSheet } from './reading.js';
 import { gamePool, GAME_MIN } from './game.js';
 import { trapStats } from './trap.js';
 import { talkStats } from './talk.js';
+import { ideaStats } from './idea.js';
 
 // ---------------------------------------------------------------- Linh vật (Mochi, Bolt) kiểu sticker
 const INK = '#2B2240';
@@ -512,6 +513,7 @@ export function gamesView() {
   const ready = gamePool().length >= GAME_MIN;
   const ts = trapStats();
   const ks = talkStats();
+  const is = ideaStats();
   const card = (bg, ic, name, sub, right, act = '') => `<${act ? 'button' : 'div'} class="hn-game" style="background:${bg}" ${act}><span class="hn-gi">${ic}</span><span class="hn-gb"><b>${name}</b><small>${sub}</small></span>${right}</${act ? 'button' : 'div'}>`;
   const ICON = {
     hunt: `<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5" fill="#BFE9FF" stroke="${INK}" stroke-width="2"/><path d="M15 15l5.5 5.5" stroke="${INK}" stroke-width="3" stroke-linecap="round"/></svg>`,
@@ -528,8 +530,8 @@ export function gamesView() {
     <div class="hn-games">
       ${card('#8EE3C8', ICON.hunt, 'Săn từ', 'Reading · tìm từ cần điền, né bẫy', `<span class="hn-gr">${acc.n ? `${Math.round((acc.ok / acc.n) * 100)}%` : '–'}</span>`, 'data-act="go" data-to="#/hunt"')}
       ${card('#FFC9A8', ICON.trap, 'Bẫy hay Thật', ts.ready ? 'Listening · nghe đề thật, né bẫy' : 'Listening · cần nhập đề có lời thoại', `<span class="hn-gr">${ts.acc != null ? `${ts.acc}%` : '–'}</span>`, 'data-act="go" data-to="#/trap"')}
-      ${card('#FFB3CB', ICON.talk, 'Nói 30 giây <span class="hn-pill xs">MỚI</span>', 'Speaking · nói rồi điền lại cụm hay', `<span class="hn-gr">${ks.acc != null ? `${ks.acc}%` : '–'}</span>`, 'data-act="go" data-to="#/talk"')}
-      ${card('#BFE3FF', ICON.pen, 'Ý tưởng 60 giây', 'Writing · ghép lại câu mẫu', '<span class="hn-pill xs">Sắp có</span>')}
+      ${card('#FFB3CB', ICON.talk, 'Nói 30 giây', 'Speaking · nói rồi điền lại cụm hay', `<span class="hn-gr">${ks.acc != null ? `${ks.acc}%` : '–'}</span>`, 'data-act="go" data-to="#/talk"')}
+      ${card('#BFE3FF', ICON.pen, 'Ý tưởng 60 giây <span class="hn-pill xs">MỚI</span>', 'Writing · nghĩ ý rồi ghép lại câu mẫu', `<span class="hn-gr">${is.acc != null ? `${is.acc}%` : '–'}</span>`, 'data-act="go" data-to="#/idea"')}
     </div>
     <h2 class="hn-h2">Mini game từ vựng</h2>
     <div class="hn-minis">${mini('#/game', '#FFF0B8', 'Chạy &amp; Gõ')}${mini('#/drop', '#D9F7EC', 'Bắn Từ')}${mini('#/match', '#FFE1EC', 'Nối Cụm')}${mini('#/pop', '#E4EEFF', 'Nghe &amp; Chạm')}</div>
