@@ -113,9 +113,16 @@ export function englishVoices(lang = 'en-US') {
 }
 /** Mọi giọng tiếng Anh trên máy (kể cả giọng Úc, Ireland, Ấn Độ…), tốt nhất đứng đầu. */
 export function allEnglishVoices() {
-  const list = voices.filter((v) => (v.lang || '').toLowerCase().startsWith('en'));
+  const seen = new Set();
+  // iOS có thể trả về cùng một giọng hai lần: bỏ bản trùng hệt (cùng tên, mã giọng, ngôn ngữ).
+  const list = voices.filter((v) => (v.lang || '').toLowerCase().startsWith('en')).filter((v) => { const k = `${v.name}|${v.voiceURI}|${v.lang}`; if (seen.has(k)) return false; seen.add(k); return true; });
   const natural = list.filter((v) => voiceScore(v) > -10); // ẩn giọng robot/giọng vui của iOS
   return (natural.length ? natural : list).sort((a, b) => voiceScore(b) - voiceScore(a));
+}
+/** Toàn bộ giọng hệ điều hành báo cho trang (mọi ngôn ngữ, chưa lọc, chưa bỏ trùng), kèm nhận xét của app. */
+export function rawVoices() {
+  if (canSpeak()) { const v = speechSynthesis.getVoices(); if (v.length) voices = v; }
+  return voices.map((v) => ({ v, score: voiceScore(v), robot: voiceScore(v) <= -10 }));
 }
 /** Giọng đã chọn: lưu theo voiceURI (phân biệt bản thường và bản Nâng cao cùng tên); bản cũ lưu theo tên vẫn dùng được. */
 export function voiceById(id) {
