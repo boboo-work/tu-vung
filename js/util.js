@@ -130,6 +130,12 @@ export function voiceById(id) {
   const all = allEnglishVoices();
   return all.find((v) => v.voiceURI === id) || all.find((v) => v.name === id) || null;
 }
+/** iOS có thể bỏ qua đối tượng giọng lấy từ danh sách cũ: tìm lại đúng giọng đó trong danh sách hiện tại. */
+export function freshVoice(v) {
+  if (!v || !canSpeak()) return v;
+  const now = speechSynthesis.getVoices();
+  return now.find((x) => x === v) || now.find((x) => x.voiceURI === v.voiceURI && x.name === v.name && x.lang === v.lang) || v;
+}
 /** Chất lượng giọng (Apple ghi trong voiceURI: compact / enhanced / premium). */
 export function voiceQuality(v) {
   const s = `${v.name} ${v.voiceURI}`.toLowerCase();
@@ -153,7 +159,7 @@ export function speak(text, { lang = 'en-US', rate = 0.95, name = '' } = {}) {
   u.lang = lang;
   u.rate = rate;
   const list = englishVoices(lang);
-  const v = voiceById(name) || list[0];
+  const v = freshVoice(voiceById(name) || list[0]);
   if (v) { u.voice = v; u.lang = v.lang.replace('_', '-'); }
   // Trên iOS, gọi cancel() rồi speak() ngay lập tức làm tiếng bị cắt/giật → chỉ cancel khi đang đọc, và chờ một nhịp.
   if (speechSynthesis.speaking || speechSynthesis.pending) {
