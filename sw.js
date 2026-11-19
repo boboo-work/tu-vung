@@ -1,12 +1,12 @@
 // Service worker: lưu sẵn toàn bộ app để chạy offline.
 // Chiến lược: ưu tiên mạng (luôn nhận bản mới khi online), rớt mạng hoặc quá 3 giây thì dùng bản đã lưu.
 // Khi phát hành bản mới, tăng VERSION để dọn cache cũ.
-const VERSION = 'v68';
+const VERSION = 'v69';
 const CACHE = `tu-vung-${VERSION}`;
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './css/app.css', './css/sticker.css',
   './js/app.js', './js/ui.js', './js/store.js', './js/srs.js', './js/util.js', './js/study.js', './js/game.js', './js/drop.js', './js/games2.js', './js/lookup.js',
-  './js/views.js', './js/views2.js', './js/io.js', './js/ai.js', './js/seed.js', './js/fx.js', './js/grammar.js', './js/writing.js', './js/reading.js', './js/speaking.js', './js/speak.js', './js/listening.js', './js/ltest.js', './js/hunt.js', './js/trap.js', './js/talk.js', './js/idea.js', './js/challenge.js',
+  './js/views.js', './js/views2.js', './js/io.js', './js/ai.js', './js/seed.js', './js/fx.js', './js/grammar.js', './js/writing.js', './js/reading.js', './js/speaking.js', './js/speak.js', './js/listening.js', './js/ltest.js', './js/hunt.js', './js/trap.js', './js/talk.js', './js/idea.js', './js/challenge.js', './js/remind.js',
   './content/grammar/course1.json', './content/grammar/course2.json', './content/grammar/course3.json', './content/grammar/course4.json',
   './content/writing/writing.json', './content/writing/rules.json', './content/grammar/placement.json', './content/reading/index.json', './content/reading/patterns.json', './content/reading/cam20-t1.json', './content/speaking/index.json', './content/listening/dictation.json',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png',
@@ -40,5 +40,18 @@ self.addEventListener('fetch', (e) => {
       const timeout = new Promise((resolve) => setTimeout(() => resolve(cached), 3000));
       return Promise.race([network.catch(() => cached), timeout]);
     })()
+  );
+});
+
+// Chạm vào thông báo nhắc học → mở (hoặc đưa lên trước) cửa sổ app.
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  const url = new URL(e.notification.data?.url || './', self.registration.scope).href;
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+      const win = list.find((c) => c.url.startsWith(self.registration.scope));
+      if (win) return win.focus().then((w) => w?.navigate?.(url).catch(() => {}));
+      return self.clients.openWindow(url);
+    })
   );
 });

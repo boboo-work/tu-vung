@@ -40,6 +40,7 @@ Dữ liệu gắn với địa chỉ (origin) của trang. Khi đổi địa ch�
 | `js/talk.js` | Trò Nói 30 giây (Speaking): câu hỏi Part 1/3 của quý, nghĩ rồi nói (có ghi âm), xem bài mẫu 7.0 có tô cụm hay, điền lại cụm, tự chấm |
 | `js/idea.js` | Trò Ý tưởng 60 giây (Writing Task 2): 60 giây nghĩ ý cho một phần của bài, xem câu mẫu có cụm hay, ghép lại câu mẫu bị xáo, tự chấm |
 | `js/challenge.js` | Thử thách hôm nay: 4 chặng nối nhau (Săn từ, Bẫy hay Thật, Nói 30 giây, Ý tưởng 60 giây), màn chuyển chặng, tổng kết, chuỗi ngày hoàn thành |
+| `js/remind.js` | Nhắc học: giờ và ngày nhắc, file lịch `.ics` cho app Lịch, thông báo khi app đang mở, số thẻ cần ôn trên biểu tượng app |
 | `js/lookup.js` | “Tự điền” ở form thêm từ (tự chạy khi gõ xong từ, bật/tắt ở Cài đặt): từ điển Wiktionary, dịch MyMemory, gợi ý Datamuse và Trợ lý AI để điền IPA, định nghĩa, ví dụ, nghĩa tiếng Việt, collocations… |
 | `js/views.js`, `js/views2.js` | Các màn hình |
 | `js/io.js` | Import CSV/XLSX, export CSV, sao lưu JSON, bộ từ mẫu |
@@ -57,6 +58,14 @@ Nội dung nằm ở `content/grammar/*.json` (dữ liệu, không phải code).
 ## Writing
 
 Tab **Học** → *Writing*. Task 2 gồm 30 đề (5 dạng × 6), mỗi đề luyện theo 5 phần (viết lại đề, câu quan điểm, 2 đoạn thân bài, kết luận) có bài mẫu band 7. Task 1 tự sinh biểu đồ đường/cột từ 8 mẫu; vì app biết số liệu gốc nên kiểm tra được con số, năm, xu hướng và giới từ by/to/from. Khi đã quen từng phần, viết cả bài: 5 phút lập dàn ý rồi viết trong 40 phút (đồng hồ tính theo giờ thật nên vẫn đúng khi khoá màn hình; thoát giữa chừng thì bản nháp nhớ cả dàn ý và thời gian đã dùng). Khi viết, app gợi ý vài từ trong kho từ vựng hợp với đề; từ nào được dùng trong bài nộp thì tính là một lần ôn. Bài nào cũng sửa được thành bản 2, 3…: app so với bản trước (số gợi ý lỗi, kiểm tra đạt, từ nối, câu phức, lỗi đã sửa / lỗi mới) và tô chỗ đã sửa. Trang *Hồ sơ Writing* có biểu đồ gợi ý lỗi trên 100 từ theo tuần, loại lỗi hay gặp kèm bài ngữ pháp để học lại, và nút xuất toàn bộ bài ra file .txt (trên iPhone mở bảng Chia sẻ). Phản hồi không dùng AI: thống kê, kiểm tra theo phần hoặc cả bài, bộ dò lỗi theo mẫu (`content/writing/rules.json`, mỗi luật kèm câu kiểm tra) ghi vào Sổ lỗi, rồi bài mẫu và tự chấm. App không chấm band.
+
+## Nhắc học
+
+Cài đặt → **Nhắc học**: bật nhắc, chọn giờ và các ngày trong tuần. App không có máy chủ nên không gửi được thông báo đẩy khi đã tắt hẳn; vì vậy có ba lớp nhắc:
+
+- **Thêm vào app Lịch** (chắc chắn nhất): tải file `nhac-hoc.ics` (sự kiện lặp theo ngày đã chọn, có chuông báo đúng giờ). Trên iPhone: Lưu vào Tệp → mở file trong app Tệp → Thêm tất cả. Đổi giờ thì xoá sự kiện cũ trong Lịch rồi thêm lại.
+- **Trong app:** quá giờ nhắc mà hôm nay chưa học thì Trang chủ hiện lời nhắc; app đang mở/chạy nền lúc tới giờ thì hiện thông báo (cần cho phép thông báo; trên iPhone phải mở app từ màn hình chính, iOS 16.4+). Mỗi ngày nhắc tối đa một lần.
+- **Số trên biểu tượng app:** số thẻ cần ôn (từ vựng + ngữ pháp), cập nhật mỗi lần rời app.
 
 ## Thuật toán ôn tập
 

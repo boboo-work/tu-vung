@@ -89,6 +89,10 @@ const DEFAULT_SETTINGS = {
   autoFill: true, // tự tra thông tin khi gõ xong từ mới ở form thêm từ
   // Mỗi cách kết nối giữ key/mô hình riêng để đổi qua lại không bị lẫn.
   ai: { provider: 'anthropic', apiKey: '', model: 'claude-opus-5-5', endpoint: '', geminiKey: '', geminiModel: 'gemini-2.5-flash', oaBase: '', oaKey: '', oaModel: '' },
+  remindOn: false, // nhắc học mỗi ngày
+  remindTime: '20:00', // giờ nhắc (HH:MM, giờ của máy)
+  remindDays: [0, 1, 2, 3, 4, 5, 6], // ngày nhắc trong tuần (0 = Chủ nhật)
+  remindBadge: true, // hiện số thẻ cần ôn trên biểu tượng app
   lastBackup: null,
 };
 
@@ -736,6 +740,10 @@ function cleanBackup(data) {
     listenRate: [0.8, 0.95, 1.05].includes(Number(st.listenRate)) ? Number(st.listenRate) : 0.95,
     listenOnce: st.listenOnce === true,
     grammarReviewPerDay: int(st.grammarReviewPerDay, 5, 50, DEFAULT_SETTINGS.grammarReviewPerDay),
+    remindOn: st.remindOn === true,
+    remindTime: /^([01]\d|2[0-3]):[0-5]\d$/.test(str(st.remindTime)) ? st.remindTime : DEFAULT_SETTINGS.remindTime,
+    remindDays: Array.isArray(st.remindDays) && st.remindDays.some((d) => Number.isInteger(d) && d >= 0 && d <= 6) ? [...new Set(st.remindDays.filter((d) => Number.isInteger(d) && d >= 0 && d <= 6))].sort() : [...DEFAULT_SETTINGS.remindDays],
+    remindBadge: st.remindBadge !== false,
   };
   const listening = data.listening && typeof data.listening === 'object' ? cleanListening(data.listening) : null;
   const ltestResults = Array.isArray(data.ltestResults) ? data.ltestResults.map(cleanLtAttempt).filter(Boolean) : null;

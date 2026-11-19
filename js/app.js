@@ -20,6 +20,7 @@ import { setupView as iSetupView, playView as iPlayView, resultView as iResultVi
 import { chalView } from './challenge.js';
 import { loadGrammar, grammarView, unitView, lessonView, cardsView, errorsView, testView, gDueCount } from './grammar.js';
 import { countUp } from './fx.js';
+import { initRemind } from './remind.js';
 
 const routes = {
   home: homeView, learn: learnView, review: reviewView, vocab: vocabView, stats: statsView,
@@ -247,6 +248,7 @@ async function boot() {
   setRenderer(render);
   if (!location.hash || /^#\/(session|glesson|gcards|gtest|wwrite|rrun|lnum|ldict|lrun|hplay|hres|tplay|tres|tkplay|tkres|iplay|ires)\b/.test(location.hash)) history.replaceState(null, '', '#/home');
   render();
+  initRemind();
   // Nội dung ngữ pháp tải sau, không chặn lần mở app đầu tiên.
   // Writing dùng nhãn lỗi của ngữ pháp, nên tải ngữ pháp trước.
   loadGrammar().then(loadWriting).then(loadReading).then(loadSpeaking).then(loadListening).then(() => { if (!document.querySelector('.session')) render(); });

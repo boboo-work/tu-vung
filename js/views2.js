@@ -8,6 +8,7 @@ import { roundInfo, bestRun } from './game.js';
 import { bestDrop, DROP_ROUND } from './drop.js';
 import { bestOf, ROUND2 } from './games2.js';
 import { audioTakes } from './speak.js';
+import { remindSection } from './remind.js';
 import { AI_ACTIONS, AI_MODELS, GEMINI_MODELS, aiReady, askAI, cleanKey, testConnection } from './ai.js';
 
 const ui = { statsKind: 'day', statsSel: null, anim: false, ai: { wordId: null, action: 'context', input: '', q: '', loading: false, result: null, error: null } };
@@ -179,6 +180,7 @@ export function settingsView() {
       <div class="setrow"><div><b>Lượt Speaking</b><small>1 lượt = 1 chủ đề Part 1 hoặc 1 đề Part 2 · 0 = tắt</small></div>${seg('speakingPerDay', s.speakingPerDay ?? 1, [[0, '0'], [1, '1'], [2, '2']])}</div>
       <div class="setrow"><div><b>Ghi âm Speaking</b><small>Tự xoá âm thanh sau 7 / 30 / 90 ngày, trừ bản “Giữ lại”</small></div>${seg('speakingKeepDays', s.speakingKeepDays ?? 30, [[7, '7'], [30, '30'], [90, '90']])}</div>
     </div>
+    ${remindSection()}
     <h2>Giao diện & phát âm</h2>
     <div class="card">
       <div class="setrow"><div style="min-width:0"><label for="set-name"><b>Tên của bạn</b></label><small>Hiện trong lời chào ở Trang chủ</small></div><input id="set-name" class="input name-in" type="text" maxlength="30" value="${esc(s.userName || '')}" placeholder="Ví dụ: Boo" autocomplete="nickname" data-change="set-name"></div>

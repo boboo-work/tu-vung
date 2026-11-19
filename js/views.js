@@ -1,5 +1,6 @@
 // Các màn hình chính: Home, Learn, Review, Vocabulary (danh sách, chi tiết, form, chủ đề).
 import { gamePool, GAME_MIN } from './game.js';
+import { remindDue } from './remind.js';
 import { S, dayActive, allWords, dueWords, newWords, dayOf, summary, forecast, deckName, blankWord, saveWord, deleteWord, findByText, addDeck, renameDeck, deleteDeck, resetProgress, FALLBACK_DECK } from './store.js';
 import { esc, today, addDays, parseDate, fmtDate, relDay, fmtInterval, speak, toast, splitList, dayDiff, fold } from './util.js';
 import { statusOf, isNew, isDue } from './srs.js';
@@ -102,6 +103,7 @@ export function homeView() {
   const ringCount = 2 + (gGoal ? 1 : 0) + (wGoal ? 1 : 0) + (rGoal ? 1 : 0) + (sGoal ? 1 : 0) + (lGoal ? 1 : 0);
 
   return `<div class="page wide">${head}<div class="home-grid"><div>
+    ${remindDue() ? `<div class="banner" style="margin-bottom:14px">${icon('clock')}<span><b>Đến giờ học rồi!</b> Hôm nay bạn chưa học. Vài phút ôn thẻ là đủ giữ chuỗi ngày học.</span></div>` : ''}
     <div class="hero">
       <div class="row-between"><div><div class="big" data-count="${sum.streak}">${sum.streak}</div><div class="lbl">ngày học liên tiếp</div></div>${icon('flame')}</div>
       <div class="week">${week}</div>
