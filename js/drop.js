@@ -67,7 +67,7 @@ function showWord() {
   $('.d-bolt').classList.remove('swing');
   placeTile(0);
   const input = $('.d-input');
-  if (input) { input.value = ''; input.classList.remove('bad'); }
+  if (input) { input.value = ''; input.classList.remove('bad', 'good'); }
 }
 
 function after(ms, fn) {
@@ -113,7 +113,7 @@ function wrong() {
   recordGame(w.id, false).catch(console.error);
   const tile = $('.d-tile');
   const input = $('.d-input');
-  if (input) { input.value = ''; input.classList.remove('bad'); }
+  if (input) { input.value = ''; input.classList.remove('bad', 'good'); }
   {
     $('.d-bolt').classList.add('swing');
     after(170, () => {
@@ -149,6 +149,7 @@ on('drop-type', (el) => {
   const target = norm(w.word), v = norm(el.value);
   // Gõ nhầm được xoá và sửa; chỉ hết giờ mới tính là sai.
   el.classList.toggle('bad', !!v && !target.startsWith(v));
+  el.classList.toggle('good', !!v && target.startsWith(v));
   $('.d-tile .g-slots').innerHTML = slots(w.word, el.value);
   if (v === target) { el.value = ''; correct(); }
 });

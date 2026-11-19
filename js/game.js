@@ -183,7 +183,7 @@ function showWord() {
   $('.g-note').innerHTML = 'Gõ từ tiếng Anh để nhảy qua';
   $('.g-note').className = 'g-note';
   const input = $('.g-input');
-  if (input) { input.value = ''; input.classList.remove('bad'); }
+  if (input) { input.value = ''; input.classList.remove('bad', 'good'); }
 }
 function refreshHud() {
   const h = $('.g-hearts'); if (h) h.innerHTML = hearts();
@@ -230,7 +230,7 @@ function miss() {
     return;
   }
   const input = $('.g-input');
-  if (input) { input.value = ''; input.classList.remove('bad'); }
+  if (input) { input.value = ''; input.classList.remove('bad', 'good'); }
   $('.g-slots').innerHTML = slots(w.word, '', true);
   $('.g-note').innerHTML = `Trượt! ${w.ipa ? `<span class="ipa">${esc(w.ipa)}</span> · ` : ''}gõ lại để chạy tiếp`;
   $('.g-note').className = 'g-note bad';
@@ -250,6 +250,7 @@ on('game-type', (el) => {
   const w = cur();
   const target = norm(w.word), v = norm(el.value);
   el.classList.toggle('bad', !!v && !target.startsWith(v));
+  el.classList.toggle('good', !!v && target.startsWith(v));
   $('.g-slots').innerHTML = slots(w.word, el.value, G.mode === 'retype');
   if (v !== target) return;
   el.value = '';

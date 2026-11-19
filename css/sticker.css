@@ -331,3 +331,9 @@ body:not(.no-tabs) #app::after {
   background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 0%, transparent), var(--bg) 18px);
 }
 @media (min-width: 1000px) { body:not(.no-tabs) #app::after { display: none; } }
+
+/* Mini game gõ từ (Chạy & Gõ, Bắn Từ): ô gõ viền xanh khi đang gõ đúng, đỏ khi gõ sai; từng chữ có nền xanh/đỏ. */
+.answer-input.good, .answer-input.good:focus, .page.game .answer-input.good, .page.game .answer-input.good:focus { border-color: var(--green); box-shadow: 0 4px 0 var(--green), 0 0 0 4px var(--green-soft); }
+.answer-input.bad, .answer-input.bad:focus, .page.game .answer-input.bad, .page.game .answer-input.bad:focus { border-color: var(--red); box-shadow: 0 4px 0 var(--red), 0 0 0 4px var(--red-soft); animation: shake .3s; }
+.g-slots i.ok, .d-tile .g-slots i.ok, .page.game .g-slots i.ok, .page.game .d-tile .g-slots i.ok { color: var(--green); border-color: var(--green); background: var(--green-soft); border-radius: 6px 6px 0 0; }
+.g-slots i.bad, .d-tile .g-slots i.bad, .page.game .g-slots i.bad, .page.game .d-tile .g-slots i.bad { color: var(--red); border-color: var(--red); background: var(--red-soft); border-radius: 6px 6px 0 0; }
