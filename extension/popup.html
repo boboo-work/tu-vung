@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Phụ đề song ngữ</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="icons/48.png" alt="" width="32" height="32">
+    <div><b>Phụ đề song ngữ</b><small>YouTube · Netflix · web phim</small></div>
+    <label class="sw" title="Bật/tắt"><input type="checkbox" id="enabled"><span></span></label>
+  </header>
+
+  <nav><button data-tab="set" class="on">Cài đặt</button><button data-tab="words">Từ đã lưu <span id="count"></span></button><button data-tab="help">Cách dùng</button></nav>
+
+  <section id="set">
+    <label class="row">Dịch sang
+      <select id="tl">
+        <option value="vi">Tiếng Việt</option><option value="en">Tiếng Anh</option><option value="zh-CN">Tiếng Trung</option>
+        <option value="ja">Tiếng Nhật</option><option value="ko">Tiếng Hàn</option><option value="fr">Tiếng Pháp</option>
+      </select>
+    </label>
+    <label class="row">Cỡ chữ <span><input type="range" id="size" min="16" max="44" step="1"> <b id="sizeV"></b></span></label>
+    <label class="row">Cách đáy video <span><input type="range" id="pos" min="2" max="40" step="1"> <b id="posV"></b></span></label>
+    <label class="chk"><input type="checkbox" id="showOrig"> Hiện dòng gốc (tiếng Anh)</label>
+    <label class="chk"><input type="checkbox" id="showTrans"> Hiện dòng dịch</label>
+    <label class="chk"><input type="checkbox" id="pauseHover"> Dừng video khi rê chuột vào phụ đề</label>
+  </section>
+
+  <section id="words" hidden>
+    <div class="bar">
+      <button id="csv" class="p">Tải CSV cho app Từ Vựng</button>
+      <button id="clear" class="ghost">Xoá hết</button>
+    </div>
+    <p class="muted">Trong app: Từ vựng → Nhập CSV/Excel → chọn file vừa tải. Câu phụ đề được lưu làm câu ví dụ.</p>
+    <ul id="list"></ul>
+  </section>
+
+  <section id="help" hidden>
+    <ol>
+      <li><b>YouTube:</b> mở video, phụ đề song ngữ tự hiện (extension tự bật CC). Video không có phụ đề thì không hiện.</li>
+      <li><b>Netflix:</b> bật phụ đề <i>English</i> trong menu phụ đề của Netflix.</li>
+      <li><b>Web phim khác:</b> bật phụ đề tiếng Anh trong trình phát. Nếu trang không có, rê chuột lên video → <b>Song ngữ ⋯</b> → <b>Mở file .srt/.vtt</b>.</li>
+      <li><b>Chạm vào một từ</b> để xem nghĩa, nghe đọc và lưu. Rê chuột vào phụ đề để dừng video.</li>
+      <li>Phím tắt: <kbd>A</kbd> câu trước · <kbd>S</kbd> nghe lại câu · <kbd>D</kbd> câu sau (trừ Netflix).</li>
+      <li>Muốn xem trên iPhone: trong bảng <b>Song ngữ ⋯</b> bấm <b>Tải .srt song ngữ</b>, rồi mở file đó cùng video trong app Từ Vựng → Xem phim.</li>
+    </ol>
+  </section>
+  <script src="popup.js"></script>
+</body>
+</html>

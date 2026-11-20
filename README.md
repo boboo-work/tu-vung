@@ -39,6 +39,7 @@ Dữ liệu gắn với địa chỉ (origin) của trang. Khi đổi địa ch�
 | `js/trap.js` | Trò Bẫy hay Thật (Listening): lấy câu chứa đáp án từ lời thoại đề thật đã nhập, giọng máy đọc, chạm/gõ đáp án, chọn chữ cái và chạm bằng chứng, xem bẫy và paraphrase |
 | `js/talk.js` | Trò Nói 30 giây (Speaking): câu hỏi Part 1/3 của quý, nghĩ rồi nói (có ghi âm), xem bài mẫu 7.0 có tô cụm hay, điền lại cụm, tự chấm |
 | `js/idea.js` | Trò Ý tưởng 60 giây (Writing Task 2): 60 giây nghĩ ý cho một phần của bài, xem câu mẫu có cụm hay, ghép lại câu mẫu bị xáo, tự chấm |
+| `js/movie.js` | Xem phim song ngữ: video trên máy hoặc YouTube + phụ đề .srt/.vtt, tự dịch, chạm từ để thêm vào kho |
 | `js/challenge.js` | Thử thách hôm nay: 4 chặng nối nhau (Săn từ, Bẫy hay Thật, Nói 30 giây, Ý tưởng 60 giây), màn chuyển chặng, tổng kết, chuỗi ngày hoàn thành |
 | `js/lookup.js` | “Tự điền” ở form thêm từ (tự chạy khi gõ xong từ, bật/tắt ở Cài đặt): từ điển Wiktionary, dịch MyMemory, gợi ý Datamuse và Trợ lý AI để điền IPA, định nghĩa, ví dụ, nghĩa tiếng Việt, collocations… |
 | `js/views.js`, `js/views2.js` | Các màn hình |
@@ -65,6 +66,11 @@ Tab **Học** → *Writing*. Task 2 gồm 30 đề (5 dạng × 6), mỗi đề 
 - Đã nhớ → giãn cách dài hơn Dễ: ít nhất 7 ngày, với từ đã ôn lâu thì gấp 1,3 lần khoảng cách của Dễ.
 - Từ chưa đến hạn: trả lời đúng không đổi lịch; trả lời sai bị kéo về danh sách cần ôn hôm nay.
 - "Đã ghi nhớ" = khoảng cách ôn ≥ 21 ngày.
+
+## Xem phim song ngữ
+
+- **Trong app** (tab Học → Listening → *Xem phim song ngữ*, `js/movie.js`): chọn video trên máy hoặc dán link YouTube, chọn phụ đề tiếng Anh (.srt/.vtt) và (không bắt buộc) phụ đề tiếng Việt; không có thì tự dịch bằng Google Dịch. Câu trước / nghe lại / câu sau, dừng sau mỗi câu, che dòng dịch, danh sách toàn bộ câu (chạm để tua). Chạm vào từ để tra và thêm vào kho (chủ đề “Phụ đề phim”, câu phim làm ví dụ). Phụ đề được nhớ cho lần sau; video trên máy phải chọn lại.
+- **Extension Chrome** (thư mục `extension/`, xem `extension/README.md`): phụ đề Anh + Việt trên YouTube, Netflix, web phim; lưu từ rồi xuất CSV để nhập vào app; tải `.song-ngu.srt` để xem tiếp trên iPhone. Bộ đọc phụ đề `extension/subs.js` dùng chung cho cả hai.
 
 ## Mở rộng thành app iOS
 

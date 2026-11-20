@@ -806,7 +806,8 @@ export function listeningView() {
     ${miss.length ? `<div><b>Từ hay nghe sót</b><p class="ls-misslist">${miss.map((x) => `<button class="tag" data-act="ls-hear" data-text="${esc(x.w)}">${esc(x.w)}</button>`).join('')}</p></div>` : ''}</div>` : '';
   const recent = st.sets.slice(-5).reverse();
   const recentCard = recent.length ? `<h2>Gần đây</h2><div class="card">${recent.map((r) => `<div class="row-between ls-catline"><span>${r.kind === 'num' ? esc(CATS[r.cat]?.name || (r.cat === 'mix' ? 'Trộn 7 dạng' : 'Luyện lại dạng sai')) : `Nghe chép · ${esc(DSRC[r.cat]?.name || '')}`} <span class="small muted">· ${fmtDate(r.date)}</span></span><b>${r.kind === 'num' ? `${r.ok}/${r.n}` : `${r.pct}%`}</b></div>`).join('')}</div>` : '';
-  return `<div class="page">${head}${todayCard}<p class="small faint" style="margin:8px 2px 0">1 lượt = 1 bộ nghe số (${SIZE_NUM} câu), 1 bộ nghe chép (${SIZE_DICT} câu) hoặc 1 lần làm đề thật. Làm được quá nửa bộ cũng tính.</p>${ltestCard()}${numCard}${dictCard}${errCard}${recentCard}${settingsCard()}</div>`;
+  const movieCard = `<button class="listlink" style="margin-top:12px" data-act="go" data-to="#/movie"><span class="lead">${icon('ear')}</span><span class="body"><b>Xem phim song ngữ</b><small>Video trên máy hoặc YouTube + phụ đề Anh–Việt · chạm từ để thêm vào kho</small></span>${icon('chev')}</button>`;
+  return `<div class="page">${head}${todayCard}${movieCard}<p class="small faint" style="margin:8px 2px 0">1 lượt = 1 bộ nghe số (${SIZE_NUM} câu), 1 bộ nghe chép (${SIZE_DICT} câu) hoặc 1 lần làm đề thật. Làm được quá nửa bộ cũng tính.</p>${ltestCard()}${numCard}${dictCard}${errCard}${recentCard}${settingsCard()}</div>`;
 }
 function settingsCard() {
   const s = S.settings;
