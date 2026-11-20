@@ -12,6 +12,8 @@ import { fetchDictionary, fetchTranslation } from './lookup.js';
 const B = globalThis.BiSubs;
 const KEY = 'mv-last';
 const DECK = 'Phụ đề phim';
+// iPhone không biết loại file .srt/.vtt nên làm mờ chúng nếu giới hạn theo đuôi → cho chọn mọi file, đọc được hay không thì kiểm tra sau.
+const SUB_ACCEPT = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ? '' : '.srt,.vtt,.ass,.ssa,.ttml,.dfxp,.xml,.txt';
 const M = { cues: null, tr: [], name: '', viName: '', src: null, yt: '', err: '', autoPause: false, hideTr: false, pos: 0, words: 0 };
 
 // Phụ đề lần trước (video thì phải chọn lại, trừ YouTube).
@@ -134,7 +136,7 @@ on('mv-yt', (form) => {
   rerender();
 });
 on('mv-sub', async () => {
-  const f = await pickFile('.srt,.vtt,.ass,.ssa,.ttml,.dfxp,.xml,.txt');
+  const f = await pickFile(SUB_ACCEPT);
   if (!f) return;
   const cues = B.parse(await f.text());
   if (!cues.length) { M.err = `Không đọc được phụ đề trong file “${f.name}”.`; rerender(); return; }
@@ -145,7 +147,7 @@ on('mv-sub', async () => {
   rerender();
 });
 on('mv-sub-vi', async () => {
-  const f = await pickFile('.srt,.vtt,.ass,.ssa,.ttml,.dfxp,.xml,.txt');
+  const f = await pickFile(SUB_ACCEPT);
   if (!f || !M.cues) return;
   const vi = B.parse(await f.text());
   if (!vi.length) { M.err = `Không đọc được phụ đề trong file “${f.name}”.`; rerender(); return; }
