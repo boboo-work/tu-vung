@@ -18,6 +18,7 @@ import { setupView as tSetupView, playView as tPlayView, resultView as tResultVi
 import { setupView as kSetupView, playView as kPlayView, resultView as kResultView } from './talk.js';
 import { setupView as iSetupView, playView as iPlayView, resultView as iResultView } from './idea.js';
 import { chalView } from './challenge.js';
+import { movieView } from './movie.js';
 import { loadGrammar, grammarView, unitView, lessonView, cardsView, errorsView, testView, gDueCount } from './grammar.js';
 import { countUp } from './fx.js';
 
@@ -29,7 +30,7 @@ const routes = {
   reading: readingView, rpassage: rPassageView, rrun: rRunView, rresult: rResultView, rstudy: rStudyView,
   mictest: micTestView, speaking: speakingView, sp1: sp1View, sp2: sp2View,
   listening: listeningView, lnum: lNumView, ldict: lDictView, limport: lImportView, ltest: lTestView, lrun: lRunView,
-  games: gamesView, hunt: hSetupView, hplay: hPlayView, hres: hResultView, trap: tSetupView, tplay: tPlayView, tres: tResultView, talk: kSetupView, tkplay: kPlayView, tkres: kResultView, idea: iSetupView, iplay: iPlayView, ires: iResultView, chal: chalView,
+  games: gamesView, hunt: hSetupView, hplay: hPlayView, hres: hResultView, trap: tSetupView, tplay: tPlayView, tres: tResultView, talk: kSetupView, tkplay: kPlayView, tkres: kResultView, idea: iSetupView, iplay: iPlayView, ires: iResultView, chal: chalView, movie: movieView,
   rfull: rFullView, rvocab: rReviewView, rpatterns: rPatternsView, rown: rOwnListView, rownv: rOwnView, rstats: rStatsView,
   grammar: grammarView, gunit: unitView, glesson: lessonView, gcards: cardsView, gerrors: errorsView, gtest: testView,
 };
@@ -67,7 +68,7 @@ function render(resetScroll = false) {
   }
   if (changed) countUp(view);
   lastHash = location.hash;
-  renderTabs(['grammar', 'writing', 'reading', 'speaking', 'listening'].includes(route) ? 'learn' : route);
+  renderTabs(['grammar', 'writing', 'reading', 'speaking', 'listening', 'movie'].includes(route) ? 'learn' : route);
   if (out?.focus) {
     const el = view.querySelector(out.focus);
     // Chỉ tự focus khi đổi bước/đổi trang, tránh bật bàn phím ngoài ý muốn khi vẽ lại.
@@ -106,7 +107,7 @@ function bindEvents() {
   matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', applyTheme);
   // Sang ngày mới khi app đang mở nền → vẽ lại để cập nhật danh sách đến hạn.
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && !['session', 'game', 'drop', 'match', 'pop', 'edit', 'new', 'ai', 'settings', 'glesson', 'gcards', 'gtest', 'wwrite', 'rrun', 'mictest', 'sp1', 'sp2', 'lnum', 'ldict', 'lrun', 'limport', 'hplay', 'tplay', 'tkplay', 'iplay'].includes(location.hash.split('/')[1])) render();
+    if (!document.hidden && !['session', 'game', 'drop', 'match', 'pop', 'edit', 'new', 'ai', 'settings', 'glesson', 'gcards', 'gtest', 'wwrite', 'rrun', 'mictest', 'sp1', 'sp2', 'lnum', 'ldict', 'lrun', 'limport', 'hplay', 'tplay', 'tkplay', 'iplay', 'movie'].includes(location.hash.split('/')[1])) render();
   });
 }
 

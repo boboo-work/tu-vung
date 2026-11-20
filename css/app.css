@@ -1489,3 +1489,47 @@ button.tag { border: 0; font: inherit; font-size: 12.5px; font-weight: 600; curs
 .ch-row:last-child { border-bottom: 0; }
 .ch-row b { flex: 1; padding-left: 10px; border-left: 6px solid var(--bg); }
 .ch-row > span:not(.hn-pill) { font-weight: 700; color: #6B6280; }
+
+/* ---------- Xem phim song ngữ ---------- */
+.mv-step .mv-sh { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.mv-step .mv-sh b { font-size: 16.5px; }
+.mv-n { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); color: var(--text-2); font-weight: 700; font-size: 14px; flex: none; }
+.mv-n.done { background: var(--accent); color: var(--surface); }
+.mv-chosen { display: flex; align-items: center; gap: 6px; color: var(--accent); font-weight: 600; font-size: 14.5px; margin-bottom: 10px; word-break: break-word; }
+.mv-yt { display: flex; gap: 8px; margin: 10px 0 6px; }
+.mv-yt .input { flex: 1; min-width: 0; }
+.mv-yt .btn.sm { flex: none; }
+.mv-step .small.faint { margin-top: 8px; }
+.mv-play { padding-top: 0; }
+.mv-top { position: sticky; top: 0; z-index: 3; background: var(--bg); margin: 0 calc(-1 * var(--pad)); padding: 0 var(--pad) 10px; }
+.mv-media { position: relative; aspect-ratio: 16 / 9; background: #000; border-radius: 14px; overflow: hidden; max-height: 42vh; margin: 0 auto; }
+.mv-media video, .mv-media iframe, .mv-media #mv-yt { position: absolute; inset: 0; width: 100%; height: 100%; display: block; border: 0; }
+.mv-now { margin-top: 10px; background: var(--surface); border-radius: var(--radius-sm); box-shadow: var(--shadow); padding: 12px 14px; min-height: 92px; text-align: center; }
+.mv-o { font-size: 19px; font-weight: 650; line-height: 1.4; }
+.mv-o.past { opacity: .55; }
+.mv-o .w { border-radius: 5px; padding: 0 1px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mv-o .w:active, .mv-o .w.sel { background: var(--accent-soft); color: var(--accent); }
+.mv-t { margin-top: 6px; color: var(--text-2); font-size: 15.5px; line-height: 1.4; min-height: 1.4em; }
+.hide-tr .mv-t:not(.peek) { color: transparent; background: var(--surface-2); border-radius: 8px; cursor: pointer; }
+.hide-tr .mv-t:not(.peek)::before { content: "Chạm để xem nghĩa"; color: var(--text-3); font-size: 13px; }
+.hide-tr .mv-t:not(.peek) { font-size: 0; padding: 6px; }
+.hide-tr .mv-rt { visibility: hidden; }
+.mv-ctl { display: flex; justify-content: center; gap: 14px; margin-top: 10px; }
+.mv-ctl button { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); box-shadow: var(--shadow); color: var(--text); }
+.mv-ctl button.main { background: var(--accent); color: var(--surface); width: 60px; height: 60px; margin-top: -4px; }
+.mv-ctl button:active { transform: scale(.94); }
+.mv-opts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.mv-opts .tag { padding: 6px 11px; font-size: 13px; }
+.mv-list { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.mv-row { display: flex; gap: 12px; padding: 10px 14px; border-top: 1px solid var(--line); cursor: pointer; }
+.mv-row:first-child { border-top: 0; }
+.mv-row.on { background: var(--accent-soft); }
+.mv-row p { font-size: 15px; line-height: 1.38; white-space: pre-line; }
+.mv-row .mv-rt { color: var(--text-2); font-size: 14px; margin-top: 2px; }
+.mv-ts { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; padding-top: 3px; min-width: 34px; }
+.mv-sheet .mv-hw { font-size: 24px; font-weight: 750; }
+.mv-sheet .mv-mean { font-size: 17px; font-weight: 650; margin-top: 8px; }
+.mv-sheet .mv-pos { color: var(--accent); text-transform: uppercase; font-size: 11.5px; letter-spacing: .03em; margin-right: 4px; }
+.mv-sheet .small { margin-top: 4px; }
+.mv-ex { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); font-size: 14.5px; line-height: 1.45; }
+@media (min-width: 900px) { .mv-media { max-height: 55vh; } }

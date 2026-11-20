@@ -1,0 +1,2 @@
+/* Làm mờ phụ đề gốc của trình phát khi lớp song ngữ đang hiện (vẫn đọc được chữ, chỉ không nhìn thấy). */
+[data-bisub-hide], [data-bisub-hide] * { opacity: 0 !important; }

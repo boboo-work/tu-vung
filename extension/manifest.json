@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Phụ đề song ngữ · Từ Vựng",
+  "version": "1.0.0",
+  "description": "Hiện phụ đề Anh + Việt trên YouTube, Netflix và các web phim. Chạm vào từ để tra nghĩa và lưu vào danh sách học.",
+  "icons": { "16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png" },
+  "action": { "default_popup": "popup.html", "default_title": "Phụ đề song ngữ", "default_icon": { "16": "icons/16.png", "48": "icons/48.png" } },
+  "background": { "service_worker": "background.js" },
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://translate.googleapis.com/*",
+    "https://api.mymemory.translated.net/*",
+    "https://api.dictionaryapi.dev/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["inject.js"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true,
+      "world": "MAIN"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["subs.js", "content.js"],
+      "css": ["content.css"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true
+    }
+  ]
+}
