@@ -255,7 +255,7 @@ function filteredWords() {
 function vocabList() {
   const list = filteredWords();
   if (!S.words.size) return `<div class="card empty" style="margin-top:12px"><div class="art">${icon('vocab')}</div><h3>Kho từ đang trống</h3><p>Bấm nút + để thêm từ, hoặc nạp bộ từ mẫu.</p><button class="btn soft" data-act="seed">Nạp 20 từ mẫu</button></div>`;
-  if (!list.length) return `<div class="empty"><p>Không tìm thấy từ nào phù hợp.</p></div>`;
+  if (!list.length) return `<div class="empty"><p>Không tìm thấy từ nào${ui.vocab.q.trim() ? ` cho “${esc(ui.vocab.q.trim())}”` : ' trong mục này'}.</p>${ui.vocab.q.trim() || ui.vocab.filter !== 'all' ? '<button class="btn ghost sm" data-act="vocab-clear">Xem tất cả từ</button>' : ''}</div>`;
   return `<p class="small faint" style="margin:12px 2px 0">${list.length} từ</p>
     <div class="wlist" style="margin-top:8px">${list.slice(0, ui.vocab.limit).map(wordRow).join('')}</div>
     ${list.length > ui.vocab.limit ? `<button class="btn ghost" style="margin-top:12px" data-act="vocab-more">Hiện thêm (${list.length - ui.vocab.limit})</button>` : ''}`;
@@ -276,6 +276,12 @@ export function vocabView() {
 }
 on('vocab-search', (el) => { ui.vocab.q = el.value; ui.vocab.limit = 60; document.getElementById('vocab-list').innerHTML = vocabList(); });
 on('vocab-filter', (el) => { ui.vocab.filter = el.dataset.filter; ui.vocab.limit = 60; rerender(); });
+on('vocab-clear', () => { ui.vocab.q = ''; ui.vocab.filter = 'all'; ui.vocab.limit = 60; rerender(); });
+// Rời khỏi Kho từ (sang tab khác) thì xoá ô tìm kiếm; đi vào xem/sửa một từ rồi quay lại thì giữ nguyên.
+addEventListener('hashchange', () => {
+  const r = location.hash.split('/')[1] || '';
+  if (!['vocab', 'word', 'edit', 'new'].includes(r)) { ui.vocab.q = ''; ui.vocab.limit = 60; }
+});
 on('vocab-more', () => { ui.vocab.limit += 100; rerender(); });
 on('fav', async (el) => {
   const w = S.words.get(el.dataset.id);

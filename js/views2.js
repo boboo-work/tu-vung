@@ -385,7 +385,7 @@ export function aiView(id) {
   if (a.wordId && !S.words.has(a.wordId)) a.wordId = null;
   const ready = aiReady(S.settings.ai);
   const w = a.wordId ? S.words.get(a.wordId) : null;
-  const notReady = ready ? '' : `<div class="banner" style="margin-bottom:12px">${icon('info')}<span><b>Chưa kết nối AI.</b> Trợ lý cần một API thật để hoạt động — ứng dụng không giả lập câu trả lời. <a href="#/settings" data-act="go" data-to="#/settings">Mở Cài đặt để kết nối</a></span></div>`;
+  const notReady = ready ? '' : `<div class="banner" style="margin-bottom:12px">${icon('info')}<span><b>Chưa kết nối AI.</b> Trợ lý cần một API thật để hoạt động — ứng dụng không giả lập câu trả lời. <a class="link" href="#/settings" data-act="go" data-to="#/settings">Mở Cài đặt để kết nối</a></span></div>`;
 
   let picker;
   if (!w) {

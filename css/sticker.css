@@ -340,3 +340,20 @@ body:not(.no-tabs) #app::after {
 .answer-input.bad, .answer-input.bad:focus, .page.game .answer-input.bad, .page.game .answer-input.bad:focus { border-color: var(--red); box-shadow: 0 4px 0 var(--red), 0 0 0 4px var(--red-soft); animation: shake .3s; }
 .g-slots i.ok, .d-tile .g-slots i.ok, .page.game .g-slots i.ok, .page.game .d-tile .g-slots i.ok { color: var(--green); border-color: var(--green); background: var(--green-soft); border-radius: 6px 6px 0 0; }
 .g-slots i.bad, .d-tile .g-slots i.bad, .page.game .g-slots i.bad, .page.game .d-tile .g-slots i.bad { color: var(--red); border-color: var(--red); background: var(--red-soft); border-radius: 6px 6px 0 0; }
+
+/* ===== Màn hẹp (320px: iPhone SE đời đầu, hoặc iPhone bật "Phóng to màn hình") ===== */
+@media (max-width: 359px) {
+  .goals.four { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .goals .goal { min-width: 0; }
+  .tab { font-size: 9px; letter-spacing: -.03em; }
+  #tabbar { left: 6px; right: 6px; padding: 4px; }
+  .tab .badge { left: calc(50% + 2px); }
+}
+
+/* ===== Tab Game ở chế độ tối: nền tối chấm bi, các thẻ sticker giữ màu kẹo và chữ mực ===== */
+:root[data-theme="dark"] #view:has(> .hn-scr) { background-color: var(--bg); background-image: radial-gradient(var(--dots) 1.6px, transparent 1.8px); }
+:root[data-theme="dark"] #view:has(> .hn-play.win) { background-color: #16302A; background-image: radial-gradient(#22463D 1.6px, transparent 1.8px); }
+:root[data-theme="dark"] #view:has(> .hn-play.lose) { background-color: #33192A; background-image: radial-gradient(#4A2639 1.6px, transparent 1.8px); }
+:root[data-theme="dark"] #view:has(> .hn-res) { background-color: #241E3D; background-image: radial-gradient(#352C58 1.6px, transparent 1.8px); }
+:root[data-theme="dark"] .hn-scr :is(.hn-h, .hn-h2, .hn-lab, .hn-meta, .hn-nav h1), :root[data-theme="dark"] .hn-scr > .hn-sub { color: var(--text); }
+:root[data-theme="dark"] .hn-scr .hn-eyebrow { color: var(--text-3); }
