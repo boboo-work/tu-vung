@@ -48,20 +48,26 @@ function tableHtml(table) {
   return rows.slice(1).map((r) => `<div class="lt-card">${cells(r).map((c, i) => `<div class="lt-cell"><small>${esc(heads[i] || '')}</small>${[...c.childNodes].map(cleanHtml).join('')}</div>`).join('')}</div>`).join('');
 }
 /** Đổi chỗ trống "<b>7</b> ……" thành ô nhập cho câu 7. */
+// Giữa số câu và chỗ trống có thể có ký hiệu tiền hoặc dấu nháy: "2 £……", "5 $ ……", "4 ‘……’".
+const GAP_PRE = '((?:[£$€‘“]|&#39;|&quot;|&#039;)\\s*)?';
 function markGaps(html, from, to) {
   const used = new Set();
-  let out = html.replace(/<b>\s*(\d{1,2})\s*<\/b>\s*[.…_]{2,}/g, (m, n) => {
-    const k = Number(n);
-    if (k < from || k > to) return m;
-    used.add(k);
-    return `<span data-gap="${k}"></span>`;
-  });
+  const ok = (k) => k >= from && k <= to && !used.has(k);
+  const gap = (k, pre) => { used.add(k); return `${pre ? pre.trim() + ' ' : ''}<span data-gap="${k}"></span>`; };
+  let out = html.replace(new RegExp(`<b>(?:\\s|[•●·▪]|&nbsp;)*(\\d{1,2})\\s*${GAP_PRE}<\\/b>\\s*${GAP_PRE}[.…_]{2,}`, 'g'), (m, n, p1, p2) => (ok(Number(n)) ? gap(Number(n), p1 || p2) : m));
   // Đề không in đậm số câu: "7 ………"
-  out = out.replace(/(^|[\s>(])(\d{1,2})\s*[.…_]{4,}/g, (m, pre, n) => {
+  out = out.replace(new RegExp(`(^|[\\s>(•●])(\\d{1,2})\\s*${GAP_PRE}[.…_]{3,}`, 'g'), (m, pre0, n, pre) => (ok(Number(n)) ? pre0 + gap(Number(n), pre) : m));
+  // Câu hoàn thành: số câu đứng đầu dòng, chỗ trống ở giữa câu ("7 Paxton is a good place for seeing rare ………").
+  out = out.replace(/(^|>)(\s*(?:<b>\s*)?)(\d{1,2})(\s*(?:<\/b>)?\s+)([^<.…_]{2,200}?)\s*[.…_]{3,}/g, (m, a, b, n, c, text) => {
     const k = Number(n);
-    if (k < from || k > to || used.has(k)) return m;
-    used.add(k);
-    return `${pre}<span data-gap="${k}"></span>`;
+    return ok(k) ? `${a}${text.trim()} ${gap(k)}` : m;
+  });
+  // Lỗi gõ trong đề: thiếu một chữ số ("3………" thay cho 37). Chỉ ghép khi đúng một câu còn thiếu bắt đầu bằng chữ số đó.
+  const missing = [];
+  for (let k = from; k <= to; k++) if (!used.has(k)) missing.push(k);
+  if (missing.length) out = out.replace(/(^|[\s>(])(?:<b>\s*)?(\d)\s*(?:<\/b>)?\s*[.…_]{3,}/g, (m, pre0, d) => {
+    const c = missing.filter((k) => k > 9 && String(k).startsWith(d) && !used.has(k));
+    return c.length === 1 ? pre0 + gap(c[0]) : m;
   });
   return { html: out.replace(/<p>\s*<\/p>/g, '').replace(/<h4>\s*<\/h4>/g, ''), gaps: [...used].sort((a, b) => a - b) };
 }
@@ -87,7 +93,9 @@ function readKey(doc) {
   for (const l of lines) {
     const m = l.match(/^(\d{1,2})\s*(?:(?:&|and|,)\s*(\d{1,2}))?\s*[.):]?\s+(\S.*)$/i);
     if (!m) continue;
-    const a = Number(m[1]), b = m[2] ? Number(m[2]) : 0;
+    const b = m[2] ? Number(m[2]) : 0;
+    // Lỗi gõ trong đáp án: "12&14" (đúng là 13&14).
+    const a = b && b - Number(m[1]) !== 1 && b > Number(m[1]) ? b - 1 : Number(m[1]);
     const val = m[3].trim();
     if (b) { const set = val.toUpperCase().match(/\b[A-I]\b/g) || []; key[a] = { set, nums: [a, b] }; key[b] = { set, nums: [a, b] }; }
     else key[a] = { text: val };
@@ -109,7 +117,17 @@ export function parseTestHtml(html) {
   walk(doc.body);
   const parts = [];
   let part = null, group = null;
-  const close = () => { if (group && part) part.groups.push(buildGroup(group)); group = null; };
+  let prevHead = null;
+  const close = () => {
+    if (group && part) {
+      // Tiêu đề nhóm bị lặp liền nhau ("Questions 21-22" hai lần, nhóm sau thật ra là 23-24): đánh số tiếp theo nhóm trước.
+      const head = { p: part.n, from: group.from, to: group.to };
+      if (prevHead && prevHead.p === part.n && prevHead.from === group.from && prevHead.to === group.to && group.to - group.from <= 3) { const w = group.to - group.from; group.from = prevHead.to + 1; group.to = group.from + w; }
+      part.groups.push(buildGroup(group));
+      prevHead = head;
+    }
+    group = null;
+  };
   for (const el of blocks) {
     const t = txt(el);
     if (!t && el.tagName !== 'TABLE') continue;
@@ -134,18 +152,34 @@ function buildGroup({ from, to, blocks }) {
     const pick = { TWO: 2, THREE: 3, FOUR: 4 }[it.match(/Choose\s+(TWO|THREE|FOUR)/i)[1].toUpperCase()];
     const opts = [], heads = [];
     for (const el of rest) { const t = txt(el), m = t.match(RE_OPT); if (m) opts.push({ k: m[1], t: m[2] }); else if (t) heads.push(t); }
-    return { ...base, t: 'multi', pick, nums: Array.from({ length: to - from + 1 }, (_, j) => from + j), q: heads.join(' '), opts };
+    // Số câu theo "Choose TWO" (tiêu đề có khi ghi nhầm "Questions 11-14").
+    return { ...base, to: from + pick - 1, t: 'multi', pick, nums: Array.from({ length: pick }, (_, j) => from + j), q: heads.join(' '), opts };
   }
   if (/next to|from the box|write the correct letter/i.test(it) || (/Label|Match/i.test(it) && !/Complete/i.test(it))) {
     const opts = [], items = [], heads = [];
+    let prev = null; // dòng chữ ngay trước: tên bước trong sơ đồ ("Literature review" rồi "28 ……")
+    const addItem = (n, t) => {
+      if (items.some((x) => x.n === n)) return;
+      let v = t.replace(DOTS, '').trim();
+      if (!/[A-Za-z]/.test(v.replace(/___/g, '')) && prev) { heads.splice(heads.indexOf(prev), 1); v = prev.t + (v && v !== '___' ? ' ' + v : ''); }
+      items.push({ n, t: v.replace(/^___\s*/, '').trim() || '___' });
+      prev = null;
+    };
     for (const el of rest) {
       const t = txt(el);
       let m = t.match(RE_NUM);
-      if (m && Number(m[1]) >= from && Number(m[1]) <= to) { items.push({ n: Number(m[1]), t: m[2].replace(DOTS, '').replace(/[.…]{3,}/g, '').trim() }); continue; }
+      if (m && Number(m[1]) >= from && Number(m[1]) <= to) { addItem(Number(m[1]), m[2].replace(/[.…_]{3,}/g, ' ___ ').replace(/\s+/g, ' ')); continue; }
       m = t.match(RE_OPT);
       if (m && !items.length) { opts.push({ k: m[1], t: m[2] }); continue; }
-      if (t) (items.length ? heads : heads).push({ t, at: items.length ? 'items' : opts.length ? 'mid' : 'top' });
+      // Chỗ trống nằm giữa dòng ("Do all necessary 30 ………", "28………"): mỗi chỗ trống là một mục.
+      const gaps = [...t.matchAll(/(\d{1,2})\s*[.…_]{2,}/g)].filter((g) => Number(g[1]) >= from && Number(g[1]) <= to);
+      if (gaps.length) {
+        for (const g of gaps) addItem(Number(g[1]), t.replace(g[0], ' ___ ').replace(/(\d{1,2})\s*[.…_]{2,}/g, ' … ').replace(/\s+/g, ' '));
+        continue;
+      }
+      if (t && !/^[↓→\s]+$/.test(t)) { prev = { t, at: items.length ? 'items' : opts.length ? 'mid' : 'top' }; heads.push(prev); }
     }
+    items.sort((a, b) => a.n - b.n);
     return { ...base, t: 'match', opts, items, heads };
   }
   if (/Choose the correct letter/i.test(it)) {
@@ -154,14 +188,21 @@ function buildGroup({ from, to, blocks }) {
     for (const el of rest) {
       const t = txt(el);
       let m = t.match(RE_NUM);
-      if (m && Number(m[1]) >= from && Number(m[1]) <= to) { qs.push({ n: Number(m[1]), q: m[2], opts: [] }); continue; }
+      // Tiêu đề nhóm đôi khi ghi thiếu ("Questions 11–15" nhưng có cả câu 16): nhận câu liền sau.
+      if (m && Number(m[1]) >= from && (Number(m[1]) <= to || (qs.length && Number(m[1]) === qs[qs.length - 1].n + 1 && Number(m[1]) <= to + 2 && qs[qs.length - 1].opts.length >= 2))) { qs.push({ n: Number(m[1]), q: m[2], opts: [] }); continue; }
       m = t.match(RE_OPT);
       if (m && qs.length) { qs[qs.length - 1].opts.push({ k: m[1], t: m[2] }); continue; }
       if (t && !qs.length) title = title ? `${title} · ${t}` : t;
     }
-    return { ...base, t: 'mcq', title, qs };
+    return { ...base, to: Math.max(to, ...qs.map((q) => q.n)), t: 'mcq', title, qs };
   }
   const { html, gaps } = markGaps(rest.map(cleanHtml).join(''), from, to);
+  // Đề thiếu dòng "Choose TWO letters": 2–3 câu, không có chỗ trống, có các phương án A–E → chọn nhiều đáp án.
+  const optEls = rest.filter((el) => RE_OPT.test(txt(el)));
+  if (!gaps.length && to - from >= 1 && to - from <= 2 && optEls.length >= 4) {
+    const heads = rest.filter((el) => !optEls.includes(el)).map(txt).filter(Boolean);
+    return { ...base, t: 'multi', pick: to - from + 1, nums: Array.from({ length: to - from + 1 }, (_, j) => from + j), q: [...instr.filter((x) => !/^Choose/i.test(x)), ...heads].join(' '), opts: optEls.map((el) => { const m = txt(el).match(RE_OPT); return { k: m[1], t: m[2] }; }) };
+  }
   return { ...base, t: 'fill', limit: wordLimit(instr), html, gaps };
 }
 /** Số câu của đề (theo nhóm) và số câu có đáp án. */
