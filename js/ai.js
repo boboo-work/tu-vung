@@ -94,7 +94,30 @@ function keyError(provider, name, rawKey, detail) {
   return e;
 }
 const errDetail = (data) => { const err = Array.isArray(data) ? data[0]?.error : data?.error; return (typeof err === 'string' ? err : err?.message) || ''; };
-const isKeyProblem = (status, data) => status === 401 || status === 403 || (status === 400 && /api[ _-]?key|API_KEY_INVALID|Authorization header/i.test(JSON.stringify(data) || ''));
+const isKeyProblem = (status, data) => {
+  const t = JSON.stringify(data) || '';
+  if (/SERVICE_DISABLED|has not been used|is disabled|location is not supported|FAILED_PRECONDITION|quota|RESOURCE_EXHAUSTED|billing/i.test(t)) return false;
+  return status === 401 || (status === 403 && !/PERMISSION_DENIED/i.test(t)) || (status === 400 && /api[ _-]?key|API_KEY_INVALID|Authorization header/i.test(t)) || (status === 403 && /api[ _-]?key/i.test(t));
+};
+/** Lỗi không phải do key sai: giải thích theo đúng thông báo của nhà cung cấp (Google hay gộp nhiều lỗi vào 400/403/429). */
+function otherError(provider, name, status, data, model) {
+  const t = JSON.stringify(data) || '', d = errDetail(data);
+  const raw = d ? `\nThông báo gốc: “${d.slice(0, 300)}”` : '';
+  if (provider === 'gemini') {
+    if (/SERVICE_DISABLED|has not been used|is disabled/i.test(t)) return new AIError(`Key đúng, nhưng dự án Google của key chưa bật “Generative Language API”.\nCách nhanh nhất: vào aistudio.google.com → Get API key → Create API key (để AI Studio tự tạo dự án), rồi dán key mới vào đây.${raw}`);
+    if (/location is not supported/i.test(t)) return new AIError(`Google không mở Gemini API cho vị trí mạng hiện tại. Nếu đang bật VPN, hãy tắt (hoặc đổi sang nước khác) rồi thử lại.${raw}`);
+    if (status === 429 || /quota|RESOURCE_EXHAUSTED/i.test(t)) {
+      const zero = /limit:\s*0\b/i.test(t);
+      return new AIError(`${zero ? `Gói miễn phí của Google không có hạn mức cho mô hình “${model}”.` : 'Đã hết hạn mức miễn phí trong lúc này (theo phút hoặc theo ngày).'}\nHãy đổi ô Mô hình sang “gemini-2.5-flash” hoặc “gemini-2.5-flash-lite”, hoặc đợi một lúc rồi thử lại.${raw}`);
+    }
+    if (/billing/i.test(t)) return new AIError(`Google yêu cầu bật thanh toán cho dự án của key này. Hãy tạo key mới ở aistudio.google.com (dự án mới dùng được gói miễn phí).${raw}`);
+    if (status === 403) return new AIError(`Google từ chối quyền truy cập (403). Thường là key bị giới hạn (chỉ cho một số trang web hoặc ứng dụng). Hãy tạo key mới ở aistudio.google.com và đừng đặt giới hạn cho key.${raw}`);
+  }
+  if (status === 404) return new AIError(`Không tìm thấy mô hình “${model}” hoặc địa chỉ API sai. Kiểm tra lại tên mô hình.${raw}`);
+  if (status === 429) return new AIError(`Đã vượt giới hạn tần suất hoặc hết hạn mức của API. Hãy thử lại sau.${raw}`);
+  if (status >= 500) return new AIError(`${name} đang gặp sự cố tạm thời. Hãy thử lại sau.${raw}`);
+  return new AIError(`${name} báo lỗi ${status}${d ? ': ' + d : ''}`);
+}
 
 export async function askAI(ai, prompt, { system = SYSTEM } = {}) {
   if (!aiReady(ai)) throw new AIError('Chưa kết nối AI. Hãy cấu hình trong Cài đặt → Trợ lý AI.');
@@ -172,10 +195,7 @@ async function askChat({ provider, name, base, key, model }, prompt, system = SY
   if (!res.ok) {
     const detail = errDetail(data);
     if (isKeyProblem(res.status, data)) throw keyError(provider, name, key, detail);
-    if (res.status === 404) throw new AIError(`Không tìm thấy mô hình “${model.trim()}” hoặc địa chỉ API sai. Kiểm tra lại tên mô hình.`);
-    if (res.status === 429) throw new AIError('Đã vượt giới hạn tần suất hoặc hết hạn mức của API. Hãy thử lại sau.');
-    if (res.status >= 500) throw new AIError(`${name} đang gặp sự cố tạm thời. Hãy thử lại sau.`);
-    throw new AIError(`${name} báo lỗi ${res.status}${detail ? ': ' + detail : ''}`);
+    throw otherError(provider, name, res.status, data, model.trim());
   }
   const choice = data?.choices?.[0];
   const content = choice?.message?.content;
@@ -196,6 +216,7 @@ export async function testConnection(ai) {
       const data = await res.json().catch(() => null);
       if (res.ok) ids = (data?.data || data?.models || []).map((m) => String(m?.id || m?.name || '').replace(/^models\//, '')).filter(Boolean);
       else if (isKeyProblem(res.status, data)) throw keyError(c.provider, c.name, c.key, errDetail(data));
+      else if (c.provider === 'gemini' && res.status !== 404) throw otherError(c.provider, c.name, res.status, data, c.model.trim());
     } catch (e) { if (e instanceof AIError) throw e; /* nhà cung cấp không có API danh sách → bỏ qua */ }
     const want = c.model.trim().replace(/^models\//, '');
     if (ids?.length && !ids.includes(want)) {
