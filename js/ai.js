@@ -136,8 +136,8 @@ export async function askAI(ai, prompt, { system = SYSTEM } = {}) {
         body: JSON.stringify({ system, prompt, model: ai.model }),
       });
     } catch { throw new AIError('Không kết nối được tới máy chủ AI của bạn.'); }
-    if (!res.ok) throw new AIError(`Máy chủ AI trả về lỗi ${res.status}.`);
     const data = await res.json().catch(() => null);
+    if (!res.ok) throw new AIError(`Máy chủ AI trả về lỗi ${res.status}${data?.error ? `: ${String(data.error).slice(0, 300)}` : '.'}`);
     if (!data?.text) throw new AIError('Máy chủ AI trả về dữ liệu không đúng định dạng {text}.');
     return data.text;
   }
