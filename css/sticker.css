@@ -386,3 +386,4 @@ body:not(.no-tabs) #app::after {
 .pk-ans { background: #D9F7EC; border-radius: 6px; padding: 0 4px; }
 @media (max-width: 359px) { .pk-opts { grid-template-columns: 1fr; } }
 .hn-x.sm { width: 36px; height: 36px; border-radius: 12px; box-shadow: 0 2px 0 var(--hn-ink); }
+.pk-opts.long { grid-template-columns: 1fr; }

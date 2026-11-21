@@ -49,9 +49,8 @@ export function parseRows(rows, fallbackName) {
     else {
       // Không có chỗ trống: khoét đáp án ra khỏi câu.
       const m = new RegExp(`(^|[^\\p{L}\\p{N}])${a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'iu').exec(s);
-      if (!m) { skipped++; continue; }
-      const i = m.index + m[1].length;
-      s = s.slice(0, i) + '___' + s.slice(i + a.length);
+      // Không thấy đáp án trong câu: câu hỏi dạng "Choose the correct sentence." → giữ nguyên, chọn cả câu.
+      if (m) { const i = m.index + m[1].length; s = s.slice(0, i) + '___' + s.slice(i + a.length); }
     }
     const name = get(col.set) || fallbackName;
     if (!bySet.has(name)) bySet.set(name, []);
@@ -309,14 +308,14 @@ export function playView() {
   }
   return `<div class="page session hn-scr hn-play pk-play ${fb ? (r.ok ? 'win' : 'lose') : ''}"><div class="ses-body">${top}
     <div class="hn-card pk-card">${tags ? `<div class="pk-tags">${tags}</div>` : ''}<p class="hn-q pk-q">${sent}</p></div>
-    <div class="tp-opts pk-opts">${opts}</div>${panel}</div></div>`;
+    <div class="tp-opts pk-opts ${q.opts.some((o) => o.length > 28) ? 'long' : ''}">${opts}</div>${panel}</div></div>`;
 }
 
 export function resultView() {
   if (!LAST) return `<div class="page hn-scr">${nav('Chọn từ')}<div class="hn-card" style="margin-top:20px"><p>Chưa có lượt nào vừa chơi.</p>${bigBtn('go', 'Về Chọn từ', 'data-to="#/pick"')}</div></div>`;
   const L = LAST;
   const mm = `${Math.floor(L.ms / 60000)}:${String(Math.floor(L.ms / 1000) % 60).padStart(2, '0')}`;
-  const wrong = L.wrong.slice(0, 8).map((r) => `<p class="pk-wrong">${esc(r.q.s).replace('___', `<b class="pk-ans">${esc(r.q.a)}</b>`)}${r.picked ? `<br><span class="faint">bạn chọn “${esc(r.picked)}”</span>` : '<br><span class="faint">hết giờ</span>'}</p>`).join('');
+  const wrong = L.wrong.slice(0, 8).map((r) => `<p class="pk-wrong">${r.q.s.includes('___') ? esc(r.q.s).replace('___', `<b class="pk-ans">${esc(r.q.a)}</b>`) : `${esc(r.q.s)} <b class="pk-ans">${esc(r.q.a)}</b>`}${r.picked ? `<br><span class="faint">bạn chọn “${esc(r.picked)}”</span>` : '<br><span class="faint">hết giờ</span>'}</p>`).join('');
   return `<div class="page hn-scr hn-res">
     <div class="hn-trophy">${mochi('happy', 70)}${bolt(L.ok >= L.n * 0.7 ? 'happy' : 'calm', 70)}</div>
     <p class="hn-big center">Đúng ${L.ok}/${L.n}!</p>

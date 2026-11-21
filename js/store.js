@@ -765,7 +765,7 @@ function cleanPickBackup(o) {
     if (!/^P[A-Za-z0-9_-]{1,40}$/.test(id) || !Array.isArray(st.qs)) return null;
     const qs = st.qs.slice(0, 5000).map((q, i) => {
       const s = cut(q?.s, 400), a = cut(q?.a, 80), w = strList(q?.w).slice(0, 5).map((x) => x.slice(0, 80));
-      return s.includes('___') && a && w.length ? { id: `${id}:${i}`, s, a, w, ex: cut(q.ex, 800), exVi: cut(q.exVi, 800), tag: cut(q.tag, 30), lv: cut(q.lv, 10) } : null;
+      return s && a && w.length ? { id: `${id}:${i}`, s, a, w, ex: cut(q.ex, 800), exVi: cut(q.exVi, 800), tag: cut(q.tag, 30), lv: cut(q.lv, 10) } : null;
     }).filter(Boolean);
     return qs.length ? { id, name: cut(st.name, 80) || 'Bộ câu hỏi', at: int(st.at, 0, 1e13, 0), qs } : null;
   }).filter(Boolean);
