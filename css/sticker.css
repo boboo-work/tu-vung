@@ -136,7 +136,10 @@ button.tag { border: 2px solid var(--ink); font-weight: 800; box-shadow: 0 2px 0
 .chip { background: var(--surface); color: var(--text); border: 2.5px solid var(--ink); box-shadow: 0 3px 0 var(--ink); font-weight: 800; }
 .chip.on { background: var(--mint); color: var(--on-pop); box-shadow: 0 3px 0 var(--ink); }
 .chips { padding-bottom: 8px; }
-.pill-list span { background: var(--surface); border: 2px solid var(--ink); border-radius: 999px; font-weight: 700; }
+.pill-list > span { background: var(--surface); border: 2px solid var(--ink); border-radius: 999px; font-weight: 700; }
+/* Chữ bên trong một nhãn (vd. nút đổi chủ đề có icon thư mục) không bị vẽ thành nhãn lồng trong nhãn. */
+.pill-list .tag span { padding: 0; border: 0; border-radius: 0; background: none; font-size: inherit; vertical-align: 0 !important; }
+.pill-list > .tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px !important; min-height: 32px; font-size: 14px; }
 
 .seg { background: var(--surface); border: 2.5px solid var(--ink); border-radius: 18px; padding: 4px; gap: 4px; box-shadow: 0 3px 0 var(--ink); }
 .seg button { border-radius: 13px; font-weight: 800; color: var(--text-2); border: 2px solid transparent; }
