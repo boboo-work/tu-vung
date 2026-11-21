@@ -116,7 +116,7 @@ function vocabQs() {
       const rest = shuffle(others.filter((x) => !same.includes(x)));
       const wrong = [...same, ...rest].map((x) => x.word).filter((x, i, a) => a.indexOf(x) === i && x.toLowerCase() !== hit.text.toLowerCase()).slice(0, 3);
       if (wrong.length < 3) break;
-      out.push({ id: `w:${w.id}`, s: text.slice(0, hit.index) + '___' + text.slice(hit.index + hit.text.length), a: hit.text, w: wrong, ex: `${w.word}${w.ipa ? ` ${w.ipa}` : ''}${w.pos ? ` (${w.pos})` : ''}: ${w.meaning}`, exVi: '', tag: 'Kho từ', lv: '' });
+      out.push({ id: `w:${w.id}`, s: text.slice(0, hit.index) + '___' + text.slice(hit.index + hit.text.length), a: hit.text, w: wrong, ex: `${w.word}${w.ipa ? ` ${w.ipa}` : ''}${w.pos ? ` (${w.pos})` : ''}: ${w.meaning}`, exVi: '', tag: 'Kho từ', lv: '', diff: w.difficulty || 2 });
       break;
     }
   }
@@ -130,7 +130,17 @@ function sourceQs(src = ui.src) {
   if (src === 'all') return [...sets().flatMap((x) => x.qs), ...vocabQs()];
   return sets().find((x) => x.id === src)?.qs || [];
 }
-const filtered = (qs) => qs.filter((q) => (ui.tag === 'all' || q.tag === ui.tag) && (ui.lv === 'all' || q.lv === ui.lv) && (!ui.onlyWrong || S.pick.wrong[q.id]));
+// Gom trình độ về 3 mức: A1, A2, "A1-A2" → Dễ; B1 → Vừa; B2, C1, C2, "B2-C1" → Khó. Câu từ Kho từ theo độ khó của từ.
+export const LEVELS = [['easy', 'Dễ', 'A1–A2'], ['mid', 'Vừa', 'B1'], ['hard', 'Khó', 'B2–C1']];
+function lvBucket(q) {
+  const v = String(q.lv || '').toUpperCase();
+  if (/C[12]|B2/.test(v)) return 'hard';
+  if (/B1/.test(v)) return 'mid';
+  if (/A[12]/.test(v)) return 'easy';
+  if (q.diff) return ['', 'easy', 'mid', 'hard'][q.diff] || '';
+  return '';
+}
+const filtered = (qs) => qs.filter((q) => (ui.tag === 'all' || q.tag === ui.tag) && (ui.lv === 'all' || lvBucket(q) === ui.lv) && (!ui.onlyWrong || S.pick.wrong[q.id]));
 const wrongCount = () => sourceQs().filter((q) => S.pick.wrong[q.id]).length;
 
 function startTimer() {
@@ -244,9 +254,10 @@ export function setupView() {
   if (ui.src !== 'all' && ui.src !== 'vocab' && !sets().some((x) => x.id === ui.src)) ui.src = 'all';
   const all = sourceQs();
   const tags = [...new Set(all.map((q) => q.tag).filter(Boolean))].slice(0, 6);
-  const lvs = [...new Set(all.map((q) => q.lv).filter(Boolean))].sort().slice(0, 6);
+  const byLv = Object.fromEntries(LEVELS.map(([k]) => [k, all.filter((q) => (ui.tag === 'all' || q.tag === ui.tag) && lvBucket(q) === k).length]));
+  if (ui.lv !== 'all' && !byLv[ui.lv]) ui.lv = 'all';
   if (!tags.includes(ui.tag)) ui.tag = 'all';
-  if (!lvs.includes(ui.lv)) ui.lv = 'all';
+
   const nw = wrongCount();
   if (!nw) ui.onlyWrong = false;
   const n = filtered(all).length;
@@ -264,7 +275,7 @@ export function setupView() {
       ${sets().map((st) => `<option value="${esc(st.id)}" ${ui.src === st.id ? 'selected' : ''}>${esc(st.name)} (${st.qs.length})</option>`).join('')}
       <option value="vocab" ${ui.src === 'vocab' ? 'selected' : ''}>Câu ví dụ trong Kho từ (${vocabN})</option></select></div>
     ${tags.length > 1 ? `<p class="hn-lab">Dạng</p>${seg('tag', [['all', 'Tất cả'], ...tags.map((t) => [t, t])])}` : ''}
-    ${lvs.length > 1 ? `<p class="hn-lab">Trình độ</p>${seg('lv', [['all', 'Tất cả'], ...lvs.map((t) => [t, t])])}` : ''}
+    <p class="hn-lab">Trình độ</p><div class="hn-seg pk-seg pk-lv">${[['all', 'Tất cả', ''], ...LEVELS].map(([v, l, sub]) => `<button class="${ui.lv === v ? 'on' : ''}" data-act="pk-set" data-k="lv" data-v="${v}" ${v !== 'all' && !byLv[v] ? 'disabled' : ''}><b>${l}</b>${sub ? `<small>${sub} · ${byLv[v]}</small>` : `<small>${all.filter((q) => ui.tag === 'all' || q.tag === ui.tag).length} câu</small>`}</button>`).join('')}</div>
     <div class="hn-card hn-toggle"><span><b>Chỉ câu đã sai</b><br><span class="faint">${nw ? `${nw} câu đang chờ phục thù` : 'Chưa có câu nào'}</span></span>
       <button class="hn-sw ${ui.onlyWrong ? 'on' : ''}" data-act="pk-wrong" aria-label="Chỉ câu đã sai" aria-pressed="${ui.onlyWrong}" ${nw ? '' : 'disabled'}><i></i></button></div>
     <p class="hn-sub" style="margin:10px 4px 0">${n} câu chơi được · mỗi lượt ${Math.min(ROUND, n) || ROUND} câu${S.pick.stats.best ? ` · kỷ lục ${S.pick.stats.best} điểm` : ''}</p>
