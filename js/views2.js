@@ -8,7 +8,7 @@ import { roundInfo, bestRun } from './game.js';
 import { bestDrop, DROP_ROUND } from './drop.js';
 import { bestOf, ROUND2 } from './games2.js';
 import { audioTakes } from './speak.js';
-import { AI_ACTIONS, AI_MODELS, GEMINI_MODELS, GEMINI_DEFAULT, aiReady, askAI, cleanKey, testConnection } from './ai.js';
+import { AI_ACTIONS, AI_MODELS, GEMINI_MODELS, GEMINI_AUTO, aiReady, askAI, cleanKey, testConnection } from './ai.js';
 
 const ui = { statsKind: 'day', statsSel: null, anim: false, ai: { wordId: null, action: 'context', input: '', q: '', loading: false, result: null, error: null } };
 
@@ -133,6 +133,12 @@ globalThis.caches?.keys().then((keys) => {
 // Các ô nhập của từng cách kết nối AI.
 const keyInput = (id, value, placeholder) => `<input type="password" id="${id}" value="${esc(value)}" placeholder="${placeholder}" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">`;
 const modelInput = (id, value, placeholder, list = []) => `<input type="text" id="${id}" value="${esc(value)}" placeholder="${placeholder}" ${list.length ? `list="${id}-list"` : ''} autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">${list.length ? `<datalist id="${id}-list">${list.map((m) => `<option value="${m}">`).join('')}</datalist>` : ''}`;
+function geminiSelect(cur) {
+  const v = cur?.trim() || GEMINI_AUTO;
+  const opts = [[GEMINI_AUTO, `Tự động · dùng lần lượt ${GEMINI_MODELS.length} mô hình (≈${GEMINI_MODELS.length * 20} lượt/ngày)`], ...GEMINI_MODELS];
+  if (!opts.some(([m]) => m === v)) opts.push([v, v]);
+  return `<select id="ai-gemini-model">${opts.map(([m, l]) => `<option value="${esc(m)}" ${m === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
+}
 function aiFields(ai) {
   if (ai.provider === 'proxy') return `<label for="ai-endpoint">Địa chỉ máy chủ</label><input type="url" id="ai-endpoint" value="${esc(ai.endpoint)}" placeholder="https://…/api/ask" autocomplete="off" autocapitalize="none">
       <p class="small faint" style="margin-top:6px">Máy chủ nhận POST {system, prompt, model} và trả về {text}. API key nằm ở máy chủ.</p>`;
@@ -141,8 +147,8 @@ function aiFields(ai) {
         <ol class="small muted" style="margin:6px 0 0;padding-left:20px;line-height:1.55"><li>Mở <b>aistudio.google.com</b> bằng tài khoản Google.</li><li>Bấm <b>Get API key</b> rồi <b>Create API key</b>.</li><li>Bấm biểu tượng sao chép cạnh key (key dạng <b>AIza…</b> hoặc <b>AQ.…</b>).</li><li>Quay lại đây, dán vào ô trên và bấm <b>Kiểm tra kết nối</b>.</li></ol>
         <p class="small faint" style="margin-top:6px">Giao diện của Google có thể khác đôi chút. Nếu báo key không hợp lệ: xoá ô cũ, tạo key mới và dán lại.</p></details>
       <p class="small faint" style="margin-top:6px">Key chỉ lưu trên thiết bị này, không nằm trong file sao lưu, và chỉ được gửi tới máy chủ của Google.</p>
-      <label for="ai-gemini-model">Mô hình</label>${modelInput('ai-gemini-model', ai.geminiModel, GEMINI_DEFAULT, GEMINI_MODELS)}
-      <p class="small faint" style="margin-top:6px">Gõ đúng tên mô hình như trong Google AI Studio. Nếu Google đã ra mô hình mới hơn, bạn cứ gõ tên đó vào đây.</p>`;
+      <label for="ai-gemini-model">Mô hình</label>${geminiSelect(ai.geminiModel)}
+      <p class="small faint" style="margin-top:6px">Mỗi mô hình miễn phí có khoảng 20 lượt/ngày và 5 lượt/phút. Chế độ Tự động chuyển sang mô hình khác khi một mô hình hết lượt.</p>`;
   if (ai.provider === 'openai') return `<label for="ai-oa-base">Địa chỉ API</label><input type="url" id="ai-oa-base" value="${esc(ai.oaBase)}" placeholder="https://api.openai.com/v1" autocomplete="off" autocapitalize="none">
       <label for="ai-oa-key">API key</label>${keyInput('ai-oa-key', ai.oaKey, 'sk-…')}
       <label for="ai-oa-model">Mô hình</label>${modelInput('ai-oa-model', ai.oaModel, 'ví dụ: gpt-4o-mini')}

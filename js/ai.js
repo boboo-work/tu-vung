@@ -20,7 +20,23 @@ export const AI_MODELS = [
 export const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/openai';
 // Google ngừng dần các mô hình cũ cho người dùng mới; khi Google báo "use models/…" app tự chuyển sang mô hình được gợi ý.
 export const GEMINI_DEFAULT = 'gemini-3.8-flash';
-export const GEMINI_MODELS = [GEMINI_DEFAULT];
+// Các mô hình có gói miễn phí, mỗi mô hình có hạn mức riêng (khoảng 20 lượt/ngày). "auto" = dùng lần lượt:
+// mô hình nào hết lượt (theo phút hoặc theo ngày) thì chuyển sang mô hình kế tiếp.
+export const GEMINI_AUTO = 'auto';
+export const GEMINI_MODELS = [
+  ['gemini-3.8-flash', 'Gemini 3.8 Flash · tốt nhất'],
+  ['gemini-3.6-flash', 'Gemini 3.6 Flash'],
+  ['gemini-3.5-flash-lite', 'Gemini 3.5 Flash-Lite · nhanh'],
+  ['gemini-3.1-flash-lite', 'Gemini 3.1 Flash-Lite · nhanh'],
+];
+// Mô hình đã hết lượt hôm nay (ngày theo giờ Mỹ, lúc Google đặt lại hạn mức). Chỉ lưu trên máy này.
+const pacificDay = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
+function spentToday() {
+  try { const o = JSON.parse(localStorage.getItem('gemini-spent') || '{}'); return o.day === pacificDay() ? o.models || [] : []; } catch { return []; }
+}
+function markSpent(m) {
+  try { localStorage.setItem('gemini-spent', JSON.stringify({ day: pacificDay(), models: [...new Set([...spentToday(), m])] })); } catch { /* bỏ qua */ }
+}
 
 // Cấu hình gọi kiểu "chat completions" cho hai cách kết nối gemini / openai.
 function chatConfig(ai) {
@@ -104,6 +120,8 @@ const isKeyProblem = (status, data) => {
   return status === 401 || (status === 403 && !/PERMISSION_DENIED/i.test(t)) || (status === 400 && /api[ _-]?key|API_KEY_INVALID|Authorization header/i.test(t)) || (status === 403 && /api[ _-]?key/i.test(t));
 };
 /** Lỗi không phải do key sai: giải thích theo đúng thông báo của nhà cung cấp (Google hay gộp nhiều lỗi vào 400/403/429). */
+// rotate: chế độ tự động được thử mô hình khác · spent: mô hình này coi như hết lượt đến hết ngày.
+const rot = (e, spent = false) => Object.assign(e, { rotate: true, spent });
 function otherError(provider, name, status, data, model) {
   const t = JSON.stringify(data) || '', d = errDetail(data);
   const raw = d ? `\nThông báo gốc: “${d.slice(0, 300)}”` : '';
@@ -111,16 +129,16 @@ function otherError(provider, name, status, data, model) {
     if (/SERVICE_DISABLED|has not been used|is disabled/i.test(t)) return new AIError(`Key đúng, nhưng dự án Google của key chưa bật “Generative Language API”.\nCách nhanh nhất: vào aistudio.google.com → Get API key → Create API key (để AI Studio tự tạo dự án), rồi dán key mới vào đây.${raw}`);
     if (/location is not supported/i.test(t)) return new AIError(`Google không mở Gemini API cho vị trí mạng hiện tại. Nếu đang bật VPN, hãy tắt (hoặc đổi sang nước khác) rồi thử lại.${raw}`);
     if (status === 429 || /quota|RESOURCE_EXHAUSTED/i.test(t)) {
-      if (/limit:\s*0\b/i.test(t)) return new AIError(`Gói miễn phí của Google không có hạn mức cho mô hình “${model}”. Hãy đổi ô Mô hình sang “${GEMINI_DEFAULT}”.${raw}`);
+      if (/limit:\s*0\b/i.test(t)) return rot(new AIError(`Gói miễn phí của Google không có hạn mức cho mô hình “${model}”. Hãy đổi ô Mô hình sang “${GEMINI_DEFAULT}”.${raw}`), true);
       const day = /per.?day|PerDay|RPD|daily/i.test(t);
-      return new AIError(day
+      return rot(new AIError(day
         ? `Đã dùng hết lượt miễn phí hôm nay của mô hình “${model}” (gói miễn phí chỉ khoảng 20 lượt/ngày). Google đặt lại lượt lúc nửa đêm giờ Mỹ (Thái Bình Dương), tức khoảng 14–15 giờ chiều giờ Việt Nam.\nKey vẫn đúng, không cần làm gì thêm; xem số lượt đã dùng ở aistudio.google.com → Rate Limit.${raw}`
-        : `Đang hỏi nhanh quá: gói miễn phí chỉ cho khoảng 5 lượt mỗi phút. Đợi 1 phút rồi thử lại.${raw}`);
+        : `Đang hỏi nhanh quá: gói miễn phí chỉ cho khoảng 5 lượt mỗi phút. Đợi 1 phút rồi thử lại.${raw}`), day);
     }
     if (/billing/i.test(t)) return new AIError(`Google yêu cầu bật thanh toán cho dự án của key này. Hãy tạo key mới ở aistudio.google.com (dự án mới dùng được gói miễn phí).${raw}`);
     if (status === 403) return new AIError(`Google từ chối quyền truy cập (403). Thường là key bị giới hạn (chỉ cho một số trang web hoặc ứng dụng). Hãy tạo key mới ở aistudio.google.com và đừng đặt giới hạn cho key.${raw}`);
   }
-  if (status === 404) return new AIError(`Không tìm thấy mô hình “${model}” hoặc địa chỉ API sai. Kiểm tra lại tên mô hình.${raw}`);
+  if (status === 404) return rot(new AIError(`Không tìm thấy mô hình “${model}” hoặc địa chỉ API sai. Kiểm tra lại tên mô hình.${raw}`), true);
   if (status === 429) return new AIError(`Đã vượt giới hạn tần suất hoặc hết hạn mức của API. Hãy thử lại sau.${raw}`);
   if (status >= 500 || /high demand|overloaded|UNAVAILABLE/i.test(t)) return new AIError(`Key và mô hình đều đúng ✓ nhưng máy chủ ${name === 'Gemini' ? 'Google' : name} đang quá tải tạm thời (app đã tự thử lại 1 lần). Hãy đợi vài phút rồi thử lại.${raw}`);
   return new AIError(`${name} báo lỗi ${status}${d ? ': ' + d : ''}`);
@@ -146,6 +164,7 @@ export async function askAI(ai, prompt, { system = SYSTEM } = {}) {
   }
 
   const chat = chatConfig(ai);
+  if (chat?.provider === 'gemini' && (!chat.model?.trim() || chat.model.trim() === GEMINI_AUTO)) return askGeminiAuto(chat, prompt, system);
   if (chat) return askChat(chat, prompt, system);
 
   // Claude Messages API (gọi trực tiếp từ trình duyệt).
@@ -186,11 +205,27 @@ export async function askAI(ai, prompt, { system = SYSTEM } = {}) {
 }
 
 // Định dạng "chat completions" (OpenAI, Gemini qua cổng tương thích, và nhiều nhà cung cấp khác).
+/** Chế độ tự động: thử lần lượt các mô hình miễn phí, bỏ qua mô hình đã hết lượt hôm nay. */
+async function askGeminiAuto(chat, prompt, system) {
+  const all = GEMINI_MODELS.map(([m]) => m);
+  const spent = spentToday();
+  const order = [...all.filter((m) => !spent.includes(m)), ...all.filter((m) => spent.includes(m))];
+  let last;
+  for (const m of order) {
+    try { return await askChat({ ...chat, model: m }, prompt, system, false, true); }
+    catch (e) {
+      if (!e?.rotate) throw e;
+      if (e.spent) markSpent(m);
+      last = e;
+    }
+  }
+  throw new AIError(`Cả ${all.length} mô hình Gemini miễn phí đều đang hết lượt (theo phút hoặc theo ngày). Đợi 1 phút rồi thử lại; nếu đã hết lượt cả ngày thì Google đặt lại vào khoảng 14–15 giờ chiều giờ Việt Nam.${last ? `\n(${last.message.split('\n')[0]})` : ''}`);
+}
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // Máy chủ quá tải tạm thời (503 "high demand", 500, 529): đợi rồi thử lại đúng 1 lần.
 // Không thử nhiều hơn: gói miễn phí của Gemini chỉ có vài lượt mỗi phút và khoảng 20 lượt mỗi ngày, mỗi lần thử đều bị tính.
 const BUSY_WAIT = [4000];
-async function askChat({ provider, name, base, key, model }, prompt, system = SYSTEM, retried = false) {
+async function askChat({ provider, name, base, key, model }, prompt, system = SYSTEM, retried = false, auto = false) {
   const url = base.trim().replace(/\/+$/, '').replace(/\/chat\/completions$/, '') + '/chat/completions';
   let res, data;
   for (let attempt = 0; ; attempt++) {
@@ -213,9 +248,9 @@ async function askChat({ provider, name, base, key, model }, prompt, system = SY
     if (isKeyProblem(res.status, data)) throw keyError(provider, name, key, detail);
     // Mô hình đã bị Google ngừng ("… no longer available … use models/gemini-x-flash"): thử lại một lần với mô hình được gợi ý và lưu lại.
     const sug = provider === 'gemini' && !retried && /no longer available|not found|deprecated|not supported/i.test(detail) && detail.match(/use\s+(?:models\/)?(gemini-[\w.-]*\w)/i)?.[1];
-    if (sug && sug !== model.trim()) {
+    if (sug && sug !== model.trim() && !auto) {
       const text = await askChat({ provider, name, base, key, model: sug }, prompt, system, true);
-      if (S.settings.ai?.provider === 'gemini' && S.settings.ai.geminiModel !== sug) await saveSettings({ ai: { ...S.settings.ai, geminiModel: sug } });
+      if (S.settings.ai?.provider === 'gemini' && S.settings.ai.geminiModel === model.trim()) await saveSettings({ ai: { ...S.settings.ai, geminiModel: sug } });
       return text;
     }
     throw otherError(provider, name, res.status, data, model.trim());
@@ -242,6 +277,7 @@ export async function testConnection(ai) {
       else if (c.provider === 'gemini' && res.status !== 404) throw otherError(c.provider, c.name, res.status, data, c.model.trim());
     } catch (e) { if (e instanceof AIError) throw e; /* nhà cung cấp không có API danh sách → bỏ qua */ }
     let want = c.model.trim().replace(/^models\//, '');
+    if (c.provider === 'gemini' && (!want || want === GEMINI_AUTO)) return askAI(ai, 'Trả lời đúng một từ: OK');
     // Mô hình đang chọn không còn trong danh sách nhưng có mô hình mặc định mới → tự chuyển.
     if (c.provider === 'gemini' && ids?.length && !ids.includes(want) && ids.includes(GEMINI_DEFAULT)) {
       want = GEMINI_DEFAULT;

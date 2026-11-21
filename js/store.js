@@ -88,7 +88,7 @@ const DEFAULT_SETTINGS = {
   autoSpeak: true, // tự phát âm khi lật thẻ sang mặt đáp án
   autoFill: true, // tự tra thông tin khi gõ xong từ mới ở form thêm từ
   // Mỗi cách kết nối giữ key/mô hình riêng để đổi qua lại không bị lẫn.
-  ai: { provider: 'anthropic', apiKey: '', model: 'claude-opus-5-5', endpoint: '', geminiKey: '', geminiModel: 'gemini-3.8-flash', oaBase: '', oaKey: '', oaModel: '' },
+  ai: { provider: 'anthropic', apiKey: '', model: 'claude-opus-5-5', endpoint: '', geminiKey: '', geminiModel: 'auto', oaBase: '', oaKey: '', oaModel: '' },
   lastBackup: null,
 };
 
