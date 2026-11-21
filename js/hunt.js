@@ -206,7 +206,7 @@ const interleave = (a, b) => { const out = []; for (let i = 0; i < Math.max(a.le
 let H = null; // { id, cards, i, phase, score, combo, maxCombo, t0, res: [], posRes: [], saved: [] , pick…, dur, deadline }
 let LAST = null; // tóm tắt lượt vừa xong (màn kết quả)
 let timer = 0;
-const durs = () => (ui.speed === 'exam' ? { guess: 6, find: 15, tf: 15 } : { guess: 8, find: 30, tf: 30 });
+const durs = () => (ui.speed === 'exam' ? { guess: 6, find: 15, tf: 10 } : { guess: 8, find: 30, tf: 20 });
 function startTimer(sec) {
   clearInterval(timer);
   H.dur = sec * 1000;
@@ -227,14 +227,17 @@ function onTimeout() {
   const c = H.cards[H.i];
   if (H.phase === 'guess') choosePos(null);
   else if (H.phase === 'find') tapWord(-1);
+  else if (H.phase === 'tfloc') tapPhrase(-1);
   else if (H.phase === 'tf') chooseTf(null);
-  else if (H.phase === 'tfev') tapPhrase(-1);
   void c;
 }
 function beginCard() {
   const c = H.cards[H.i];
-  Object.assign(H, { pos: undefined, tap: undefined, tfPick: undefined, ev: undefined, saved1: false });
-  if (c.kind === 'gap') { if (c.pos) { H.phase = 'guess'; startTimer(durs().guess); } else { H.phase = 'find'; startTimer(durs().find); } } else { H.phase = 'tf'; startTimer(durs().tf); }
+  Object.assign(H, { pos: undefined, tap: undefined, tfPick: undefined, ev: undefined, evHit: false, saved1: false });
+  if (c.kind === 'gap') { if (c.pos) { H.phase = 'guess'; startTimer(durs().guess); } else { H.phase = 'find'; startTimer(durs().find); } }
+  // T/F/NG: tìm chỗ trong bài trước (bước 1), rồi mới so sánh và chọn (bước 2) — như khi làm bài thật.
+  else if (c.phrases.some((p) => p.good) || isNG(c)) { H.phase = 'tfloc'; startTimer(durs().find); }
+  else { H.phase = 'tf'; startTimer(durs().tf); }
 }
 function result(ok, extra = {}) {
   const c = H.cards[H.i];
@@ -265,24 +268,30 @@ function tapWord(i) {
   H.phase = 'findDone';
   rerender();
 }
+const isNG = (c) => /NOT GIVEN/.test(c.ans);
+const NOT_THERE = -2; // nút "Bài không nhắc tới ý này"
+/** Bước 1: chạm cụm trong đoạn nói về ý của câu đề (i ≥ 0), "không nhắc tới" (NOT_THERE) hoặc hết giờ (-1). */
+function tapPhrase(i) {
+  if (!H || H.phase !== 'tfloc') return;
+  stopTimer();
+  const c = H.cards[H.i];
+  H.ev = i;
+  // NOT GIVEN: bài có nhắc chủ đề nhưng không nói điều câu đề khẳng định → chọn "không nhắc tới" hoặc chạm đúng chỗ nhắc chủ đề đều được tính.
+  H.evHit = (i >= 0 && !!c.phrases[i]?.good) || (i === NOT_THERE && isNG(c));
+  if (H.evHit) H.score += 10;
+  H.phase = 'tf';
+  startTimer(durs().tf);
+  rerender();
+}
+/** Bước 2: chọn TRUE/FALSE/NOT GIVEN (hoặc YES/NO/NOT GIVEN) sau khi đã thấy bằng chứng. */
 function chooseTf(v) {
   if (!H || H.phase !== 'tf') return;
   stopTimer();
   const c = H.cards[H.i];
   H.tfPick = v;
-  if (v === c.ans) H.score += 10;
-  if (c.evidence) { H.phase = 'tfev'; startTimer(durs().find); } else { result(v === c.ans, { why: v ? (v === c.ans ? 'right' : 'miss') : 'timeout', picked: v || '' }); H.phase = 'tfDone'; }
-  rerender();
-}
-function tapPhrase(i) {
-  if (!H || H.phase !== 'tfev') return;
-  stopTimer();
-  const c = H.cards[H.i];
-  H.ev = i;
-  const hit = i >= 0 && c.phrases[i].good;
-  const ok = H.tfPick === c.ans;
-  if (ok && hit) H.score += 20 + Math.min(4, H.combo) * 5;
-  result(ok, { why: ok ? 'right' : H.tfPick ? 'miss' : 'timeout', picked: H.tfPick || '', ev: hit });
+  const ok = v === c.ans;
+  if (ok) H.score += 10 + (H.evHit ? 10 + Math.min(4, H.combo) * 5 : 0);
+  result(ok, { why: v ? (ok ? 'right' : 'miss') : 'timeout', picked: v || '', ev: H.evHit });
   H.phase = 'tfDone';
   rerender();
 }
@@ -354,7 +363,7 @@ on('hn-wrong', () => { ui.onlyWrong = !ui.onlyWrong; rerender(); });
 // ---------------------------------------------------------------- Màn hình
 const hud = (c) => {
   const dots = H.cards.map((_, i) => `<span class="hn-dot ${i < H.i ? (H.res[i]?.ok ? 'ok' : 'no') : i === H.i ? 'cur' : ''}"></span>`).join('');
-  const timed = ['guess', 'find', 'tf', 'tfev'].includes(H.phase);
+  const timed = ['guess', 'find', 'tfloc', 'tf'].includes(H.phase);
   return `<div class="hn-top"><button class="hn-x" data-act="hn-quit" aria-label="Thoát">${icon('x')}</button>
     ${timed ? `<div class="hn-timer" id="hn-timer"><i style="width:${Math.max(0, (H.deadline - Date.now()) / H.dur) * 100}%"></i></div><span class="hn-pill sm" id="hn-secs">0:${String(Math.ceil(Math.max(0, H.deadline - Date.now()) / 1000)).padStart(2, '0')}</span>` : `<div class="hn-dots">${dots}</div>`}</div>
     <div class="hn-hud"><span class="hn-pill">${STAR}${H.score}</span><span class="hn-meta">${esc(c.test.replace('Cambridge ', 'Cam '))} · P${c.pn} · câu ${c.n}</span><span class="hn-pill peach">${FLAME}×${Math.max(1, H.combo)}</span></div>`;
@@ -427,26 +436,39 @@ function fbView(c) {
     <details class="hn-card hn-more"><summary>Lời giải đầy đủ</summary><div class="md">${md(c.exp.split('⚠')[0])}</div></details>`;
 }
 function tfView(c) {
-  const picked = H.tfPick !== undefined;
+  const st = H.phase, picked = st === 'tfDone';
   const BG = { TRUE: '#8EE3C8', YES: '#8EE3C8', FALSE: '#FFB3CB', NO: '#FFB3CB', 'NOT GIVEN': '#BFE3FF' };
-  const btns = c.labels.map((l) => {
+  const located = c.phrases.some((p) => p.good) || isNG(c);
+  // Đoạn văn: bước 1 chạm được; từ bước 2 tô sáng chỗ đúng và chỗ đã chạm nhầm.
+  const phrases = c.phrases.map((p, i) => {
+    if (st === 'tfloc') return `<span class="hn-w ph" data-act="hn-ev" data-i="${i}" role="button">${esc(p.t)}</span>`;
+    const cls = p.good && (!isNG(c) || H.ev === i || picked) ? 'right' : i === H.ev ? 'miss' : '';
+    return `<span class="hn-w ph off ${cls}">${esc(p.t)}</span>`;
+  }).join(' ');
+  const pairs = st !== 'tfloc' && c.pairs.length ? `<div class="hn-pairs">${c.pairs.map(([a, b]) => `<div><span>Đề: ${esc(a)}</span>${icon('chev')}<span>Bài: ${esc(b)}</span></div>`).join('')}</div>` : '';
+  let found = '';
+  if (st !== 'tfloc' && located) {
+    found = H.ev === NOT_THERE ? (H.evHit ? 'Đúng hướng: bài không nói tới điều câu đề khẳng định.' : 'Bài có nói tới ý này, chỗ được tô xanh bên dưới.')
+      : H.evHit ? 'Tìm trúng chỗ! So câu đề với cụm tô xanh rồi chọn.' : isNG(c) ? (H.ev === -1 ? 'Hết giờ tìm.' : 'Chỗ bạn chạm chưa phải chỗ cần tìm.') : H.ev === -1 ? 'Hết giờ tìm. Chỗ nói về ý này được tô xanh.' : 'Chưa trúng. Chỗ đúng được tô xanh.';
+  }
+  const btns = st === 'tfloc' ? '' : `<div class="hn-tfs">${c.labels.map((l) => {
     const cls = !picked ? '' : l === c.ans ? 'right' : l === H.tfPick ? 'wrong' : 'dim';
     return `<button class="hn-tf ${cls}" style="background:${BG[l]}" data-act="hn-tf" data-v="${l}" ${picked ? 'disabled' : ''}>${l}</button>`;
-  }).join('');
-  const ev = H.phase === 'tfev' || (H.phase === 'tfDone' && c.evidence);
-  const phrases = ev ? c.phrases.map((p, i) => {
-    const cls = H.phase !== 'tfDone' ? '' : p.good ? 'right' : i === H.ev ? 'miss' : '';
-    return `<span class="hn-w ph ${cls}${H.phase === 'tfDone' ? ' off' : ''}" data-act="hn-ev" data-i="${i}" role="button">${esc(p.t)}</span>`;
-  }).join(' ') : '';
-  const ok = H.tfPick === c.ans, hit = H.ev >= 0 && c.phrases[H.ev]?.good;
-  const title = !H.tfPick ? `Hết giờ · đáp án ${c.ans}` : ok && (hit || !c.evidence) ? `Đúng${c.evidence ? ' cả hai' : ''}!` : ok ? 'Đáp án đúng, bằng chứng chưa trúng' : `Ối! Đáp án là ${c.ans}`;
+  }).join('')}</div>`;
+  const ok = H.tfPick === c.ans;
+  const title = !H.tfPick ? `Hết giờ · đáp án ${c.ans}` : ok && H.evHit ? 'Đúng cả hai bước!' : ok ? (located ? 'Đáp án đúng, nhưng chưa tìm trúng chỗ' : 'Chính xác!') : `Ối! Đáp án là ${c.ans}`;
+  const step = st === 'tfloc' ? 'Bước 1/2 · Tìm chỗ trong bài nói về ý này' : st === 'tf' ? (located ? 'Bước 2/2 · So câu đề với bài rồi chọn' : 'Đọc đoạn văn rồi chọn') : '';
   return `${hud(c)}
-    <p class="hn-step">${H.phase === 'tf' ? 'Chọn nhanh nào!' : H.phase === 'tfev' ? 'Giờ chạm cụm làm bằng chứng' : ''}</p>
-    <div class="hn-card"><span class="hn-tag" style="background:#C7B8FF">Câu ${c.n} · đúng hay sai?</span><p class="hn-q">${esc(c.q)}</p></div>
-    <div class="hn-tfs">${btns}</div>
-    ${ev ? `<div class="hn-card"><span class="hn-tag" style="background:#BFE3FF">Đoạn ${esc(c.para)} · chạm bằng chứng</span><p class="hn-para">${phrases}</p></div>` : ''}
-    ${H.phase === 'tfDone' ? panel(ok ? '#D9F7EC' : '#FFE1EC', ok ? mochi('happy', 48) : bolt('dizzy', 48), title, '', `<details class="hn-why"><summary>Xem lời giải</summary><div class="md">${md(c.exp)}</div></details>${bigBtn('hn-next', 'Câu tiếp →')}`) : ''}`;
+    <p class="hn-step">${step}</p>
+    <div class="hn-card"><span class="hn-tag" style="background:#C7B8FF">Câu ${c.n} · ${c.labels[0] === 'YES' ? 'ý kiến tác giả' : 'đúng hay sai?'}</span><p class="hn-q">${esc(c.q)}</p></div>
+    ${found ? `<p class="hn-sub hn-found ${H.evHit ? 'ok' : ''}">${found}</p>` : ''}
+    <div class="hn-card"><span class="hn-tag" style="background:#BFE3FF">Đoạn ${esc(c.para)}${st === 'tfloc' ? ' · chạm cụm nói về ý này' : ''}</span><p class="hn-para">${phrases}</p>${pairs}</div>
+    ${st === 'tfloc' && isNGPossible(c) ? `<button class="hn-btn ghost hn-notthere" data-act="hn-ev" data-i="${NOT_THERE}">Bài không nhắc tới ý này</button>` : ''}
+    ${btns}
+    ${picked ? panel(ok ? '#D9F7EC' : '#FFE1EC', ok ? mochi('happy', 48) : bolt('dizzy', 48), title, '', `<details class="hn-why"><summary>Xem lời giải</summary><div class="md">${md(c.exp)}</div></details>${bigBtn('hn-next', 'Câu tiếp →')}`) : ''}`;
 }
+// Nút "không nhắc tới" luôn có ở bước 1 (kể cả câu TRUE/FALSE) để không lộ đáp án.
+const isNGPossible = () => true;
 export function playView() {
   if (!H) return { html: `<div class="page hn-scr">${navBar('Săn từ', { fallback: '#/games' })}<div class="hn-card" style="margin-top:20px"><p>Lượt chơi đã kết thúc.</p>${bigBtn('go', 'Về tab Game', 'data-to="#/games"')}</div></div>` };
   const c = H.cards[H.i];
