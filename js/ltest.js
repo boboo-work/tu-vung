@@ -1306,5 +1306,14 @@ export function ltestCard() {
     return `<div class="wrow" data-act="go" data-to="#/ltest/${encodeURIComponent(t.id)}" role="button"><span class="num ${best ? 'done' : ''}">${best || '–'}</span><div class="body"><span style="font-weight:600">${esc(t.title)}</span><p>${t.n} câu · ${att.length ? `đã làm ${att.length} lần` : 'chưa làm'}</p></div>${icon('chev')}</div>`;
   }).join('');
   return `<h2>Đề thật của bạn</h2>${list.length ? `<div class="wlist">${rows}</div>` : ''}
-    <button class="listlink" style="margin-top:${list.length ? 8 : 0}px" data-act="go" data-to="#/limport"><span class="lead">${icon('plus')}</span><span class="body"><b>Nhập đề</b><small>File đề .html (câu hỏi + đáp án) và file nghe từng Part · chỉ lưu trên máy</small></span>${icon('chev')}</button>`;
+    <button class="listlink" style="margin-top:${list.length ? 8 : 0}px" data-act="go" data-to="#/limport"><span class="lead">${icon('plus')}</span><span class="body"><b>Nhập đề</b><small>File đề .html (câu hỏi + đáp án) và file nghe từng Part · chỉ lưu trên máy</small></span>${icon('chev')}</button>
+    ${list.length > 1 ? `<button class="btn ghost danger-text" style="margin-top:10px" data-act="lt-del-all">${icon('trash', 'sm')} Xoá tất cả ${list.length} đề đã nhập</button>` : ''}`;
 }
+on('lt-del-all', async () => {
+  const list = tests();
+  if (!list.length) return;
+  if (!(await confirmSheet({ title: `Xoá cả ${list.length} đề?`, body: 'Xoá mọi đề đã nhập cùng file nghe, lời thoại và giải thích trên máy này. Kết quả các lần làm vẫn giữ. Không hoàn tác được.', okLabel: `Xoá ${list.length} đề`, danger: true }))) return;
+  await ltDel(...list.map((t) => t.id));
+  toast(`Đã xoá ${list.length} đề`);
+  rerender();
+});
