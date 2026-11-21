@@ -277,7 +277,8 @@ export async function testConnection(ai) {
       else if (c.provider === 'gemini' && res.status !== 404) throw otherError(c.provider, c.name, res.status, data, c.model.trim());
     } catch (e) { if (e instanceof AIError) throw e; /* nhà cung cấp không có API danh sách → bỏ qua */ }
     let want = c.model.trim().replace(/^models\//, '');
-    if (c.provider === 'gemini' && (!want || want === GEMINI_AUTO)) return askAI(ai, 'Trả lời đúng một từ: OK');
+    // Gemini: hỏi danh sách mô hình đã đủ biết key đúng; không gửi câu hỏi thử để khỏi trừ vào lượt miễn phí mỗi ngày.
+    if (c.provider === 'gemini' && (!want || want === GEMINI_AUTO)) return ids ? { free: true } : askAI(ai, 'Trả lời đúng một từ: OK');
     // Mô hình đang chọn không còn trong danh sách nhưng có mô hình mặc định mới → tự chuyển.
     if (c.provider === 'gemini' && ids?.length && !ids.includes(want) && ids.includes(GEMINI_DEFAULT)) {
       want = GEMINI_DEFAULT;
@@ -289,6 +290,7 @@ export async function testConnection(ai) {
       usable.sort((a, b) => Number(/flash/.test(b) && !/lite/.test(b)) - Number(/flash/.test(a) && !/lite/.test(a)));
       throw new AIError(`Key hợp lệ ✓ nhưng không có mô hình “${want}” (có thể đã bị gỡ hoặc gõ sai).\nMô hình dùng được: ${(usable.length ? usable : ids).slice(0, 8).join(', ')}.\nHãy gõ một trong các tên đó vào ô Mô hình rồi kiểm tra lại.`);
     }
+    if (c.provider === 'gemini' && ids?.length) return { free: true };
   }
   return askAI(ai, 'Trả lời đúng một từ: OK');
 }

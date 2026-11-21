@@ -381,11 +381,11 @@ on('ai-test', async (el) => {
   showAiResult('', '');
   const before = S.settings.ai.geminiModel;
   try {
-    await testConnection(S.settings.ai);
+    const r = await testConnection(S.settings.ai);
     const now = S.settings.ai.geminiModel;
     const swapped = S.settings.ai.provider === 'gemini' && now !== before;
     if (swapped) { const f = document.getElementById('ai-gemini-model'); if (f) f.value = now; }
-    showAiResult(`Kết nối AI hoạt động tốt.${swapped ? ` Google đã ngừng “${before}” nên app tự chuyển sang “${now}”.` : ''} Bạn có thể dùng Trợ lý AI và nút Tự điền.`, 'ok');
+    showAiResult(`${r?.free ? 'Key đúng ✓ Kết nối được với Google (lần kiểm tra này không tốn lượt).' : 'Kết nối AI hoạt động tốt.'}${swapped ? ` Google đã ngừng “${before}” nên app tự chuyển sang “${now}”.` : ''} Bạn có thể dùng Trợ lý AI và nút Tự điền.`, 'ok');
   }
   catch (e) { showAiResult(e.message, 'bad'); }
   finally { if (el.isConnected) { el.disabled = false; el.textContent = label; } }
