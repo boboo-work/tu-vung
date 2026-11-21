@@ -697,7 +697,7 @@ function cleanBackup(data) {
       examples: strList(w.examples), collocations: strList(w.collocations), synonyms: strList(w.synonyms), antonyms: strList(w.antonyms), family: strList(w.family),
       mistakes: str(w.mistakes), notes: str(w.notes), deckId: deckIds.has(w.deckId) ? w.deckId : FALLBACK_DECK,
       difficulty: int(w.difficulty, 1, 3, 2), favorite: !!w.favorite,
-      sentences: Array.isArray(w.sentences) ? w.sentences.filter((x) => x && typeof x.text === 'string').map((x) => ({ text: x.text, at: Number(x.at) || 0 })) : [],
+      sentences: Array.isArray(w.sentences) ? w.sentences.filter((x) => x && typeof x.text === 'string').map((x) => ({ text: x.text, at: Number(x.at) || 0, ...(typeof x.ai === 'string' && x.ai ? { ai: x.ai.slice(0, 6000) } : {}) })) : [],
       createdAt: Number(w.createdAt) || Date.now(), updatedAt: Number(w.updatedAt) || Date.now(),
       // Từ đã học mà thiếu ngày ôn thì coi như chưa học, tránh "mất tích" khỏi mọi danh sách.
       srs: state === 'new' || !due ? newSrs() : {

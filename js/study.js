@@ -369,6 +369,9 @@ on('ses-ai-grade', async () => {
   try {
     const text = await askAI(S.settings.ai, AI_ACTIONS.find((a) => a.id === 'grade').build(w, st.input));
     st.ai = { text };
+    // Lưu nhận xét của AI kèm câu vừa viết (xem lại ở trang Câu tôi đã viết).
+    const last = w.sentences?.[w.sentences.length - 1];
+    if (last && last.text === st.input) { last.ai = text; await saveWord(w); }
   } catch (e) { st.ai = { error: e.message }; }
   if (ses?.step === st) rerender();
 });
@@ -508,7 +511,7 @@ function sentenceView(w) {
   else if (aiReady(S.settings.ai)) ai = `<button class="btn soft" data-act="ses-ai-grade" style="margin-top:12px">${icon('sparkle', 'sm')} Nhờ AI chấm & sửa câu này</button>`;
   else ai = `<p class="small faint center" style="margin-top:12px">Kết nối AI trong Cài đặt để được chấm và sửa câu tự động.</p>`;
   return {
-    body: `${head}<div class="feedback ok"><b class="t">${icon('check', 'sm')} Đã lưu vào từ này</b><p class="en">${esc(st.input)}</p></div>${ai}`,
+    body: `${head}<div class="feedback ok"><b class="t">${icon('check', 'sm')} Đã lưu vào từ này</b><p class="en">${esc(st.input)}</p><p class="small muted" style="margin-top:6px">Xem lại ở Kho từ → nút bút chì “Câu tôi đã viết”, hoặc trong trang của từ.</p></div>${ai}`,
     actions: nextBtn(),
   };
 }

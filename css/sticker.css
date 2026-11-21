@@ -395,3 +395,11 @@ body:not(.no-tabs) #app::after {
 .hn-found { margin: 4px 4px 0; font-weight: 800; }
 .hn-found.ok { color: #1B7A55; }
 .hn-notthere { margin-top: 10px; width: 100%; }
+
+/* Câu tôi đã viết */
+.ms-item { padding: 14px 16px; }
+.ms-text { font-size: 16px; line-height: 1.5; margin: 0; }
+.ms-meta { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.ms-meta .iconbtn { margin-left: auto; }
+.ms-ai { margin-top: 10px; }
+.ms-ai summary { cursor: pointer; font-weight: 800; font-size: 14px; display: flex; align-items: center; gap: 6px; }

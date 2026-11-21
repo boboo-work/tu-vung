@@ -268,7 +268,7 @@ export function vocabView() {
   for (const w of S.words.values()) counts[w.deckId] = (counts[w.deckId] || 0) + 1;
   const chip = (id, label) => `<button class="chip ${f === id ? 'on' : ''}" data-act="vocab-filter" data-filter="${id}">${label}</button>`;
   return `<div class="page"><header class="top"><div><p class="eyebrow">${S.words.size} từ</p><h1>Kho từ vựng</h1></div>
-      <button class="iconbtn tonal" data-act="go" data-to="#/decks" aria-label="Quản lý chủ đề">${icon('folder')}</button></header>
+      <div style="display:flex;gap:8px"><button class="iconbtn tonal" data-act="go" data-to="#/mysent" aria-label="Câu tôi đã viết" title="Câu tôi đã viết">${icon('pen')}</button><button class="iconbtn tonal" data-act="go" data-to="#/decks" aria-label="Quản lý chủ đề">${icon('folder')}</button></div></header>
     <div class="search">${icon('search')}<input type="search" placeholder="Tìm từ hoặc nghĩa…" value="${esc(ui.vocab.q)}" data-in="vocab-search" autocomplete="off" autocapitalize="none" autocorrect="off" enterkeyhint="search"></div>
     <div class="chips">${chip('all', 'Tất cả')}${chip('fav', '★ Yêu thích')}${chip('due', 'Đến hạn')}${S.decks.filter((d) => counts[d.id] || f === d.id).map((d) => chip(d.id, `${esc(d.name)} · ${counts[d.id] || 0}`)).join('')}</div>
     <div id="vocab-list">${vocabList()}</div>
@@ -314,7 +314,7 @@ export function wordView(id) {
       <div class="pill-list" style="margin-top:14px"><button class="tag" data-act="move-deck" data-id="${w.id}" style="min-height:30px">${icon('folder', 'sm')} <span style="vertical-align:4px">${esc(deckName(w.deckId))}</span></button><span class="tag" style="padding-top:6px">Độ khó: ${DIFF[w.difficulty] || 'Trung bình'}</span></div>
     </div>
     ${details ? `<div class="card">${details}</div>` : ''}
-    ${w.sentences?.length ? `<div class="card"><div class="field"><h4>Câu tôi đã viết</h4><ul>${w.sentences.slice(-5).reverse().map((x) => `<li class="en">${esc(x.text)}</li>`).join('')}</ul></div></div>` : ''}
+    ${w.sentences?.length ? `<div class="card"><div class="field"><h4>Câu tôi đã viết</h4><ul>${w.sentences.slice(-5).reverse().map((x) => `<li class="en">${esc(x.text)}</li>`).join('')}</ul><button class="link" data-act="go" data-to="#/mysent">Xem tất cả câu đã viết ${icon('chev', 'sm')}</button></div></div>` : ''}
     <div class="card"><div class="row-between" style="margin-bottom:12px"><b>Tiến độ ghi nhớ</b><span class="tag">${st.label}</span></div>
       ${isNew(w) ? `<p class="muted small">Từ này chưa được học. Nó sẽ xuất hiện trong tab Học.</p>` : `<div class="kv">
         <div><span>Ôn kế tiếp</span>${fmtDate(s.due)} (${relDay(s.due)})</div><div><span>Khoảng cách</span>${fmtInterval(s.interval)}</div>
