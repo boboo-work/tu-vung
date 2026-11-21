@@ -3,6 +3,7 @@
 //  có thể ghi âm (dùng chung phần ghi âm của Speaking) → xem bài mẫu 7.0 có tô cụm hay → điền lại 2–3 cụm hay bị che → tự chấm ý chính, lý do, ví dụ.
 //  Cụm hay: lấy từ danh sách từ vựng của câu (nếu có); không có thì lấy các cụm bài 7.0 dùng mà bài 6.5 không có (chỗ "nâng band").
 //  Mỗi lượt có trả lời tính vào chuỗi ngày học, không tính vào mục tiêu Speaking. Câu điền sai quay lại các lượt sau.
+import { sfx } from './sfx.js';
 import { S, saveHunt, logGrammarDay } from './store.js';
 import { esc, toast, uid, shuffle, speak } from './util.js';
 import { icon, on, go, back, replace, rerender, confirmSheet } from './ui.js';
@@ -199,6 +200,7 @@ function result(ok, extra = {}) {
   const c = T.cards[T.i];
   T.res[T.i] = { key: c.key, ok, part: c.part, q: c.q, topic: c.topic, phrases: c.phrases.map((p) => p.t), ...extra };
   if (ok) { T.combo++; T.maxCombo = Math.max(T.maxCombo, T.combo); } else T.combo = 0;
+  sfx(ok ? 'ok' : 'bad', T.combo);
 }
 function checkCloze() {
   const c = T.cards[T.i];

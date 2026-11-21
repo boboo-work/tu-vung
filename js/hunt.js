@@ -5,6 +5,7 @@
 //  Dữ liệu: các đề Reading trong app (content/reading/*.json): câu hỏi, đáp án, vị trí câu chứa đáp án, cặp paraphrase,
 //  lời giải 4 bước (có loại từ ở Bước 1 và bẫy sau dấu ⚠️).
 //  Câu sai quay lại các lượt sau cho tới khi đúng 2 lần liên tiếp. Mỗi lượt tính vào chuỗi ngày học, không tính vào mục tiêu Reading.
+import { sfx } from './sfx.js';
 import { S, saveHunt, logGrammarDay } from './store.js';
 import { esc, toast, uid, shuffle, speak } from './util.js';
 import { icon, on, go, back, replace, rerender, navBar, confirmSheet } from './ui.js';
@@ -239,6 +240,7 @@ function result(ok, extra = {}) {
   const c = H.cards[H.i];
   H.res[H.i] = { key: c.key, ok, kind: c.kind, n: c.n, ans: c.ans, ...extra };
   if (ok) { H.combo++; H.maxCombo = Math.max(H.maxCombo, H.combo); } else H.combo = 0;
+  sfx(ok ? 'ok' : 'bad', H.combo);
 }
 function choosePos(p) {
   if (!H || H.phase !== 'guess') return;

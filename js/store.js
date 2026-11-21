@@ -69,6 +69,7 @@ const DEFAULT_SETTINGS = {
   reviewPerDay: 20,
   theme: 'auto', // auto | light | dark
   userName: '', // tên hiện trong lời chào ở Trang chủ
+  sfx: 'on', // âm thanh đúng/sai trong game: on | off
   accent: 'green', // màu chủ đạo: green | blue | purple | teal | orange | pink
   voice: 'en-US', // en-US | en-GB
   rate: 0.95,
@@ -735,6 +736,7 @@ function cleanBackup(data) {
     rate: [0.75, 0.95, 1.1].includes(Number(st.rate)) ? Number(st.rate) : 0.95,
     voiceName: str(st.voiceName).slice(0, 80),
     userName: str(st.userName).trim().slice(0, 30),
+    sfx: st.sfx === 'off' ? 'off' : 'on',
     autoSpeak: st.autoSpeak !== false,
     autoFill: st.autoFill !== false,
     lastBackup: DATE_RE.test(str(st.lastBackup)) ? st.lastBackup : null,

@@ -3,6 +3,7 @@
 //  60 giây nghĩ và ghi nhanh ý (gõ hoặc chỉ nghĩ) → xem câu mẫu của phần đó (tô cụm hay kèm nghĩa) → ghép lại câu mẫu bị xáo thành 4–6 mảnh
 //  (cụm hay giữ nguyên một mảnh để nhớ cả cụm) → tự chấm theo tiêu chí của phần đó.
 //  Mỗi lượt có trả lời tính vào chuỗi ngày học, không tính vào mục tiêu Writing. Thẻ ghép sai quay lại các lượt sau.
+import { sfx } from './sfx.js';
 import { S, saveHunt, logGrammarDay } from './store.js';
 import { esc, toast, uid, shuffle } from './util.js';
 import { icon, on, go, back, replace, rerender, confirmSheet } from './ui.js';
@@ -156,6 +157,7 @@ function result(ok, extra = {}) {
   const c = I.cards[I.i];
   I.res[I.i] = { key: c.key, ok, part: c.part, q: c.q, sent: c.sent, ...extra };
   if (ok) { I.combo++; I.maxCombo = Math.max(I.maxCombo, I.combo); } else I.combo = 0;
+  sfx(ok ? 'ok' : 'bad', I.combo);
 }
 function checkOrder() {
   const c = I.cards[I.i];

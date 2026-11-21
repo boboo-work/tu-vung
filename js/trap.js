@@ -4,6 +4,7 @@
 //  Câu chọn chữ cái (A/B/C, nối, chọn 2): chọn đáp án khi nghe, rồi chạm cụm trong lời thoại làm bằng chứng.
 //  Sau mỗi câu: vì sao chọn, bẫy, cặp paraphrase (lấy từ phần giải thích của đề nếu có).
 //  Câu sai quay lại các lượt sau cho tới khi đúng 2 lần liên tiếp (dùng chung sổ câu sai với Săn từ).
+import { sfx } from './sfx.js';
 import { S, saveHunt, logGrammarDay, ltPut } from './store.js';
 import { esc, toast, uid, shuffle } from './util.js';
 import { icon, on, go, back, replace, rerender, confirmSheet } from './ui.js';
@@ -456,6 +457,7 @@ function result(ok, extra = {}) {
   const c = H.cards[H.i];
   H.res[H.i] = { key: c.key, ok, kind: c.kind, n: c.n, ans: c.kind === 'fill' ? c.ans : c.right.join(', '), test: c.test, ...extra };
   if (ok) { H.combo++; H.maxCombo = Math.max(H.maxCombo, H.combo); H.score += 20 + Math.min(4, H.combo - 1) * 5; } else H.combo = 0;
+  sfx(ok ? 'ok' : 'bad', H.combo);
 }
 function tapWord(i) {
   if (!H || H.phase !== 'find') return;

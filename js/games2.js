@@ -4,6 +4,7 @@
 //  - "Nghe & Chạm" (#/pop): nghe phát âm, 4 bong bóng nghĩa bay lên, chạm đúng bong bóng trước khi bay mất.
 //      Đúng → bóng nổ, Mochi và Bolt nhảy lên đập tay. Sai → bóng xẹp rơi trúng đầu Mochi, Bolt lắc đầu.
 // Cả hai dùng chung quy tắc game: chỉ từ đã học, lấy theo vòng, không ảnh hưởng tiến độ học, từ sai gặp lại sau vài lượt.
+import { sfx } from './sfx.js';
 import { S, recordGame, saveGame } from './store.js';
 import { esc, shuffle, speak, canSpeak } from './util.js';
 import { icon, on, back, rerender, navBar } from './ui.js';
@@ -31,6 +32,7 @@ function startRound(kind, ids) {
 const alive = (r, step) => R[r.kind] === r && r.phase === 'play' && r.step === step && location.hash === HASH[r.kind];
 function settle(r, w, ok) {
   recordGame(w.id, ok).catch(console.error);
+  sfx(ok ? 'ok' : 'bad', ok ? r.streak + 1 : 0);
   if (ok) { r.streak++; r.queue.shift(); return; }
   r.streak = 0;
   if (!r.missed.includes(w.id)) r.missed.push(w.id);
@@ -47,6 +49,7 @@ function finishRound(r) {
   r.phase = 'over';
   rerender(true);
   confetti({ count: r.newBest || !r.missed.length ? 150 : 70 });
+  sfx('win');
 }
 function quit(kind) { R[kind] = null; speechSynthesis?.cancel?.(); back('#/games'); }
 

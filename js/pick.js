@@ -2,6 +2,7 @@
 //  Chọn sai hoặc hết giờ → hiện đáp án đúng và giải thích (tiếng Anh, bấm xem tiếng Việt nếu file có).
 //  Nguồn câu: các bộ người học tự nhập (file .csv / .xlsx, xem PICK_COLUMNS) và câu ví dụ của các từ đã học trong Kho từ.
 //  Câu sai được nhớ lại (S.pick.wrong) để chơi "Chỉ câu đã sai".
+import { sfx } from './sfx.js';
 import { S, savePick } from './store.js';
 import { esc, toast, uid, shuffle, parseCSV, readXlsx, toCSV, download } from './util.js';
 import { icon, on, go, back, rerender, confirmSheet } from './ui.js';
@@ -189,6 +190,7 @@ function answer(k) {
   P.phase = 'fb';
   P.vi = false;
   if (ok) { P.combo++; P.score += 10 + Math.min(P.combo - 1, 5) * 2 + Math.ceil(Math.max(0, P.deadline - Date.now()) / 2000); } else P.combo = 0;
+  sfx(ok ? 'ok' : 'bad', P.combo);
   P.res.push({ id: q.id, ok, picked: pickedText, timeout: k < 0 });
   const W = S.pick.wrong;
   if (ok) { if (W[q.id]) { W[q.id]--; if (W[q.id] <= 0) delete W[q.id]; } } else W[q.id] = (W[q.id] || 0) + 1;
@@ -204,6 +206,7 @@ function next() {
   if (P.i + 1 < P.qs.length) { P.i++; P.phase = 'q'; P.picked = null; rerender(true); startTimer(); return; }
   const ok = P.res.filter((r) => r.ok).length;
   LAST = { n: P.qs.length, ok, score: P.score, ms: Date.now() - P.t0, qs: P.qs, wrong: P.res.filter((r) => !r.ok).map((r) => ({ ...r, q: P.qs.find((q) => q.id === r.id) })) };
+  sfx('win');
   if (P.score > (S.pick.stats.best || 0)) { S.pick.stats.best = P.score; LAST.best = true; savePick().catch(console.error); }
   P = null;
   go('#/pres');

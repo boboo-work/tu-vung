@@ -1,4 +1,5 @@
 // Các màn hình: Statistics, Cài đặt (mục tiêu, giao diện, dữ liệu, AI), Trợ lý AI.
+import { sfx } from './sfx.js';
 import { S, allWords, summary, series, saveSettings, deckName, wipeAll, essays, spCleanup } from './store.js';
 import { esc, toast, pickFile, fmtDate, speak, canSpeak, fold, englishVoices, onVoices, today, addDays, allEnglishVoices, voiceById, voiceQuality, refreshVoices, rawVoices } from './util.js';
 import { isNew, isMastered } from './srs.js';
@@ -188,6 +189,7 @@ export function settingsView() {
     <h2>Giao diện & phát âm</h2>
     <div class="card">
       <div class="setrow"><div style="min-width:0"><label for="set-name"><b>Tên của bạn</b></label><small>Hiện trong lời chào ở Trang chủ</small></div><input id="set-name" class="input name-in" type="text" maxlength="30" value="${esc(s.userName || '')}" placeholder="Ví dụ: Boo" autocomplete="nickname" data-change="set-name"></div>
+      <div class="setrow"><div style="min-width:0"><b>Âm thanh trong game</b><small>Tiếng “ting” khi đúng, “bụp” khi sai</small></div>${seg('sfx', s.sfx || 'on', [['on', 'Bật'], ['off', 'Tắt']])}</div>
       <div class="setrow"><b>Chế độ</b>${seg('theme', s.theme, [['auto', 'Tự động'], ['light', 'Sáng'], ['dark', 'Tối']])}</div>
       <div class="setrow" style="flex-wrap:wrap;row-gap:10px"><b style="flex:1 0 100%">Màu chủ đạo</b><div class="swatches" role="radiogroup" aria-label="Màu chủ đạo">${ACCENTS.map(([id, name, c]) => `<button class="swatch ${(s.accent || 'green') === id ? 'on' : ''}" style="--c:${c}" data-act="set" data-key="accent" data-value="${id}" role="radio" aria-checked="${(s.accent || 'green') === id}" aria-label="${name}" title="${name}">${(s.accent || 'green') === id ? icon('check') : ''}</button>`).join('')}</div></div>
       <div class="setrow"><b>Giọng đọc</b>${seg('voice', s.voice, [['en-US', 'Anh-Mỹ'], ['en-GB', 'Anh-Anh']])}</div>
@@ -243,6 +245,7 @@ on('set', async (el) => {
   await saveSettings(key === 'voice' ? { voice: v, voiceName: '' } : { [key]: v });
   if (key === 'speakingKeepDays') { const n = await spCleanup(); if (n) toast(`Đã xoá âm thanh của ${n} bản ghi quá hạn`); }
   if (key === 'theme' || key === 'accent') applyTheme();
+  if (key === 'sfx' && v === 'on') sfx('ok');
   rerender();
 });
 on('set-name', async (el) => {

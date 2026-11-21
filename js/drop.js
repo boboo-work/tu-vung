@@ -1,6 +1,7 @@
 // Mini game "Bắn Từ": khung chữ của từ rơi từ trên trời xuống, nghĩa tiếng Việt đứng yên phía trên.
 // Gõ đúng → Mochi bắn trúng, hiện "Correct!". Gõ nhầm được xoá và sửa; để rơi chạm đất → Bolt đập búa vỡ,
 // hiện đáp án và từ đó quay lại sau vài lượt. Không có mạng; mỗi ván tối đa 15 từ, xong khi bắn trúng hết.
+import { sfx } from './sfx.js';
 import { S, recordGame, saveGame } from './store.js';
 import { esc, norm, speak } from './util.js';
 import { icon, on, back, rerender, navBar } from './ui.js';
@@ -79,6 +80,7 @@ function correct() {
   const w = cur();
   D.mode = 'hit';
   recordGame(w.id, true).catch(console.error);
+  sfx('ok');
   const tile = $('.d-tile'), stage = $('.d-stage'), gun = $('.d-mochi');
   tile.querySelector('.g-slots').innerHTML = slots(w.word, w.word);
   speak(w.word, voice());
@@ -111,6 +113,7 @@ function wrong() {
   D.mode = 'smash';
   if (!D.missed.includes(w.id)) D.missed.push(w.id);
   recordGame(w.id, false).catch(console.error);
+  sfx('bad');
   const tile = $('.d-tile');
   const input = $('.d-input');
   if (input) { input.value = ''; input.classList.remove('bad', 'good'); }
@@ -140,6 +143,7 @@ function finish() {
   if (D.raf) cancelAnimationFrame(D.raf);
   rerender(true);
   confetti({ count: D.newBest || !D.missed.length ? 150 : 70 });
+  sfx('win');
 }
 
 on('drop-type', (el) => {

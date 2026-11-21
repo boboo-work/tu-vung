@@ -1,5 +1,6 @@
 // Mini game "Chạy & Gõ": nhân vật chạy, gõ đúng từ tiếng Anh để nhảy qua chướng ngại vật.
 // Chỉ dùng từ đã học. 3 mạng; hết mạng thì chơi tiếp từ đúng từ vừa trượt (điểm tính lại từ 0).
+import { sfx } from './sfx.js';
 import { S, allWords, recordGame, saveGame } from './store.js';
 import { esc, norm, shuffle, speak } from './util.js';
 import { isNew, isDue } from './srs.js';
@@ -195,6 +196,7 @@ function correct() {
   G.mode = 'jumping';
   G.score++;
   recordGame(w.id, true).catch(console.error);
+  sfx('ok');
   refreshHud();
   $('.g-slots').innerHTML = slots(w.word, w.word);
   speak(w.word, voice());
@@ -211,6 +213,7 @@ function miss() {
   G.lives--;
   if (!G.missed.includes(w.id)) G.missed.push(w.id);
   recordGame(w.id, false).catch(console.error);
+  sfx('bad');
   refreshHud();
   $('.g-hero')?.classList.add('hurt');
   $('.g-stage')?.classList.add('stop');
