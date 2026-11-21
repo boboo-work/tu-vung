@@ -9,6 +9,8 @@
 //  4. 'proxy'     — gọi tới backend riêng (khuyến nghị khi mở rộng): POST {system, prompt, model} → {text}.
 //                   Khi đó API key nằm ở server, không nằm trên điện thoại.
 
+import { S, saveSettings } from './store.js';
+
 export const AI_MODELS = [
   ['claude-opus-5-5', 'Claude Opus 5.5 (mặc định)'],
   ['claude-sonnet-5-5', 'Claude Sonnet 5.5 (nhanh, tiết kiệm hơn)'],
@@ -16,7 +18,9 @@ export const AI_MODELS = [
 ];
 
 export const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/openai';
-export const GEMINI_MODELS = ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite'];
+// Google ngừng dần các mô hình cũ cho người dùng mới; khi Google báo "use models/…" app tự chuyển sang mô hình được gợi ý.
+export const GEMINI_DEFAULT = 'gemini-3.8-flash';
+export const GEMINI_MODELS = [GEMINI_DEFAULT];
 
 // Cấu hình gọi kiểu "chat completions" cho hai cách kết nối gemini / openai.
 function chatConfig(ai) {
@@ -73,8 +77,8 @@ export function keyHints(provider, raw) {
   if (provider === 'gemini') {
     if (/^sk-ant/i.test(k)) out.push('Đây là key của Claude (bắt đầu bằng “sk-ant”), không phải key của Gemini.');
     else if (/^sk-/i.test(k)) out.push('Đây giống key của OpenAI (bắt đầu bằng “sk-”), không phải key của Gemini.');
-    else if (!/^AIza/.test(k)) out.push('Key Gemini thường bắt đầu bằng “AIza”. Hãy chắc là bạn đã sao chép đúng chuỗi key (không phải tên key hay số dự án).');
-    if (k.length < 35) out.push('Key này khá ngắn so với key Gemini (thường khoảng 39 ký tự) — có thể bị dán thiếu.');
+    else if (!/^(AIza|AQ\.)/.test(k)) out.push('Key Gemini thường bắt đầu bằng “AIza” hoặc “AQ.”. Hãy chắc là bạn đã sao chép đúng chuỗi key (không phải tên key hay số dự án).');
+    if (k.length < 35) out.push('Key này khá ngắn so với key Gemini (thường từ 39 ký tự trở lên) — có thể bị dán thiếu.');
   } else if (provider === 'anthropic') {
     if (/^AIza/.test(k)) out.push('Đây là key của Gemini (bắt đầu bằng “AIza”). Hãy đổi “Cách kết nối” sang Google Gemini rồi dán key vào đó.');
     else if (!/^sk-ant/i.test(k)) out.push('Key Claude thường bắt đầu bằng “sk-ant”.');
@@ -108,7 +112,7 @@ function otherError(provider, name, status, data, model) {
     if (/location is not supported/i.test(t)) return new AIError(`Google không mở Gemini API cho vị trí mạng hiện tại. Nếu đang bật VPN, hãy tắt (hoặc đổi sang nước khác) rồi thử lại.${raw}`);
     if (status === 429 || /quota|RESOURCE_EXHAUSTED/i.test(t)) {
       const zero = /limit:\s*0\b/i.test(t);
-      return new AIError(`${zero ? `Gói miễn phí của Google không có hạn mức cho mô hình “${model}”.` : 'Đã hết hạn mức miễn phí trong lúc này (theo phút hoặc theo ngày).'}\nHãy đổi ô Mô hình sang “gemini-2.5-flash” hoặc “gemini-2.5-flash-lite”, hoặc đợi một lúc rồi thử lại.${raw}`);
+      return new AIError(`${zero ? `Gói miễn phí của Google không có hạn mức cho mô hình “${model}”.` : 'Đã hết hạn mức miễn phí trong lúc này (theo phút hoặc theo ngày).'}\nHãy đổi ô Mô hình sang “${GEMINI_DEFAULT}” (bản flash, có hạn mức miễn phí), hoặc đợi một lúc rồi thử lại.${raw}`);
     }
     if (/billing/i.test(t)) return new AIError(`Google yêu cầu bật thanh toán cho dự án của key này. Hãy tạo key mới ở aistudio.google.com (dự án mới dùng được gói miễn phí).${raw}`);
     if (status === 403) return new AIError(`Google từ chối quyền truy cập (403). Thường là key bị giới hạn (chỉ cho một số trang web hoặc ứng dụng). Hãy tạo key mới ở aistudio.google.com và đừng đặt giới hạn cho key.${raw}`);
@@ -179,7 +183,7 @@ export async function askAI(ai, prompt, { system = SYSTEM } = {}) {
 }
 
 // Định dạng "chat completions" (OpenAI, Gemini qua cổng tương thích, và nhiều nhà cung cấp khác).
-async function askChat({ provider, name, base, key, model }, prompt, system = SYSTEM) {
+async function askChat({ provider, name, base, key, model }, prompt, system = SYSTEM, retried = false) {
   const url = base.trim().replace(/\/+$/, '').replace(/\/chat\/completions$/, '') + '/chat/completions';
   let res;
   try {
@@ -195,6 +199,13 @@ async function askChat({ provider, name, base, key, model }, prompt, system = SY
   if (!res.ok) {
     const detail = errDetail(data);
     if (isKeyProblem(res.status, data)) throw keyError(provider, name, key, detail);
+    // Mô hình đã bị Google ngừng ("… no longer available … use models/gemini-x-flash"): thử lại một lần với mô hình được gợi ý và lưu lại.
+    const sug = provider === 'gemini' && !retried && /no longer available|not found|deprecated|not supported/i.test(detail) && detail.match(/use\s+(?:models\/)?(gemini-[\w.-]*\w)/i)?.[1];
+    if (sug && sug !== model.trim()) {
+      const text = await askChat({ provider, name, base, key, model: sug }, prompt, system, true);
+      if (S.settings.ai?.provider === 'gemini' && S.settings.ai.geminiModel !== sug) await saveSettings({ ai: { ...S.settings.ai, geminiModel: sug } });
+      return text;
+    }
     throw otherError(provider, name, res.status, data, model.trim());
   }
   const choice = data?.choices?.[0];
@@ -218,7 +229,13 @@ export async function testConnection(ai) {
       else if (isKeyProblem(res.status, data)) throw keyError(c.provider, c.name, c.key, errDetail(data));
       else if (c.provider === 'gemini' && res.status !== 404) throw otherError(c.provider, c.name, res.status, data, c.model.trim());
     } catch (e) { if (e instanceof AIError) throw e; /* nhà cung cấp không có API danh sách → bỏ qua */ }
-    const want = c.model.trim().replace(/^models\//, '');
+    let want = c.model.trim().replace(/^models\//, '');
+    // Mô hình đang chọn không còn trong danh sách nhưng có mô hình mặc định mới → tự chuyển.
+    if (c.provider === 'gemini' && ids?.length && !ids.includes(want) && ids.includes(GEMINI_DEFAULT)) {
+      want = GEMINI_DEFAULT;
+      ai = { ...ai, geminiModel: want };
+      if (S.settings.ai?.provider === 'gemini') await saveSettings({ ai: { ...S.settings.ai, geminiModel: want } });
+    }
     if (ids?.length && !ids.includes(want)) {
       const usable = ids.filter((id) => (c.provider !== 'gemini' || /^gemini/.test(id)) && !/embed|imagen|tts|image|live|audio|veo|aqa/i.test(id));
       usable.sort((a, b) => Number(/flash/.test(b) && !/lite/.test(b)) - Number(/flash/.test(a) && !/lite/.test(a)));

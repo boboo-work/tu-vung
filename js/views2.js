@@ -8,7 +8,7 @@ import { roundInfo, bestRun } from './game.js';
 import { bestDrop, DROP_ROUND } from './drop.js';
 import { bestOf, ROUND2 } from './games2.js';
 import { audioTakes } from './speak.js';
-import { AI_ACTIONS, AI_MODELS, GEMINI_MODELS, aiReady, askAI, cleanKey, testConnection } from './ai.js';
+import { AI_ACTIONS, AI_MODELS, GEMINI_MODELS, GEMINI_DEFAULT, aiReady, askAI, cleanKey, testConnection } from './ai.js';
 
 const ui = { statsKind: 'day', statsSel: null, anim: false, ai: { wordId: null, action: 'context', input: '', q: '', loading: false, result: null, error: null } };
 
@@ -136,12 +136,12 @@ const modelInput = (id, value, placeholder, list = []) => `<input type="text" id
 function aiFields(ai) {
   if (ai.provider === 'proxy') return `<label for="ai-endpoint">Địa chỉ máy chủ</label><input type="url" id="ai-endpoint" value="${esc(ai.endpoint)}" placeholder="https://…/api/ask" autocomplete="off" autocapitalize="none">
       <p class="small faint" style="margin-top:6px">Máy chủ nhận POST {system, prompt, model} và trả về {text}. API key nằm ở máy chủ.</p>`;
-  if (ai.provider === 'gemini') return `<label for="ai-gemini-key">API key của Gemini</label>${keyInput('ai-gemini-key', ai.geminiKey, 'AIza…')}
+  if (ai.provider === 'gemini') return `<label for="ai-gemini-key">API key của Gemini</label>${keyInput('ai-gemini-key', ai.geminiKey, 'AIza… hoặc AQ.…')}
       <details style="margin-top:6px"><summary>Cách lấy API key Gemini</summary>
-        <ol class="small muted" style="margin:6px 0 0;padding-left:20px;line-height:1.55"><li>Mở <b>aistudio.google.com</b> bằng tài khoản Google.</li><li>Bấm <b>Get API key</b> rồi <b>Create API key</b>.</li><li>Bấm biểu tượng sao chép cạnh key (key dạng <b>AIza…</b>, dài khoảng 39 ký tự).</li><li>Quay lại đây, dán vào ô trên và bấm <b>Kiểm tra kết nối</b>.</li></ol>
+        <ol class="small muted" style="margin:6px 0 0;padding-left:20px;line-height:1.55"><li>Mở <b>aistudio.google.com</b> bằng tài khoản Google.</li><li>Bấm <b>Get API key</b> rồi <b>Create API key</b>.</li><li>Bấm biểu tượng sao chép cạnh key (key dạng <b>AIza…</b> hoặc <b>AQ.…</b>).</li><li>Quay lại đây, dán vào ô trên và bấm <b>Kiểm tra kết nối</b>.</li></ol>
         <p class="small faint" style="margin-top:6px">Giao diện của Google có thể khác đôi chút. Nếu báo key không hợp lệ: xoá ô cũ, tạo key mới và dán lại.</p></details>
       <p class="small faint" style="margin-top:6px">Key chỉ lưu trên thiết bị này, không nằm trong file sao lưu, và chỉ được gửi tới máy chủ của Google.</p>
-      <label for="ai-gemini-model">Mô hình</label>${modelInput('ai-gemini-model', ai.geminiModel, 'gemini-2.5-flash', GEMINI_MODELS)}
+      <label for="ai-gemini-model">Mô hình</label>${modelInput('ai-gemini-model', ai.geminiModel, GEMINI_DEFAULT, GEMINI_MODELS)}
       <p class="small faint" style="margin-top:6px">Gõ đúng tên mô hình như trong Google AI Studio. Nếu Google đã ra mô hình mới hơn, bạn cứ gõ tên đó vào đây.</p>`;
   if (ai.provider === 'openai') return `<label for="ai-oa-base">Địa chỉ API</label><input type="url" id="ai-oa-base" value="${esc(ai.oaBase)}" placeholder="https://api.openai.com/v1" autocomplete="off" autocapitalize="none">
       <label for="ai-oa-key">API key</label>${keyInput('ai-oa-key', ai.oaKey, 'sk-…')}
@@ -373,7 +373,14 @@ on('ai-test', async (el) => {
   const label = el.textContent;
   el.disabled = true; el.textContent = 'Đang kiểm tra…';
   showAiResult('', '');
-  try { await testConnection(S.settings.ai); showAiResult('Kết nối AI hoạt động tốt. Bạn có thể dùng Trợ lý AI và nút Tự điền.', 'ok'); }
+  const before = S.settings.ai.geminiModel;
+  try {
+    await testConnection(S.settings.ai);
+    const now = S.settings.ai.geminiModel;
+    const swapped = S.settings.ai.provider === 'gemini' && now !== before;
+    if (swapped) { const f = document.getElementById('ai-gemini-model'); if (f) f.value = now; }
+    showAiResult(`Kết nối AI hoạt động tốt.${swapped ? ` Google đã ngừng “${before}” nên app tự chuyển sang “${now}”.` : ''} Bạn có thể dùng Trợ lý AI và nút Tự điền.`, 'ok');
+  }
   catch (e) { showAiResult(e.message, 'bad'); }
   finally { if (el.isConnected) { el.disabled = false; el.textContent = label; } }
 });
