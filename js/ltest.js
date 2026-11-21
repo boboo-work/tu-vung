@@ -4,7 +4,7 @@
 //  Làm bài: cả đề như thi (mỗi Part nghe 1 lần, không tua) hoặc luyện từng Part (tua, đổi tốc độ).
 //  Chấm: theo luật thi (sai chính tả là sai, đúng số từ cho phép), band ước lượng khi làm đủ 40 câu,
 //        lý do sai từng câu, tỉ lệ đúng theo dạng câu hỏi; nghe lại từng Part khi chữa.
-import { S, ltPut, ltDel, logGrammarDay, saveSettings } from './store.js';
+import { S, ltPut, ltDel, logGrammarDay, saveSettings, addDeck, blankWord, saveWord, findByText } from './store.js';
 import { esc, toast, uid, today, fmtDate, dateStr, unzip, download } from './util.js';
 import { icon, on, go, back, rerender, navBar, confirmSheet } from './ui.js';
 import { aiReady, askAI } from './ai.js';
@@ -256,21 +256,154 @@ export function parseTranscriptHtml(html) {
 // ---------------------------------------------------------------- Giải thích (vì sao chọn, bẫy, paraphrase)
 // File .json: { "type": "ltest-notes", "title": "…", "notes": { "1": { "why", "trap", "para": [["đề", "bài nghe"]], "tip" }, "21-22": {…} } }
 const clip = (v, n) => String(v ?? '').slice(0, n);
-function cleanNote(x) {
+// Khoá: số câu ("7"), khoảng câu ("21-22"); từ file .md còn có bài học từng Part ("P1"), tổng kết đề ("S") và sổ paraphrase ("PP").
+const NOTE_KEY = /^(\d{1,2}(-\d{1,2})?|P[1-4]|S|PP)$/;
+function cleanNote(x, k = '') {
   if (!x || typeof x !== 'object') return null;
-  const para = Array.isArray(x.para) ? x.para.filter((p) => Array.isArray(p) && p.length >= 2).slice(0, 8).map((p) => [clip(p[0], 200), clip(p[1], 300)]) : [];
-  const o = { why: clip(x.why, 1500), trap: clip(x.trap, 1500), tip: clip(x.tip, 800), para, ai: !!x.ai };
-  return o.why || o.trap || para.length ? o : null;
+  const para = Array.isArray(x.para) ? x.para.filter((p) => Array.isArray(p) && p.length >= 2).slice(0, k === 'PP' ? 80 : 8).map((p) => [clip(p[0], 200), clip(p[1], 300)]) : [];
+  const o = { why: clip(x.why, 2500), trap: clip(x.trap, 2500), tip: clip(x.tip, 1200), para, ai: !!x.ai };
+  // Thêm từ file giải thích chi tiết (.md): phân tích đề, câu trong băng, phương án bị loại.
+  for (const [f, n] of [['de', 600], ['bang', 1200], ['elim', 2500], ['ptxt', 400]]) if (x[f]) o[f] = clip(x[f], n);
+  return o.why || o.trap || o.bang || o.elim || o.de || o.tip || para.length ? o : null;
 }
 export function parseNotes(text) {
   const d = JSON.parse(text);
   if (!d || d.type !== 'ltest-notes' || typeof d.notes !== 'object') throw new Error('Không phải file giải thích');
   const notes = {};
-  for (const [k, v] of Object.entries(d.notes)) if (/^\d{1,2}(-\d{1,2})?$/.test(k)) { const c = cleanNote(v); if (c) notes[k] = c; }
+  for (const [k, v] of Object.entries(d.notes)) if (NOTE_KEY.test(k)) { const c = cleanNote(v, k); if (c) notes[k] = c; }
   return { title: clip(d.title, 120), notes };
 }
+/** Đọc file giải thích chi tiết dạng Markdown (ví dụ Cam21_Test02_GiaiChiTiet.md):
+ *  "# PART n", "**Q1 – đáp án**" rồi các dòng "- Đề:", "- Băng:", "- Paraphrase:", "- Bẫy:", "- Loại:";
+ *  bảng "| Câu | Đáp án | Băng | … |"; "> **Bài học Part n:** …"; phần "Tổng kết" (loại bẫy, sổ paraphrase, chính tả). */
+export function parseNotesMd(text) {
+  const lines = String(text).replace(/\r/g, '').split('\n');
+  const notes = {}, traps = [], spell = [], top = [];
+  const pp = [];
+  let title = '', part = 0, sec = '', cur = null, field = '', head = null;
+  const unstar = (v) => v.replace(/\*\*?|`/g, '').replace(/\s+/g, ' ').trim();
+  const pairs = (v) => {
+    const out = [], rest = [];
+    for (const piece of v.split(/;\s+/)) {
+      const i = piece.indexOf('↔');
+      if (i > 0) out.push([unstar(piece.slice(0, i)).replace(/[.,]$/, ''), unstar(piece.slice(i + 1)).replace(/[.,]$/, '')]);
+      else if (piece.trim()) rest.push(piece.trim());
+    }
+    return { out, rest: rest.join('; ') };
+  };
+  const put = (k, o) => { const c = cleanNote(o, k); if (c) notes[k] = { ...(notes[k] || {}), ...c }; };
+  const flush = () => {
+    if (cur) {
+      const j = (a) => a.join('\n').trim();
+      put(cur.k, { de: j(cur.de), bang: j(cur.bang), why: j(cur.why), trap: j(cur.trap), elim: j(cur.elim), tip: j(cur.tip), ptxt: j(cur.ptxt), para: cur.para });
+    }
+    cur = null; field = '';
+  };
+  const add = (f, v) => { if (cur && v) cur[f].push(v); };
+  const more = (v) => { if (!cur || !field || !v) return; const a = cur[field]; if (a.length) a[a.length - 1] += ' ' + v; else a.push(v); };
+  const LABEL = /^\*{0,2}(Đề|Băng|Paraphrase|Bẫy[^:*]*|Loại[^:*]*|Mẹo|Lưu ý)\s*:\s*\*{0,2}\s*(.*)$/i;
+  for (const raw of lines) {
+    const line = raw.replace(/\s+$/, '');
+    if (!line.trim()) continue;
+    if (!/^\s*\|/.test(line)) head = null;
+    let m;
+    if ((m = line.match(/^#\s+(.*)$/))) {
+      flush();
+      if (!title) { title = unstar(m[1]); continue; }
+      const pm = m[1].match(/^(?:PART|SECTION)\s*(\d)/i);
+      if (pm) { part = Number(pm[1]); sec = 'part'; } else sec = 'sum';
+      continue;
+    }
+    if ((m = line.match(/^#{2,}\s+(.*)$/))) {
+      flush();
+      const h = m[1];
+      sec = /paraphrase/i.test(h) ? 'pp' : /bẫy/i.test(h) ? 'traps' : /chính tả/i.test(h) ? 'spell' : /đáp án/i.test(h) ? 'key' : 'other';
+      continue;
+    }
+    if (/^-{3,}$/.test(line.trim())) { flush(); continue; }
+    if ((m = line.match(/^\*\*Q(\d{1,2})(?:[–-](\d{1,2})(?!\d))?\s*[–:-]?\s*(.*?)\*\*(.*)$/))) {
+      flush();
+      const k = m[2] && m[2] !== m[1] ? `${Number(m[1])}-${Number(m[2])}` : String(Number(m[1]));
+      cur = { k, de: [], bang: [], why: [], trap: [], elim: [], tip: [], ptxt: [], para: [] };
+      const extra = m[4].trim().replace(/^\((.*)\)\.?$/, '$1');
+      if (/chấp nhận/i.test(extra)) cur.tip.push(extra.charAt(0).toUpperCase() + extra.slice(1));
+      continue;
+    }
+    if ((m = line.match(/^>\s*(.*)$/))) {
+      const v = m[1].trim();
+      const lm = v.match(/^\*\*Bài học Part\s*(\d)\s*:?\s*\*\*\s*:?\s*(.*)$/i);
+      if (lm) { flush(); put('P' + lm[1], { why: lm[2] }); }
+      else if (cur && !/^\*\*Lưu ý/i.test(v)) add('tip', v);
+      else if (!cur && !part && v) top.push(v.replace(/^[-*]\s+/, '• '));
+      continue;
+    }
+    if (/^\s*\|/.test(line)) {
+      const cells = line.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim());
+      if (cells.every((c) => /^:?-*:?$/.test(c))) continue;
+      if (sec === 'pp') { if (!/^Đề$/i.test(cells[0]) && cells.length >= 2 && cells[0] && cells[1]) pp.push([unstar(cells[0]), unstar(cells[1])]); continue; }
+      if (/^Câu$/i.test(cells[0]) || /^Đáp án$/i.test(cells[1] || '')) { flush(); head = cells; continue; }
+      if (head && (m = cells[0].match(/^(\d{1,2})\b/))) {
+        const o = { de: '', bang: '', trap: '', para: [], ptxt: '' };
+        head.forEach((h, i) => {
+          const v = cells[i] || '';
+          if (!v || i === 0) return;
+          if (/^đáp án/i.test(h)) return;
+          if (/^băng/i.test(h)) o.bang = v;
+          else if (/paraphrase/i.test(h)) { const p = pairs(v); o.para = p.out; o.ptxt = p.rest; }
+          else if (/bẫy|định vị|giải thích|vì sao/i.test(h)) o.trap = (o.trap ? o.trap + '\n' : '') + v;
+          else o.de = (o.de ? o.de + ' · ' : '') + `${h}: ${v}`;
+        });
+        const lab = cells[0].replace(/^\d{1,2}\s*(?:[–:-]\s*)?/, '');
+        if (lab) o.de = lab + (o.de ? ' · ' + o.de : '');
+        put(String(Number(m[1])), o);
+      }
+      continue;
+    }
+    if ((m = line.match(/^(\s*)(?:([-*])|(\d+)\.)\s+(.*)$/))) {
+      const sub = m[1].length > 0 || !!m[3];
+      let v = m[4].trim();
+      // "- **Q9** – Đề: …": nhiều câu chung một tiêu đề, mỗi dòng là một câu.
+      const qm = !sub && v.match(/^\*\*Q(\d{1,2})\*\*\s*[–:-]?\s*(.*)$/);
+      if (qm) { flush(); cur = { k: String(Number(qm[1])), de: [], bang: [], why: [], trap: [], elim: [], tip: [], ptxt: [], para: [] }; v = qm[2]; if (!v) continue; }
+      if (!cur) {
+        if (sec === 'traps') traps.push(v);
+        continue;
+      }
+      if (!sub) {
+        const lm = v.match(LABEL);
+        if (lm) {
+          const lab = lm[1].toLowerCase();
+          field = lab === 'đề' ? 'de' : lab === 'băng' ? 'bang' : lab === 'paraphrase' ? 'para' : lab.startsWith('bẫy') ? 'trap' : lab.startsWith('loại') ? 'elim' : 'tip';
+          if (field === 'para') { const p = pairs(lm[2]); cur.para.push(...p.out); if (p.rest) cur.ptxt.push(p.rest); field = 'ptxt'; continue; }
+          const note = lab.startsWith('loại') ? lm[1].slice(4).trim() : '';
+          if (note) add(field, note.replace(/^\((.*)\)$/, '$1') + ':');
+          if (lm[2]) add(field, lm[2]);
+          continue;
+        }
+        field = 'why';
+        add('why', v);
+        continue;
+      }
+      if (!field) field = 'why';
+      add(field, (m[3] ? `${m[3]}. ` : '• ') + v);
+      continue;
+    }
+    // Dòng thường: nối vào phần đang viết; trong phần tổng kết là danh sách chính tả.
+    if (cur) { if (field) more(line.trim()); else add('tip', line.trim()); }
+    else if (sec === 'spell') spell.push(line.trim());
+  }
+  flush();
+  if (traps.length || spell.length || top.length) put('S', { why: top.join('\n'), trap: traps.map((t, i) => `${i + 1}. ${t}`).join('\n'), tip: spell.join('\n') });
+  if (pp.length) put('PP', { para: pp });
+  if (!Object.keys(notes).some((k) => /^\d/.test(k))) throw new Error('Không thấy câu giải thích (cần dòng "**Q1 – …**")');
+  return { title: clip(title, 120), notes };
+}
 /** Số câu được giải thích ("21-22" tính 2 câu). */
-export const noteCount = (notes) => Object.keys(notes || {}).reduce((a, k) => { const m = k.match(/^(\d+)-(\d+)$/); return a + (m ? Number(m[2]) - Number(m[1]) + 1 : 1); }, 0);
+export const noteCount = (notes) => {
+  const nums = new Set();
+  for (const k of Object.keys(notes || {})) { const m = k.match(/^(\d+)(?:-(\d+))?$/); if (m) for (let i = Number(m[1]); i <= Number(m[2] || m[1]) && i <= 40; i++) nums.add(i); }
+  return nums.size;
+};
 export function noteOf(t, n) {
   if (!t.notes) return null;
   if (t.notes[n]) return t.notes[n];
@@ -375,7 +508,7 @@ async function readPack(z) {
     tx = { parts: tp, ev, n: Object.keys(ev).length };
   }
   const notes = {};
-  for (const [k, v] of Object.entries(meta.notes || {})) if (/^\d{1,2}(-\d{1,2})?$/.test(k)) { const c = cleanNote(v); if (c) notes[k] = c; }
+  for (const [k, v] of Object.entries(meta.notes || {})) if (NOTE_KEY.test(k)) { const c = cleanNote(v, k); if (c) notes[k] = c; }
   const audio = {};
   for (const [n, path] of Object.entries(meta.audio || {})) {
     if (!/^[1-4]$/.test(n) || !z.names.includes(path)) continue;
@@ -481,7 +614,7 @@ export function sigOf(s) {
   const book = t.match(/cam(?:bridge)?\s*(?:ielts)?\s*[-]?\s*0*(\d{1,2})(?!\d)/i);
   return `${book ? book[1] : ''}-${test[1]}`;
 }
-const SUFFIX = /[\s_-]*(de[\s_-]?bai|đề[\s_-]?bài|questions?|transcripts?|audio[\s_-]?scripts?|tape[\s_-]?scripts?|giai[\s_-]?thich|giải[\s_-]?thích|notes?|answers?|part[\s_-]?\d)$/i;
+const SUFFIX = /[\s_-]*(de[\s_-]?bai|đề[\s_-]?bài|questions?|transcripts?|audio[\s_-]?scripts?|tape[\s_-]?scripts?|giai[\s_-]?chi[\s_-]?tiet|giải[\s_-]?chi[\s_-]?tiết|giai[\s_-]?thich|giải[\s_-]?thích|notes?|answers?|part[\s_-]?\d)$/i;
 /** Khoá nhóm: thư mục trong file nén + tên file bỏ phần đuôi loại file và số Part. */
 export function keyOf(path) {
   const segs = String(path).split('/');
@@ -504,7 +637,7 @@ async function readFiles(input) {
       for (const name of z.names) {
         if (name.endsWith('/') || /(^|\/)(__MACOSX|\.)/.test(name)) continue;
         const base = name.split('/').pop();
-        const type = /\.mp3$/i.test(base) ? 'audio/mpeg' : /\.m4a$/i.test(base) ? 'audio/mp4' : /\.html?$/i.test(base) ? 'text/html' : /\.json$/i.test(base) ? 'application/json' : /\.zip$/i.test(base) ? 'application/zip' : '';
+        const type = /\.mp3$/i.test(base) ? 'audio/mpeg' : /\.m4a$/i.test(base) ? 'audio/mp4' : /\.html?$/i.test(base) ? 'text/html' : /\.json$/i.test(base) ? 'application/json' : /\.(md|markdown)$/i.test(base) ? 'text/markdown' : /\.zip$/i.test(base) ? 'application/zip' : '';
         if (!type) continue;
         const file = new File([await z.bytes(name)], base, { type });
         // Gói đề nằm trong file nén lớn: đọc tiếp.
@@ -516,6 +649,10 @@ async function readFiles(input) {
   for (const { f, path } of list) {
     const key = keyOf(path);
     if (/^audio\//.test(f.type) || /\.(mp3|m4a|aac|wav|ogg)$/i.test(f.name)) { items.push({ kind: 'audio', f, path, key, sig: sigOf(path) }); continue; }
+    if (/\.(md|markdown|txt)$/i.test(f.name) || f.type === 'text/markdown') {
+      try { const notes = parseNotesMd(await f.text()); items.push({ kind: 'notes', notes, path, key, sig: sigOf(path) || sigOf(notes.title) }); } catch (e) { errors.push(`${f.name}: ${e?.message || 'không đọc được file giải thích'}`); }
+      continue;
+    }
     if (/\.json$/i.test(f.name) || f.type === 'application/json') {
       try { const notes = parseNotes(await f.text()); items.push({ kind: 'notes', notes, path, key, sig: sigOf(path) || sigOf(notes.title) }); } catch { errors.push(`${f.name}: không phải file giải thích`); }
       continue;
@@ -611,7 +748,7 @@ on('lt-attach', (el) => {
   const input = document.createElement('input');
   input.type = 'file';
   input.multiple = true;
-  input.accept = '.zip,application/zip,.html,.htm,.json,text/html,application/json,audio/*,.mp3,.m4a';
+  input.accept = '.zip,application/zip,.html,.htm,.json,.md,.markdown,text/markdown,text/plain,text/html,application/json,audio/*,.mp3,.m4a';
   input.onchange = () => attachFiles(el.dataset.id, [...input.files]);
   input.click();
 });
@@ -646,7 +783,7 @@ on('lt-pick-files', async () => {
   const input = document.createElement('input');
   input.type = 'file';
   input.multiple = true;
-  input.accept = '.zip,application/zip,.html,.htm,.json,text/html,application/json,audio/*,.mp3,.m4a';
+  input.accept = '.zip,application/zip,.html,.htm,.json,.md,.markdown,text/markdown,text/plain,text/html,application/json,audio/*,.mp3,.m4a';
   input.onchange = async () => { imp.previews = []; imp.error = 'Đang đọc file…'; rerender(); await readImport([...input.files]); rerender(); };
   input.click();
 });
@@ -679,10 +816,10 @@ function previewCard(pv) {
 }
 export function importView() {
   const nav = navBar('Nhập đề Listening', { fallback: '#/listening' });
-  let body = `<div class="card"><p>Chọn <b>gói đề</b> (.zip) bạn được gửi, hoặc chọn <b>cùng lúc</b> file đề (.html, có câu hỏi và đáp án) và các file nghe của từng Part (.mp3). Có thể chọn thêm file lời thoại (.html) và file giải thích (.json). Nhập được nhiều đề một lần (ví dụ cả 4 Test của một cuốn).</p>
+  let body = `<div class="card"><p>Chọn <b>gói đề</b> (.zip) bạn được gửi, hoặc chọn <b>cùng lúc</b> file đề (.html, có câu hỏi và đáp án) và các file nghe của từng Part (.mp3). Có thể chọn thêm file lời thoại (.html) và file giải thích (.json hoặc file giải chi tiết .md). Nhập được nhiều đề một lần (ví dụ cả 4 Test của một cuốn).</p>
     <p class="small muted" style="margin-top:6px">Tên file nên có số Test và số Part (ví dụ Cam21_Test02_Part3.mp3, Cam21_Test02_Transcript.html) hoặc mỗi đề một thư mục, để app ghép đúng. Đề và file nghe chỉ lưu trên máy này, không gửi đi đâu và không có trong file sao lưu.</p>
     <button class="btn" style="margin-top:14px" data-act="lt-pick-files">${icon('folder', 'sm')} Chọn file</button>
-    <input type="file" id="lt-files" data-change="lt-files" multiple hidden accept=".zip,.html,.htm,.json,audio/*"></div>`;
+    <input type="file" id="lt-files" data-change="lt-files" multiple hidden accept=".zip,.html,.htm,.json,.md,audio/*"></div>`;
   if (imp.error) body += `<div class="banner" style="margin-top:12px">${icon('info')}<span>${esc(imp.error)}</span></div>`;
   const pvs = imp.previews;
   if (pvs.length) {
@@ -697,6 +834,41 @@ export function importView() {
 // ---------------------------------------------------------------- Trang một đề
 const ui = { mode: 'exam' };
 const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+// ---------------------------------------------------------------- Tổng kết đề (từ file giải thích .md) + sổ paraphrase vào Kho từ
+const PP_DECK = 'Paraphrase Listening';
+const ppShort = (t) => t.title.replace(/Cambridge(\s+IELTS)?\s*/i, 'Cam ').replace(/\s*[–-]\s*Giải chi tiết.*$/i, '').replace(/\s+/g, ' ').trim();
+function summaryHtml(t) {
+  const S0 = t.notes?.S, pp = t.notes?.PP?.para || [];
+  const lessons = [1, 2, 3, 4].map((n) => t.notes?.['P' + n]).filter(Boolean);
+  if (!S0 && !pp.length && !lessons.length) return '';
+  const left = pp.filter(([a]) => !findByText(a)).length;
+  return `<h2>Tổng kết đề</h2><div class="card lt-sum">
+    ${lessons.length ? `<details open><summary>Bài học từng Part</summary>${[1, 2, 3, 4].map((n) => t.notes?.['P' + n] ? `<p><b>Part ${n}:</b> ${mdLite(t.notes['P' + n].why)}</p>` : '').join('')}</details>` : ''}
+    ${S0?.why ? `<details><summary>Lưu ý về đề và file</summary><p>${mdLite(S0.why)}</p></details>` : ''}
+    ${S0?.trap ? `<details><summary>Các loại bẫy trong đề</summary><p>${mdLite(S0.trap)}</p></details>` : ''}
+    ${S0?.tip ? `<details><summary>Từ cần luyện chính tả</summary><p>${mdLite(S0.tip)}</p></details>` : ''}
+    ${pp.length ? `<details><summary>Sổ paraphrase · ${pp.length} cặp</summary><div class="lt-para">${pp.map(([a, b]) => `<div><span>Đề: <i>${esc(a)}</i></span><span>Nghe: <i>${esc(b)}</i></span></div>`).join('')}</div></details>
+      ${left ? `<button class="btn soft" style="margin-top:12px" data-act="lt-pp-save" data-id="${esc(t.id)}">${icon('plus', 'sm')} Lưu ${left} cặp vào Kho từ</button>
+      <p class="small muted" style="margin-top:6px">Thành thẻ trong chủ đề “${PP_DECK}”: mặt trước là cụm trong đề, mặt sau là cách nói trong băng. Học xong thẻ là cặp đó có trong các mini game.</p>` : `<p class="small muted" style="margin-top:10px">${icon('check', 'sm')} Cả ${pp.length} cặp đã có trong Kho từ.</p>`}` : ''}
+  </div>`;
+}
+on('lt-pp-save', async (el) => {
+  const t = S.ltest.get(el.dataset.id);
+  const pp = t?.notes?.PP?.para || [];
+  if (!pp.length) return;
+  const d = S.decks.find((x) => x.name === PP_DECK);
+  const deckId = d ? d.id : (await addDeck(PP_DECK)).id;
+  let n = 0;
+  for (const [a, b] of pp) {
+    if (findByText(a)) continue;
+    const w = blankWord(deckId);
+    Object.assign(w, { word: a, meaning: b, pos: 'paraphrase', synonyms: [b], notes: `Paraphrase Listening · ${ppShort(t)} · đề ↔ băng` });
+    await saveWord(w);
+    n++;
+  }
+  toast(`Đã thêm ${n} cặp paraphrase vào Kho từ`);
+  rerender();
+});
 export function testView(id) {
   const t = S.ltest.get(id);
   const nav = navBar(t?.title || 'Đề Listening', { fallback: '#/listening' });
@@ -717,9 +889,10 @@ export function testView(id) {
     ${att.length ? `<h2>Các lần làm</h2><div class="card">${att.slice(0, 8).map((a) => `<div class="row-between ls-catline" data-act="lt-open-att" data-id="${a.id}" role="button"><span>${a.parts.length === 4 ? 'Cả đề' : `Part ${a.parts.join(', ')}`} · ${a.mode === 'exam' ? 'như thi' : 'luyện'}${a.rate && a.rate !== 1 ? ` · ${String(a.rate).replace('.', ',')}×` : ''} <span class="small muted">· ${fmtDate(a.date)}</span></span><b>${a.score}/${a.total}${a.total === 40 ? ` · ${a.band}` : ''}</b></div>`).join('')}</div>` : ''}
     <h2>Lời thoại &amp; giải thích</h2><div class="card"><div class="row-between ls-catline"><span>Lời thoại</span><span class="small muted">${t.tx ? `${Object.keys(t.tx.parts).length} Part · ${t.tx.n} câu có mốc` : 'chưa có'}</span></div>
       <div class="row-between ls-catline"><span>Giải thích từng câu</span><span class="small muted">${noteCount(t.notes) ? `${noteCount(t.notes)} câu` : 'chưa có'}</span></div>
-      <p class="small muted" style="margin-top:6px">Hiện sau khi nộp bài: câu chứa đáp án trong lời thoại, vì sao chọn, bẫy, paraphrase.</p>
+      <p class="small muted" style="margin-top:6px">Hiện sau khi nộp bài và trong game Bẫy hay Thật: câu chứa đáp án trong lời thoại, vì sao chọn, bẫy, paraphrase. Nhận file .json hoặc file giải chi tiết .md.</p>
       <button class="btn soft" style="margin-top:10px" data-act="lt-attach" data-id="${esc(id)}">${icon('plus', 'sm')} Thêm lời thoại / giải thích / file nghe</button>
       <input type="file" id="lt-attach-files" data-change="lt-attach-files" data-id="${esc(id)}" multiple hidden></div>
+    ${summaryHtml(t)}
     <h2>Chia sẻ</h2><div class="card"><p class="small muted">Gộp đề, file nghe, lời thoại và giải thích thành một file .zip để gửi riêng cho bạn học (Zalo, Drive…). Người nhận bấm Nhập đề và chọn file đó.</p>
       <button class="btn soft" style="margin-top:10px" data-act="lt-export" data-id="${esc(id)}" ${ui.exporting ? 'disabled' : ''}>${icon('upload', 'sm')} ${ui.exporting ? 'Đang tạo gói…' : 'Xuất gói đề (1 file)'}</button></div>
     <button class="btn ghost danger-text" style="margin-top:18px" data-act="lt-del" data-id="${esc(id)}">${icon('trash', 'sm')} Xoá đề khỏi máy</button>
@@ -970,13 +1143,19 @@ export function qInfo(t, n) {
   return null;
 }
 const optText = (info, k) => info?.opts?.find((o) => o.k === k)?.t || '';
+/** Định dạng nhẹ cho chữ trong giải thích: **đậm**, *nghiêng*, `mã`, xuống dòng. */
+export const mdLite = (v) => esc(v).replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>').replace(/(^|[^*\w])\*([^*\n]+)\*(?!\w)/g, '$1<i>$2</i>').replace(/`([^`\n]+)`/g, '<code>$1</code>').replace(/\n/g, '<br>');
 function noteHtml(note) {
   if (!note) return '';
   return `<div class="lt-note">${note.ai ? '<p class="small faint">AI giải thích · nên đối chiếu với lời thoại</p>' : ''}
-    ${note.why ? `<p><b>Vì sao:</b> ${esc(note.why)}</p>` : ''}
+    ${note.de ? `<p><b>Đề:</b> ${mdLite(note.de)}</p>` : ''}
+    ${note.bang ? `<p><b>Băng:</b> ${mdLite(note.bang)}</p>` : ''}
+    ${note.why ? `<p><b>Vì sao:</b> ${mdLite(note.why)}</p>` : ''}
     ${note.para?.length ? `<div class="lt-para"><b>Paraphrase</b>${note.para.map(([a, b]) => `<div><span>Đề: <i>${esc(a)}</i></span><span>Nghe: <i>${esc(b)}</i></span></div>`).join('')}</div>` : ''}
-    ${note.trap ? `<p><b>Bẫy:</b> ${esc(note.trap)}</p>` : ''}
-    ${note.tip ? `<p class="lt-tip">${icon('info', 'sm')} ${esc(note.tip)}</p>` : ''}</div>`;
+    ${note.ptxt ? note.para?.length ? `<p class="small muted">${mdLite(note.ptxt)}</p>` : `<p><b>Paraphrase:</b> ${mdLite(note.ptxt)}</p>` : ''}
+    ${note.trap ? `<p><b>Bẫy:</b> ${mdLite(note.trap)}</p>` : ''}
+    ${note.elim ? `<p><b>Loại:</b> ${mdLite(note.elim)}</p>` : ''}
+    ${note.tip ? `<p class="lt-tip">${icon('info', 'sm')} <span>${mdLite(note.tip)}</span></p>` : ''}</div>`;
 }
 function reviewHtml(part) {
   const t = R.test;
@@ -1008,7 +1187,9 @@ function reviewHtml(part) {
       ${canAI ? `<button class="tag lt-aibtn" data-act="lt-ai" data-n="${n}" ${busy[n] ? 'disabled' : ''}>${busy[n] ? 'AI đang giải thích…' : `${icon('sparkle', 'sm')} Nhờ AI giải thích`}</button>` : ''}</div>`;
   }).join('');
   const hasTx = !!t.tx?.parts?.[part.n];
+  const lesson = t.notes?.['P' + part.n];
   return `<h4 class="sp-h">Chữa từng câu · Part ${part.n}</h4>
+    ${lesson ? `<div class="lt-lesson">${icon('info', 'sm')}<span><b>Bài học Part ${part.n}:</b> ${mdLite(lesson.why)}</span></div>` : ''}
     ${!hasTx && !Object.keys(t.notes || {}).length ? `<p class="small muted" style="margin:0 2px 8px">Đề này chưa có lời thoại và giải thích. Thêm ở trang đề (nút “Thêm lời thoại / giải thích”).</p>` : ''}
     <div class="lt-rvlist">${rows}</div>`;
 }

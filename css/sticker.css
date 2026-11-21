@@ -357,3 +357,12 @@ body:not(.no-tabs) #app::after {
 :root[data-theme="dark"] #view:has(> .hn-res) { background-color: #241E3D; background-image: radial-gradient(#352C58 1.6px, transparent 1.8px); }
 :root[data-theme="dark"] .hn-scr :is(.hn-h, .hn-h2, .hn-lab, .hn-meta, .hn-nav h1), :root[data-theme="dark"] .hn-scr > .hn-sub { color: var(--text); }
 :root[data-theme="dark"] .hn-scr .hn-eyebrow { color: var(--text-3); }
+
+/* Giải thích chi tiết Listening (.md) */
+.lt-lesson { display: flex; gap: 8px; align-items: flex-start; margin: 0 2px 10px; padding: 10px 12px; border: 2.5px solid var(--ink); border-radius: 16px; background: var(--yellow); color: var(--on-pop); font-size: 14px; line-height: 1.5; box-shadow: 0 3px 0 var(--ink); }
+.lt-lesson .ic { flex: none; margin-top: 3px; }
+.lt-note code, .tp-note code { font: inherit; background: var(--bg); border-radius: 6px; padding: 0 4px; }
+.lt-tip > span, .tp-tip > span { flex: 1; min-width: 0; }
+.lt-sum details + details { margin-top: 10px; }
+.lt-sum summary { cursor: pointer; font-weight: 800; min-height: 32px; display: flex; align-items: center; }
+.lt-sum details p { margin: 6px 0 0; font-size: 14.5px; line-height: 1.55; }

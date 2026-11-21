@@ -7,7 +7,7 @@
 import { S, saveHunt, logGrammarDay, ltPut } from './store.js';
 import { esc, toast, uid, shuffle } from './util.js';
 import { icon, on, go, back, replace, rerender, confirmSheet } from './ui.js';
-import { qInfo, noteOf, alternatives } from './ltest.js';
+import { qInfo, noteOf, alternatives, mdLite } from './ltest.js';
 import { say, hush, pickVoice, numWords } from './listening.js';
 import { mochi, bolt, kit } from './hunt.js';
 import { chalReport } from './challenge.js';
@@ -678,10 +678,12 @@ function pickView(c) {
 function noteHtml(note) {
   if (!note) return '<p class="small faint">Đề này chưa có phần giải thích. Thêm file giải thích ở trang đề để xem vì sao chọn và bẫy nằm ở đâu.</p>';
   return `<div class="tp-note">
-    ${note.why ? `<p><b>Vì sao:</b> ${esc(note.why)}</p>` : ''}
+    ${note.bang ? `<p><b>Băng:</b> ${mdLite(note.bang)}</p>` : ''}
+    ${note.why ? `<p><b>Vì sao:</b> ${mdLite(note.why)}</p>` : ''}
     ${note.para?.length ? `<div class="hn-pairs">${note.para.map(([a, b]) => `<div><span>Đề: ${esc(a)}</span>${icon('chev')}<span>Nghe: ${esc(b)}</span></div>`).join('')}</div>` : ''}
-    ${note.trap ? `<p><b>Bẫy:</b> ${esc(note.trap)}</p>` : ''}
-    ${note.tip ? `<p class="tp-tip">${icon('info', 'sm')} ${esc(note.tip)}</p>` : ''}</div>`;
+    ${note.trap ? `<p><b>Bẫy:</b> ${mdLite(note.trap)}</p>` : ''}
+    ${note.elim ? `<p><b>Loại:</b> ${mdLite(note.elim)}</p>` : ''}
+    ${note.tip ? `<p class="tp-tip">${icon('info', 'sm')} <span>${mdLite(note.tip)}</span></p>` : ''}</div>`;
 }
 function fbView(c) {
   const ok = H.why === 'right';
