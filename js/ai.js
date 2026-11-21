@@ -119,7 +119,7 @@ function otherError(provider, name, status, data, model) {
   }
   if (status === 404) return new AIError(`Không tìm thấy mô hình “${model}” hoặc địa chỉ API sai. Kiểm tra lại tên mô hình.${raw}`);
   if (status === 429) return new AIError(`Đã vượt giới hạn tần suất hoặc hết hạn mức của API. Hãy thử lại sau.${raw}`);
-  if (status >= 500) return new AIError(`${name} đang gặp sự cố tạm thời. Hãy thử lại sau.${raw}`);
+  if (status >= 500 || /high demand|overloaded|UNAVAILABLE/i.test(t)) return new AIError(`Key và mô hình đều đúng ✓ nhưng máy chủ ${name === 'Gemini' ? 'Google' : name} đang quá tải tạm thời (app đã tự thử lại 3 lần). Hãy đợi vài phút rồi thử lại.${raw}`);
   return new AIError(`${name} báo lỗi ${status}${d ? ': ' + d : ''}`);
 }
 
@@ -183,19 +183,27 @@ export async function askAI(ai, prompt, { system = SYSTEM } = {}) {
 }
 
 // Định dạng "chat completions" (OpenAI, Gemini qua cổng tương thích, và nhiều nhà cung cấp khác).
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// Máy chủ quá tải tạm thời (503 "high demand", 500, 529): đợi rồi thử lại, tối đa 3 lần.
+const BUSY_WAIT = [2000, 5000, 9000];
 async function askChat({ provider, name, base, key, model }, prompt, system = SYSTEM, retried = false) {
   const url = base.trim().replace(/\/+$/, '').replace(/\/chat\/completions$/, '') + '/chat/completions';
-  let res;
-  try {
-    res = await fetch(url, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', authorization: `Bearer ${cleanKey(key)}` },
-      body: JSON.stringify({ model: model.trim(), messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }] }),
-    });
-  } catch {
-    throw new AIError(`Không kết nối được tới ${name}. Kiểm tra mạng và địa chỉ API; cũng có thể nhà cung cấp này không cho gọi thẳng từ trình duyệt.`);
+  let res, data;
+  for (let attempt = 0; ; attempt++) {
+    try {
+      res = await fetch(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', authorization: `Bearer ${cleanKey(key)}` },
+        body: JSON.stringify({ model: model.trim(), messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }] }),
+      });
+    } catch {
+      throw new AIError(`Không kết nối được tới ${name}. Kiểm tra mạng và địa chỉ API; cũng có thể nhà cung cấp này không cho gọi thẳng từ trình duyệt.`);
+    }
+    data = await res.json().catch(() => null);
+    const busy = [500, 502, 503, 504, 529].includes(res.status) || /high demand|overloaded|UNAVAILABLE/i.test(errDetail(data));
+    if (res.ok || !busy || attempt >= BUSY_WAIT.length) break;
+    await sleep(BUSY_WAIT[attempt]);
   }
-  const data = await res.json().catch(() => null);
   if (!res.ok) {
     const detail = errDetail(data);
     if (isKeyProblem(res.status, data)) throw keyError(provider, name, key, detail);
