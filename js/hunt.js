@@ -14,6 +14,7 @@ import { trapStats } from './trap.js';
 import { talkStats } from './talk.js';
 import { chalReport, chalStatus } from './challenge.js';
 import { ideaStats } from './idea.js';
+import { pickStats } from './pick.js';
 
 // ---------------------------------------------------------------- Linh vật (Mochi, Bolt) kiểu sticker
 const INK = '#2B2240';
@@ -518,11 +519,13 @@ export function gamesView() {
   const ts = trapStats();
   const ks = talkStats();
   const is = ideaStats();
+  const ps = pickStats();
   const card = (bg, ic, name, sub, right, act = '') => `<${act ? 'button' : 'div'} class="hn-game" style="background:${bg}" ${act}><span class="hn-gi">${ic}</span><span class="hn-gb"><b>${name}</b><small>${sub}</small></span>${right}</${act ? 'button' : 'div'}>`;
   const ICON = {
     hunt: `<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5" fill="#BFE9FF" stroke="${INK}" stroke-width="2"/><path d="M15 15l5.5 5.5" stroke="${INK}" stroke-width="3" stroke-linecap="round"/></svg>`,
     trap: `<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10a7 7 0 0 1 14 0c0 4-4 4.5-4 8.5a3 3 0 0 1-6 0" fill="#FFE1CF" stroke="${INK}" stroke-width="2" stroke-linecap="round"/></svg>`,
     talk: `<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="3" width="7" height="12" rx="3.5" fill="#FFD84D" stroke="${INK}" stroke-width="2"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="${INK}" stroke-width="2" stroke-linecap="round"/></svg>`,
+    pick: `<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="8" height="7" rx="2.5" fill="#fff" stroke="${INK}" stroke-width="2"/><rect x="13" y="4" width="8" height="7" rx="2.5" fill="#8EE3C8" stroke="${INK}" stroke-width="2"/><rect x="3" y="13" width="8" height="7" rx="2.5" fill="#fff" stroke="${INK}" stroke-width="2"/><rect x="13" y="13" width="8" height="7" rx="2.5" fill="#fff" stroke="${INK}" stroke-width="2"/><path d="M15 7.5l1.5 1.5 3-3" fill="none" stroke="${INK}" stroke-width="2" stroke-linecap="round"/></svg>`,
     pen: `<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5l3 3L8 19z" fill="#C7B8FF" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/></svg>`,
   };
   const mini = (to, bg, name) => `<button class="hn-mini" style="background:${bg}" data-act="go" data-to="${to}" ${ready || to === '#/match' || to === '#/pop' ? '' : ''}>${name}</button>`;
@@ -532,12 +535,13 @@ export function gamesView() {
       <p class="hn-dtitle">${cs.done ? 'Đã xong hôm nay!' : cs.started ? `Đang ở chặng ${cs.i + 1}/${cs.n}` : 'Đọc · Nghe<br>Nói · Viết'}</p>
       <p class="hn-sub">${cs.done ? `${cs.total} điểm${cs.streak ? ` · chuỗi ${cs.streak} ngày` : ''} · mai quay lại nhé` : cs.streak ? `Chuỗi thử thách ${cs.streak} ngày · khoảng 10 phút` : `${cs.n} chặng, mỗi trò một lượt ngắn · khoảng 10 phút`}</p></div>${mochi(cs.done ? 'happy' : 'calm', 100)}</div>
       ${bigBtn('go', cs.done ? 'Xem kết quả' : cs.started ? 'Làm tiếp!' : 'Chơi ngay!', 'data-to="#/chal"')}</div>
-    <h2 class="hn-h2">4 trò chơi</h2>
+    <h2 class="hn-h2">5 trò chơi</h2>
     <div class="hn-games">
       ${card('#8EE3C8', ICON.hunt, 'Săn từ', 'Reading · tìm từ cần điền, né bẫy', `<span class="hn-gr">${acc.n ? `${Math.round((acc.ok / acc.n) * 100)}%` : '–'}</span>`, 'data-act="go" data-to="#/hunt"')}
       ${card('#FFC9A8', ICON.trap, 'Bẫy hay Thật', ts.ready ? 'Listening · nghe đề thật, né bẫy' : 'Listening · cần nhập đề có lời thoại', `<span class="hn-gr">${ts.acc != null ? `${ts.acc}%` : '–'}</span>`, 'data-act="go" data-to="#/trap"')}
       ${card('#FFB3CB', ICON.talk, 'Nói 30 giây', 'Speaking · nói rồi điền lại cụm hay', `<span class="hn-gr">${ks.acc != null ? `${ks.acc}%` : '–'}</span>`, 'data-act="go" data-to="#/talk"')}
-      ${card('#BFE3FF', ICON.pen, 'Ý tưởng 60 giây <span class="hn-pill xs">MỚI</span>', 'Writing · nghĩ ý rồi ghép lại câu mẫu', `<span class="hn-gr">${is.acc != null ? `${is.acc}%` : '–'}</span>`, 'data-act="go" data-to="#/idea"')}
+      ${card('#FFD84D', ICON.pick, 'Chọn từ <span class="hn-pill xs">MỚI</span>', ps.sets ? `Chọn 1 trong 4 · ${ps.sets} bộ bạn nhập` : 'Chọn 1 trong 4 · nhập bài tập của bạn', `<span class="hn-gr">${ps.acc != null ? `${ps.acc}%` : '–'}</span>`, 'data-act="go" data-to="#/pick"')}
+      ${card('#BFE3FF', ICON.pen, 'Ý tưởng 60 giây', 'Writing · nghĩ ý rồi ghép lại câu mẫu', `<span class="hn-gr">${is.acc != null ? `${is.acc}%` : '–'}</span>`, 'data-act="go" data-to="#/idea"')}
     </div>
     <h2 class="hn-h2">Mini game từ vựng</h2>
     <div class="hn-minis">${mini('#/game', '#FFF0B8', 'Chạy &amp; Gõ')}${mini('#/drop', '#D9F7EC', 'Bắn Từ')}${mini('#/match', '#FFE1EC', 'Nối Cụm')}${mini('#/pop', '#E4EEFF', 'Nghe &amp; Chạm')}</div>

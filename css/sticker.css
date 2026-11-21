@@ -366,3 +366,23 @@ body:not(.no-tabs) #app::after {
 .lt-sum details + details { margin-top: 10px; }
 .lt-sum summary { cursor: pointer; font-weight: 800; min-height: 32px; display: flex; align-items: center; }
 .lt-sum details p { margin: 6px 0 0; font-size: 14.5px; line-height: 1.55; }
+
+/* Game Chọn từ */
+.pk-card { padding-top: 14px; }
+.pk-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.pk-tags .hn-tag { position: static; }
+.pk-q { font-size: 19px; line-height: 1.6; }
+.pk-gap.ok { background: #D9F7EC; border-style: solid; border-color: #1B9E6B; }
+.pk-gap.no { background: #D9F7EC; border-style: solid; border-color: #1B9E6B; }
+.pk-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pk-opt { align-items: center; min-height: 56px; font-size: 16px; }
+.pk-why { font-size: 14.5px; line-height: 1.5; }
+.pk-vi { display: inline-block; margin: 2px 0 10px; padding: 4px 12px; border: 2px solid var(--hn-ink); border-radius: 999px; background: #fff; color: var(--hn-ink); font: 800 13px var(--hn-font); }
+.pk-setrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 2px dashed #EDE6D8; }
+.pk-setrow:last-of-type { border-bottom: 0; }
+.pk-setrow span { display: flex; flex-direction: column; min-width: 0; }
+.pk-setrow small { color: #6B6080; font-weight: 700; }
+.pk-wrong { margin: 8px 0 0; line-height: 1.5; }
+.pk-ans { background: #D9F7EC; border-radius: 6px; padding: 0 4px; }
+@media (max-width: 359px) { .pk-opts { grid-template-columns: 1fr; } }
+.hn-x.sm { width: 36px; height: 36px; border-radius: 12px; box-shadow: 0 2px 0 var(--hn-ink); }

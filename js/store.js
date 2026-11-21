@@ -104,6 +104,7 @@ export const S = {
   ltest: new Map(), // id → X:<…> đề Listening tự nhập (kind: test, kèm file nghe) · R:<…> một lần làm đề (kind: attempt)
   hunt: null, // game Săn từ: số lượt, kỷ lục, câu sai chờ chơi lại, tỉ lệ đoán đúng loại từ
   listening: null, // thống kê Listening: các bộ đã làm, tỉ lệ đúng theo dạng, lỗi hay gặp, từ hay nghe sót
+  pick: null, // game Chọn từ: các bộ câu hỏi người học tự nhập, câu đã sai, thống kê
   game: null, // dữ liệu mini game (vòng chơi, thống kê, kỷ lục) — tách riêng, không tính vào tiến độ học
   persisted: false,
 };
@@ -124,6 +125,7 @@ export async function init() {
   S.game = cleanGame(kv.find((x) => x.key === 'game')?.value);
   S.listening = cleanListening(kv.find((x) => x.key === 'listening')?.value);
   S.hunt = cleanHunt(kv.find((x) => x.key === 'hunt')?.value);
+  S.pick = cleanPick(kv.find((x) => x.key === 'pick')?.value);
   if (!S.decks.length) {
     S.decks = DEFAULT_DECKS.map(([id, name], i) => ({ id, name, builtin: true, order: i }));
     await tx(['decks'], 'readwrite', (t) => S.decks.forEach((d) => t.objectStore('decks').put(d)));
@@ -490,6 +492,17 @@ export async function saveHunt() {
 }
 export async function saveListening() {
   await put('kv', { key: 'listening', value: S.listening });
+}
+
+// ---- Game Chọn từ ----
+// S.pick = { sets: [{ id, name, at, qs: [{ id, s: câu có ___, a: đáp án, w: [đáp án sai], ex, exVi, tag, lv }] }], wrong: { id câu: số lần sai }, stats: { plays, n, ok, best } }
+export function cleanPick(o) {
+  o = o && typeof o === 'object' ? o : {};
+  const sets = Array.isArray(o.sets) ? o.sets.filter((x) => x && x.id && Array.isArray(x.qs)) : [];
+  return { sets, wrong: o.wrong && typeof o.wrong === 'object' ? o.wrong : {}, stats: { plays: 0, n: 0, ok: 0, best: 0, ...(o.stats || {}) } };
+}
+export async function savePick() {
+  await put('kv', { key: 'pick', value: S.pick });
 }
 
 export async function saveGame(patch = {}) {
