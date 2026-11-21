@@ -543,6 +543,7 @@ export function exportData({ withWriting = true } = {}) {
     speaking: [...S.speaking.values()].map(({ audio, ...r }) => ({ ...r, hasAudio: !!audio })),
     listening: S.listening,
     hunt: S.hunt,
+    pick: S.pick, // game Chọn từ: bộ câu hỏi người học tự nhập, câu đã sai, thống kê
     // Đề tự nhập (có bản quyền, file nghe nặng) không đưa vào file sao lưu; chỉ giữ kết quả làm bài.
     ltestResults: [...S.ltest.values()].filter((r) => r.kind === 'attempt'),
   };
@@ -753,7 +754,25 @@ function cleanBackup(data) {
   const listening = data.listening && typeof data.listening === 'object' ? cleanListening(data.listening) : null;
   const ltestResults = Array.isArray(data.ltestResults) ? data.ltestResults.map(cleanLtAttempt).filter(Boolean) : null;
   const hunt = data.hunt && typeof data.hunt === 'object' ? cleanHunt(data.hunt) : null;
-  return { decks, words, days, settings, game: cleanGame(data.game), grammar, writing, reading, speaking, listening, ltestResults, hunt };
+  const pick = data.pick && typeof data.pick === 'object' ? cleanPickBackup(data.pick) : null;
+  return { decks, words, days, settings, game: cleanGame(data.game), grammar, writing, reading, speaking, listening, ltestResults, hunt, pick };
+}
+/** Bộ câu hỏi Chọn từ trong file sao lưu: chỉ giữ đúng các trường, cắt độ dài như khi nhập file. */
+function cleanPickBackup(o) {
+  const cut = (v, n) => str(v).slice(0, n);
+  const sets = (Array.isArray(o.sets) ? o.sets : []).slice(0, 200).map((st) => {
+    const id = str(st?.id);
+    if (!/^P[A-Za-z0-9_-]{1,40}$/.test(id) || !Array.isArray(st.qs)) return null;
+    const qs = st.qs.slice(0, 5000).map((q, i) => {
+      const s = cut(q?.s, 400), a = cut(q?.a, 80), w = strList(q?.w).slice(0, 5).map((x) => x.slice(0, 80));
+      return s.includes('___') && a && w.length ? { id: `${id}:${i}`, s, a, w, ex: cut(q.ex, 800), exVi: cut(q.exVi, 800), tag: cut(q.tag, 30), lv: cut(q.lv, 10) } : null;
+    }).filter(Boolean);
+    return qs.length ? { id, name: cut(st.name, 80) || 'Bộ câu hỏi', at: int(st.at, 0, 1e13, 0), qs } : null;
+  }).filter(Boolean);
+  const wrong = {};
+  if (o.wrong && typeof o.wrong === 'object') for (const [k, v] of Object.entries(o.wrong)) if (/^(P[A-Za-z0-9_-]{1,40}:\d{1,4}|w:[A-Za-z0-9_-]{1,64})$/.test(k)) wrong[k] = int(v, 1, 99, 1);
+  const st = o.stats && typeof o.stats === 'object' ? o.stats : {};
+  return { sets, wrong, stats: { plays: int(st.plays, 0, 1e7, 0), n: int(st.n, 0, 1e8, 0), ok: int(st.ok, 0, 1e8, 0), best: int(st.best, 0, 1e7, 0) } };
 }
 
 function cleanLtAttempt(r) {
@@ -805,6 +824,8 @@ export async function restoreData(data) {
     // File sao lưu cũ (chưa có Listening) → giữ nguyên thống kê Listening trên máy.
     if (clean.listening) t.objectStore('kv').put({ key: 'listening', value: clean.listening });
     if (clean.hunt) t.objectStore('kv').put({ key: 'hunt', value: clean.hunt });
+    // File sao lưu cũ (chưa có Chọn từ) → giữ nguyên bộ câu hỏi trên máy.
+    if (clean.pick) t.objectStore('kv').put({ key: 'pick', value: clean.pick });
   });
   await init();
   return clean.words.length;
