@@ -4,7 +4,7 @@
 //  #/ppairs         : nghe cặp âm dễ nhầm (sheep – ship…): app đọc một từ, chọn từ nghe được
 //  #/pquiz/s|ed|stress : đuôi -s, đuôi -ed, trọng âm từ
 //  #/ptopic/<id>    : lý thuyết (ký hiệu từ điển, âm cuối, nối âm và âm yếu, ngữ điệu)
-// Giọng đọc: giọng Anh–Anh của máy (Web Speech). Tiến độ lưu ở S.pron (kv 'pron', có trong file sao lưu).
+// Giọng đọc: dùng đúng giọng đã chọn ở Cài đặt → Giọng đọc / Giọng (Web Speech). Tiến độ lưu ở S.pron (kv 'pron', có trong file sao lưu).
 import { S, savePron } from './store.js';
 import { esc, speak, canSpeak, shuffle, toast } from './util.js';
 import { icon, on, go, rerender, navBar, learnSwitch } from './ui.js';
@@ -14,11 +14,13 @@ import { SOUNDS, GROUPS, KIND_NAME, PAIRS, ENDINGS, STRESS, TOPICS, WEEKS } from
 const byId = new Map(SOUNDS.map((s) => [s.id, s]));
 const ROUND = 10;
 
-// ---------------------------------------------------------------- Đọc to (Anh–Anh)
+// ---------------------------------------------------------------- Đọc to: cùng giọng với Cài đặt (Anh–Mỹ / Anh–Anh và giọng cụ thể)
+const voiceLabel = () => (S.settings.voice === 'en-GB' ? 'Anh–Anh' : 'Anh–Mỹ');
 function say(text, rate = 0.85) {
   if (!canSpeak()) { toast('Thiết bị này không hỗ trợ đọc to'); return; }
   speechSynthesis.cancel();
-  speak(text, { lang: 'en-GB', rate, name: S.settings.voice === 'en-GB' ? S.settings.voiceName : '' });
+  // Tốc độ theo Cài đặt, chậm hơn một chút để nghe rõ âm.
+  speak(text, { lang: S.settings.voice, rate: Math.min(rate, S.settings.rate || 0.95), name: S.settings.voiceName });
 }
 on('pr-say', (el) => say(el.dataset.t, Number(el.dataset.r) || 0.85));
 const sayBtn = (t, label = '', cls = '') => `<button class="pr-say ${cls}" data-act="pr-say" data-t="${esc(t)}" aria-label="Nghe ${esc(t)}">${icon('speaker', 'sm')}${label ? `<span>${label}</span>` : ''}</button>`;
@@ -65,10 +67,10 @@ export function pronView() {
   const done = P().weeks.filter(Boolean).length;
   const st = P().stats;
   const link = (to, ic, title, sub) => `<button class="listlink" data-act="go" data-to="${to}"><span class="lead">${icon(ic)}</span><span class="body"><b>${title}</b><small>${sub}</small></span>${icon('chev')}</button>`;
-  return `<div class="page"><header class="top"><div><p class="eyebrow">IPA · giọng Anh–Anh</p><h1>Phát âm</h1></div></header>
+  return `<div class="page"><header class="top"><div><p class="eyebrow">IPA · phiên âm Anh–Anh</p><h1>Phát âm</h1></div><button class="iconbtn tonal" data-act="go" data-to="#/settings" aria-label="Đổi giọng đọc" title="Đổi giọng đọc">${icon('speaker')}</button></header>
     ${learnSwitch('pron')}
     <div class="card pr-road"><div class="row-between"><b>Lộ trình 4 tuần · 15 phút/ngày</b><span class="tag">${done}/4 tuần</span></div>${weeks}
-      <p class="small muted" style="margin-top:10px">Tập trước gương để nhìn khẩu hình. Mỗi từ mới: chép kèm phiên âm, đánh dấu trọng âm, nghe Anh–Anh rồi đọc theo 3 lần.</p></div>
+      <p class="small muted" style="margin-top:10px">Giọng đọc: <b>${voiceLabel()}</b>${S.settings.voiceName ? ` · ${esc(S.settings.voiceName)}` : ''} (đổi ở Cài đặt → Giọng đọc). Tập trước gương để nhìn khẩu hình. Mỗi từ mới: chép kèm phiên âm, đánh dấu trọng âm, nghe Anh–Anh rồi đọc theo 3 lần.</p></div>
     <h2>Luyện tập</h2>
     ${link('#/ppairs', 'ear', 'Cặp âm dễ nhầm', `Nghe rồi chọn: sheep – ship, think – sink… · đúng ${pct(st.pairs)}`)}
     ${link('#/pquiz/s', 'speaker', 'Đuôi -s / -es đọc thế nào?', `/ɪz/, /s/ hay /z/ · đúng ${pct(st.s)}`)}
@@ -204,7 +206,7 @@ export function pairsView() {
   const chip = (id, label) => `<button class="chip ${ui.group === id ? 'on' : ''}" data-act="pr-pairs-group" data-g="${id}">${label}</button>`;
   const nw = PAIRS.flatMap((g) => g.pairs).filter((p) => P().wrong[`pair:${p.join('|')}`]).length;
   return `<div class="page">${nav}
-    <div class="card"><b>Cách luyện</b><p class="small muted" style="margin-top:4px">Mỗi câu app đọc một từ trong cặp (giọng Anh–Anh). Chọn từ bạn nghe được. Sau đó nghe lại cả hai từ và tự đọc theo. ${nw ? `Có ${nw} cặp bạn từng nghe nhầm, sẽ được ưu tiên.` : ''}</p></div>
+    <div class="card"><b>Cách luyện</b><p class="small muted" style="margin-top:4px">Mỗi câu app đọc một từ trong cặp, bằng giọng bạn chọn ở Cài đặt. Chọn từ bạn nghe được. Sau đó nghe lại cả hai từ và tự đọc theo. ${nw ? `Có ${nw} cặp bạn từng nghe nhầm, sẽ được ưu tiên.` : ''}</p></div>
     <h2>Chọn cặp âm</h2>
     <div class="chips" style="flex-wrap:wrap">${chip('all', 'Trộn tất cả')}${PAIRS.map((g) => chip(g.id, esc(g.title))).join('')}</div>
     <button class="btn" style="margin-top:18px" data-act="pr-pairs-start" ${canSpeak() ? '' : 'disabled'}>Bắt đầu nghe (${ROUND} câu)</button>
