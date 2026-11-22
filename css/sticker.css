@@ -448,3 +448,8 @@ body:not(.no-tabs) #app::after {
 .pr-sayline { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 @media (min-width: 700px) { .pr-grid { grid-template-columns: repeat(6, 1fr); } .pr-table .pr-trow { grid-template-columns: 1fr 1.4fr 1.4fr; } }
 @media (max-width: 359px) { .pr-grid { grid-template-columns: repeat(3, 1fr); } .pr-picks.three { grid-template-columns: 1fr; } }
+
+/* Khung trang chỉ cuộn dọc: không bị kéo lệch ngang hay nảy cả khung khi vuốt nhanh (iOS). */
+#view { overflow-x: hidden; overscroll-behavior: contain; }
+.page-settings { touch-action: pan-y; }
+.page-settings input, .page-settings select, .page-settings textarea { touch-action: manipulation; }

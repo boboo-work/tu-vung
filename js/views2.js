@@ -173,7 +173,7 @@ export function settingsView() {
   const mine = voiceById(s.voiceName);
   const optVoice = (v) => { const q = voiceQuality(v); return `<option value="${esc(v.voiceURI || v.name)}" ${mine === v ? 'selected' : ''}>${esc(v.name)}${q && !v.name.toLowerCase().includes(q.toLowerCase()) && !/enhanced|premium/i.test(v.name) ? ` · ${q}` : ''}</option>`; };
   const voiceOpts = groups.map((g) => `<optgroup label="${esc(`Giọng ${ACC[g] || g} (${g})`)}">${voiceList.filter((v) => langKey(v) === g).map(optVoice).join('')}</optgroup>`).join('');
-  return `<div class="page">${navBar('Cài đặt')}
+  return `<div class="page page-settings">${navBar('Cài đặt')}
     <h2 style="margin-top:6px">Mục tiêu mỗi ngày</h2>
     <div class="card">
       <div class="setrow"><div><b>Từ mới</b><small>Số từ mới học mỗi ngày</small></div>${stepper('newPerDay', s.newPerDay)}</div>
