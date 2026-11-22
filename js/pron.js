@@ -6,7 +6,7 @@
 //  #/ptopic/<id>    : lý thuyết (ký hiệu từ điển, âm cuối, nối âm và âm yếu, ngữ điệu)
 // Giọng đọc: dùng đúng giọng đã chọn ở Cài đặt → Giọng đọc / Giọng (Web Speech). Tiến độ lưu ở S.pron (kv 'pron', có trong file sao lưu).
 import { S, savePron } from './store.js';
-import { esc, speak, canSpeak, shuffle, toast } from './util.js';
+import { esc, speak, canSpeak, shuffle, toast, voiceById } from './util.js';
 import { icon, on, go, rerender, navBar, learnSwitch } from './ui.js';
 import { sfx } from './sfx.js';
 import { SOUNDS, GROUPS, KIND_NAME, PAIRS, ENDINGS, STRESS, TOPICS, WEEKS } from './pron-data.js';
@@ -15,7 +15,13 @@ const byId = new Map(SOUNDS.map((s) => [s.id, s]));
 const ROUND = 10;
 
 // ---------------------------------------------------------------- Đọc to: cùng giọng với Cài đặt (Anh–Mỹ / Anh–Anh và giọng cụ thể)
-const voiceLabel = () => (S.settings.voice === 'en-GB' ? 'Anh–Anh' : 'Anh–Mỹ');
+const ACCENT = { 'en-GB': 'Anh–Anh', 'en-US': 'Anh–Mỹ', 'en-AU': 'Anh–Úc', 'en-IE': 'Anh–Ireland', 'en-IN': 'Anh–Ấn', 'en-ZA': 'Anh–Nam Phi', 'en-CA': 'Anh–Canada', 'en-NZ': 'Anh–New Zealand', 'en-SG': 'Anh–Singapore', 'en-SCO': 'Anh–Scotland' };
+/** Tên giọng dễ đọc: "Moira · Anh–Ireland" thay vì mã com.apple.voice…; chưa chọn giọng cụ thể thì theo Giọng đọc. */
+const voiceLabel = () => {
+  const v = voiceById(S.settings.voiceName);
+  if (v) { const l = (v.lang || '').replace('_', '-'); return `${v.name} · ${ACCENT[l] || l}`; }
+  return ACCENT[S.settings.voice] || 'Anh–Mỹ';
+};
 function say(text, rate = 0.85) {
   if (!canSpeak()) { toast('Thiết bị này không hỗ trợ đọc to'); return; }
   speechSynthesis.cancel();
@@ -70,7 +76,7 @@ export function pronView() {
   return `<div class="page"><header class="top"><div><p class="eyebrow">IPA · phiên âm Anh–Anh</p><h1>Phát âm</h1></div><button class="iconbtn tonal" data-act="go" data-to="#/settings" aria-label="Đổi giọng đọc" title="Đổi giọng đọc">${icon('speaker')}</button></header>
     ${learnSwitch('pron')}
     <div class="card pr-road"><div class="row-between"><b>Lộ trình 4 tuần · 15 phút/ngày</b><span class="tag">${done}/4 tuần</span></div>${weeks}
-      <p class="small muted" style="margin-top:10px">Giọng đọc: <b>${voiceLabel()}</b>${S.settings.voiceName ? ` · ${esc(S.settings.voiceName)}` : ''} (đổi ở Cài đặt → Giọng đọc). Tập trước gương để nhìn khẩu hình. Mỗi từ mới: chép kèm phiên âm, đánh dấu trọng âm, nghe Anh–Anh rồi đọc theo 3 lần.</p></div>
+      <p class="small muted" style="margin-top:10px">Giọng đọc: <b>${esc(voiceLabel())}</b> (đổi ở Cài đặt → Giọng). Tập trước gương để nhìn khẩu hình. Mỗi từ mới: chép kèm phiên âm, đánh dấu trọng âm, nghe Anh–Anh rồi đọc theo 3 lần.</p></div>
     <h2>Luyện tập</h2>
     ${link('#/ppairs', 'ear', 'Cặp âm dễ nhầm', `Nghe rồi chọn: sheep – ship, think – sink… · đúng ${pct(st.pairs)}`)}
     ${link('#/pquiz/s', 'speaker', 'Đuôi -s / -es đọc thế nào?', `/ɪz/, /s/ hay /z/ · đúng ${pct(st.s)}`)}
