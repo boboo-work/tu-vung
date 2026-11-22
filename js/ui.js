@@ -69,7 +69,7 @@ export const learnSwitch = (cur) => {
   const skill = SKILLS.some(([k]) => k === cur);
   if (skill && cur !== lastSkill) { lastSkill = cur; try { localStorage.setItem('ieltsSkill', cur); } catch { /* bỏ qua */ } }
   const b = (on, to, label) => `<button class="${on ? 'on' : ''}" data-act="go" data-to="${to}" role="tab" aria-selected="${on}">${label}</button>`;
-  return `<div class="seg learn-switch" role="tablist">${b(cur === 'vocab', '#/learn', 'Từ vựng')}${b(cur === 'grammar', '#/grammar', 'Ngữ pháp')}${b(skill, `#/${lastSkill}`, 'IELTS')}</div>
+  return `<div class="seg learn-switch" role="tablist">${b(cur === 'vocab', '#/learn', 'Từ vựng')}${b(cur === 'grammar', '#/grammar', 'Ngữ pháp')}${b(cur === 'pron', '#/pron', 'Phát âm')}${b(skill, `#/${lastSkill}`, 'IELTS')}</div>
     ${skill ? `<div class="seg skill-switch" role="tablist">${SKILLS.map(([k, l]) => b(cur === k, `#/${k}`, l)).join('')}</div>` : ''}`;
 };
 

@@ -19,6 +19,7 @@ import { setupView as kSetupView, playView as kPlayView, resultView as kResultVi
 import { setupView as iSetupView, playView as iPlayView, resultView as iResultView } from './idea.js';
 import { chalView } from './challenge.js';
 import { mySentView } from './mysent.js';
+import { pronView, soundView, pairsView, quizView, topicView } from './pron.js';
 import { setupView as pSetupView, playView as pPlayView, resultView as pResultView } from './pick.js';
 import { movieView } from './movie.js';
 import { loadGrammar, grammarView, unitView, lessonView, cardsView, errorsView, testView, gDueCount } from './grammar.js';
@@ -32,7 +33,7 @@ const routes = {
   reading: readingView, rpassage: rPassageView, rrun: rRunView, rresult: rResultView, rstudy: rStudyView,
   mictest: micTestView, speaking: speakingView, sp1: sp1View, sp2: sp2View,
   listening: listeningView, lnum: lNumView, ldict: lDictView, limport: lImportView, ltest: lTestView, lrun: lRunView,
-  games: gamesView, hunt: hSetupView, hplay: hPlayView, hres: hResultView, trap: tSetupView, tplay: tPlayView, tres: tResultView, talk: kSetupView, tkplay: kPlayView, tkres: kResultView, idea: iSetupView, iplay: iPlayView, ires: iResultView, chal: chalView, movie: movieView, mysent: mySentView, pick: pSetupView, pplay: pPlayView, pres: pResultView,
+  games: gamesView, hunt: hSetupView, hplay: hPlayView, hres: hResultView, trap: tSetupView, tplay: tPlayView, tres: tResultView, talk: kSetupView, tkplay: kPlayView, tkres: kResultView, idea: iSetupView, iplay: iPlayView, ires: iResultView, chal: chalView, movie: movieView, mysent: mySentView, pron: pronView, psound: soundView, ppairs: pairsView, pquiz: quizView, ptopic: topicView, pick: pSetupView, pplay: pPlayView, pres: pResultView,
   rfull: rFullView, rvocab: rReviewView, rpatterns: rPatternsView, rown: rOwnListView, rownv: rOwnView, rstats: rStatsView,
   grammar: grammarView, gunit: unitView, glesson: lessonView, gcards: cardsView, gerrors: errorsView, gtest: testView,
 };
@@ -70,7 +71,7 @@ function render(resetScroll = false) {
   }
   if (changed) countUp(view);
   lastHash = location.hash;
-  renderTabs(['grammar', 'writing', 'reading', 'speaking', 'listening', 'movie'].includes(route) ? 'learn' : route);
+  renderTabs(['grammar', 'writing', 'reading', 'speaking', 'listening', 'movie', 'pron', 'psound', 'ppairs', 'pquiz', 'ptopic'].includes(route) ? 'learn' : route);
   if (out?.focus) {
     const el = view.querySelector(out.focus);
     // Chỉ tự focus khi đổi bước/đổi trang, tránh bật bàn phím ngoài ý muốn khi vẽ lại.

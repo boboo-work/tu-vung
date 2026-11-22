@@ -1,5 +1,6 @@
 // Các màn hình chính: Home, Learn, Review, Vocabulary (danh sách, chi tiết, form, chủ đề).
 import { gamePool, GAME_MIN } from './game.js';
+import { ipaLinks } from './pron.js';
 import { S, dayActive, allWords, dueWords, newWords, dayOf, summary, forecast, deckName, blankWord, saveWord, deleteWord, findByText, addDeck, renameDeck, deleteDeck, resetProgress, FALLBACK_DECK } from './store.js';
 import { esc, today, addDays, parseDate, fmtDate, relDay, fmtInterval, speak, toast, splitList, dayDiff, fold } from './util.js';
 import { statusOf, isNew, isDue } from './srs.js';
@@ -307,7 +308,7 @@ export function wordView(id) {
     ${navBar('', { fallback: '#/vocab', right: `<button class="iconbtn ${w.favorite ? 'on' : ''}" data-act="fav" data-id="${w.id}" aria-label="Yêu thích">${icon('star', w.favorite ? 'fill' : '')}</button><button class="iconbtn" data-act="go" data-to="#/edit/${w.id}" aria-label="Sửa">${icon('edit')}</button>` })}
     <div class="card">
       <div class="row-between" style="align-items:flex-start"><div style="min-width:0"><div class="headword">${esc(w.word)}</div>
-        <div class="ipa" style="margin-top:4px">${esc(w.ipa || '')} ${w.pos ? `<span class="tag">${esc(w.pos)}</span>` : ''}</div></div>
+        <div class="ipa" style="margin-top:4px">${ipaLinks(w.ipa || '')} ${w.pos ? `<span class="tag">${esc(w.pos)}</span>` : ''}</div></div>
         <button class="speakbtn" data-act="speak" data-text="${esc(w.word)}" aria-label="Nghe phát âm">${icon('speaker')}</button></div>
       <p class="meaning">${esc(w.meaning || '(chưa có nghĩa tiếng Việt)')}</p>
       ${w.definition ? `<p class="muted en" style="margin-top:6px">${esc(w.definition)}</p>` : ''}

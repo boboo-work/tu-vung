@@ -105,6 +105,7 @@ export const S = {
   ltest: new Map(), // id → X:<…> đề Listening tự nhập (kind: test, kèm file nghe) · R:<…> một lần làm đề (kind: attempt)
   hunt: null, // game Săn từ: số lượt, kỷ lục, câu sai chờ chơi lại, tỉ lệ đoán đúng loại từ
   listening: null, // thống kê Listening: các bộ đã làm, tỉ lệ đúng theo dạng, lỗi hay gặp, từ hay nghe sót
+  pron: null, // mục Phát âm: tuần đã xong trong lộ trình, tỉ lệ đúng từng bài luyện, cặp âm / từ hay sai
   pick: null, // game Chọn từ: các bộ câu hỏi người học tự nhập, câu đã sai, thống kê
   game: null, // dữ liệu mini game (vòng chơi, thống kê, kỷ lục) — tách riêng, không tính vào tiến độ học
   persisted: false,
@@ -127,6 +128,7 @@ export async function init() {
   S.listening = cleanListening(kv.find((x) => x.key === 'listening')?.value);
   S.hunt = cleanHunt(kv.find((x) => x.key === 'hunt')?.value);
   S.pick = cleanPick(kv.find((x) => x.key === 'pick')?.value);
+  S.pron = cleanPron(kv.find((x) => x.key === 'pron')?.value);
   if (!S.decks.length) {
     S.decks = DEFAULT_DECKS.map(([id, name], i) => ({ id, name, builtin: true, order: i }));
     await tx(['decks'], 'readwrite', (t) => S.decks.forEach((d) => t.objectStore('decks').put(d)));
@@ -502,6 +504,19 @@ export function cleanPick(o) {
   const sets = Array.isArray(o.sets) ? o.sets.filter((x) => x && x.id && Array.isArray(x.qs)) : [];
   return { sets, wrong: o.wrong && typeof o.wrong === 'object' ? o.wrong : {}, stats: { plays: 0, n: 0, ok: 0, best: 0, ...(o.stats || {}) } };
 }
+// ---- Phát âm ----
+export function cleanPron(o) {
+  o = o && typeof o === 'object' ? o : {};
+  const n = (v) => (Number.isFinite(Number(v)) && Number(v) >= 0 ? Math.round(Number(v)) : 0);
+  const stats = {};
+  for (const k of ['pairs', 's', 'ed', 'stress']) stats[k] = { n: n(o.stats?.[k]?.n), ok: n(o.stats?.[k]?.ok) };
+  const wrong = {};
+  if (o.wrong && typeof o.wrong === 'object') for (const [k, v] of Object.entries(o.wrong).slice(0, 500)) if (/^(pair|s|ed|stress):.{1,60}$/.test(k)) wrong[k] = Math.min(99, Math.max(1, n(v)));
+  return { weeks: [0, 1, 2, 3].map((i) => !!o.weeks?.[i]), stats, wrong };
+}
+export async function savePron() {
+  await put('kv', { key: 'pron', value: S.pron });
+}
 export async function savePick() {
   await put('kv', { key: 'pick', value: S.pick });
 }
@@ -544,6 +559,7 @@ export function exportData({ withWriting = true } = {}) {
     speaking: [...S.speaking.values()].map(({ audio, ...r }) => ({ ...r, hasAudio: !!audio })),
     listening: S.listening,
     hunt: S.hunt,
+    pron: S.pron, // mục Phát âm: tiến độ lộ trình và bài luyện
     pick: S.pick, // game Chọn từ: bộ câu hỏi người học tự nhập, câu đã sai, thống kê
     // Đề tự nhập (có bản quyền, file nghe nặng) không đưa vào file sao lưu; chỉ giữ kết quả làm bài.
     ltestResults: [...S.ltest.values()].filter((r) => r.kind === 'attempt'),
@@ -757,7 +773,8 @@ function cleanBackup(data) {
   const ltestResults = Array.isArray(data.ltestResults) ? data.ltestResults.map(cleanLtAttempt).filter(Boolean) : null;
   const hunt = data.hunt && typeof data.hunt === 'object' ? cleanHunt(data.hunt) : null;
   const pick = data.pick && typeof data.pick === 'object' ? cleanPickBackup(data.pick) : null;
-  return { decks, words, days, settings, game: cleanGame(data.game), grammar, writing, reading, speaking, listening, ltestResults, hunt, pick };
+  const pron = data.pron && typeof data.pron === 'object' ? cleanPron(data.pron) : null;
+  return { decks, words, days, settings, game: cleanGame(data.game), grammar, writing, reading, speaking, listening, ltestResults, hunt, pick, pron };
 }
 /** Bộ câu hỏi Chọn từ trong file sao lưu: chỉ giữ đúng các trường, cắt độ dài như khi nhập file. */
 function cleanPickBackup(o) {
@@ -828,6 +845,7 @@ export async function restoreData(data) {
     if (clean.hunt) t.objectStore('kv').put({ key: 'hunt', value: clean.hunt });
     // File sao lưu cũ (chưa có Chọn từ) → giữ nguyên bộ câu hỏi trên máy.
     if (clean.pick) t.objectStore('kv').put({ key: 'pick', value: clean.pick });
+    if (clean.pron) t.objectStore('kv').put({ key: 'pron', value: clean.pron });
   });
   await init();
   return clean.words.length;
