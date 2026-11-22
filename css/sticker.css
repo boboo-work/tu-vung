@@ -453,3 +453,8 @@ body:not(.no-tabs) #app::after {
 #view { overflow-x: hidden; overscroll-behavior: contain; }
 .page-settings { touch-action: pan-y; }
 .page-settings input, .page-settings select, .page-settings textarea { touch-action: manipulation; }
+.ms-day { display: flex; align-items: baseline; gap: 8px; margin: 18px 4px 8px; }
+.ms-day:first-child { margin-top: 4px; }
+.ms-day b { font-size: 15px; font-weight: 900; }
+.ms-day .link { margin-left: auto; font-size: 13px; min-height: 32px; }
+.ms-day .link.danger-text { color: var(--red); }
