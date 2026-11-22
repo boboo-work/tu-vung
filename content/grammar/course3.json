@@ -2,7 +2,7 @@
  "id": "c3",
  "title": "IELTS 6.5 Booster",
  "level": "Band 6.0–6.5",
- "version": 1,
+ "version": 2,
  "tags": {
   "k3-modal": {
    "name": "Modal: dạng và nghĩa (must / have to / mustn't)",
@@ -59,6 +59,10 @@
   "k3-comma": {
    "name": "Dấu phẩy, it's / its, viết hoa",
    "lesson": "k3-punct2"
+  },
+  "k3-phrasal": {
+   "name": "Phrasal verbs B2 và từ thay khi viết",
+   "lesson": "k3-phrasal"
   }
  },
  "units": [
@@ -1659,6 +1663,142 @@
        "by / to / from … to đúng nghĩa?",
        "Mỗi câu có mệnh đề chính?"
       ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "k3u6",
+   "no": "6",
+   "title": "Phrasal verbs B2 và cách thay khi viết",
+   "goal": "Nói tự nhiên hơn ở Speaking; biết đổi sang động từ trang trọng trong Writing",
+   "lessons": [
+    {
+     "id": "k3-phrasal",
+     "title": "Phrasal verbs B2 ↔ từ trang trọng",
+     "rule": [
+      "Speaking: dùng phrasal verb cho tự nhiên. Writing học thuật: thay bằng **một động từ trang trọng**.",
+      "**come up with → devise** · **put off → postpone** · **carry out → conduct** · **cut down on → reduce** · **bring up → raise**.",
+      "**deal with → handle** · **figure out → understand / solve** · **keep up with → stay up to date with** · **make up for → compensate for**.",
+      "**look up to → admire** · **take after → resemble** · **end up + V-ing → eventually** · **stand out → be noticeable** · **catch up on** (bù lại việc bị lỡ).",
+      "**end up** + **V-ing**: We ended up **staying** home."
+     ],
+     "examples": [
+      {
+       "en": "Speaking: We *came up with* a plan. → Writing: The team *devised* a plan.",
+       "vi": "Nghĩ ra một kế hoạch."
+      },
+      {
+       "en": "Speaking: They *carried out* a survey. → Writing: A survey was *conducted*.",
+       "vi": "Tiến hành một cuộc khảo sát."
+      },
+      {
+       "en": "I'm trying to *cut down on* sugar.",
+       "vi": "Tôi đang cố bớt ăn đường."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Writing: The government should ___ the amount of plastic waste.",
+       "opts": [
+        "reduce",
+        "cut down on",
+        "cut off"
+       ],
+       "a": 0,
+       "why": "Writing học thuật dùng động từ trang trọng: **reduce**.",
+       "tag": "k3-phrasal"
+      },
+      {
+       "t": "mc",
+       "q": "The meeting was ___ until next Monday.",
+       "opts": [
+        "put off",
+        "put on",
+        "put up"
+       ],
+       "a": 0,
+       "why": "Hoãn = **put off** (trang trọng: postpone).",
+       "tag": "k3-phrasal"
+      },
+      {
+       "t": "mc",
+       "q": "We missed the bus and ended up ___ a taxi.",
+       "opts": [
+        "taking",
+        "take",
+        "to take"
+       ],
+       "a": 0,
+       "why": "end up + **V-ing**.",
+       "tag": "k3-phrasal"
+      },
+      {
+       "t": "fill",
+       "q": "She takes ___ her father: they have the same smile.",
+       "a": [
+        "after"
+       ],
+       "why": "Giống người thân = **take after**.",
+       "tag": "k3-phrasal"
+      },
+      {
+       "t": "fill",
+       "q": "Researchers carried ___ a study on 500 students.",
+       "a": [
+        "out"
+       ],
+       "why": "Tiến hành = **carry out**.",
+       "tag": "k3-phrasal"
+      },
+      {
+       "t": "tf",
+       "q": "Writing Task 2: Governments must deal with this problem.",
+       "a": true,
+       "why": "Chấp nhận được; trang trọng hơn: **handle / address** this problem.",
+       "tag": "k3-phrasal"
+      },
+      {
+       "t": "fix",
+       "q": "Scientists came up a new method.",
+       "a": [
+        "Scientists came up with a new method."
+       ],
+       "why": "Đủ cụm: **come up with**.",
+       "tag": "k3-phrasal"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k3-phrasal-1",
+       "front": "Writing: tiến hành nghiên cứu",
+       "pattern": "carry out → **conduct** a study / survey",
+       "example": "A survey was *conducted* among 1,000 adults.",
+       "vi": "Một khảo sát được tiến hành với 1.000 người."
+      },
+      {
+       "id": "k3-phrasal-2",
+       "front": "Writing: hoãn lại",
+       "pattern": "put off → **postpone** + N / V-ing",
+       "example": "Many couples *postpone* having children.",
+       "vi": "Nhiều cặp đôi hoãn việc sinh con."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu Writing Task 2 dùng một động từ trang trọng thay phrasal verb (devise, postpone, conduct, reduce, handle…).",
+      "samples": [
+       "Governments should devise policies to reduce traffic congestion.",
+       "Many companies postpone hiring during an economic downturn."
+      ],
+      "check": [
+       "Đã dùng động từ trang trọng thay phrasal verb?",
+       "Câu đủ chủ ngữ và động từ?"
+      ],
+      "must": [
+       "\\b(devise|postpone|conduct|reduce|raise|handle|address|compensate|admire|resemble|eventually|solve)\\w*\\b"
+      ],
+      "hint": "Dùng một trong: devise, postpone, conduct, reduce, handle…"
      }
     }
    ]

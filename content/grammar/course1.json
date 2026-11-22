@@ -2,7 +2,7 @@
  "id": "c1",
  "title": "Nền tảng",
  "level": "A1–A2",
- "version": 1,
+ "version": 2,
  "tags": {
   "subject": {
    "name": "Thiếu chủ ngữ (It is…)",
@@ -151,6 +151,14 @@
   "if1": {
    "name": "Câu điều kiện loại 1",
    "lesson": "u9-if"
+  },
+  "indef": {
+   "name": "Đại từ bất định (someone / anything / nobody…)",
+   "lesson": "u10-indef"
+  },
+  "phrasal-a2": {
+   "name": "Phrasal verbs cơ bản; đại từ đứng giữa",
+   "lesson": "u10-phrasal"
   }
  },
  "units": [
@@ -3846,6 +3854,273 @@
        "Động từ ở dạng quá khứ?",
        "Danh từ số nhiều có -s?"
       ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "u10",
+   "no": "10",
+   "title": "Đại từ bất định và phrasal verbs cơ bản",
+   "goal": "Dùng someone / anything / nobody / everyone đúng; dùng 10 phrasal verbs hằng ngày",
+   "lessons": [
+    {
+     "id": "u10-indef",
+     "title": "someone, anything, nobody, everyone",
+     "rule": [
+      "Ghép **some / any / no / every** với **-one / -body** (người), **-thing** (vật), **-where** (nơi chốn).",
+      "**some-**: câu khẳng định và lời mời. **any-**: câu phủ định, câu hỏi; còn có nghĩa \"bất kỳ\".",
+      "**no-** đã mang nghĩa phủ định: không thêm *not*. ✗ I don't know nothing → ✓ I know nothing / I don't know anything.",
+      "Động từ theo sau luôn **chia số ít**: Everyone **is** here. · Nobody **knows**.",
+      "Tính từ và *else* đứng **sau**: something **cold**, somewhere **quiet**, someone **else**."
+     ],
+     "examples": [
+      {
+       "en": "There is *someone* at the door.",
+       "vi": "Có ai đó ở cửa."
+      },
+      {
+       "en": "I didn't see *anyone*. You can sit *anywhere*.",
+       "vi": "Tôi không thấy ai. Bạn ngồi chỗ nào cũng được."
+      },
+      {
+       "en": "*Everyone* is here, but *nobody* knows the answer.",
+       "vi": "Mọi người đều ở đây nhưng không ai biết đáp án."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "Would you like ___ to drink?",
+       "opts": [
+        "something",
+        "anything",
+        "nothing"
+       ],
+       "a": 0,
+       "why": "Lời mời dùng **something** dù là câu hỏi.",
+       "tag": "indef"
+      },
+      {
+       "t": "mc",
+       "q": "I didn't see ___ in the room.",
+       "opts": [
+        "anyone",
+        "someone",
+        "no one"
+       ],
+       "a": 0,
+       "why": "Câu phủ định (didn't) dùng **anyone**.",
+       "tag": "indef"
+      },
+      {
+       "t": "mc",
+       "q": "Everyone ___ ready for the trip.",
+       "opts": [
+        "is",
+        "are",
+        "be"
+       ],
+       "a": 0,
+       "why": "Everyone + động từ **số ít**: is.",
+       "tag": "indef"
+      },
+      {
+       "t": "fill",
+       "q": "I looked ___ but I couldn't find my keys.",
+       "a": [
+        "everywhere"
+       ],
+       "why": "Tìm \"khắp nơi\" → **everywhere**.",
+       "tag": "indef",
+       "hint": "khắp nơi"
+      },
+      {
+       "t": "tf",
+       "q": "I don't know nothing about it.",
+       "a": false,
+       "why": "Đã có *don't* thì dùng **anything**; hoặc bỏ don't: I know nothing.",
+       "tag": "indef",
+       "fix": "I don't know anything about it."
+      },
+      {
+       "t": "fix",
+       "q": "Let's go to quiet somewhere.",
+       "a": [
+        "Let's go somewhere quiet."
+       ],
+       "why": "Tính từ đứng **sau**: somewhere quiet.",
+       "tag": "indef"
+      },
+      {
+       "t": "fix",
+       "q": "Nobody know the answer.",
+       "a": [
+        "Nobody knows the answer."
+       ],
+       "why": "Nobody + động từ **số ít**: knows.",
+       "tag": "indef"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u10-indef-1",
+       "front": "Mời ai đó uống gì",
+       "pattern": "Would you like **something** + adj + to V?",
+       "example": "Would you like *something cold* to drink?",
+       "vi": "Bạn có muốn uống gì lạnh không?"
+      },
+      {
+       "id": "u10-indef-2",
+       "front": "Nói \"không ai / không gì\"",
+       "pattern": "**Nobody / Nothing** + V số ít (không thêm not)",
+       "example": "*Nobody* knows. There is *nothing* in the box.",
+       "vi": "Không ai biết. Hộp không có gì."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu về nơi bạn muốn đi, có dùng somewhere / anywhere + tính từ.",
+      "samples": [
+       "I want to go somewhere quiet this weekend.",
+       "We can eat anywhere cheap near the station."
+      ],
+      "check": [
+       "Tính từ đứng sau somewhere/anywhere?",
+       "Động từ chia đúng?"
+      ],
+      "must": [
+       "\\b(some|any|no|every)(where|one|body|thing)\\b"
+      ],
+      "hint": "Câu cần có somewhere, anywhere, something, someone…"
+     }
+    },
+    {
+     "id": "u10-phrasal",
+     "title": "Phrasal verbs hằng ngày (A2)",
+     "rule": [
+      "Phrasal verb = động từ + giới từ / trạng từ, nghĩa thường khác hẳn từng từ: **give up** = bỏ cuộc.",
+      "Nhóm hằng ngày: **get up, wake up, turn on / off, put on / take off, sit down, stand up, look for, come back, get on / off, pick up, hurry up**.",
+      "Loại **tách được**: tân ngữ đứng giữa hoặc sau. Nếu tân ngữ là **đại từ** thì bắt buộc đứng giữa: Turn **it** off. (✗ Turn off it.)",
+      "Loại **không tách được**: tân ngữ luôn đứng sau: look for **my keys** → look for **them**."
+     ],
+     "examples": [
+      {
+       "en": "I *get up* at 6 and *put on* my uniform.",
+       "vi": "Tôi dậy lúc 6 giờ và mặc đồng phục."
+      },
+      {
+       "en": "The TV is too loud. *Turn it off*, please.",
+       "vi": "Ti vi to quá. Tắt nó đi."
+      },
+      {
+       "en": "I'll *pick you up* at 7.",
+       "vi": "Mình sẽ đón bạn lúc 7 giờ."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I'm ___ my phone. Have you seen it?",
+       "opts": [
+        "looking for",
+        "looking at",
+        "looking after"
+       ],
+       "a": 0,
+       "why": "Tìm (đồ bị mất) = **look for**.",
+       "tag": "phrasal-a2"
+      },
+      {
+       "t": "mc",
+       "q": "It's cold outside. ___ your coat.",
+       "opts": [
+        "Put on",
+        "Take off",
+        "Turn on"
+       ],
+       "a": 0,
+       "why": "Mặc vào = **put on**.",
+       "tag": "phrasal-a2"
+      },
+      {
+       "t": "mc",
+       "q": "The light is on. Please ___.",
+       "opts": [
+        "turn it off",
+        "turn off it",
+        "turn it out of"
+       ],
+       "a": 0,
+       "why": "Đại từ (it) phải đứng **giữa**: turn it off.",
+       "tag": "phrasal-a2"
+      },
+      {
+       "t": "fill",
+       "q": "We're late! Hurry ___!",
+       "a": [
+        "up"
+       ],
+       "why": "Nhanh lên = **hurry up**.",
+       "tag": "phrasal-a2"
+      },
+      {
+       "t": "fill",
+       "q": "Get ___ the bus at the next stop.",
+       "a": [
+        "off"
+       ],
+       "why": "Xuống xe = **get off**.",
+       "tag": "phrasal-a2",
+       "hint": "xuống xe"
+      },
+      {
+       "t": "tf",
+       "q": "Can you pick up me at the station?",
+       "a": false,
+       "why": "Đại từ đứng giữa: **pick me up**.",
+       "tag": "phrasal-a2",
+       "fix": "Can you pick me up at the station?"
+      },
+      {
+       "t": "fix",
+       "q": "Please sit up and listen.",
+       "a": [
+        "Please sit down and listen."
+       ],
+       "why": "Ngồi xuống = **sit down**.",
+       "tag": "phrasal-a2"
+      }
+     ],
+     "cards": [
+      {
+       "id": "u10-phrasal-1",
+       "front": "Nhờ ai tắt / bật thứ gì",
+       "pattern": "Turn **it** off / on. (đại từ đứng giữa)",
+       "example": "Could you *turn it off*, please?",
+       "vi": "Bạn tắt nó đi được không?"
+      },
+      {
+       "id": "u10-phrasal-2",
+       "front": "Hẹn đón ai",
+       "pattern": "I'll **pick** + người + **up** at + giờ.",
+       "example": "I'll *pick you up* at seven.",
+       "vi": "Mình sẽ đón bạn lúc bảy giờ."
+      }
+     ],
+     "write": {
+      "prompt": "Kể buổi sáng của bạn bằng một câu có ít nhất hai phrasal verbs.",
+      "samples": [
+       "I wake up at six, but I get up at half past six.",
+       "I put on my shoes and pick up my sister."
+      ],
+      "check": [
+       "Đại từ có đứng giữa phrasal verb tách được?",
+       "Động từ chia đúng thì?"
+      ],
+      "must": [
+       "\\b(get|wake|turn|put|take|sit|stand|look|come|go|pick|hurry)s?\\b.*\\b(up|on|off|down|for|back)\\b"
+      ],
+      "hint": "Dùng ví dụ: wake up, get up, put on, pick up…"
      }
     }
    ]

@@ -2,7 +2,7 @@
  "id": "c2",
  "title": "IELTS Core",
  "level": "Band 4.5–6.0",
- "version": 1,
+ "version": 2,
  "tags": {
   "k2-wordform": {
    "name": "Dùng sai dạng từ (danh/động/tính/trạng)",
@@ -143,6 +143,30 @@
   "k2-timeclause": {
    "name": "Mệnh đề thời gian không dùng will",
    "lesson": "k2-time"
+  },
+  "k2-both": {
+   "name": "both / either / neither",
+   "lesson": "k2-both"
+  },
+  "k2-each": {
+   "name": "all / every / each / none",
+   "lesson": "k2-each"
+  },
+  "k2-tag": {
+   "name": "Câu hỏi đuôi",
+   "lesson": "k2-tag"
+  },
+  "k2-sodo": {
+   "name": "So do I / Neither do I / too / either",
+   "lesson": "k2-sodo"
+  },
+  "k2-eachother": {
+   "name": "each other hay -selves",
+   "lesson": "k2-eachother"
+  },
+  "k2-phrasal": {
+   "name": "Phrasal verbs B1; look forward to + V-ing",
+   "lesson": "k2-phrasal"
   }
  },
  "units": [
@@ -3966,6 +3990,743 @@
        "Danh từ đếm được số ít có mạo từ?",
        "Mỗi cặp ý chỉ một liên từ?"
       ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "k2u11",
+   "no": "11",
+   "title": "Từ chỉ nhóm, câu hỏi đuôi và đáp đồng tình",
+   "goal": "So sánh hai đối tượng trong Task 1; nói tự nhiên ở Speaking; nghe hiểu hội thoại Part 1 và 3",
+   "lessons": [
+    {
+     "id": "k2-both",
+     "title": "both / either / neither",
+     "rule": [
+      "Nói về **hai** đối tượng: **both** (cả hai), **either** (một trong hai, cái nào cũng được), **neither** (không cái nào).",
+      "**both** + N số nhiều + động từ số nhiều · **both A and B**.",
+      "**either / neither** + N **số ít** · **either A or B** · **neither A nor B**.",
+      "Với either…or / neither…nor, động từ chia theo danh từ **gần nó nhất**: Neither the teacher nor the students **were** late.",
+      "**neither** đã là phủ định: ✗ Neither of them didn't come → ✓ Neither of them came.",
+      "Task 1: **Both** countries saw an increase. · **Neither** figure changed significantly."
+     ],
+     "examples": [
+      {
+       "en": "*Both* restaurants are good, so we can go to *either* one.",
+       "vi": "Cả hai nhà hàng đều ngon, đi cái nào cũng được."
+      },
+      {
+       "en": "*Neither* Tom *nor* Anna came to the party.",
+       "vi": "Cả Tom lẫn Anna đều không đến bữa tiệc."
+      },
+      {
+       "en": "*Both* figures rose, but *neither* exceeded 50%.",
+       "vi": "Cả hai số liệu đều tăng nhưng không số nào vượt 50%."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "___ countries saw a sharp increase in tourism.",
+       "opts": [
+        "Both",
+        "Either",
+        "Neither of"
+       ],
+       "a": 0,
+       "why": "Hai nước cùng tăng, N số nhiều → **Both**.",
+       "tag": "k2-both"
+      },
+      {
+       "t": "mc",
+       "q": "You can take ___ bus; they both go to the city centre.",
+       "opts": [
+        "either",
+        "both",
+        "neither"
+       ],
+       "a": 0,
+       "why": "Cái nào cũng được, N số ít → **either**.",
+       "tag": "k2-both"
+      },
+      {
+       "t": "mc",
+       "q": "Neither the manager nor the staff ___ happy with the decision.",
+       "opts": [
+        "were",
+        "was",
+        "is"
+       ],
+       "a": 0,
+       "why": "Chia theo danh từ gần nhất (the staff, số nhiều) → **were**.",
+       "tag": "k2-both"
+      },
+      {
+       "t": "fill",
+       "q": "___ Tom nor Anna likes jazz.",
+       "a": [
+        "Neither"
+       ],
+       "why": "Cặp **neither … nor**.",
+       "tag": "k2-both"
+      },
+      {
+       "t": "tf",
+       "q": "Neither of them didn't answer the phone.",
+       "a": false,
+       "why": "Neither đã phủ định, bỏ *didn't*.",
+       "tag": "k2-both",
+       "fix": "Neither of them answered the phone."
+      },
+      {
+       "t": "fix",
+       "q": "Both of them is good students.",
+       "a": [
+        "Both of them are good students."
+       ],
+       "why": "Both + động từ **số nhiều**: are.",
+       "tag": "k2-both"
+      },
+      {
+       "t": "tf",
+       "q": "Either answer is acceptable.",
+       "a": true,
+       "why": "either + N **số ít** (answer) + động từ số ít.",
+       "tag": "k2-both"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-both-1",
+       "front": "Task 1: hai số liệu cùng xu hướng",
+       "pattern": "**Both** + N số nhiều + V…",
+       "example": "*Both* countries saw a steady rise.",
+       "vi": "Cả hai nước đều tăng đều."
+      },
+      {
+       "id": "k2-both-2",
+       "front": "Task 1: không số liệu nào…",
+       "pattern": "**Neither** + N số ít + V (khẳng định)",
+       "example": "*Neither* figure exceeded 40%.",
+       "vi": "Không số liệu nào vượt 40%."
+      }
+     ],
+     "write": {
+      "prompt": "So sánh hai thứ (hai thành phố, hai món ăn…) trong một câu có both hoặc neither.",
+      "samples": [
+       "Both cities are crowded, but neither has a good metro system.",
+       "Neither option is cheap."
+      ],
+      "check": [
+       "both + số nhiều, neither + số ít?",
+       "Không thêm not sau neither?"
+      ],
+      "must": [
+       "\\b(both|either|neither)\\b"
+      ],
+      "hint": "Câu cần có both, either hoặc neither"
+     }
+    },
+    {
+     "id": "k2-each",
+     "title": "all / every / each / none",
+     "rule": [
+      "Nói về **ba đối tượng trở lên**: **all** (tất cả) + N số nhiều / không đếm được.",
+      "**every** (mọi, nhìn chung cả nhóm) và **each** (mỗi, từng cái riêng) luôn + N **số ít** + động từ **số ít**.",
+      "**each of / none of** + the / my… + N số nhiều: **Each of** the players **gets** a shirt.",
+      "**every day** (mỗi ngày, trạng từ) khác **everyday** (hằng ngày, tính từ): I walk every day · everyday life."
+     ],
+     "examples": [
+      {
+       "en": "*All* students need a library card.",
+       "vi": "Tất cả sinh viên cần thẻ thư viện."
+      },
+      {
+       "en": "*Every* room has a window, and *each* room has its own number.",
+       "vi": "Phòng nào cũng có cửa sổ, mỗi phòng có số riêng."
+      },
+      {
+       "en": "*None of* my friends smoke.",
+       "vi": "Không ai trong số bạn tôi hút thuốc."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "___ student has to submit an essay.",
+       "opts": [
+        "Every",
+        "All",
+        "Both"
+       ],
+       "a": 0,
+       "why": "N số ít (student) → **Every**.",
+       "tag": "k2-each"
+      },
+      {
+       "t": "mc",
+       "q": "Each of the players ___ a medal.",
+       "opts": [
+        "gets",
+        "get",
+        "are getting"
+       ],
+       "a": 0,
+       "why": "Each of + N số nhiều nhưng động từ **số ít**: gets.",
+       "tag": "k2-each"
+      },
+      {
+       "t": "mc",
+       "q": "I go jogging ___.",
+       "opts": [
+        "every day",
+        "everyday",
+        "all day long every"
+       ],
+       "a": 0,
+       "why": "Trạng từ \"mỗi ngày\" viết rời: **every day**.",
+       "tag": "k2-each"
+      },
+      {
+       "t": "fill",
+       "q": "___ of my classmates passed; we all failed the first test.",
+       "a": [
+        "None"
+       ],
+       "why": "Không ai → **None** of.",
+       "tag": "k2-each"
+      },
+      {
+       "t": "tf",
+       "q": "Every students has a locker.",
+       "a": false,
+       "why": "every + N **số ít**: student.",
+       "tag": "k2-each",
+       "fix": "Every student has a locker."
+      },
+      {
+       "t": "fix",
+       "q": "Smartphones are part of every day life.",
+       "a": [
+        "Smartphones are part of everyday life."
+       ],
+       "why": "Tính từ \"hằng ngày\" viết liền: **everyday** life.",
+       "tag": "k2-each"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-each-1",
+       "front": "Nói từng người nhận gì",
+       "pattern": "**Each of** the + N số nhiều + V số ít",
+       "example": "*Each of* the winners *receives* a prize.",
+       "vi": "Mỗi người thắng nhận một giải."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu về lớp học hoặc nơi làm việc của bạn, dùng each hoặc every.",
+      "samples": [
+       "Every employee has a laptop.",
+       "Each of my teachers gives homework twice a week."
+      ],
+      "check": [
+       "every/each + N số ít?",
+       "Động từ chia số ít?"
+      ],
+      "must": [
+       "\\b(each|every)\\b"
+      ],
+      "hint": "Câu cần có each hoặc every"
+     }
+    },
+    {
+     "id": "k2-tag",
+     "title": "Câu hỏi đuôi (… phải không?)",
+     "rule": [
+      "Câu **khẳng định** → đuôi **phủ định**; câu **phủ định** → đuôi **khẳng định**. Đuôi = trợ động từ + đại từ.",
+      "to be → be: She **is** a doctor, **isn't she**? · Động từ thường → **do / does / did**: You like pizza, **don't you**?",
+      "Modal, have, will giữ nguyên: She **can** swim, **can't she**? · You**'ve** finished, **haven't you**? · It **will** rain, **won't it**?",
+      "Đặc biệt: I am → **aren't I** · Let's → **shall we** · câu mệnh lệnh → **will you** · câu có never / nothing / hardly → đuôi **khẳng định**.",
+      "everyone / nobody → **they**; this / that → **it**.",
+      "Xuống giọng ↘ khi chỉ xác nhận; lên giọng ↗ khi thật sự hỏi. Dùng trong Speaking, cần nghe hiểu ở Listening; không dùng trong Writing."
+     ],
+     "examples": [
+      {
+       "en": "It's a nice place, *isn't it*?",
+       "vi": "Chỗ này đẹp nhỉ?"
+      },
+      {
+       "en": "You saw the film, *didn't you*?",
+       "vi": "Bạn xem phim đó rồi phải không?"
+      },
+      {
+       "en": "He never calls, *does he*?",
+       "vi": "Anh ấy chẳng bao giờ gọi, đúng không?"
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "You like tea, ___?",
+       "opts": [
+        "don't you",
+        "isn't it",
+        "do you"
+       ],
+       "a": 0,
+       "why": "Động từ thường, hiện tại, khẳng định → **don't you**.",
+       "tag": "k2-tag"
+      },
+      {
+       "t": "mc",
+       "q": "I'm late, ___?",
+       "opts": [
+        "aren't I",
+        "amn't I",
+        "isn't I"
+       ],
+       "a": 0,
+       "why": "I am → **aren't I**.",
+       "tag": "k2-tag"
+      },
+      {
+       "t": "mc",
+       "q": "Let's start, ___?",
+       "opts": [
+        "shall we",
+        "don't we",
+        "won't we"
+       ],
+       "a": 0,
+       "why": "Let's → **shall we**.",
+       "tag": "k2-tag"
+      },
+      {
+       "t": "fill",
+       "q": "She can't drive, ___ she?",
+       "a": [
+        "can"
+       ],
+       "why": "Câu phủ định → đuôi khẳng định: **can** she.",
+       "tag": "k2-tag"
+      },
+      {
+       "t": "fill",
+       "q": "They went home early, ___ they?",
+       "a": [
+        "didn't"
+       ],
+       "why": "Quá khứ đơn → **didn't**.",
+       "tag": "k2-tag"
+      },
+      {
+       "t": "tf",
+       "q": "He never eats meat, doesn't he?",
+       "a": false,
+       "why": "never đã phủ định → đuôi **khẳng định**: does he.",
+       "tag": "k2-tag",
+       "fix": "He never eats meat, does he?"
+      },
+      {
+       "t": "fix",
+       "q": "Everyone is ready, isn't he?",
+       "a": [
+        "Everyone is ready, aren't they?"
+       ],
+       "why": "everyone → đại từ **they**.",
+       "tag": "k2-tag"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-tag-1",
+       "front": "Bắt chuyện tự nhiên (Speaking)",
+       "pattern": "Câu khẳng định, **isn't it / don't you**?",
+       "example": "The weather's lovely today, *isn't it*?",
+       "vi": "Hôm nay trời đẹp nhỉ?"
+      }
+     ],
+     "write": {
+      "prompt": "Viết hai câu hỏi đuôi: một câu khẳng định và một câu phủ định.",
+      "samples": [
+       "You live near here, don't you?",
+       "She hasn't arrived yet, has she?"
+      ],
+      "check": [
+       "Khẳng định → đuôi phủ định và ngược lại?",
+       "Đuôi dùng đúng trợ động từ?"
+      ],
+      "must": [
+       ",\\s*\\w+(n't)?\\s+(i|you|he|she|it|we|they)\\?"
+      ],
+      "hint": "Câu cần có dạng: …, don't you? / …, is it?"
+     }
+    },
+    {
+     "id": "k2-sodo",
+     "title": "So do I / Neither do I / too / either",
+     "rule": [
+      "Đồng tình với câu **khẳng định**: I do **too** / Me too / **So do I**.",
+      "Đồng tình với câu **phủ định**: I don't **either** / Me neither / **Neither do I**.",
+      "Cấu trúc đảo: **So / Neither + trợ động từ + chủ ngữ**. Trợ động từ giống câu gốc (am, can, have…); động từ thường dùng **do / does / did**.",
+      "Không đồng tình: I like coffee. → Oh, **I don't**. · I don't like coffee. → Really? **I do**.",
+      "Lỗi hay gặp: ✗ I don't like it. – Me too → ✓ Me neither · ✗ Neither I do → ✓ Neither do I · *So I am* (= đúng vậy) khác *So am I* (= tôi cũng vậy)."
+     ],
+     "examples": [
+      {
+       "en": "A: I'm tired. B: *So am I*.",
+       "vi": "A: Tôi mệt. B: Tôi cũng vậy."
+      },
+      {
+       "en": "A: She can't swim. B: *Neither can I*.",
+       "vi": "A: Cô ấy không biết bơi. B: Tôi cũng không."
+      },
+      {
+       "en": "A: We went to the beach. B: *So did we*!",
+       "vi": "A: Bọn mình đi biển. B: Bọn mình cũng thế!"
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "A: I love Vietnamese food. B: ___",
+       "opts": [
+        "So do I.",
+        "So am I.",
+        "Neither do I."
+       ],
+       "a": 0,
+       "why": "Câu khẳng định, động từ thường → **So do I**.",
+       "tag": "k2-sodo"
+      },
+      {
+       "t": "mc",
+       "q": "A: I don't like horror films. B: ___",
+       "opts": [
+        "Me neither.",
+        "Me too.",
+        "So do I."
+       ],
+       "a": 0,
+       "why": "Câu phủ định → **Me neither**.",
+       "tag": "k2-sodo"
+      },
+      {
+       "t": "mc",
+       "q": "A: He has finished his homework. B: So ___ I.",
+       "opts": [
+        "have",
+        "do",
+        "am"
+       ],
+       "a": 0,
+       "why": "Câu gốc dùng *has* → **So have I**.",
+       "tag": "k2-sodo"
+      },
+      {
+       "t": "fill",
+       "q": "A: I can't cook. B: Neither ___ I.",
+       "a": [
+        "can"
+       ],
+       "why": "Câu gốc dùng *can't* → **Neither can I**.",
+       "tag": "k2-sodo"
+      },
+      {
+       "t": "fill",
+       "q": "A: We visited Hue last year. B: So ___ we!",
+       "a": [
+        "did"
+       ],
+       "why": "Quá khứ đơn → **did**.",
+       "tag": "k2-sodo"
+      },
+      {
+       "t": "tf",
+       "q": "A: I'm not hungry. B: I'm not too.",
+       "a": false,
+       "why": "Câu phủ định dùng **either**: I'm not either / Neither am I.",
+       "tag": "k2-sodo",
+       "fix": "I'm not either."
+      },
+      {
+       "t": "fix",
+       "q": "A: I don't eat meat. B: Neither I do.",
+       "a": [
+        "Neither do I."
+       ],
+       "why": "Phải đảo: **Neither do I**.",
+       "tag": "k2-sodo"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-sodo-1",
+       "front": "\"Tôi cũng vậy\" (khẳng định)",
+       "pattern": "**So + trợ động từ + I**",
+       "example": "A: I've been there. B: *So have I*.",
+       "vi": "Tôi cũng từng đến đó."
+      },
+      {
+       "id": "k2-sodo-2",
+       "front": "\"Tôi cũng không\" (phủ định)",
+       "pattern": "**Neither + trợ động từ + I**",
+       "example": "A: I didn't sleep well. B: *Neither did I*.",
+       "vi": "Tôi cũng ngủ không ngon."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một đoạn hội thoại ngắn hai câu: A nói một điều, B đồng tình bằng So… I hoặc Neither… I.",
+      "samples": [
+       "A: I don't like waking up early. B: Neither do I.",
+       "A: I'm learning English. B: So am I."
+      ],
+      "check": [
+       "Đã đảo trợ động từ lên trước I?",
+       "Trợ động từ khớp với câu của A?"
+      ],
+      "must": [
+       "\\b(so|neither)\\s+(do|does|did|am|is|are|was|were|can|could|have|has|had|will|would|should)\\s+(i|we|they|he|she)\\b"
+      ],
+      "hint": "Câu cần có dạng So do I / Neither can I…"
+     }
+    },
+    {
+     "id": "k2-eachother",
+     "title": "each other / one another",
+     "rule": [
+      "**each other / one another** = nhau, lẫn nhau: hành động đi theo **hai chiều**. Hai cách dùng thay nhau được; *one another* trang trọng hơn một chút.",
+      "Sở hữu: **each other's** families (gia đình của nhau).",
+      "Khác đại từ phản thân: They looked at **themselves** (mỗi người tự nhìn mình) ≠ They looked at **each other** (nhìn nhau).",
+      "Một số động từ đã mang nghĩa \"nhau\": They **met** in 2020. · We **married** last year. (met each other vẫn đúng nhưng hay được lược)."
+     ],
+     "examples": [
+      {
+       "en": "Tom and Anna love *each other*.",
+       "vi": "Tom và Anna yêu nhau."
+      },
+      {
+       "en": "The students help *one another* before exams.",
+       "vi": "Các học sinh giúp nhau trước kỳ thi."
+      },
+      {
+       "en": "They know *each other's* families.",
+       "vi": "Họ biết gia đình của nhau."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "My brother and I call ___ every weekend.",
+       "opts": [
+        "each other",
+        "ourselves",
+        "us"
+       ],
+       "a": 0,
+       "why": "Gọi cho nhau → **each other**.",
+       "tag": "k2-eachother"
+      },
+      {
+       "t": "mc",
+       "q": "The children looked at ___ in the mirror and laughed.",
+       "opts": [
+        "themselves",
+        "each other",
+        "them"
+       ],
+       "a": 0,
+       "why": "Mỗi đứa tự nhìn mình trong gương → **themselves**.",
+       "tag": "k2-eachother"
+      },
+      {
+       "t": "fill",
+       "q": "We've known each ___ since primary school.",
+       "a": [
+        "other"
+       ],
+       "why": "**each other** = nhau.",
+       "tag": "k2-eachother"
+      },
+      {
+       "t": "fill",
+       "q": "They often borrow each other___ notes.",
+       "a": [
+        "'s",
+        "’s"
+       ],
+       "why": "Sở hữu: each other**'s**.",
+       "tag": "k2-eachother"
+      },
+      {
+       "t": "tf",
+       "q": "Members of the team should support one another.",
+       "a": true,
+       "why": "one another = lẫn nhau, đúng.",
+       "tag": "k2-eachother"
+      },
+      {
+       "t": "fix",
+       "q": "They help themselves with homework.",
+       "a": [
+        "They help each other with homework."
+       ],
+       "why": "Ý là giúp **nhau** → each other.",
+       "tag": "k2-eachother"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-eachother-1",
+       "front": "Nói hai người làm gì cho nhau",
+       "pattern": "A and B + V + **each other**",
+       "example": "My sister and I text *each other* every day.",
+       "vi": "Chị tôi và tôi nhắn tin cho nhau mỗi ngày."
+      }
+     ],
+     "write": {
+      "prompt": "Viết một câu về bạn và một người thân, dùng each other.",
+      "samples": [
+       "My best friend and I have known each other for ten years.",
+       "My parents and I support each other."
+      ],
+      "check": [
+       "Hành động có đúng hai chiều?",
+       "Không nhầm với -selves?"
+      ],
+      "must": [
+       "\\b(each other|one another)\\b"
+      ],
+      "hint": "Câu cần có each other hoặc one another"
+     }
+    },
+    {
+     "id": "k2-phrasal",
+     "title": "Phrasal verbs cho Speaking (B1)",
+     "rule": [
+      "Nhóm B1 hay dùng: **look after** (chăm sóc), **look forward to + V-ing** (mong chờ), **find out** (tìm ra), **give up** (bỏ cuộc/từ bỏ), **take up** (bắt đầu sở thích), **go on** (tiếp tục), **grow up** (lớn lên).",
+      "Thêm: **get on (well) with** (hoà hợp), **run out of** (hết), **fill in / out** (điền đơn), **set up** (thành lập), **turn down** (vặn nhỏ; từ chối).",
+      "**look forward to** + **V-ing** (to là giới từ): I look forward to **hearing** from you. (✗ to hear)",
+      "Speaking: cố dùng ít nhất một cụm trong mỗi câu trả lời Part 1. Writing học thuật nên thay bằng động từ đơn (find out → discover)."
+     ],
+     "examples": [
+      {
+       "en": "I *grew up* in a small town and *took up* football at school.",
+       "vi": "Tôi lớn lên ở thị trấn nhỏ và bắt đầu chơi bóng từ hồi đi học."
+      },
+      {
+       "en": "I *get on well with* my neighbours.",
+       "vi": "Tôi hoà hợp với hàng xóm."
+      },
+      {
+       "en": "We've *run out of* milk.",
+       "vi": "Nhà hết sữa rồi."
+      }
+     ],
+     "items": [
+      {
+       "t": "mc",
+       "q": "I'm looking forward to ___ you next week.",
+       "opts": [
+        "seeing",
+        "see",
+        "saw"
+       ],
+       "a": 0,
+       "why": "look forward to + **V-ing**.",
+       "tag": "k2-phrasal"
+      },
+      {
+       "t": "mc",
+       "q": "My grandmother ___ me when my parents were at work.",
+       "opts": [
+        "looked after",
+        "looked for",
+        "looked up"
+       ],
+       "a": 0,
+       "why": "Chăm sóc = **look after**.",
+       "tag": "k2-phrasal"
+      },
+      {
+       "t": "mc",
+       "q": "He ___ smoking two years ago.",
+       "opts": [
+        "gave up",
+        "took up",
+        "set up"
+       ],
+       "a": 0,
+       "why": "Bỏ (thói quen) = **give up**.",
+       "tag": "k2-phrasal"
+      },
+      {
+       "t": "fill",
+       "q": "She ___ up her own business in 2019.",
+       "a": [
+        "set"
+       ],
+       "why": "Thành lập = **set up**.",
+       "tag": "k2-phrasal"
+      },
+      {
+       "t": "fill",
+       "q": "We've run out ___ coffee. Can you buy some?",
+       "a": [
+        "of"
+       ],
+       "why": "Hết = **run out of**.",
+       "tag": "k2-phrasal"
+      },
+      {
+       "t": "tf",
+       "q": "I look forward to hear from you.",
+       "a": false,
+       "why": "to là giới từ → **hearing**.",
+       "tag": "k2-phrasal",
+       "fix": "I look forward to hearing from you."
+      },
+      {
+       "t": "fix",
+       "q": "He turned down it.",
+       "a": [
+        "He turned it down."
+       ],
+       "why": "Đại từ đứng giữa: turned **it** down.",
+       "tag": "k2-phrasal"
+      }
+     ],
+     "cards": [
+      {
+       "id": "k2-phrasal-1",
+       "front": "Part 1: kể về tuổi thơ",
+       "pattern": "I **grew up** in + nơi chốn",
+       "example": "I *grew up* in a coastal city.",
+       "vi": "Tôi lớn lên ở một thành phố ven biển."
+      },
+      {
+       "id": "k2-phrasal-2",
+       "front": "Part 1: kể về sở thích mới",
+       "pattern": "I **took up** + sở thích + thời gian",
+       "example": "I *took up* yoga last year.",
+       "vi": "Tôi bắt đầu tập yoga từ năm ngoái."
+      }
+     ],
+     "write": {
+      "prompt": "Trả lời câu Speaking Part 1 \"Do you have any hobbies?\" bằng một câu có phrasal verb.",
+      "samples": [
+       "Yes, I took up swimming last summer and I'm looking forward to joining a club.",
+       "I used to play the guitar, but I gave it up when I started university."
+      ],
+      "check": [
+       "Có ít nhất một phrasal verb?",
+       "look forward to + V-ing?"
+      ],
+      "must": [
+       "\\b(look|looks|looked|looking|find|finds|found|give|gives|gave|given|giving|take|takes|took|taken|taking|grow|grows|grew|grown|growing|go|goes|went|get|gets|got|run|runs|ran|fill|fills|filled|set|sets|turn|turns|turned)\\b(\\s+\\w+){0,2}\\s+(after|forward|out|up|on|in|down)\\b"
+      ],
+      "hint": "Dùng ví dụ: took up, gave up, grew up, look forward to…"
      }
     }
    ]
