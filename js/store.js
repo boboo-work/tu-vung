@@ -585,6 +585,16 @@ export function validateBackup(data) {
   return true;
 }
 
+// Kết quả AI chấm bài viết (giống cleanAiGrade trong writing.js; viết lại ở đây để store không phụ thuộc writing.js).
+function cleanAi(o) {
+  const b = o.band && typeof o.band === 'object' ? o.band : {};
+  const band = {};
+  for (const k of ['overall', 'ta', 'cc', 'lr', 'gra']) { const v = Math.round(Number(b[k]) * 2) / 2; if (Number.isFinite(v) && v >= 0 && v <= 9) band[k] = v; }
+  const list = (v, n, m) => (Array.isArray(v) ? v : []).map((x) => str(x).slice(0, n)).filter(Boolean).slice(0, m);
+  return { at: DATE_RE.test(str(o.at)) ? o.at : '', band, summary: str(o.summary).slice(0, 1500), strengths: list(o.strengths, 300, 6),
+    fixes: (Array.isArray(o.fixes) ? o.fixes : []).filter((f) => f && typeof f === 'object').map((f) => ({ from: str(f.from).slice(0, 400), to: str(f.to).slice(0, 400), why: str(f.why).slice(0, 400) })).slice(0, 10),
+    upgrade: str(o.upgrade).slice(0, 6000), next: str(o.next).slice(0, 800), raw: str(o.raw).slice(0, 8000) };
+}
 // Bài viết trong file sao lưu: giữ đúng kiểu, cắt độ dài, bỏ trường lạ.
 const W_ID = /^[A-Za-z0-9_:-]{1,80}$/;
 function cleanWriting(w) {
@@ -606,6 +616,7 @@ function cleanWriting(w) {
     plan: pl ? Object.fromEntries(['view', 'p1', 'p2', 'ex'].map((k) => [k, str(pl[k]).slice(0, 1000)])) : null,
     used: (Array.isArray(w.used) ? w.used : []).map((x) => str(x).slice(0, 80)).slice(0, 20),
     prev: W_ID.test(str(w.prev)) ? w.prev : null, version: int(w.version, 1, 50, 1),
+    ...(w.ai && typeof w.ai === 'object' ? { ai: cleanAi(w.ai) } : {}),
   };
 }
 // Kết quả Reading trong file sao lưu: chỉ giữ trường đã biết, cắt độ dài.

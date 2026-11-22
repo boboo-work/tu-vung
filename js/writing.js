@@ -6,6 +6,8 @@ import { esc, toast, today, uid, download } from './util.js';
 import { icon, on, go, back, replace, rerender, navBar, learnSwitch, confirmSheet } from './ui.js';
 import { G as GR, logGrammarError } from './grammar.js';
 import { confetti } from './fx.js';
+import { aiReady, askAI } from './ai.js';
+import { richText } from './ui.js';
 
 // ================= NỘI DUNG =================
 export const W = { state: 'idle', error: '', types: {}, parts: [], prompts: new Map(), order: [], rules: [], charts: [], modes: [] };
@@ -897,7 +899,7 @@ export function writeView() {
   } else if (ws.stage === 'report') {
     const rec = S.writing.get(ws.essayId);
     const prevRec = ws.rewrite && S.writing.get(ws.prev);
-    body = `${prevRec ? compareHtml(prevRec, rec) : ''}<h3 class="w-h">Kiểm tra tự động</h3>${checksHtml(ws.checks)}<h3 class="w-h">Thống kê</h3>${statsHtml(ws.stats)}
+    body = `${prevRec ? compareHtml(prevRec, rec) : ''}${aiHtml(rec)}<h3 class="w-h">Kiểm tra tự động</h3>${checksHtml(ws.checks)}<h3 class="w-h">Thống kê</h3>${statsHtml(ws.stats)}
       <h3 class="w-h">Gợi ý sửa lỗi</h3>${hitsHtml(rec, ws.hits)}${usedHtml(ws.vocab, ws.used)}`;
     actions = `<button class="btn" data-act="w-stage" data-to="model">Xem bài mẫu</button>`;
   } else if (ws.stage === 'model') {
@@ -958,6 +960,7 @@ export function essayView(id) {
     ${e.plan && Object.values(e.plan).some(Boolean) ? `<details class="card w-plansum"><summary>Dàn ý</summary><dl>${[['view', 'Quan điểm'], ['p1', 'Thân bài 1'], ['p2', 'Thân bài 2'], ['ex', 'Ví dụ']].filter(([k]) => e.plan[k]).map(([k, lab]) => `<dt>${lab}</dt><dd>${esc(e.plan[k])}</dd>`).join('')}</dl></details>` : ''}
     <h3 class="w-h">Bài của bạn</h3><div class="card w-text">${esc(e.text)}</div>
     ${e.kind === 'essay' && e.ms ? `<p class="small muted" style="margin:6px 2px 0">Thời gian: ${Math.round(e.ms / 60e3)} phút</p>` : ''}
+    ${aiHtml(e)}
     ${prevE && W.state === 'ready' ? compareHtml(prevE, e) : ''}
     <h3 class="w-h">Kiểm tra tự động</h3>${checksHtml(e.report.checks)}
     <h3 class="w-h">Thống kê</h3>${statsHtml({ ...e.report.stats, repeated: textStats(e.text).repeated })}
@@ -967,6 +970,110 @@ export function essayView(id) {
     ${W.state === 'ready' ? `<button class="btn soft" style="margin-top:16px" data-act="w-rewrite" data-id="${e.id}">${S.writing.get(`draft:rw:${e.id}`) ? 'Sửa tiếp bản nháp' : `Sửa thành bản ${(e.version || 1) + 1}`}</button>` : ''}
     ${prompt && e.kind === 'essay' ? `<button class="btn ghost" style="margin-top:10px" data-act="w-essay" data-p="${e.promptId}">Viết cả bài mới (40 phút)</button>` : ''}
     <button class="btn danger" style="margin-top:10px" data-act="w-delete" data-id="${e.id}">${icon('trash', 'sm')} Xoá bài</button></div>`;
+}
+
+// ================= AI CHẤM =================
+// Bấm "Nhờ AI chấm": gửi đề + bài cho trợ lý AI đã kết nối (Cài đặt → Trợ lý AI), nhận band ước lượng theo 4 tiêu chí,
+// lỗi kèm bản sửa và bản nâng cấp. Kết quả lưu trong bài (rec.ai) để xem lại ở Hồ sơ Writing.
+const AI_SYSTEM = `Bạn là giám khảo IELTS Writing giàu kinh nghiệm, chấm cho người Việt đang luyện thi.
+Chấm theo 4 tiêu chí chính thức (Task Response / Task Achievement, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy), band từ 0 đến 9, bước 0.5.
+Nghiêm túc và sát thực tế như giám khảo thật, không chấm dễ. Nhận xét bằng tiếng Việt, ngắn gọn, cụ thể; các câu sửa viết bằng tiếng Anh.
+Chỉ trả về đúng một khối JSON hợp lệ, không thêm chữ nào ngoài JSON.`;
+const aiBusy = new Set();
+function aiTask(rec) {
+  const prompt = (rec.kind === 'part' || rec.kind === 'essay') && W.prompts.get(rec.promptId);
+  if (rec.kind === 'essay') return `IELTS Writing Task 2 (cả bài, khoảng 250 từ, 40 phút).\nĐề: ${prompt?.q || ''}`;
+  if (rec.kind === 'part') {
+    const part = W.parts.find((x) => x.id === rec.part);
+    return `IELTS Writing Task 2, người học chỉ luyện MỘT phần của bài: "${part?.name || rec.part}" (${part?.task || ''}).\nĐề: ${prompt?.q || ''}\nHãy chấm phần này theo tiêu chuẩn của phần đó trong một bài Task 2; band là ước lượng nếu cả bài được viết ở mức này.`;
+  }
+  if (rec.kind === 'task1' && rec.chart && W.state === 'ready') {
+    const ch = genChart(rec.chart.tpl, rec.chart.seed, rec.chart.target);
+    const mode = W.modes.find((m) => m.id === rec.chart.mode);
+    const data = ch.series.map((x) => `- ${x.name}: ${x.values.map((v, i) => `${ch.xs[i]} ${fmtV(ch.tpl, v)}`).join(', ')}`).join('\n');
+    return `IELTS Writing Task 1 (Academic). Người học luyện phần: "${mode?.name || rec.chart.mode}"${rec.chart.mode === 'detail' ? `, chỉ mô tả đối tượng "${ch.series[ch.target].name}"` : ''}.\nĐề: ${chartPrompt(ch)}\nSố liệu thật của biểu đồ (dùng để kiểm tra số liệu người học viết):\n${data}`;
+  }
+  return 'IELTS Writing.';
+}
+function aiAsk(rec) {
+  return `${aiTask(rec)}
+
+Bài của người học (${rec.words} từ):
+"""
+${rec.text}
+"""
+
+Trả về JSON đúng mẫu sau:
+{"band":{"overall":6.0,"ta":6.0,"cc":6.0,"lr":6.0,"gra":6.0},
+ "summary":"2–3 câu nhận xét chung",
+ "strengths":["điểm mạnh 1","điểm mạnh 2"],
+ "fixes":[{"from":"cụm/câu gốc trích nguyên văn từ bài","to":"bản sửa","why":"vì sao (tiếng Việt, ngắn)"}],
+ "upgrade":"bản viết lại ở mức band 7+, giữ ý của người học",
+ "next":"1–2 việc nên tập trung ở bài sau"}
+Tối đa 8 mục trong fixes, ưu tiên lỗi ảnh hưởng band nhiều nhất.`;
+}
+const clipT = (v, n) => String(v ?? '').slice(0, n);
+const bandNum = (v) => { const x = Math.round(Number(v) * 2) / 2; return Number.isFinite(x) && x >= 0 && x <= 9 ? x : null; };
+/** Chuẩn hoá kết quả AI (cũng dùng khi khôi phục từ file sao lưu). */
+export function cleanAiGrade(o) {
+  if (!o || typeof o !== 'object') return null;
+  const b = o.band && typeof o.band === 'object' ? o.band : {};
+  const band = {};
+  for (const k of ['overall', 'ta', 'cc', 'lr', 'gra']) { const v = bandNum(b[k]); if (v != null) band[k] = v; }
+  const out = {
+    at: clipT(o.at, 10), band, summary: clipT(o.summary, 1500),
+    strengths: (Array.isArray(o.strengths) ? o.strengths : []).map((x) => clipT(x, 300)).filter(Boolean).slice(0, 6),
+    fixes: (Array.isArray(o.fixes) ? o.fixes : []).filter((f) => f && typeof f === 'object').map((f) => ({ from: clipT(f.from, 400), to: clipT(f.to, 400), why: clipT(f.why, 400) })).filter((f) => f.from || f.to).slice(0, 10),
+    upgrade: clipT(o.upgrade, 6000), next: clipT(o.next, 800), raw: clipT(o.raw, 8000),
+  };
+  return out.summary || out.fixes.length || out.raw || band.overall != null ? out : null;
+}
+function parseAi(text) {
+  const t = String(text || '');
+  const a = t.indexOf('{'), b = t.lastIndexOf('}');
+  if (a >= 0 && b > a) { try { const j = cleanAiGrade(JSON.parse(t.slice(a, b + 1))); if (j) return j; } catch { /* không phải JSON */ } }
+  return cleanAiGrade({ raw: t });
+}
+on('w-ai', async (el) => {
+  const rec = S.writing.get(el.dataset.id);
+  if (!rec || aiBusy.has(rec.id)) return;
+  if (!aiReady(S.settings.ai)) { toast('Chưa kết nối AI. Vào Cài đặt → Trợ lý AI.', 'bad'); return; }
+  aiBusy.add(rec.id);
+  rerender();
+  try {
+    const text = await askAI(S.settings.ai, aiAsk(rec), { system: AI_SYSTEM });
+    const g = parseAi(text);
+    if (!g) throw new Error('AI không trả về nội dung chấm');
+    g.at = today();
+    rec.ai = g;
+    await wPut(rec);
+  } catch (e) { toast(e?.message || 'AI chưa chấm được, thử lại sau', 'bad'); }
+  aiBusy.delete(rec.id);
+  rerender();
+});
+const CRIT = [['ta', 'Task Response', 'Trả lời đề'], ['cc', 'Coherence & Cohesion', 'Mạch lạc, liên kết'], ['lr', 'Lexical Resource', 'Từ vựng'], ['gra', 'Grammar', 'Ngữ pháp']];
+function aiHtml(rec) {
+  if (!rec) return '';
+  const busy = aiBusy.has(rec.id);
+  const g = rec.ai;
+  if (!g) {
+    if (!aiReady(S.settings.ai)) return `<div class="card w-ai empty-ai"><b>${icon('sparkle', 'sm')} AI chấm bài</b><p class="small muted">Kết nối AI (ví dụ Gemini miễn phí) ở Cài đặt → Trợ lý AI để được chấm band ước lượng và sửa lỗi.</p><button class="btn ghost sm" data-act="go" data-to="#/settings">Mở Cài đặt</button></div>`;
+    return `<button class="btn soft w-aibtn" data-act="w-ai" data-id="${rec.id}" ${busy ? 'disabled' : ''}>${busy ? '<span class="spin sm"></span> AI đang chấm bài…' : `${icon('sparkle', 'sm')} Nhờ AI chấm (band ước lượng)`}</button>`;
+  }
+  const t1 = rec.kind === 'task1';
+  const tiles = g.band.overall != null ? `<div class="w-bands"><div class="w-band-main"><b>${g.band.overall.toFixed(1)}</b><span>Band ước lượng</span></div>
+    <div class="w-band-grid">${CRIT.map(([k, en, vi]) => g.band[k] != null ? `<div><b>${g.band[k].toFixed(1)}</b><span>${k === 'ta' && t1 ? 'Task Achievement' : en}</span><small>${vi}</small></div>` : '').join('')}</div></div>` : '';
+  const fixes = g.fixes.length ? `<h4 class="w-aih">Sửa lỗi</h4>${g.fixes.map((f) => `<div class="w-fix">${f.from ? `<p class="w-from en">${esc(f.from)}</p>` : ''}${f.to ? `<p class="w-to en">${esc(f.to)}</p>` : ''}${f.why ? `<p class="small muted">${esc(f.why)}</p>` : ''}</div>`).join('')}` : '';
+  return `<div class="card w-ai">
+    <div class="row-between"><b>${icon('sparkle', 'sm')} AI chấm${g.at ? ` · ${g.at.split('-').reverse().join('/')}` : ''}</b><button class="link" data-act="w-ai" data-id="${rec.id}" ${busy ? 'disabled' : ''}>${busy ? 'Đang chấm…' : 'Chấm lại'}</button></div>
+    ${tiles}
+    ${g.summary ? `<p class="w-aisum">${esc(g.summary)}</p>` : ''}
+    ${g.strengths.length ? `<h4 class="w-aih">Điểm mạnh</h4><ul class="w-ail">${g.strengths.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+    ${fixes}
+    ${g.next ? `<h4 class="w-aih">Bài sau tập trung</h4><p class="small">${esc(g.next)}</p>` : ''}
+    ${g.upgrade ? `<details class="w-aiup"><summary>Bản nâng cấp band 7+</summary><div class="card w-text w-model">${esc(g.upgrade)}</div></details>` : ''}
+    ${g.raw ? `<div class="ai-out">${richText(g.raw)}</div>` : ''}
+    <p class="small faint" style="margin-top:10px">Band do AI ước lượng để tham khảo, có thể lệch so với giám khảo thật.</p></div>`;
 }
 
 // ================= HỒ SƠ WRITING =================

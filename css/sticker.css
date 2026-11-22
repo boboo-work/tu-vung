@@ -458,3 +458,27 @@ body:not(.no-tabs) #app::after {
 .ms-day b { font-size: 15px; font-weight: 900; }
 .ms-day .link { margin-left: auto; font-size: 13px; min-height: 32px; }
 .ms-day .link.danger-text { color: var(--red); }
+
+/* Writing · AI chấm */
+.w-aibtn { margin: 4px 0 6px; }
+.w-ai { margin: 4px 0 10px; }
+.w-ai .row-between b { display: flex; align-items: center; gap: 6px; }
+.w-bands { display: flex; gap: 10px; margin-top: 12px; align-items: stretch; }
+.w-band-main { flex: none; width: 96px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2.5px solid var(--ink); border-radius: 18px; background: var(--yellow); color: var(--on-pop); box-shadow: 0 3px 0 var(--ink); }
+.w-band-main b { font-size: 34px; font-weight: 900; line-height: 1; }
+.w-band-main span { font-size: 11px; font-weight: 800; margin-top: 4px; text-align: center; }
+.w-band-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.w-band-grid div { border: 2px solid var(--ink); border-radius: 12px; padding: 5px 8px; background: var(--bg); display: flex; flex-direction: column; }
+.w-band-grid b { font-size: 18px; font-weight: 900; }
+.w-band-grid span { font-size: 11px; font-weight: 800; line-height: 1.2; }
+.w-band-grid small { font-size: 11px; color: var(--text-2); }
+.w-aisum { margin-top: 12px; line-height: 1.5; }
+.w-aih { margin: 14px 0 6px; font-size: 14px; font-weight: 900; }
+.w-ail { margin: 0; padding-left: 18px; line-height: 1.5; font-size: 14.5px; }
+.w-fix { padding: 8px 0; border-top: 2px dashed var(--line); }
+.w-from { margin: 0; text-decoration: line-through; text-decoration-color: var(--red); color: var(--text-2); }
+.w-to { margin: 2px 0; font-weight: 700; color: #1B7A55; }
+:root[data-theme="dark"] .w-to { color: #7FE3B8; }
+.w-aiup { margin-top: 12px; }
+.w-aiup summary { cursor: pointer; font-weight: 800; }
+.spin.sm { display: inline-block; width: 16px; height: 16px; vertical-align: -3px; margin-right: 6px; }
