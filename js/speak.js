@@ -10,6 +10,7 @@ import { S, spPut, spDel, spCleanup, logGrammarDay, unlogDay, dayOf, saveSetting
 import { esc, toast, speak, uid, today, fmtDate } from './util.js';
 import { icon, on, go, back, rerender, navBar, learnSwitch, confirmSheet, chooseSheet } from './ui.js';
 import { _mt } from './speaking.js';
+import { aiReady, askAI } from './ai.js';
 
 // ---------------------------------------------------------------- Nội dung
 export const SP = { state: 'idle', error: '', quarters: [], data: new Map(), loading: new Set() };
@@ -537,6 +538,7 @@ on('sp-save', async () => {
   await spPut({
     id: P.sid, kind: 'session', item: P.id, part: P.kind === 'p1' ? 1 : 2, title: g?.item?.title || '', quarter: g?.q?.id || '', at: Date.now(), date: today(),
     takes: takes.length, speakMs: takes.reduce((a, t) => a + (t.speakMs || 0), 0), pauses: takes.reduce((a, t) => a + (t.pauses || 0), 0), self,
+    ...(P.ai ? { ai: P.ai } : {}),
   });
   await countTurn();
   toast('Đã lưu lượt luyện');
@@ -553,7 +555,7 @@ function sayQuestion() {
 // ---------------------------------------------------------------- Sao chép để nhờ chấm
 function gradeItem(part, qi, text, take) {
   part = Number(part); qi = Number(qi);
-  const g = getItem(P.id);
+  const g = getItem(P?.id || take?.item);
   let q = '';
   if (part === 2) q = g?.item ? `${g.item.title}\nYou should say: ${g.item.points.join('; ')}` : '';
   else if (g?.item) q = (part === 1 ? mainQs(g.item) : g.item.p3)[qi]?.q || '';
@@ -562,6 +564,103 @@ function gradeItem(part, qi, text, take) {
 function gradePrompt(items) {
   const head = 'Hãy chấm câu trả lời IELTS Speaking dưới đây theo 4 tiêu chí (Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation — phát âm chỉ đoán được qua bản chép). Với mỗi câu: chỉ ra lỗi cụ thể, gợi ý cách nói tự nhiên hơn, viết lại một bản band 7 và ước lượng band.\nLưu ý: phần trả lời là bản chép tự động từ giọng nói nên có thể sai vài từ.';
   return head + '\n' + items.map((x, i) => `\n--- ${i + 1}. Part ${x.part} ---\nQuestion: ${x.q}\n${x.take && !x.take.silent ? `(Thời lượng ${mmss(x.take.ms)}, nói thật ${Math.round(x.take.speakMs / 1000)} giây, ${x.take.pauses} lần dừng > 2 giây)\n` : ''}My answer: ${x.text}`).join('\n');
+}
+
+// ---------------------------------------------------------------- AI chấm
+// Gửi câu hỏi + chữ nhận dạng từ giọng nói (+ thời lượng, số lần dừng) cho trợ lý AI đã kết nối.
+// AI không nghe được giọng nên không chấm Pronunciation; band tổng chỉ ước lượng từ 3 tiêu chí còn lại.
+const SP_SYS = `Bạn là giám khảo IELTS Speaking giàu kinh nghiệm, chấm cho người Việt đang luyện thi.
+Chấm theo các tiêu chí Fluency and Coherence (fc), Lexical Resource (lr), Grammatical Range and Accuracy (gra); band 0–9, bước 0.5. Không chấm Pronunciation vì chỉ có bản chép chữ.
+Bản chép là nhận dạng giọng nói tự động nên có thể sai vài từ: đừng trừ điểm cho lỗi chính tả hay dấu câu. Dùng thời lượng nói và số lần dừng để đánh giá độ trôi chảy.
+Nghiêm túc như giám khảo thật. Nhận xét bằng tiếng Việt, ngắn gọn; câu sửa và câu mẫu bằng tiếng Anh tự nhiên như người bản xứ nói.
+Chỉ trả về đúng một khối JSON hợp lệ, không thêm chữ nào ngoài JSON.`;
+const spBusy = new Set();
+function spAsk(items) {
+  const list = items.map((x, i) => `--- Câu ${i + 1} · Part ${x.part} ---\nQuestion: ${x.q}\n${x.take && !x.take.silent ? `(Thời lượng ${mmss(x.take.ms)}, nói thật ${Math.round((x.take.speakMs || 0) / 1000)} giây, ${x.take.pauses || 0} lần dừng > 2 giây)\n` : ''}Answer: ${x.text}`).join('\n\n');
+  return `${list}
+
+Trả về JSON đúng mẫu (items theo đúng thứ tự ${items.length} câu ở trên):
+{"overall":{"band":{"overall":6.0,"fc":6.0,"lr":6.0,"gra":6.0},"summary":"2–3 câu nhận xét chung","next":"1–2 việc nên luyện tiếp"},
+ "items":[{"band":6.0,"summary":"1–2 câu nhận xét","fixes":[{"from":"cụm gốc","to":"cách nói đúng/tự nhiên hơn","why":"vì sao, tiếng Việt"}],"better":"câu trả lời mẫu band 7+ dựa trên ý của người học, độ dài phù hợp Part ${items[0]?.part || 1}"}]}
+Mỗi câu tối đa 4 mục fixes, ưu tiên lỗi ảnh hưởng band nhiều nhất.`;
+}
+const clip = (v, n) => String(v ?? '').slice(0, n);
+const bandOf = (v) => { const x = Math.round(Number(v) * 2) / 2; return Number.isFinite(x) && x >= 0 && x <= 9 ? x : null; };
+function cleanItem(o) {
+  if (!o || typeof o !== 'object') return null;
+  return { band: bandOf(o.band), summary: clip(o.summary, 800), better: clip(o.better, 3000),
+    fixes: (Array.isArray(o.fixes) ? o.fixes : []).filter((f) => f && typeof f === 'object').map((f) => ({ from: clip(f.from, 300), to: clip(f.to, 300), why: clip(f.why, 300) })).slice(0, 6) };
+}
+function cleanOverall(o) {
+  if (!o || typeof o !== 'object') return null;
+  const b = o.band && typeof o.band === 'object' ? o.band : {}, band = {};
+  for (const k of ['overall', 'fc', 'lr', 'gra']) { const v = bandOf(b[k]); if (v != null) band[k] = v; }
+  return { band, summary: clip(o.summary, 1200), next: clip(o.next, 600) };
+}
+function parseSp(text) {
+  const t = String(text || ''), a = t.indexOf('{'), b = t.lastIndexOf('}');
+  if (a >= 0 && b > a) { try { const j = JSON.parse(t.slice(a, b + 1)); return { overall: cleanOverall(j.overall), items: (Array.isArray(j.items) ? j.items : []).map(cleanItem) }; } catch { /* không phải JSON */ } }
+  return { overall: { band: {}, summary: '', next: '', raw: clip(t, 6000) }, items: [] };
+}
+async function gradeSp(items, key) {
+  if (!aiReady(S.settings.ai)) { toast('Chưa kết nối AI. Vào Cài đặt → Trợ lý AI.', 'bad'); return null; }
+  if (spBusy.has(key)) return null;
+  spBusy.add(key); rerender();
+  try { return parseSp(await askAI(S.settings.ai, spAsk(items), { system: SP_SYS })); }
+  catch (e) { toast(e?.message || 'AI chưa chấm được, thử lại sau', 'bad'); return null; }
+  finally { spBusy.delete(key); rerender(); }
+}
+on('sp-ai', async (el) => {
+  const t = S.speaking.get(el.dataset.id);
+  if (!t) return;
+  const text = (document.getElementById('sp-tx')?.value ?? t.text ?? '').trim();
+  if (words(text) < 3) { toast('Chưa có chữ để chấm. Hãy nói lại hoặc gõ câu trả lời vào ô.', 'bad'); return; }
+  const r = await gradeSp([gradeItem(el.dataset.part, el.dataset.qi, text, t)], t.id);
+  if (!r) return;
+  const it = r.items[0] || { band: r.overall?.band?.overall ?? null, summary: r.overall?.summary || r.overall?.raw || '', fixes: [], better: '' };
+  await spPut({ ...S.speaking.get(t.id), text, ai: { ...it, crit: r.overall?.band || {}, at: today() } });
+  rerender();
+});
+on('sp-ai-all', async () => {
+  const pairs = Object.entries(P.ans).map(([k, ids]) => { const [part, qi] = k.split(':'); const t = S.speaking.get(ids[ids.length - 1]); return t?.text && words(t.text) >= 3 ? { t, item: gradeItem(part, qi, t.text, t) } : null; }).filter(Boolean);
+  if (!pairs.length) { toast('Chưa có câu nào có chữ để chấm', 'bad'); return; }
+  const r = await gradeSp(pairs.map((x) => x.item), 'all');
+  if (!r) return;
+  for (let i = 0; i < pairs.length; i++) if (r.items[i]) await spPut({ ...S.speaking.get(pairs[i].t.id), ai: { ...r.items[i], at: today() } });
+  if (P) P.ai = { ...r.overall, n: pairs.length, at: today() };
+  rerender();
+});
+const CRIT_SP = [['fc', 'Fluency & Coherence', 'Trôi chảy, mạch lạc'], ['lr', 'Lexical Resource', 'Từ vựng'], ['gra', 'Grammar', 'Ngữ pháp']];
+function bandTiles(b) {
+  if (!b || b.overall == null) return '';
+  return `<div class="w-bands"><div class="w-band-main"><b>${b.overall.toFixed(1)}</b><span>Band ước lượng</span></div>
+    <div class="w-band-grid sp-crit">${CRIT_SP.map(([k, en, vi]) => b[k] != null ? `<div><b>${b[k].toFixed(1)}</b><span>${en}</span><small>${vi}</small></div>` : '').join('')}</div></div>`;
+}
+const fixesHtml = (fixes) => (fixes?.length ? `<h4 class="w-aih">Sửa lỗi</h4>${fixes.map((f) => `<div class="w-fix">${f.from ? `<p class="w-from en">${esc(f.from)}</p>` : ''}${f.to ? `<p class="w-to en">${esc(f.to)}</p>` : ''}${f.why ? `<p class="small muted">${esc(f.why)}</p>` : ''}</div>`).join('')}` : '');
+/** Kết quả AI của một câu (dưới ô chữ) hoặc nút nhờ chấm. */
+function aiTakeHtml(t, part, qi) {
+  if (!t || t.silent) return '';
+  const busy = spBusy.has(t.id) || spBusy.has('all');
+  const a = t.ai;
+  if (!a) {
+    if (!aiReady(S.settings.ai)) return '';
+    return `<button class="btn soft sm sp-aibtn" data-act="sp-ai" data-id="${t.id}" data-part="${part}" data-qi="${qi}" ${busy ? 'disabled' : ''}>${busy ? '<span class="spin sm"></span> AI đang chấm…' : `${icon('sparkle', 'sm')} AI chấm câu này`}</button>`;
+  }
+  const crit = a.crit && a.crit.overall != null ? bandTiles(a.crit) : '';
+  return `<div class="card w-ai sp-ai"><div class="row-between"><b>${icon('sparkle', 'sm')} AI chấm${!crit && a.band != null ? ` · band ~${a.band.toFixed(1)}` : ''}</b><button class="link" data-act="sp-ai" data-id="${t.id}" data-part="${part}" data-qi="${qi}" ${busy ? 'disabled' : ''}>${busy ? 'Đang chấm…' : 'Chấm lại'}</button></div>
+    ${crit}${a.summary ? `<p class="w-aisum">${esc(a.summary)}</p>` : ''}${fixesHtml(a.fixes)}
+    ${a.better ? `<details class="w-aiup" open><summary>Câu trả lời mẫu band 7+</summary><div class="sp-better"><p class="en">${esc(a.better)}</p><button class="tag" data-act="sp-say-better" data-id="${t.id}">${icon('speaker', 'sm')} Nghe</button></div></details>` : ''}
+    <p class="small faint" style="margin-top:8px">AI chấm qua bản chép chữ nên không chấm phát âm; band chỉ để tham khảo.</p></div>`;
+}
+on('sp-say-better', (el) => { const a = S.speaking.get(el.dataset.id)?.ai; if (a?.better) say(a.better); });
+function aiAllHtml() {
+  const busy = spBusy.has('all');
+  if (!aiReady(S.settings.ai)) return `<p class="small muted" style="margin-top:12px">Kết nối AI ở Cài đặt → Trợ lý AI để được chấm cả lượt.</p>`;
+  const a = P?.ai;
+  if (!a) return `<button class="btn soft" style="margin-top:12px" data-act="sp-ai-all" ${busy ? 'disabled' : ''}>${busy ? '<span class="spin sm"></span> AI đang chấm cả lượt…' : `${icon('sparkle', 'sm')} AI chấm cả lượt`}</button>`;
+  return `<div class="card w-ai" style="margin-top:12px"><div class="row-between"><b>${icon('sparkle', 'sm')} AI chấm cả lượt · ${a.n} câu</b><button class="link" data-act="sp-ai-all" ${busy ? 'disabled' : ''}>${busy ? 'Đang chấm…' : 'Chấm lại'}</button></div>
+    ${bandTiles(a.band)}${a.summary ? `<p class="w-aisum">${esc(a.summary)}</p>` : ''}${a.next ? `<h4 class="w-aih">Luyện tiếp</h4><p class="small">${esc(a.next)}</p>` : ''}${a.raw ? `<p class="small">${esc(a.raw)}</p>` : ''}
+    <p class="small faint" style="margin-top:8px">Nhận xét và câu mẫu của từng câu đã lưu vào câu đó (mở lại câu hỏi để xem).</p></div>`;
 }
 
 // ---------------------------------------------------------------- Tự chấm (S5)
@@ -639,7 +738,8 @@ function transcriptBox(t, part, qi) {
   return `<div class="sp-tx"><div class="row-between"><b class="small">Chữ của bạn${t.edited ? ' · đã sửa' : ''}</b><span class="small muted">${words(t.text)} từ</span></div>
     <textarea id="sp-tx" class="input" data-in="sp-tx" data-id="${t.id}" rows="4" autocapitalize="sentences" placeholder="Câu trả lời của bạn…">${esc(t.text || '')}</textarea>
     ${hint ? `<p class="small faint" style="margin-top:6px">${hint}</p>` : ''}
-    <div class="btn-row" style="margin-top:8px"><button class="btn ghost sm" data-act="sp-copy" data-mode="plain">Sao chép</button><button class="btn soft sm" data-act="sp-copy" data-part="${part}" data-qi="${qi}">Sao chép để nhờ chấm</button></div></div>`;
+    <div class="btn-row" style="margin-top:8px"><button class="btn ghost sm" data-act="sp-copy" data-mode="plain">Sao chép</button>${aiReady(S.settings.ai) ? '' : `<button class="btn soft sm" data-act="sp-copy" data-part="${part}" data-qi="${qi}">Sao chép để nhờ chấm</button>`}</div>
+    ${aiTakeHtml(t, part, qi)}</div>`;
 }
 function liveBox() {
   if (P.silent || !sttOn()) return '';
@@ -756,7 +856,8 @@ function doneScreen(title, nav) {
     <p class="mode-label">Xong lượt luyện</p><h2 style="margin-top:6px;text-transform:none;font-size:20px;color:var(--text);letter-spacing:0">${esc(title)}</h2>
     <div class="tiles sp-tiles"><div class="tile"><b>${all.length}</b><span>câu đã nói</span></div><div class="tile"><b>${sec(sum)}</b><span>nói thật</span></div><div class="tile"><b>${pauses}</b><span>dừng &gt; 2″</span></div></div>
     <p class="small muted" style="margin-top:10px">Đây là dấu hiệu để tự theo dõi, không phải điểm. Nghe lại bản ghi rồi tự chấm theo từng câu dưới đây.</p>
-    <button class="btn soft" style="margin-top:12px" data-act="sp-copy-all">Sao chép cả lượt để nhờ chấm</button>
+    ${aiAllHtml()}
+    <button class="btn ghost" style="margin-top:10px" data-act="sp-copy-all">Sao chép cả lượt để nhờ chấm</button>
     ${selfRows}${BANDS}</div>
     <div class="ses-actions"><button class="btn" data-act="sp-save">Lưu tự chấm</button></div></div>`;
 }
@@ -850,4 +951,4 @@ export async function audioForBackup() {
   }
   return out;
 }
-export const _sp = { getItem, mainQs, md };
+export const _sp = { getItem, mainQs, md, spAsk, parseSp, aiTakeHtml, aiAllHtml };

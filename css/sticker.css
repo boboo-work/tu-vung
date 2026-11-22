@@ -482,3 +482,11 @@ body:not(.no-tabs) #app::after {
 .w-aiup { margin-top: 12px; }
 .w-aiup summary { cursor: pointer; font-weight: 800; }
 .spin.sm { display: inline-block; width: 16px; height: 16px; vertical-align: -3px; margin-right: 6px; }
+
+/* Speaking · AI chấm */
+.sp-aibtn { margin-top: 10px; width: 100%; }
+.sp-ai { margin-top: 12px; }
+.sp-crit { grid-template-columns: 1fr; }
+.sp-better { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding: 12px; border: 2px dashed var(--line); border-radius: 14px; }
+.sp-better p { margin: 0; line-height: 1.55; }
+.sp-better .tag { align-self: flex-start; }

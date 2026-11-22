@@ -629,6 +629,20 @@ function b64ToBlob(b64, type) {
     return new Blob([u8], { type: str(type).slice(0, 60) || 'audio/mp4' });
   } catch { return null; }
 }
+// Kết quả AI chấm Speaking (một câu: band, summary, fixes, better, crit · cả lượt: band, summary, next).
+function cleanSpAi(o) {
+  const bn = (v) => { const x = Math.round(Number(v) * 2) / 2; return Number.isFinite(x) && x >= 0 && x <= 9 ? x : null; };
+  const bands = (b) => { const out = {}; if (b && typeof b === 'object') for (const k of ['overall', 'fc', 'lr', 'gra']) { const v = bn(b[k]); if (v != null) out[k] = v; } return out; };
+  const res = { at: DATE_RE.test(str(o.at)) ? o.at : '', summary: str(o.summary).slice(0, 1200) };
+  if (o.band && typeof o.band === 'object') res.band = bands(o.band); else if (bn(o.band) != null) res.band = bn(o.band);
+  if (o.crit) res.crit = bands(o.crit);
+  if (o.better) res.better = str(o.better).slice(0, 3000);
+  if (o.next) res.next = str(o.next).slice(0, 600);
+  if (o.raw) res.raw = str(o.raw).slice(0, 6000);
+  if (Number.isFinite(Number(o.n))) res.n = int(o.n, 0, 99, 0);
+  if (Array.isArray(o.fixes)) res.fixes = o.fixes.filter((f) => f && typeof f === 'object').map((f) => ({ from: str(f.from).slice(0, 300), to: str(f.to).slice(0, 300), why: str(f.why).slice(0, 300) })).slice(0, 6);
+  return res;
+}
 function cleanSpeaking(r, audioMap) {
   if (!r || typeof r !== 'object' || !W_ID.test(str(r.id))) return null;
   const at = Number(r.at) > 0 ? Number(r.at) : Date.now();
@@ -640,13 +654,14 @@ function cleanSpeaking(r, audioMap) {
     return { id: r.id, kind: 'take', sid: str(r.sid).slice(0, 80), item, part: int(r.part, 1, 3, 1), qi: int(r.qi, -1, 999, -1), v: int(r.v, 1, 9, 1),
       at, date, ms: int(r.ms, 0, 6e5, 0), speakMs: int(r.speakMs, 0, 6e5, 0), pauses: int(r.pauses, 0, 999, 0), longest: int(r.longest, 0, 6e5, 0),
       keep: r.keep === true, silent: r.silent === true, mime: str(r.mime).slice(0, 60), audio, dropped: !audio, deleted: r.deleted === true,
-      text: str(r.text).slice(0, 6000), edited: r.edited === true };
+      text: str(r.text).slice(0, 6000), edited: r.edited === true, ...(r.ai && typeof r.ai === 'object' ? { ai: cleanSpAi(r.ai) } : {}) };
   }
   if (r.kind === 'session') {
     const self = {};
     for (const k of ['fc', 'lr', 'gr', 'pr']) if (Array.isArray(r.self?.[k])) self[k] = r.self[k].slice(0, 6).map((x) => (x === 1 || x === true ? 1 : 0));
     return { id: r.id, kind: 'session', item, part: int(r.part, 1, 3, 1), title: str(r.title).slice(0, 200), quarter: str(r.quarter).slice(0, 20), at, date,
-      takes: int(r.takes, 0, 999, 0), speakMs: int(r.speakMs, 0, 36e5, 0), pauses: int(r.pauses, 0, 9999, 0), self: Object.keys(self).length ? self : null };
+      takes: int(r.takes, 0, 999, 0), speakMs: int(r.speakMs, 0, 36e5, 0), pauses: int(r.pauses, 0, 9999, 0), self: Object.keys(self).length ? self : null,
+      ...(r.ai && typeof r.ai === 'object' ? { ai: cleanSpAi(r.ai) } : {}) };
   }
   return null;
 }
