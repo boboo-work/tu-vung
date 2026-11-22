@@ -833,6 +833,8 @@ function cleanLtAttempt(r) {
     parts: Array.isArray(r.parts) ? r.parts.map(n).filter((x) => x >= 1 && x <= 4) : [], score: n(r.score), total: n(r.total), band: Number(r.band) || 0, ans,
     byType: r.byType && typeof r.byType === 'object' ? Object.fromEntries(Object.entries(r.byType).filter(([k]) => /^[a-z]{2,8}$/.test(k)).map(([k, v]) => [k, { n: n(v?.n), ok: n(v?.ok) }])) : {},
     whys: r.whys && typeof r.whys === 'object' ? Object.fromEntries(Object.entries(r.whys).filter(([k]) => /^[a-z]{2,12}$/.test(k)).map(([k, v]) => [k, n(v)])) : {},
+    ...(r.ai && typeof r.ai === 'object' ? { ai: { at: str(r.ai.at).slice(0, 10), pattern: str(r.ai.pattern).slice(0, 600), tips: (Array.isArray(r.ai.tips) ? r.ai.tips : []).map((x) => str(x).slice(0, 300)).slice(0, 5),
+      items: Object.fromEntries(Object.entries(r.ai.items && typeof r.ai.items === 'object' ? r.ai.items : {}).filter(([k]) => /^\d{1,2}$/.test(k)).slice(0, 40).map(([k, v]) => [k, str(v).slice(0, 800)])) } } : {}),
   };
 }
 export async function restoreData(data) {

@@ -1068,6 +1068,7 @@ on('lt-submit', async () => {
   R.pi = 0;
   loadPart(R.parts[0]);
   const id = 'R:' + uid();
+  R.attId = id; R.ai = null;
   await ltPut({ id, kind: 'attempt', test: R.test.id, title: R.test.title, date: today(), at: Date.now(), mode: R.mode, rate: rate(), parts: R.parts, score: g.score, total: g.total, band: R.result.band, ans: R.ans, byType, whys });
   await logGrammarDay('lSets', id);
   rerender(true);
@@ -1083,12 +1084,59 @@ on('lt-quit', async () => {
 on('lt-open-att', (el) => {
   const a = S.ltest.get(el.dataset.id), t = a && S.ltest.get(a.test);
   if (!t) { toast('Đề của lần làm này không còn trên máy'); return; }
-  R = { test: t, parts: a.parts, pi: 0, mode: a.mode, ans: a.ans || {}, played: {}, ended: {}, stage: 'done', review: true, result: null };
+  R = { test: t, parts: a.parts, pi: 0, mode: a.mode, ans: a.ans || {}, played: {}, ended: {}, stage: 'done', review: true, result: null, attId: a.id, ai: a.ai || null };
   const g = gradeAll(t, a.parts, R.ans);
   R.result = { ...g, byType: a.byType, whys: a.whys, band: a.band };
   loadPart(a.parts[0]);
   go('#/lrun');
 });
+
+// ---------------------------------------------------------------- AI phân tích câu sai (cả lần làm)
+// Lời giải (.md / .json) nói đáp án đúng; AI nói thêm vì sao chính người học viết/chọn sai (nghe nhầm số, dính bẫy bị sửa,
+// sai chính tả, thiếu -s…) và tổng kết kiểu lỗi. Một lần gọi cho mọi câu sai; lưu vào lần làm (attempt.ai).
+const LT_SYS = `Bạn là giáo viên IELTS Listening cho người Việt. Phân tích cụ thể lỗi của người học: nghe nhầm số/chữ, dính bẫy (thông tin bị sửa, người nói đổi ý, từ trùng), sai chính tả, thiếu/thừa -s, vượt số từ cho phép, chọn nhầm phương án do paraphrase.
+Viết tiếng Việt, ngắn gọn, bám sát lời thoại; trích tiếng Anh khi cần. Chỉ trả về đúng một khối JSON hợp lệ.`;
+let ltBusy = false;
+const plainHtml = (h) => String(h || '').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/\s+/g, ' ').trim();
+on('lt-ai-all', async () => {
+  if (!R?.result || ltBusy) return;
+  if (!aiReady(S.settings.ai)) { toast('Chưa kết nối AI. Vào Cài đặt → Trợ lý AI.', 'bad'); return; }
+  const t = R.test, seen = new Set();
+  const wrong = Object.entries(R.result.res).map(([n, r]) => ({ n: Number(n), r })).filter(({ r }) => !r.ok).sort((a, b) => a.n - b.n)
+    .filter(({ n }) => { const info = qInfo(t, n); const k = info?.multi ? info.multi[0] : n; if (seen.has(k)) return false; seen.add(k); return true; });
+  if (!wrong.length) { toast('Bạn đúng hết, không có câu sai để phân tích'); return; }
+  const list = wrong.slice(0, 25).map(({ n, r }) => {
+    const info = qInfo(t, n), note = noteOf(t, n);
+    const ev = (t.tx?.ev?.[n] || []).map((e) => plainHtml(e.html)).join(' … ');
+    const opt = (k) => (info?.opts ? `${k} (${info.opts.find((o) => o.k === k)?.t || ''})` : k);
+    return `--- Câu ${info?.multi ? info.multi.join('–') : n} · Part ${info?.part || ''} ---\nĐề: ${info?.text || ''}${info?.instr ? `\nYêu cầu: ${info.instr}` : ''}\nNgười học: ${r.your ? String(r.your).split(', ').map(opt).join(', ') : '(bỏ trống)'}\nĐáp án: ${String(r.right).split(', ').map(opt).join(', ')}\nApp đánh dấu: ${WHY[r.why] || r.why || 'sai'}${ev ? `\nLời thoại chứa đáp án: ${ev}` : ''}${note?.trap ? `\nGhi chú bẫy có sẵn: ${String(note.trap).slice(0, 400)}` : ''}`;
+  }).join('\n\n');
+  const prompt = `Đề: ${t.title}. Người học đúng ${R.result.score}/${R.result.total}. Các câu sai:\n\n${list}\n\nTrả về JSON:\n{"items":{"<số câu đầu>":"2–3 câu: vì sao người học viết/chọn như vậy, nghe nhầm hay bẫy ở đâu, cách tránh"},\n "pattern":"kiểu lỗi lặp lại (1–2 câu)",\n "tips":["mẹo cụ thể 1","mẹo 2","mẹo 3"]}`;
+  ltBusy = true; rerender();
+  try {
+    const raw = await askAI(S.settings.ai, prompt, { system: LT_SYS });
+    const a = raw.indexOf('{'), b = raw.lastIndexOf('}');
+    const j = a >= 0 && b > a ? JSON.parse(raw.slice(a, b + 1)) : null;
+    if (!j) throw new Error('AI trả về không đúng định dạng, thử lại nhé');
+    const items = {};
+    for (const [k, v] of Object.entries(j.items && typeof j.items === 'object' ? j.items : {})) { const m = String(k).match(/\d{1,2}/); if (m) items[Number(m[0])] = clip(v, 800); }
+    R.ai = { at: today(), items, pattern: clip(j.pattern, 600), tips: (Array.isArray(j.tips) ? j.tips : []).map((x) => clip(x, 300)).filter(Boolean).slice(0, 5) };
+    const att = R.attId && S.ltest.get(R.attId);
+    if (att) await ltPut({ ...att, ai: R.ai });
+  } catch (e) { toast(e?.message || 'AI chưa phân tích được', 'bad'); }
+  ltBusy = false; rerender();
+});
+function ltAiCard() {
+  const res = R.result;
+  const nWrong = Object.values(res.res).filter((r) => !r.ok).length;
+  if (!nWrong) return '';
+  if (!aiReady(S.settings.ai)) return '';
+  if (!R.ai) return `<button class="btn soft" style="margin-top:10px" data-act="lt-ai-all" ${ltBusy ? 'disabled' : ''}>${ltBusy ? '<span class="spin sm"></span> AI đang phân tích…' : `${icon('sparkle', 'sm')} AI phân tích ${nWrong} câu sai`}</button>`;
+  return `<div class="card w-ai" style="margin-top:10px"><div class="row-between"><b>${icon('sparkle', 'sm')} AI phân tích lỗi</b><button class="link" data-act="lt-ai-all" ${ltBusy ? 'disabled' : ''}>${ltBusy ? 'Đang phân tích…' : 'Phân tích lại'}</button></div>
+    ${R.ai.pattern ? `<p class="w-aisum">${esc(R.ai.pattern)}</p>` : ''}
+    ${R.ai.tips?.length ? `<h4 class="w-aih">Mẹo cho lần sau</h4><ul class="w-ail">${R.ai.tips.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+    <p class="small faint" style="margin-top:8px">Nhận xét riêng từng câu nằm trong phần “Chữa từng câu” của mỗi Part.</p></div>`;
+}
 
 function audioBox() {
   const free = R.mode === 'practice' || R.review;
@@ -1155,6 +1203,7 @@ export function runView() {
       ${res.band ? '' : '<p class="small faint" style="margin-top:6px">Band chỉ tính khi làm cả đề 40 câu.</p>'}
       ${whys ? `<p class="small muted" style="margin-top:8px">Câu sai: ${esc(whys)}</p>` : ''}
       ${types ? `<div class="card" style="margin-top:10px">${types}</div>` : ''}
+      ${ltAiCard()}
       ${R.parts.length > 1 ? `<div class="lt-pchips">${perPart}</div>` : ''}
       <p class="small muted" style="margin-top:10px">Nghe lại Part ${n} (tua được) và xem đáp án từng câu bên dưới.</p>`;
   }
@@ -1224,6 +1273,7 @@ function reviewHtml(part) {
       ${info ? `<p class="small muted lt-rvq">${esc(info.text)}</p>` : ''}
       <p class="small">Bạn: <b>${yours}</b>${okN === rs.length ? '' : ` · Đáp án: <b class="lt-right">${right}</b>`}</p>
       ${ev.map((e) => `<blockquote class="lt-ev" data-act="lt-goto-tx" data-p="${e.part}" data-i="${e.i}" role="button">${e.html}</blockquote>`).join('')}
+      ${okN < rs.length && R.ai?.items?.[n] ? `<div class="r-aiitem">${icon('sparkle', 'sm')}<span>${esc(R.ai.items[n])}</span></div>` : ''}
       ${noteHtml(note)}
       ${canAI ? `<button class="tag lt-aibtn" data-act="lt-ai" data-n="${n}" ${busy[n] ? 'disabled' : ''}>${busy[n] ? 'AI đang giải thích…' : `${icon('sparkle', 'sm')} Nhờ AI giải thích`}</button>` : ''}</div>`;
   }).join('');
