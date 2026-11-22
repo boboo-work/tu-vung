@@ -499,3 +499,10 @@ body:not(.no-tabs) #app::after {
 .r-aimain b { display: flex; align-items: center; gap: 6px; }
 .r-aimain p { margin: 4px 0 0; }
 .r-aimain .muted { color: #5A4E73; }
+
+/* Ngữ pháp · AI */
+.g-errai { margin-top: 10px; padding-top: 10px; border-top: 2px dashed var(--line); }
+.g-errai > p { margin: 0 0 8px; line-height: 1.5; font-size: 14.5px; }
+.g-erritem { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.g-erritem summary { cursor: pointer; line-height: 1.45; }
+.g-erritem p { margin: 6px 0 0 18px; }

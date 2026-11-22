@@ -710,7 +710,8 @@ function cleanGrammar(g) {
   if (kind === 'L') {
     return { id: g.id, lessonId: g.id.slice(2), step: int(g.step, 0, 6, 0), pos: int(g.pos, 0, 100, 0), right: int(g.right, 0, 1e4, 0), wrong: int(g.wrong, 0, 1e4, 0),
       done: !!g.done, doneAt: DATE_RE.test(str(g.doneAt)) ? g.doneAt : null, best: int(g.best, 0, 100, 0),
-      sentences: Array.isArray(g.sentences) ? g.sentences.filter((x) => typeof x === 'string').slice(-20) : [] };
+      sentences: Array.isArray(g.sentences) ? g.sentences.filter((x) => typeof x === 'string').slice(-20) : [],
+      ...(g.sentAi && typeof g.sentAi === 'object' ? { sentAi: Object.fromEntries(Object.entries(g.sentAi).slice(0, 20).filter(([, v]) => v && typeof v === 'object').map(([k, v]) => [str(k).slice(0, 2000), { at: str(v.at).slice(0, 10), verdict: str(v.verdict).slice(0, 40), explain: str(v.explain).slice(0, 800), fixed: str(v.fixed).slice(0, 400), better: str(v.better).slice(0, 400) }])) } : {}) };
   }
   if (kind === 'E') {
     return { id: g.id, tag: g.id.slice(2), log: (Array.isArray(g.log) ? g.log : []).filter((x) => x && DATE_RE.test(str(x.d))).map((x) => ({ d: x.d, ok: !!x.ok })).slice(-100) };

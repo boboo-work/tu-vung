@@ -5,6 +5,7 @@ import { esc, toast, speak, norm, today, addDays, fmtInterval } from './util.js'
 import { schedule, newSrs, preview } from './srs.js';
 import { icon, on, go, back, replace, rerender, navBar, learnSwitch } from './ui.js';
 import { confetti, countUp, motionOK, wait } from './fx.js';
+import { aiReady, askAI } from './ai.js';
 
 const voice = () => ({ lang: S.settings.voice, rate: S.settings.rate, name: S.settings.voiceName });
 
@@ -305,7 +306,7 @@ async function finish() {
     // Học lại mà vẫn sai → thẻ mẫu câu của bài quay về "đến hạn hôm nay".
     else if (ls.wrong && cur.srs.due > t) recs.push({ ...cur, srs: { ...cur.srs, due: t } });
   }
-  await gPut({ ...r, step: 0, pos: 0, right: 0, wrong: 0, done: true, doneAt: r.doneAt || t, best: Math.max(r.best || 0, pct), sentences: [...(r.sentences || []), ...ls.sentences].slice(-20) }, ...recs);
+  await gPut({ ...r, step: 0, pos: 0, right: 0, wrong: 0, done: true, doneAt: r.doneAt || t, best: Math.max(r.best || 0, pct), sentences: [...(r.sentences || []), ...ls.sentences].slice(-20), sentAi: keepAi({ ...(r.sentAi || {}), ...(ls.sentAi || {}) }, [...(r.sentences || []), ...ls.sentences].slice(-20)) }, ...recs);
   await logGrammarDay('gLessons', lesson.id);
   ls.step = DONE;
   ls.result = { pct, total, created, first: !r.done };
@@ -429,11 +430,80 @@ function stepView() {
       body: `<p class="qlabel">Tự so với câu mẫu</p>
         <div class="feedback ok"><b class="t">${icon('check', 'sm')} Câu của bạn</b><p class="en">${esc(ls.written)}</p></div>
         <div class="card" style="margin-top:12px"><p class="small muted" style="margin-bottom:6px">Câu mẫu</p>${w.samples.map((s) => `<div class="ex-row"><p class="en" style="flex:1">${fmt(s)}</p>${speakBtn(s.replace(/\*/g, ''), 'sm')}</div>`).join('')}</div>
+        ${gAiBox(ls.written)}
         ${w.check?.length ? `<div class="card" style="margin-top:12px"><p class="small muted" style="margin-bottom:6px">Tự kiểm tra câu của bạn</p><ul class="checks">${w.check.map((c) => `<li>${fmt(c)}</li>`).join('')}</ul></div>` : ''}`,
       actions: `<button class="btn" data-act="gl-finish">Hoàn thành bài</button>`,
     };
   }
   return null;
+}
+
+// ---- AI: chấm câu tự đặt theo mẫu của bài ----
+const G_SYS = `Bạn là giáo viên ngữ pháp tiếng Anh cho người Việt luyện IELTS. Nhận xét bằng tiếng Việt, ngắn gọn, cụ thể; câu sửa viết bằng tiếng Anh tự nhiên.
+Chỉ trả về đúng một khối JSON hợp lệ, không thêm chữ nào ngoài JSON.`;
+let gBusy = false;
+const clipG = (v, n) => String(v ?? '').slice(0, n);
+const jsonG = (t) => { t = String(t || ''); const a = t.indexOf('{'), b = t.lastIndexOf('}'); if (a < 0 || b <= a) return null; try { return JSON.parse(t.slice(a, b + 1)); } catch { return null; } };
+/** Chỉ giữ nhận xét AI của các câu còn được lưu. */
+const keepAi = (m, list) => Object.fromEntries(Object.entries(m || {}).filter(([k]) => list.includes(k)));
+on('gl-ai', async () => {
+  if (!ls?.written || gBusy) return;
+  if (!aiReady(S.settings.ai)) { toast('Chưa kết nối AI. Vào Cài đặt → Trợ lý AI.', 'bad'); return; }
+  const { lesson } = ls;
+  const prompt = `Bài ngữ pháp: ${lesson.title}
+Quy tắc của bài:
+${lesson.rule.map((x) => '- ' + x.replace(/\*\*/g, '')).join('\n')}
+Yêu cầu viết: ${lesson.write.prompt}
+Câu của người học: """${ls.written}"""
+
+Đánh giá câu: đã dùng đúng cấu trúc của bài chưa, có lỗi ngữ pháp/từ vựng nào khác không, có tự nhiên không.
+Trả về JSON: {"verdict":"Đúng | Đúng nhưng chưa tự nhiên | Chưa đúng","explain":"1–3 câu giải thích","fixed":"câu đã sửa (giữ ý người học; nếu đã đúng thì chép lại)","better":"một cách nói hay hơn, tự nhiên hơn"}`;
+  gBusy = true; rerender();
+  try {
+    const j = jsonG(await askAI(S.settings.ai, prompt, { system: G_SYS }));
+    if (!j) throw new Error('AI trả về không đúng định dạng, thử lại nhé');
+    ls.sentAi = { ...(ls.sentAi || {}), [ls.written]: { at: today(), verdict: clipG(j.verdict, 40), explain: clipG(j.explain, 800), fixed: clipG(j.fixed, 400), better: clipG(j.better, 400) } };
+  } catch (e) { toast(e?.message || 'AI chưa chấm được', 'bad'); }
+  gBusy = false; rerender();
+});
+export const verdictCls = (v) => (/^đúng$/i.test(String(v).trim()) ? 'ok' : /^đúng/i.test(String(v).trim()) ? 'mid' : 'no');
+export function gAiNote(a) {
+  if (!a) return '';
+  return `<div class="r-aimain ${verdictCls(a.verdict)}"><b>${icon('sparkle', 'sm')} ${esc(a.verdict || 'AI nhận xét')}</b>${a.explain ? `<p>${esc(a.explain)}</p>` : ''}
+    ${a.fixed && a.fixed.trim() !== '' ? `<p class="en"><span class="small muted">Sửa: </span>${esc(a.fixed)}</p>` : ''}${a.better ? `<p class="en"><span class="small muted">Hay hơn: </span>${esc(a.better)}</p>` : ''}</div>`;
+}
+function gAiBox(text) {
+  if (!aiReady(S.settings.ai)) return '';
+  const a = ls.sentAi?.[text];
+  if (a) return `<div style="margin-top:12px">${gAiNote(a)}</div>`;
+  return `<button class="btn soft" style="margin-top:12px" data-act="gl-ai" ${gBusy ? 'disabled' : ''}>${gBusy ? '<span class="spin sm"></span> AI đang chấm…' : `${icon('sparkle', 'sm')} AI chấm câu này`}</button>`;
+}
+
+// ---- AI trong Sổ lỗi: giải thích loại lỗi + 4 câu luyện ----
+const errAi = {}; // tag → { busy, explain, items: [{ q, a, why }] } (chỉ giữ trong lúc mở app)
+on('g-err-ai', async (el) => {
+  const tag = el.dataset.tag;
+  if (errAi[tag]?.busy) return;
+  if (!aiReady(S.settings.ai)) { toast('Chưa kết nối AI. Vào Cài đặt → Trợ lý AI.', 'bad'); return; }
+  const t = G.tags[tag] || { name: tag };
+  const lesson = t.lesson && G.lessons.get(t.lesson);
+  const prompt = `Người học hay sai loại lỗi: "${t.name}"${lesson ? ` (bài: ${lesson.title}; quy tắc: ${lesson.rule.map((x) => x.replace(/\*\*/g, '')).join(' ')})` : ''}.
+Giải thích ngắn gọn vì sao người Việt hay sai lỗi này và cách nhớ. Rồi tạo 4 câu luyện mới (điền chỗ trống ___ hoặc sửa câu sai), độ khó tăng dần, ngữ cảnh IELTS.
+Trả về JSON: {"explain":"2–4 câu","items":[{"q":"câu luyện","a":"đáp án","why":"giải thích ngắn"}]}`;
+  errAi[tag] = { busy: true }; rerender();
+  try {
+    const j = jsonG(await askAI(S.settings.ai, prompt, { system: G_SYS }));
+    if (!j) throw new Error('AI trả về không đúng định dạng, thử lại nhé');
+    errAi[tag] = { explain: clipG(j.explain, 1000), items: (Array.isArray(j.items) ? j.items : []).slice(0, 6).map((x) => ({ q: clipG(x?.q, 300), a: clipG(x?.a, 200), why: clipG(x?.why, 300) })) };
+  } catch (e) { errAi[tag] = null; toast(e?.message || 'AI chưa trả lời được', 'bad'); }
+  rerender();
+});
+function errAiHtml(tag) {
+  const a = errAi[tag];
+  if (!aiReady(S.settings.ai)) return '';
+  if (!a || a.busy) return `<button class="btn soft sm" style="margin-top:8px" data-act="g-err-ai" data-tag="${esc(tag)}" ${a?.busy ? 'disabled' : ''}>${a?.busy ? '<span class="spin sm"></span> AI đang soạn…' : `${icon('sparkle', 'sm')} AI giải thích & ra 4 câu luyện`}</button>`;
+  return `<div class="g-errai">${a.explain ? `<p>${esc(a.explain)}</p>` : ''}${a.items.map((x, i) => `<details class="g-erritem"><summary><b>${i + 1}.</b> <span class="en">${esc(x.q)}</span></summary><p class="en"><b>${esc(x.a)}</b></p>${x.why ? `<p class="small muted">${esc(x.why)}</p>` : ''}</details>`).join('')}
+    <button class="link" data-act="g-err-ai" data-tag="${esc(tag)}">Ra câu khác</button></div>`;
 }
 
 function doneView() {
@@ -565,6 +635,7 @@ export function errorsView() {
         <p class="small muted">7 ngày qua: ${x.wrong} lần sai · ${x.right} lần đúng · tổng ${x.total} lần sai</p></div>
         ${hot ? '<span class="tag warn">Cần ôn</span>' : ''}</div>
       ${lesson ? `<button class="btn ${hot ? '' : 'ghost'} sm" style="margin-top:12px" data-act="g-start" data-id="${lesson.id}" data-fresh="1">Học lại: ${esc(lesson.title)}</button>` : ''}
+      ${errAiHtml(x.tag)}
     </div>`;
   }).join('');
   return `<div class="page">${navBar('Sổ lỗi', { fallback: '#/grammar' })}

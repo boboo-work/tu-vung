@@ -4,7 +4,7 @@
 import { S, saveWord, gPut } from './store.js';
 import { esc, toast, fmtDate, dateStr, today, addDays } from './util.js';
 import { icon, on, rerender, navBar, confirmSheet, chooseSheet, richText } from './ui.js';
-import { G } from './grammar.js';
+import { G, gAiNote } from './grammar.js';
 
 const ui = { tab: 'vocab', q: '' };
 
@@ -105,7 +105,7 @@ function listHtml() {
     if (!list.length) return `<div class="card empty"><p>${ui.q ? 'Không có câu nào khớp.' : 'Chưa có câu nào. Câu bạn viết ở bước cuối mỗi bài ngữ pháp sẽ hiện ở đây.'}</p></div>`;
     return withDays(list, (x) => `<div class="card ms-item"><p class="en ms-text">${esc(x.text)}</p>
       <div class="ms-meta"><span class="small muted">${x.lesson ? esc(x.lesson.title) : 'Bài ngữ pháp'}</span>
-      <button class="iconbtn sm" data-act="ms-gdel" data-id="${esc(x.r.id)}" data-i="${x.i}" aria-label="Xoá câu">${icon('trash', 'sm')}</button></div></div>`);
+      <button class="iconbtn sm" data-act="ms-gdel" data-id="${esc(x.r.id)}" data-i="${x.i}" aria-label="Xoá câu">${icon('trash', 'sm')}</button></div>${x.r.sentAi?.[x.text] ? `<div style="margin-top:10px">${gAiNote(x.r.sentAi[x.text])}</div>` : ''}</div>`);
   }
   const list = tabSentences().filter((x) => match(x.text) || match(x.w.word));
   if (!list.length) return `<div class="card empty"><p>${ui.q ? 'Không có câu nào khớp.' : 'Chưa có câu nào. Khi học từ ở chế độ Đặt câu, câu bạn viết sẽ hiện ở đây.'}</p></div>`;
