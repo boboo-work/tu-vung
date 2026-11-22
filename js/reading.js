@@ -6,6 +6,7 @@ import { esc, toast, today, uid, addDays } from './util.js';
 import { icon, on, go, back, replace, rerender, navBar, learnSwitch, confirmSheet, openSheet, closeSheet } from './ui.js';
 import { lookupWord } from './lookup.js';
 import { confetti } from './fx.js';
+import { aiReady, askAI } from './ai.js';
 
 // ================= NỘI DUNG =================
 export const R = { state: 'idle', error: '', tests: [], data: new Map(), loading: new Set() };
@@ -598,6 +599,7 @@ export function resultView(id) {
     return `<details class="card r-res ${a.ok ? 'ok' : 'no'}"><summary><span class="r-res-n">${a.ok ? icon('check', 'sm') : icon('x', 'sm')} ${it.n}</span><span class="r-res-q">${inline(it.q)}</span></summary>
       <p class="small" style="margin-top:8px">Bạn: <b>${esc(a.v || '(bỏ trống)')}</b> · Đáp án: <b>${esc(it.a.join(' / '))}</b> · ${esc(TYPE_NAME[qtype(g)])}</p>
       ${a.ok ? '' : whyChips(it.n, a.why, r.id)}
+      ${!a.ok && r.ai?.items?.[it.n] ? `<div class="r-aiitem">${icon('sparkle', 'sm')}<span>${esc(r.ai.items[it.n])}</span></div>` : ''}
       ${it.loc.map((l) => `<blockquote class="r-quote en"><span class="small muted">${esc(locName(p, l))}</span> ${esc(sentOf(p, l))}</blockquote>`).join('')}
       ${it.exp ? `<div class="r-exp">${md(it.exp)}</div>` : ''}
       ${(it.pairs || []).length ? `<div class="pill-list" style="margin-top:8px">${it.pairs.map(([qa, pb]) => `<button class="tag r-pairbtn" data-act="r-pair" data-a="${esc(qa)}" data-b="${esc(pb)}" data-s="${esc(it.loc[0] ? sentOf(p, it.loc[0]) : '')}" data-t="${esc(p.title)}">${esc(qa)} ↔ ${esc(pb)} <b>+</b></button>`).join('')}</div>` : ''}
@@ -608,12 +610,78 @@ export function resultView(id) {
     <h1 style="font-size:24px;margin:0 2px 10px">${esc(p.title)}</h1>
     <div class="tiles w-tiles"><div class="tile"><b>${r.score}/${r.total}</b><span>câu đúng</span></div><div class="tile"><b>${pct}%</b><span>tỉ lệ</span></div><div class="tile"><b>${Math.round(r.ms / 60e3)}′</b><span>thời gian</span></div>${locs.length ? `<div class="tile"><b>${locOk}/${locs.length}</b><span>định vị</span></div>` : ''}</div>
     ${r.placement ? placementAdvice(pct) : ''}
+    ${rAiHead(r)}
     <div class="stack" style="margin-top:14px"><button class="btn" data-act="go" data-to="#/rstudy/${p.id}">Đọc hiểu từng đoạn</button>
       <button class="btn soft" data-act="go" data-to="#/rvocab/${p.id}">Ôn từ của bài</button></div>
     <h2>Từng câu</h2>${rows}
     <button class="btn ghost" style="margin-top:16px" data-act="r-start" data-p="${p.id}" data-mode="${r.mode}">Làm lại bài này</button>
     <button class="btn danger" style="margin-top:10px" data-act="r-delete" data-id="${r.id}">${icon('trash', 'sm')} Xoá kết quả</button></div>`;
 }
+
+// ---- AI: phân tích câu sai của chính người học ----
+// Lời giải 4 bước có sẵn giải thích đáp án đúng; AI nói thêm vì sao người học chọn đáp án của họ (bẫy gì, đọc nhầm chỗ nào)
+// và tổng kết kiểu lỗi của cả bài. Một lần gọi cho mọi câu sai. Lưu vào kết quả (r.ai).
+const R_SYS = `Bạn là giáo viên IELTS Reading, dạy theo cách Linear thinking (định vị câu, Simplify, đối chiếu paraphrase) cho người Việt.
+Phân tích cụ thể lỗi của người học: vì sao họ chọn đáp án sai (bẫy từ trùng, đọc lướt sai, nhầm FALSE/NOT GIVEN, sai dạng từ…), và cách tránh lần sau.
+Viết tiếng Việt, ngắn gọn, đi thẳng vào câu trong bài; trích tiếng Anh khi cần. Chỉ trả về đúng một khối JSON hợp lệ.`;
+const rBusy = new Set();
+const clipR = (v, n) => String(v ?? '').slice(0, n);
+const jsonOf = (t) => { t = String(t || ''); const a = t.indexOf('{'), b = t.lastIndexOf('}'); if (a < 0 || b <= a) return null; try { return JSON.parse(t.slice(a, b + 1)); } catch { return null; } };
+on('r-ai', async (el) => {
+  const r = S.reading.get(el.dataset.id);
+  const x = r && passageOf(r.pid);
+  if (!x || rBusy.has(r.id)) return;
+  if (!aiReady(S.settings.ai)) { toast('Chưa kết nối AI. Vào Cài đặt → Trợ lý AI.', 'bad'); return; }
+  const { p } = x;
+  const wrong = flatItems(p).filter(({ it }) => !r.answers[it.n]?.ok);
+  if (!wrong.length) { toast('Bạn đúng hết, không có câu sai để phân tích'); return; }
+  const list = wrong.map(({ g, it }) => {
+    const a = r.answers[it.n] || {};
+    return `--- Câu ${it.n} (${TYPE_NAME[qtype(g)]}) ---\nCâu hỏi: ${plain(it.q)}\nNgười học trả lời: ${a.v || '(bỏ trống)'}\nĐáp án đúng: ${it.a.join(' / ')}\nCâu chứa đáp án trong bài: ${it.loc.map((l) => sentOf(p, l)).join(' … ')}${it.exp ? `\nLời giải có sẵn (tham khảo): ${plain(it.exp).slice(0, 600)}` : ''}`;
+  }).join('\n\n');
+  const prompt = `Bài đọc: ${p.title}\nNgười học đúng ${r.score}/${r.total}. Các câu sai:\n\n${list}\n\nTrả về JSON:\n{"items":{"<số câu>":"2–3 câu: vì sao người học chọn đáp án đó, bẫy nằm ở đâu, cách nhận ra đáp án đúng"},\n "pattern":"kiểu lỗi lặp lại trong bài này (1–2 câu)",\n "tips":["mẹo cụ thể 1","mẹo 2","mẹo 3"]}`;
+  rBusy.add(r.id); rerender();
+  try {
+    const j = jsonOf(await askAI(S.settings.ai, prompt, { system: R_SYS }));
+    if (!j) throw new Error('AI trả về không đúng định dạng, thử lại nhé');
+    const items = {};
+    for (const [k, v] of Object.entries(j.items && typeof j.items === 'object' ? j.items : {})) if (/^\d{1,3}$/.test(k)) items[k] = clipR(v, 800);
+    r.ai = { at: today(), items, pattern: clipR(j.pattern, 600), tips: (Array.isArray(j.tips) ? j.tips : []).map((t) => clipR(t, 300)).filter(Boolean).slice(0, 5) };
+    await rPut(r);
+  } catch (e) { toast(e?.message || 'AI chưa phân tích được', 'bad'); }
+  rBusy.delete(r.id); rerender();
+});
+const plain = (t) => String(t || '').replace(/\*\*|__|`/g, '').replace(/\s+/g, ' ').trim();
+function rAiHead(r) {
+  const busy = rBusy.has(r.id);
+  const nWrong = r.total - r.score;
+  if (!nWrong) return '';
+  if (!aiReady(S.settings.ai)) return `<p class="small muted" style="margin-top:12px">Kết nối AI ở Cài đặt → Trợ lý AI để được phân tích vì sao bạn sai.</p>`;
+  if (!r.ai) return `<button class="btn soft" style="margin-top:12px" data-act="r-ai" data-id="${r.id}" ${busy ? 'disabled' : ''}>${busy ? '<span class="spin sm"></span> AI đang phân tích…' : `${icon('sparkle', 'sm')} AI phân tích ${nWrong} câu sai`}</button>`;
+  return `<div class="card w-ai" style="margin-top:12px"><div class="row-between"><b>${icon('sparkle', 'sm')} AI phân tích lỗi</b><button class="link" data-act="r-ai" data-id="${r.id}" ${busy ? 'disabled' : ''}>${busy ? 'Đang phân tích…' : 'Phân tích lại'}</button></div>
+    ${r.ai.pattern ? `<p class="w-aisum">${esc(r.ai.pattern)}</p>` : ''}
+    ${r.ai.tips?.length ? `<h4 class="w-aih">Mẹo cho bài sau</h4><ul class="w-ail">${r.ai.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+    <p class="small faint" style="margin-top:8px">Nhận xét riêng từng câu nằm trong mục “Từng câu” bên dưới.</p></div>`;
+}
+
+// ---- AI chấm ý chính (Bài đọc của bạn) ----
+on('r-own-ai', async (el) => {
+  const r = S.reading.get(el.dataset.id);
+  if (!r || rBusy.has(r.id)) return;
+  if (!aiReady(S.settings.ai)) { toast('Chưa kết nối AI. Vào Cài đặt → Trợ lý AI.', 'bad'); return; }
+  const p = ownPassage(r);
+  const list = p.paras.map((pa, pi) => `--- Đoạn ${pi + 1} ---\n${pa.sents.join(' ')}\nÝ chính người học viết: ${(r.mains[pi] || '').trim() || '(chưa viết)'}`).join('\n\n');
+  const prompt = `${list}\n\nVới từng đoạn: đánh giá ý chính người học viết (đúng / gần đúng / sai / chưa viết), nêu ý chính đúng bằng tiếng Việt (1 câu) và nhận xét ngắn.\nTrả về JSON: {"items":[{"verdict":"đúng|gần đúng|sai|chưa viết","gist":"ý chính đúng","note":"nhận xét ngắn"}],"summary":"nhận xét chung 1–2 câu"}`;
+  rBusy.add(r.id); rerender();
+  try {
+    const j = jsonOf(await askAI(S.settings.ai, prompt, { system: R_SYS }));
+    if (!j) throw new Error('AI trả về không đúng định dạng, thử lại nhé');
+    r.aiMains = { at: today(), summary: clipR(j.summary, 600), items: (Array.isArray(j.items) ? j.items : []).slice(0, 80).map((x) => ({ verdict: clipR(x?.verdict, 20), gist: clipR(x?.gist, 400), note: clipR(x?.note, 400) })) };
+    await rPut(r);
+  } catch (e) { toast(e?.message || 'AI chưa chấm được', 'bad'); }
+  rBusy.delete(r.id); rerender();
+});
+const VERDICT = (v) => (/^đúng/i.test(v) ? 'ok' : /gần/i.test(v) ? 'mid' : 'no');
 
 // ---- Đọc hiểu từng đoạn ----
 export function studyView(pid) {
@@ -947,8 +1015,10 @@ export function ownView(id) {
         const st = new Set(r.strike[`${pi}-${si}`] || []);
         return `<div class="r-toks" style="margin-top:8px">${s.split(/\s+/).map((t, k) => `<button class="r-tok ${st.has(k) ? 'struck' : ''}" data-act="r-own-strike" data-id="${esc(id)}" data-key="${pi}-${si}" data-k="${k}">${esc(t)}</button>`).join('')}</div>`;
       }).join('')}</details>
-      <p class="small muted" style="margin:10px 0 6px">Ý chính của bạn</p><textarea class="input" rows="2" data-in="r-own-main" data-id="${esc(id)}" data-pi="${pi}" style="width:100%" placeholder="Một câu, tiếng Việt cũng được">${esc(r.mains[pi] || '')}</textarea></div>
+      <p class="small muted" style="margin:10px 0 6px">Ý chính của bạn</p><textarea class="input" rows="2" data-in="r-own-main" data-id="${esc(id)}" data-pi="${pi}" style="width:100%" placeholder="Một câu, tiếng Việt cũng được">${esc(r.mains[pi] || '')}</textarea>
+      ${r.aiMains?.items?.[pi] ? `<div class="r-aimain ${VERDICT(r.aiMains.items[pi].verdict)}"><b>${icon('sparkle', 'sm')} ${esc((v => v.charAt(0).toUpperCase() + v.slice(1))(r.aiMains.items[pi].verdict || 'AI'))}</b><p>${esc(r.aiMains.items[pi].gist)}</p>${r.aiMains.items[pi].note ? `<p class="small muted">${esc(r.aiMains.items[pi].note)}</p>` : ''}</div>` : ''}</div>
     </div>`).join('')}
+    ${aiReady(S.settings.ai) ? `<button class="btn soft" style="margin-top:16px" data-act="r-own-ai" data-id="${esc(id)}" ${rBusy.has(id) ? 'disabled' : ''}>${rBusy.has(id) ? '<span class="spin sm"></span> AI đang chấm…' : `${icon('sparkle', 'sm')} ${r.aiMains ? 'AI chấm lại ý chính' : 'AI chấm ý chính các đoạn'}`}</button>${r.aiMains?.summary ? `<p class="small muted" style="margin:8px 2px 0">${esc(r.aiMains.summary)}</p>` : ''}` : ''}
     <button class="btn danger" style="margin-top:16px" data-act="r-own-del" data-id="${esc(id)}">${icon('trash', 'sm')} Xoá bài</button></div>`;
 }
 on('r-own-strike', (el) => {

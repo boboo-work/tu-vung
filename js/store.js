@@ -672,7 +672,8 @@ function cleanReading(r) {
     const mains = {}, strike = {};
     for (const [k, v] of Object.entries(r.mains && typeof r.mains === 'object' ? r.mains : {}).slice(0, 80)) if (/^\d{1,3}$/.test(k)) mains[k] = str(v).slice(0, 500);
     for (const [k, v] of Object.entries(r.strike && typeof r.strike === 'object' ? r.strike : {}).slice(0, 400)) if (/^\d{1,3}-\d{1,3}$/.test(k) && Array.isArray(v)) strike[k] = v.map((x) => int(x, 0, 999, 0)).slice(0, 200);
-    return { id: r.id, kind: 'own', title: str(r.title).slice(0, 200), text: str(r.text).slice(0, 30000), at: DATE_RE.test(str(r.at)) ? r.at : today(), mains, strike };
+    const am = r.aiMains && typeof r.aiMains === 'object' ? { at: str(r.aiMains.at).slice(0, 10), summary: str(r.aiMains.summary).slice(0, 600), items: (Array.isArray(r.aiMains.items) ? r.aiMains.items : []).slice(0, 80).map((x) => ({ verdict: str(x?.verdict).slice(0, 20), gist: str(x?.gist).slice(0, 400), note: str(x?.note).slice(0, 400) })) } : null;
+    return { id: r.id, kind: 'own', title: str(r.title).slice(0, 200), text: str(r.text).slice(0, 30000), at: DATE_RE.test(str(r.at)) ? r.at : today(), mains, strike, ...(am ? { aiMains: am } : {}) };
   }
   // Đề trọn 3 passage: điểm /40 và band tham khảo.
   if (r.kind === 'full') {
@@ -690,6 +691,8 @@ function cleanReading(r) {
     id: r.id, kind: 'result', pid: r.pid, mode: ['exam', 'full'].includes(r.mode) ? r.mode : 'guided', title: str(r.title).slice(0, 200), placement: r.placement === true,
     score: int(r.score, 0, 100, 0), total: int(r.total, 0, 100, 0), ms: int(r.ms, 0, 864e5, 0),
     at: DATE_RE.test(str(r.at)) ? r.at : today(), answers,
+    ...(r.ai && typeof r.ai === 'object' ? { ai: { at: str(r.ai.at).slice(0, 10), pattern: str(r.ai.pattern).slice(0, 600), tips: (Array.isArray(r.ai.tips) ? r.ai.tips : []).map((t) => str(t).slice(0, 300)).slice(0, 5),
+      items: Object.fromEntries(Object.entries(r.ai.items && typeof r.ai.items === 'object' ? r.ai.items : {}).filter(([k]) => /^\d{1,3}$/.test(k)).slice(0, 60).map(([k, v]) => [k, str(v).slice(0, 800)])) } } : {}),
   };
 }
 const G_ID = /^(?:[LCE]:[A-Za-z0-9_-]{1,64}|placement)$/;

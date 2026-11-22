@@ -490,3 +490,12 @@ body:not(.no-tabs) #app::after {
 .sp-better { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding: 12px; border: 2px dashed var(--line); border-radius: 14px; }
 .sp-better p { margin: 0; line-height: 1.55; }
 .sp-better .tag { align-self: flex-start; }
+
+/* Reading · AI */
+.r-aiitem { display: flex; gap: 8px; margin-top: 10px; padding: 10px 12px; border: 2px solid var(--ink); border-radius: 14px; background: var(--lav); color: var(--on-pop); font-size: 14.5px; line-height: 1.5; }
+.r-aiitem .ic { flex: none; margin-top: 3px; }
+.r-aimain { margin-top: 10px; padding: 10px 12px; border: 2px solid var(--ink); border-radius: 14px; color: var(--on-pop); font-size: 14.5px; }
+.r-aimain.ok { background: #D9F7EC; } .r-aimain.mid { background: #FFF0B8; } .r-aimain.no { background: #FFE1EC; }
+.r-aimain b { display: flex; align-items: center; gap: 6px; }
+.r-aimain p { margin: 4px 0 0; }
+.r-aimain .muted { color: #5A4E73; }
