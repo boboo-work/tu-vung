@@ -124,6 +124,9 @@
   const mainTrack = () => (mainKey && mainKey !== 'dom' ? tracks.get(mainKey) : null);
 
   // ---------- Dịch ----------
+  // Phim nói tiếng Anh nhưng chỉ có phụ đề tiếng Việt: dịch ngược sang tiếng Anh, tiếng Anh (dịch máy) ở dòng trên.
+  const rev = (t) => !!t && t.src !== 'dom' && t.lang === cfg.tl && cfg.tl !== 'en' && !(transKey && tracks.has(transKey));
+  const target = (t) => (rev(t) ? 'en' : cfg.tl);
   function transOf(t, i) {
     if (transKey && tracks.has(transKey)) {
       const o = tracks.get(transKey);
@@ -139,9 +142,9 @@
     for (let j = Math.max(0, i - 1); j < Math.min(t.cues.length, i + 40); j++) if (t.tr[j] == null && !pending.has(t.key + j)) idx.push(j);
     if (!idx.length || idx.length < 8 && idx[0] !== i && t.tr[i] != null) return; // còn đủ câu đã dịch phía trước
     idx.forEach((j) => pending.add(t.key + j));
-    const tl = cfg.tl;
+    const tl = target(t);
     const out = await send({ type: 'translate', lines: idx.map((j) => t.cues[j].t), tl });
-    idx.forEach((j, k) => { pending.delete(t.key + j); if (out?.[k] && tl === cfg.tl) t.tr[j] = out[k]; });
+    idx.forEach((j, k) => { pending.delete(t.key + j); if (out?.[k] && tl === target(t)) t.tr[j] = out[k]; });
     if (!out || !out.some(Boolean)) t.failUntil = Date.now() + 8000;
     render(true);
   }
@@ -150,7 +153,7 @@
       const idx = [];
       for (let j = i; j < Math.min(t.cues.length, i + 60); j++) if (t.tr[j] == null) idx.push(j);
       if (idx.length) {
-        const out = await send({ type: 'translate', lines: idx.map((j) => t.cues[j].t), tl: cfg.tl });
+        const out = await send({ type: 'translate', lines: idx.map((j) => t.cues[j].t), tl: target(t) });
         idx.forEach((j, k) => { if (out?.[k]) t.tr[j] = out[k]; });
       }
       onStep?.(Math.min(1, (i + 60) / t.cues.length));
@@ -172,6 +175,7 @@
     .w{border-radius:4px;cursor:pointer;padding:0 .04em}
     .w:hover{background:rgba(255,216,77,.35)}
     .w.sel{background:#FFD84D;color:#111;text-shadow:none}
+    .mt{display:inline-block;font-size:.5em;font-weight:700;vertical-align:middle;margin-right:.5em;padding:.1em .45em;border-radius:6px;background:#FFD84D;color:#111;text-shadow:none}
     .t{color:#FFD84D;font-weight:500;font-size:.86em;margin-top:.12em;text-shadow:0 1px 2px #000}
     .t.wait{opacity:.5}
     .chip{position:absolute;top:10px;right:10px;pointer-events:auto;border:0;border-radius:99px;padding:6px 12px;font-size:13px;font-weight:700;
@@ -231,6 +235,8 @@
     curIdx = i;
     if (i < 0) return null;
     if (t.tr[i] == null) ensure(t, i);
+    // Chỉ có phụ đề tiếng Việt: dòng trên là tiếng Anh dịch máy, dòng dưới là phụ đề gốc.
+    if (rev(t)) return { text: t.tr[i] || '', tr: t.cues[i].t, idx: i, mt: true };
     return { text: t.cues[i].t, tr: transOf(t, i), idx: i };
   }
   function render(force) {
@@ -245,6 +251,8 @@
     box.classList.remove('off');
     if (cfg.showOrig) {
       const o = el('div', { class: 'o' });
+      if (L.mt) o.append(el('span', { class: 'mt', title: 'Phim chỉ có phụ đề tiếng Việt: dòng tiếng Anh là dịch máy, có thể khác lời thoại thật' }, 'EN dịch máy'));
+      if (L.mt && !L.text) o.append('…');
       L.text.split('\n').forEach((line, n) => {
         if (n) o.append(el('br'));
         for (const tk of B.tokens(line)) o.append(tk.w ? el('span', { class: 'w', 'data-w': tk.t }, tk.t) : tk.t);
@@ -516,16 +524,16 @@
         click: async () => {
           dl.disabled = true;
           if (!(transKey && tracks.has(transKey))) await translateAll(t, (p) => { dl.textContent = `Đang dịch… ${Math.round(p * 100)}%`; });
-          const tr = t.cues.map((_, i) => transOf(t, i) || '');
           const name = (document.title || 'phu-de').replace(/[\\/:*?"<>|]+/g, ' ').trim().slice(0, 80) || 'phu-de';
-          download(`${name}.song-ngu.srt`, B.toSrt(t.cues, tr));
+          if (rev(t)) download(`${name}.song-ngu.srt`, B.toSrt(t.cues.map((c, i) => ({ ...c, t: t.tr[i] || '' })), t.cues.map((c) => c.t)));
+          else download(`${name}.song-ngu.srt`, B.toSrt(t.cues, t.cues.map((_, i) => transOf(t, i) || '')));
           dl.textContent = 'Tải .srt song ngữ'; dl.disabled = false;
         },
       },
     }, 'Tải .srt song ngữ');
     const hint = IS_YT ? 'YouTube: phụ đề tự bật. Nếu chưa thấy, bấm nút CC trên trình phát một lần.'
       : /netflix/.test(HOST) ? 'Netflix: bật phụ đề tiếng Anh trong menu phụ đề của Netflix.'
-        : 'Bật phụ đề tiếng Anh trong trình phát của trang. Trang không có phụ đề tiếng Anh: mở file .srt tải từ nơi khác.';
+        : 'Bật phụ đề tiếng Anh trong trình phát của trang. Chỉ có phụ đề tiếng Việt: tiện ích tự dịch ngược sang tiếng Anh (dịch máy, có thể khác lời thoại). Muốn đúng lời thoại: mở file .srt tiếng Anh tải từ nơi khác.';
     panel = el('div', { class: 'panel' },
       el('button', { class: 'x', title: 'Đóng', on: { click: closePanel } }, '×'),
       el('h3', {}, 'Phụ đề song ngữ'),

@@ -30,7 +30,7 @@ async function google(text, tl, extra = '') {
 const joined = (d) => (d?.[0] || []).map((x) => x?.[0] || '').join('');
 
 async function myMemory(text, tl) {
-  const d = await getJSON(`${MM}?q=${encodeURIComponent(text.slice(0, 480))}&langpair=en|${tl}`);
+  const d = await getJSON(`${MM}?q=${encodeURIComponent(text.slice(0, 480))}&langpair=${tl === 'en' ? 'vi|en' : `en|${tl}`}`);
   return String(d?.responseData?.translatedText || '');
 }
 

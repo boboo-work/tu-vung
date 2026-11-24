@@ -17,6 +17,7 @@ Chrome trên iPhone/Android không chạy được extension. Trên iPhone dùng
 
 - **YouTube:** mở video có phụ đề, extension tự bật CC và hiện 2 dòng.
 - **Netflix:** bật phụ đề *English* trong menu phụ đề của Netflix.
+- **Phim nói tiếng Anh nhưng chỉ có phụ đề tiếng Việt:** tiện ích tự dịch ngược sang tiếng Anh, dòng trên có nhãn **EN dịch máy** (có thể khác lời thoại thật). Muốn đúng lời thoại thì mở file .srt tiếng Anh.
 - **Web phim khác:** bật phụ đề tiếng Anh trong trình phát. Trang không có phụ đề tiếng Anh: rê chuột lên video → **Song ngữ ⋯** → **Mở file .srt/.vtt**.
 - Rê chuột vào phụ đề → video tạm dừng. Chạm vào từ → nghĩa, phiên âm, nghe đọc, **Lưu từ**.
 - Phím tắt: `A` câu trước · `S` nghe lại câu · `D` câu sau (không có trên Netflix).
