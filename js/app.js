@@ -9,6 +9,7 @@ import { dropView } from './drop.js';
 import { matchView, popView } from './games2.js';
 import { loadWriting, writingView, typeView as wTypeView, promptView as wPromptView, writeView, essaysView, essayView, statsView as wStatsView } from './writing.js';
 import { loadReading, readingView, passageView as rPassageView, runView as rRunView, resultView as rResultView, studyView as rStudyView, fullView as rFullView, reviewView as rReviewView, patternsView as rPatternsView, ownListView as rOwnListView, ownView as rOwnView, statsView as rStatsView } from './reading.js';
+import { rImportView } from './rimport.js';
 import { micTestView } from './speaking.js';
 import { loadSpeaking, speakingView, sp1View, sp2View } from './speak.js';
 import { loadListening, listeningView, numView as lNumView, dictView as lDictView } from './listening.js';
@@ -30,7 +31,7 @@ const routes = {
   word: wordView, edit: formView, new: () => formView(null), decks: decksView,
   settings: settingsView, voices: voicesView, ai: aiView, session: sessionView, game: gameView, drop: dropView, match: matchView, pop: popView,
   writing: writingView, wtype: wTypeView, wprompt: wPromptView, wwrite: writeView, wessays: essaysView, wessay: essayView, wstats: wStatsView,
-  reading: readingView, rpassage: rPassageView, rrun: rRunView, rresult: rResultView, rstudy: rStudyView,
+  reading: readingView, rimport: rImportView, rpassage: rPassageView, rrun: rRunView, rresult: rResultView, rstudy: rStudyView,
   mictest: micTestView, speaking: speakingView, sp1: sp1View, sp2: sp2View,
   listening: listeningView, lnum: lNumView, ldict: lDictView, limport: lImportView, ltest: lTestView, lrun: lRunView,
   games: gamesView, hunt: hSetupView, hplay: hPlayView, hres: hResultView, trap: tSetupView, tplay: tPlayView, tres: tResultView, talk: kSetupView, tkplay: kPlayView, tkres: kResultView, idea: iSetupView, iplay: iPlayView, ires: iResultView, chal: chalView, movie: movieView, mysent: mySentView, pron: pronView, psound: soundView, ppairs: pairsView, pquiz: quizView, ptopic: topicView, pick: pSetupView, pplay: pPlayView, pres: pResultView,
@@ -71,7 +72,7 @@ function render(resetScroll = false) {
   }
   if (changed) countUp(view);
   lastHash = location.hash;
-  renderTabs(['grammar', 'writing', 'reading', 'speaking', 'listening', 'movie', 'pron', 'psound', 'ppairs', 'pquiz', 'ptopic'].includes(route) ? 'learn' : route);
+  renderTabs(['grammar', 'writing', 'reading', 'rimport', 'speaking', 'listening', 'movie', 'pron', 'psound', 'ppairs', 'pquiz', 'ptopic'].includes(route) ? 'learn' : route);
   if (out?.focus) {
     const el = view.querySelector(out.focus);
     // Chỉ tự focus khi đổi bước/đổi trang, tránh bật bàn phím ngoài ý muốn khi vẽ lại.

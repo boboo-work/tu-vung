@@ -665,8 +665,44 @@ function cleanSpeaking(r, audioMap) {
   }
   return null;
 }
+/** Đề Reading người học tự nhập (cấu trúc như content/reading/<id>.json): giữ đúng kiểu dữ liệu, cắt độ dài. */
+function cleanRTest(r) {
+  const tid = str(r.tid);
+  if (!/^[a-z0-9-]{1,40}$/.test(tid) || r.id !== `test:${tid}`) return null;
+  const d = r.data;
+  if (!d || typeof d !== 'object' || !Array.isArray(d.passages) || !d.passages.length || d.passages.length > 3) return null;
+  if (JSON.stringify(d).length > 3e6) return null;
+  const arr = (x, n) => (Array.isArray(x) ? x.slice(0, n) : []);
+  const s = (x, n) => str(x).slice(0, n);
+  const nums = (x, n) => arr(x, n).map((v) => int(v, 0, 999, 0));
+  const opt = (o) => ({ k: s(o?.k, 12), t: s(o?.t, 400) });
+  const passages = d.passages.map((p, pi) => ({
+    id: `${tid}-p${pi + 1}`, n: pi + 1, title: s(p?.title, 200), subtitle: s(p?.subtitle, 400), footnote: arr(p?.footnote, 10).map((x) => s(x, 400)), topic: s(p?.topic, 60),
+    paras: arr(p?.paras, 40).map((pa) => ({
+      label: s(pa?.label, 4), sents: arr(pa?.sents, 40).map((x) => s(x, 2000)), conn: s(pa?.conn, 4000), main: s(pa?.main, 2000), warn: arr(pa?.warn, 10).map((x) => s(x, 1000)),
+      simp: arr(pa?.simp, 60).map((x) => ({ idx: nums(x?.idx, 40), text: s(x?.text, 2000), ...(x?.note ? { note: s(x.note, 1000) } : {}), ...(Array.isArray(x?.q) ? { q: nums(x.q, 10) } : {}), ...(Array.isArray(x?.keep) ? { keep: arr(x.keep, 200).map((v) => (v ? 1 : 0)) } : {}) })),
+    })),
+    groups: arr(p?.groups, 12).map((g) => ({
+      from: int(g?.from, 1, 40, 1), to: int(g?.to, 1, 40, 1), type: ['tf', 'gap', 'choice'].includes(g?.type) ? g.type : 'choice', instr: s(g?.instr, 2000),
+      ...(Array.isArray(g?.options) ? { options: arr(g.options, 16).map(opt) } : {}),
+      ...(g?.type === 'gap' ? { limit: s(g.limit, 80), maxWords: int(g.maxWords, 0, 9, 0), number: g.number === true, context: s(g.context, 6000) } : {}),
+      ...(g?.guide ? { guide: s(g.guide, 20000) } : {}),
+      items: arr(g?.items, 20).map((it) => ({
+        n: int(it?.n, 1, 40, 1), q: s(it?.q, 1000), a: arr(it?.a, 10).map((x) => s(x, 120)), loc: arr(it?.loc, 6).map((l) => nums(l, 2)).filter((l) => l.length === 2),
+        exp: s(it?.exp, 20000), pairs: arr(it?.pairs, 20).map((x) => arr(x, 2).map((y) => s(y, 200))).filter((x) => x.length === 2),
+        ...(Array.isArray(it?.options) ? { options: arr(it.options, 8).map(opt) } : {}), ...(Array.isArray(it?.multi) ? { multi: nums(it.multi, 3) } : {}),
+      })),
+    })),
+  }));
+  const ex = d.exercises && typeof d.exercises === 'object' ? d.exercises : {};
+  return { id: r.id, kind: 'test', tid, title: s(r.title, 120) || tid, at: s(r.at, 30), data: {
+    id: tid, title: s(d.title, 120) || tid, version: 1, passages, exercises: { q: s(ex.q, 60000), a: s(ex.a, 60000) },
+    method: s(d.method, 20000), traps: s(d.traps, 20000), band: s(d.band, 400), extras: arr(d.extras, 6).map((x) => ({ title: s(x?.title, 200), md: s(x?.md, 30000) })),
+  } };
+}
 function cleanReading(r) {
   if (!r || typeof r !== 'object' || !W_ID.test(str(r.id))) return null;
+  if (r.kind === 'test') return cleanRTest(r);
   // Bài đọc tự dán (chỉ trên máy người dùng).
   if (r.kind === 'own') {
     const mains = {}, strike = {};

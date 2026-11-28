@@ -1,6 +1,7 @@
 // Luyện Reading theo Linear thinking: làm câu hỏi (có hướng dẫn hoặc như thi),
 // định vị câu trong bài, Simplify (gạch phần phụ), Read connection, main idea, lưu từ.
-// Nội dung: content/reading/*.json, tạo bằng tools/reading_import.py từ bộ 3 file của người dùng.
+// Nội dung: content/reading/*.json (có sẵn) + đề người học tự nhập trong app (kho 'reading', kind: 'test', xem rimport.js).
+// Cả hai đều đọc bằng js/rparse.js từ bộ 3 file Markdown (đề + đáp án, Simplify, giải chi tiết).
 import { S, rPut, rDel, readingResults, logGrammarDay, dayOf, saveWord, findByText, blankWord, recordAnswer, addDeck } from './store.js';
 import { esc, toast, today, uid, addDays } from './util.js';
 import { icon, on, go, back, replace, rerender, navBar, learnSwitch, confirmSheet, openSheet, closeSheet } from './ui.js';
@@ -9,7 +10,27 @@ import { confetti } from './fx.js';
 import { aiReady, askAI } from './ai.js';
 
 // ================= NỘI DUNG =================
-export const R = { state: 'idle', error: '', tests: [], data: new Map(), loading: new Set() };
+export const R = { state: 'idle', error: '', tests: [], base: [], data: new Map(), loading: new Set(), impSig: null };
+
+/** Thứ tự thư viện: Cam mới nhất lên trên, trong mỗi cuốn Test 1 → 4; đề không rõ số Cam ở cuối. */
+const testKey = (t) => { const m = /^cam(\d+)-t(\d+)$/.exec(t.id); return m ? [-Number(m[1]), Number(m[2])] : [0, 0]; };
+export const importedTests = () => [...S.reading.values()].filter((r) => r.kind === 'test' && r.data?.passages?.length);
+/** Gộp đề tự nhập vào danh sách (chạy lại khi kho thay đổi: nhập, xoá, khôi phục sao lưu). */
+export function syncImported() {
+  const imp = importedTests();
+  const sig = imp.map((r) => `${r.id}@${r.at}`).join('|');
+  if (sig === R.impSig) return;
+  R.impSig = sig;
+  for (const [id, d] of R.data) if (d.imported) R.data.delete(id);
+  const baseIds = new Set(R.base.map((t) => t.id));
+  const extra = imp.filter((r) => !baseIds.has(r.tid)).map((r) => {
+    R.data.set(r.tid, { ...r.data, imported: true });
+    return { id: r.tid, title: r.title, file: '', imported: true, passages: r.data.passages.map((p) => ({ id: p.id, n: p.n, title: p.title, topic: p.topic, questions: p.groups.reduce((n, g) => n + g.items.length, 0) })) };
+  });
+  const keyed = [...R.base, ...extra].map((t, i) => ({ t, i, k: testKey(t) }));
+  keyed.sort((a, b) => (!a.k[0] - !b.k[0]) || (a.k[0] - b.k[0]) || (a.k[1] - b.k[1]) || (a.i - b.i));
+  R.tests = keyed.map((x) => x.t);
+}
 
 export async function loadReading() {
   if (R.state === 'loading' || R.state === 'ready') return;
@@ -17,7 +38,9 @@ export async function loadReading() {
   try {
     const r = await fetch('content/reading/index.json');
     if (!r.ok) throw new Error(`index.json: ${r.status}`);
-    R.tests = (await r.json()).tests || [];
+    R.base = (await r.json()).tests || [];
+    R.impSig = null;
+    syncImported();
     R.state = 'ready';
   } catch (e) {
     console.error(e);
@@ -26,7 +49,7 @@ export async function loadReading() {
   }
 }
 async function loadTest(t) {
-  if (R.data.has(t.id) || R.loading.has(t.id)) return;
+  if (R.data.has(t.id) || R.loading.has(t.id) || t.imported) return;
   R.loading.add(t.id);
   try {
     const r = await fetch(t.file);
@@ -41,6 +64,7 @@ async function loadTest(t) {
   }
 }
 const metaOf = (pid) => {
+  syncImported();
   for (const t of R.tests) for (const p of t.passages) if (p.id === pid) return { t, p };
   return null;
 };
@@ -404,6 +428,7 @@ export function readingView() {
   const head = `<header class="top"><div><p class="eyebrow">Linear thinking</p><h1>Reading</h1></div>
     <button class="iconbtn tonal" data-act="go" data-to="#/rstats" aria-label="Hồ sơ Reading">${icon('stats')}</button></header>${learnSwitch('reading')}`;
   if (R.state !== 'ready') return `<div class="page">${head}${loadingCard('Đang tải danh sách bài đọc…')}</div>`;
+  syncImported();
   const goal = S.settings.readingPerDay, done = todayReading(), next = nextPassage();
   const results = readingResults();
   const placed = results.filter((r) => r.placement).sort((a, b) => (a.at < b.at ? 1 : -1))[0];
@@ -415,12 +440,13 @@ export function readingView() {
   const reasons = reasonCard(results);
   const tools = `<h2>Luyện thêm</h2>
     <button class="listlink" data-act="go" data-to="#/rpatterns"><span class="lead">${icon('link')}</span><span class="body"><b>Verb pattern</b><small>~60 khung động từ hay gặp, ví dụ lấy từ các bài đọc</small></span>${icon('chev')}</button>
+    <button class="listlink" data-act="go" data-to="#/rimport"><span class="lead">${icon('upload')}</span><span class="body"><b>Nhập đề Reading</b><small>${importedTests().length ? `Đã nhập ${importedTests().length} đề · ` : ''}Chọn file đề, Simplify và giải chi tiết</small></span>${icon('chev')}</button>
     <button class="listlink" data-act="go" data-to="#/rown"><span class="lead">${icon('pen')}</span><span class="body"><b>Bài đọc của bạn</b><small>Dán bài từ sách, tự Simplify, lưu từ, viết main idea</small></span>${icon('chev')}</button>
     ${results.length ? `<button class="listlink" data-act="r-placement"><span class="lead">${icon('target')}</span><span class="body"><b>Kiểm tra trình độ</b><small>1 passage 20 phút, gợi ý cách học</small></span>${icon('chev')}</button>` : ''}`;
   const lib = R.tests.map((t) => {
     const full = fullResults().filter((f) => f.tid === t.id).sort((a, b) => (a.at < b.at ? 1 : -1))[0];
     const fdraft = S.reading.get(`draft:full:${t.id}`);
-    return `<div class="row-between r-testhead"><h2>${esc(t.title)}</h2><button class="tag r-fullbtn" data-act="r-full" data-t="${t.id}">${fdraft ? 'Làm tiếp cả đề' : full ? `Cả đề · ${full.band.toFixed(1)}` : 'Cả đề · 60′'}</button></div><div class="wlist" style="margin-top:0">${t.passages.map((p) => {
+    return `<div class="row-between r-testhead"><h2>${esc(t.title)}${t.imported ? ' <span class="tag" style="vertical-align:middle;font-size:11px">Đã nhập</span>' : ''}</h2><button class="tag r-fullbtn" data-act="r-full" data-t="${t.id}">${fdraft ? 'Làm tiếp cả đề' : full ? `Cả đề · ${full.band.toFixed(1)}` : 'Cả đề · 60′'}</button></div><div class="wlist" style="margin-top:0">${t.passages.map((p) => {
     const best = bestOf(p.id), draft = readingDraft(p.id);
     const sub = draft ? `Đang làm dở · ${Object.keys(draft.answers || {}).length}/${p.questions} câu` : best >= 0 ? `Tốt nhất ${best}/${p.questions} câu` : `${p.questions} câu · ${esc(p.topic || '')}`;
     return `<div class="wrow" data-act="go" data-to="#/rpassage/${p.id}"><span class="num ${best >= 0 ? 'done' : ''}">${best >= 0 ? icon('check', 'sm') : p.n}</span>

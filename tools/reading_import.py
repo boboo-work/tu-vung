@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Chuyển bộ đề Reading (3 file Markdown mỗi đề) thành dữ liệu cho app.
 
+LƯU Ý: bản chính của bộ đọc giờ là js/rparse.js (app dùng để nhập đề ngay trên máy, có thêm các sửa lỗi:
+"## Section A"/"## Phần A", phương án 2 cột, "A, B or C", đáp án T/F viết tắt…). File này giữ lại để tham khảo.
+
 Mỗi đề gồm:
   1. Đề + đáp án       (Practice Cam 17 Reading Test 01 _ ….md — chép từ web, định dạng lộn xộn)
   2. Simplify           (cam17-test1-simplify-connection-full.md)
